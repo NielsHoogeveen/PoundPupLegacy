@@ -1,19 +1,29 @@
 ﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class BasicNameableMigrator(
-        IDatabaseConnections databaseConnections,
-        IEntityCreatorFactory<EventuallyIdentifiableBasicNameable> basicNameableCreatorFactory
-    ) : MigratorPPL(databaseConnections)
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
+    IEntityCreatorFactory<EventuallyIdentifiableBasicNameable> basicNameableCreatorFactory
+) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "basic nameables";
 
     protected override async Task MigrateImpl()
     {
         await using var basicNameableCreator = await basicNameableCreatorFactory.CreateAsync(_postgresConnection);
-        await basicNameableCreator.CreateAsync(ReadBasicNameables());
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var termIdReader = await termIdReaderFactory.CreateAsync(_postgresConnection);
+        await basicNameableCreator.CreateAsync(ReadBasicNameables(nodeIdReader,termIdReader));
     }
-    private async IAsyncEnumerable<NewBasicNameable> ReadBasicNameables()
+    private async IAsyncEnumerable<NewBasicNameable> ReadBasicNameables(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader)
     {
+        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
 
         var sql = $"""
                 SELECT
@@ -116,10 +126,9 @@ internal sealed class BasicNameableMigrator(
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = "organizations",
-                    ParentNames = new List<string>(),
+                    ParentTermIds = new List<int>(),
                 }
             },
             NodeTermIds = new List<int>(),
@@ -131,14 +140,20 @@ internal sealed class BasicNameableMigrator(
             var parentNames = id == 4170
                 ? new List<string> { "organizations" }
                 : new List<string>();
+            List<int> topicParentIds = new List<int>();
+            foreach (var parentName in parentNames) {
+                topicParentIds.Add(await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                    Name = parentName,
+                    VocabularyId = vocabularyId
+                }));
+            }
             var vocabularyNames = new List<VocabularyName>
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.OWNER_SYSTEM,
-                        Name = Constants.VOCABULARY_TOPICS,
+                        VocabularyId = vocabularyId,
                         TermName = name,
-                        ParentNames = parentNames,
+                        ParentTermIds = topicParentIds,
                     }
                 };
 
@@ -201,10 +216,14 @@ internal sealed class BasicNameableMigrator(
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = "US senate bill",
-                    ParentNames = new List<string>{"United States Congress"},
+                    ParentTermIds = new List<int>{
+                        await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                            Name = "United States Congress",
+                            VocabularyId = vocabularyId
+                        })
+                    },
                 }
             },
             NodeTermIds = new List<int>(),
@@ -237,10 +256,14 @@ internal sealed class BasicNameableMigrator(
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = "US house bill",
-                    ParentNames = new List<string>{"United States Congress"},
+                    ParentTermIds = new List<int>{
+                        await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                            Name = "United States Congress",
+                            VocabularyId = vocabularyId
+                        })
+                    },
                 }
             },
             NodeTermIds = new List<int>(),
@@ -273,10 +296,14 @@ internal sealed class BasicNameableMigrator(
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = "US act",
-                    ParentNames = new List<string>{"United States Congress"},
+                    ParentTermIds = new List<int>{
+                        await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                            Name = "United States Congress",
+                            VocabularyId = vocabularyId
+                        })
+                    },
                 }
             },
             NodeTermIds = new List<int>(),

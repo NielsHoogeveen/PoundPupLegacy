@@ -2,12 +2,15 @@
 
 internal sealed class SubdivisionTypeMigrator(
     IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IEntityCreatorFactory<EventuallyIdentifiableSubdivisionType> subdivisionTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "subdivision types";
 
-    private static async IAsyncEnumerable<NewSubdivisionType> GetSubdivisionTypes()
+    private static async IAsyncEnumerable<NewSubdivisionType> GetSubdivisionTypes(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
+    )
     {
         await Task.CompletedTask;
 
@@ -93,6 +96,10 @@ internal sealed class SubdivisionTypeMigrator(
             "Unitary authority",
             "Urban municipality",
         };
+        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
 
         foreach (var name in names) {
             yield return new NewSubdivisionType {
@@ -133,10 +140,9 @@ internal sealed class SubdivisionTypeMigrator(
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.OWNER_GEOGRAPHY,
-                        Name = Constants.VOCABULARY_SUBDIVISION_TYPE,
+                        VocabularyId = vocabularyId,
                         TermName = name,
-                        ParentNames = new List<string>(),
+                        ParentTermIds = new List<int>(),
                     },
                 },
                 NodeTermIds = new List<int>(),
@@ -147,6 +153,7 @@ internal sealed class SubdivisionTypeMigrator(
     protected override async Task MigrateImpl()
     {
         await using var subdivisionTypeCreator = await subdivisionTypeCreatorFactory.CreateAsync(_postgresConnection);
-        await subdivisionTypeCreator.CreateAsync(GetSubdivisionTypes());
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await subdivisionTypeCreator.CreateAsync(GetSubdivisionTypes(nodeIdReader));
     }
 }

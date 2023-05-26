@@ -1,6 +1,18 @@
 ﻿namespace PoundPupLegacy.CreateModel.Updaters;
 
 using Request = ImmediatelyIdentifiableFathersRightsViolationCase;
+internal sealed class FathersRightsViolationCaseChangerFactory(
+    IDatabaseUpdaterFactory<Request> databaseUpdaterFactory,
+    NodeDetailsChangerFactory nodeDetailsChangerFactory) : IEntityChangerFactory<Request>
+{
+    public async Task<IEntityChanger<Request>> CreateAsync(IDbConnection connection)
+    {
+        return new NodeChanger<Request>(
+            await databaseUpdaterFactory.CreateAsync(connection),
+            await nodeDetailsChangerFactory.CreateAsync(connection)
+        );
+    }
+}
 
 internal sealed class FathersRightsViolationCaseUpdaterFactory : DatabaseUpdaterFactory<Request>
 {

@@ -1,19 +1,27 @@
 ﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class CasePartyTypeMigrator(
-        IDatabaseConnections databaseConnections,
-        IEntityCreatorFactory<EventuallyIdentifiableCasePartyType> casePartyTypeCreatorFactory
-    ) : MigratorPPL(databaseConnections)
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    IEntityCreatorFactory<EventuallyIdentifiableCasePartyType> casePartyTypeCreatorFactory
+) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "case relation types";
     protected override async Task MigrateImpl()
     {
         await using var casePartyTypeCreator = await casePartyTypeCreatorFactory.CreateAsync(_postgresConnection);
-        await casePartyTypeCreator.CreateAsync(GetCaseRelationTypes());
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await casePartyTypeCreator.CreateAsync(GetCaseRelationTypes(nodeIdReader));
     }
 
-    internal static async IAsyncEnumerable<NewCasePartyType> GetCaseRelationTypes()
+    internal static async IAsyncEnumerable<NewCasePartyType> GetCaseRelationTypes(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
+        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_CASE_PARTY_TYPE
+        });
+
         await Task.CompletedTask;
         var now = DateTime.Now;
         yield return new NewCasePartyType {
@@ -54,10 +62,9 @@ internal sealed class CasePartyTypeMigrator(
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_CASES,
-                    Name = Constants.VOCABULARY_CASE_PARTY_TYPE,
+                    VocabularyId = vocabularyId,
                     TermName = Constants.HOMESTUDY_CASE_TYPE_NAME,
-                    ParentNames = new List<string>(),
+                    ParentTermIds = new List<int>(),
                 }
             },
             NodeTermIds = new List<int>(),
@@ -100,10 +107,9 @@ internal sealed class CasePartyTypeMigrator(
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_CASES,
-                    Name = Constants.VOCABULARY_CASE_PARTY_TYPE,
+                    VocabularyId = vocabularyId,
                     TermName = Constants.PLACEMENT_CASE_TYPE_NAME,
-                    ParentNames = new List<string>(),
+                    ParentTermIds = new List<int>(),
                 }
             },
             NodeTermIds = new List<int>(),
@@ -146,10 +152,9 @@ internal sealed class CasePartyTypeMigrator(
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_CASES,
-                    Name = Constants.VOCABULARY_CASE_PARTY_TYPE,
+                    VocabularyId = vocabularyId,
                     TermName = Constants.POSTPLACEMENT_CASE_TYPE_NAME,
-                    ParentNames = new List<string>(),
+                    ParentTermIds = new List<int>(),
                 }
             },
             NodeTermIds = new List<int>(),
@@ -192,10 +197,9 @@ internal sealed class CasePartyTypeMigrator(
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_CASES,
-                    Name = Constants.VOCABULARY_CASE_PARTY_TYPE,
+                    VocabularyId = vocabularyId,
                     TermName = Constants.FACILITATION_CASE_TYPE_NAME,
-                    ParentNames = new List<string>(),
+                    ParentTermIds = new List<int>(),
                 }
             },
             NodeTermIds = new List<int>(),
@@ -238,10 +242,9 @@ internal sealed class CasePartyTypeMigrator(
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_CASES,
-                    Name = Constants.VOCABULARY_CASE_PARTY_TYPE,
+                    VocabularyId = vocabularyId,
                     TermName = Constants.INSTITUTION_CASE_TYPE_NAME,
-                    ParentNames = new List<string>(),
+                    ParentTermIds = new List<int>(),
                 }
             },
             NodeTermIds = new List<int>(),
@@ -284,10 +287,9 @@ internal sealed class CasePartyTypeMigrator(
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_CASES,
-                    Name = Constants.VOCABULARY_CASE_PARTY_TYPE,
+                    VocabularyId = vocabularyId,
                     TermName = Constants.THERAPY_CASE_TYPE_NAME,
-                    ParentNames = new List<string>(),
+                    ParentTermIds = new List<int>(),
                 }
             },
             NodeTermIds = new List<int>(),
@@ -330,10 +332,9 @@ internal sealed class CasePartyTypeMigrator(
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_CASES,
-                    Name = Constants.VOCABULARY_CASE_PARTY_TYPE,
+                    VocabularyId = vocabularyId,
                     TermName = Constants.AUTHORITIES_CASE_TYPE_NAME,
-                    ParentNames = new List<string>(),
+                    ParentTermIds = new List<int>(),
                 }
             },
             NodeTermIds = new List<int>(),

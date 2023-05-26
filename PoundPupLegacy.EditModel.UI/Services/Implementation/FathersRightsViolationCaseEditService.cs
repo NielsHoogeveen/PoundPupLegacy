@@ -58,10 +58,9 @@ internal sealed class FathersRightsViolationCaseEditService(
             FileIdTileImage = null,
             VocabularyNames = new List<VocabularyName> {
                 new  VocabularyName {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = Constants.VOCABULARY_ID_TOPICS,
                     TermName = viewModel.Title,
-                    ParentNames = new List<string>(),
+                    ParentTermIds = new List<int>(),
                 }
             },
             NodeTermIds = new List<int>(),

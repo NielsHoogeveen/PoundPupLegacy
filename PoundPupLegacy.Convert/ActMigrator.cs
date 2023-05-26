@@ -2,7 +2,9 @@
 
 internal sealed class ActMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreatorFactory<EventuallyIdentifiableAct> actCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableAct> actCreatorFactory,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory
 ) : MigratorPPL(databaseConnections)
 {
 
@@ -11,7 +13,9 @@ internal sealed class ActMigrator(
     protected override async Task MigrateImpl()
     {
         await using var actCreator = await actCreatorFactory.CreateAsync(_postgresConnection);
-        await actCreator.CreateAsync(ReadArticles());
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var termIdReader = await termIdReaderFactory.CreateAsync(_postgresConnection);
+        await actCreator.CreateAsync(ReadArticles(nodeIdReader,termIdReader));
 
     }
 
@@ -22,7 +26,10 @@ internal sealed class ActMigrator(
             _ => null
         };
     }
-    private async IAsyncEnumerable<NewAct> ReadArticles()
+    private async IAsyncEnumerable<NewAct> ReadArticles(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader
+    )
     {
 
         var sql = $"""
@@ -101,6 +108,10 @@ internal sealed class ActMigrator(
         readCommand.CommandText = sql;
 
         var reader = await readCommand.ExecuteReaderAsync();
+        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
 
         while (await reader.ReadAsync()) {
 
@@ -116,20 +127,29 @@ internal sealed class ActMigrator(
                     .Split(',')
                     .Where(x => !string.IsNullOrEmpty(x))
                     .ToList();
-
+                List<int> topicParentIds = new List<int>();
+                foreach (var topicParentName in topicParentNames) {
+                    topicParentIds.Add(await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                        Name = topicParentName,
+                        VocabularyId = vocabularyId
+                    }));
+                }
                 vocabularyNames.Add(new VocabularyName {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = topicName,
-                    ParentNames = topicParentNames,
+                    ParentTermIds = topicParentIds,
                 });
             }
             else {
                 vocabularyNames.Add(new VocabularyName {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = title,
-                    ParentNames = new List<string> { "US house bill" },
+                    ParentTermIds = new List<int> {
+                        await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                            Name = "US house bill",
+                            VocabularyId = vocabularyId
+                        })
+                    },
                 });
             }
 

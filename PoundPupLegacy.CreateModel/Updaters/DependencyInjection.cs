@@ -6,6 +6,19 @@ public static class DependencyInjection
 {
     public static void AddCreateModelUpdaters(this IServiceCollection services)
     {
+        services.AddTransient<IEntityChangerFactory<ImmediatelyIdentifiableAbuseCase>, AbuseCaseChangerFactory>();
+        services.AddTransient<IEntityChangerFactory<ImmediatelyIdentifiableChildTraffickingCase>, ChildTraffickingCaseChangerFactory>();
+        services.AddTransient<IEntityChangerFactory<ImmediatelyIdentifiableCoercedAdoptionCase>, CoercedAdoptionCaseChangerFactory>();
+        services.AddTransient<IEntityChangerFactory<ImmediatelyIdentifiableDeportationCase>, DeportationCaseChangerFactory>();
+        services.AddTransient<IEntityChangerFactory<ImmediatelyIdentifiableDisruptedPlacementCase>, DisruptedPlacementCaseChangerFactory>();
+        services.AddTransient<IEntityChangerFactory<ImmediatelyIdentifiableFathersRightsViolationCase>, FathersRightsViolationCaseChangerFactory>();
+        services.AddTransient<IEntityChangerFactory<ImmediatelyIdentifiableDocument>, DocumentChangerFactory>();
+        services.AddTransient<IEntityChangerFactory<ImmediatelyIdentifiableOrganization>, OrganizationChangerFactory>();
+        services.AddTransient<IEntityChangerFactory<ImmediatelyIdentifiablePerson>, PersonChangerFactory>();
+        services.AddTransient<IEntityChangerFactory<ImmediatelyIdentifiableSimpleTextNode>, SimpleTextNodeChangerFactory>();
+        services.AddTransient<IEntityChangerFactory<ImmediatelyIdentifiableWrongfulMedicationCase>, WrongfulMedicationCaseChangerFactory>();
+        services.AddTransient<IEntityChangerFactory<ImmediatelyIdentifiableWrongfulRemovalCase>, WrongfulRemovalCaseChangerFactory>();
+
         services.AddTransient<IDatabaseUpdaterFactory<ImmediatelyIdentifiableAbuseCase>, AbuseCaseUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<ImmediatelyIdentifiableChildTraffickingCase>, ChildTraffickingCaseUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<ImmediatelyIdentifiableCoercedAdoptionCase>, CoercedAdoptionCaseUpdaterFactory>();

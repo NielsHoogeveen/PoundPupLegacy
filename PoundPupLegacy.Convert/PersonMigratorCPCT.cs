@@ -16,9 +16,12 @@ internal sealed class PersonMigratorCPCT(
     protected override async Task MigrateImpl()
     {
         await using var personCreator = await personCreatorFactory.CreateAsync(_postgresConnection);
-        await personCreator.CreateAsync(ReadPersons());
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await personCreator.CreateAsync(ReadPersons(nodeIdReader));
     }
-    private async IAsyncEnumerable<NewPerson> ReadPersons()
+    private async IAsyncEnumerable<NewPerson> ReadPersons(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
+    )
     {
 
         var sql = $"""
@@ -74,6 +77,10 @@ internal sealed class PersonMigratorCPCT(
 
 
         var reader = await readCommand.ExecuteReaderAsync();
+        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
 
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
@@ -85,10 +92,9 @@ internal sealed class PersonMigratorCPCT(
 
             var vocabularyNames = new List<VocabularyName> {
                 new VocabularyName {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = title,
-                    ParentNames = new List<string>(),
+                    ParentTermIds = new List<int>(),
                 }
             };
 

@@ -2,14 +2,26 @@
 
 internal sealed class FamilySizeMigrator(
         IDatabaseConnections databaseConnections,
+        IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IEntityCreatorFactory<EventuallyIdentifiableFamilySize> familySizeCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "family sizes";
 
-    private static async IAsyncEnumerable<NewFamilySize> GetFamilySizes()
+    private static async IAsyncEnumerable<NewFamilySize> GetFamilySizes(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         await Task.CompletedTask;
+        var vocabularyIdTopics = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
+
+        var vocabularyIdFamilySize = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_FAMILY_SIZE
+        });
+
         yield return new NewFamilySize {
             Id = null,
             PublisherId = 1,
@@ -48,10 +60,9 @@ internal sealed class FamilySizeMigrator(
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_CASES,
-                    Name = Constants.VOCABULARY_FAMILY_SIZE,
+                    VocabularyId = vocabularyIdFamilySize,
                     TermName = "1 to 4",
-                    ParentNames = new List<string>(),
+                    ParentTermIds = new List<int>(),
                 },
             },
             NodeTermIds = new List<int>(),
@@ -94,10 +105,9 @@ internal sealed class FamilySizeMigrator(
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_CASES,
-                    Name = Constants.VOCABULARY_FAMILY_SIZE,
+                    VocabularyId = vocabularyIdFamilySize,
                     TermName = "4 to 8",
-                    ParentNames = new List<string>(),
+                    ParentTermIds = new List<int>(),
                 },
             },
             NodeTermIds = new List<int>(),
@@ -140,10 +150,9 @@ internal sealed class FamilySizeMigrator(
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.OWNER_CASES,
-                        Name = Constants.VOCABULARY_FAMILY_SIZE,
+                        VocabularyId = vocabularyIdFamilySize,
                         TermName = "8 to 12",
-                        ParentNames = new List<string>(),
+                        ParentTermIds = new List<int>(),
                     },
                 },
             NodeTermIds = new List<int>(),
@@ -186,17 +195,15 @@ internal sealed class FamilySizeMigrator(
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_CASES,
-                    Name = Constants.VOCABULARY_FAMILY_SIZE,
+                    VocabularyId = vocabularyIdFamilySize,
                     TermName = "more than 12",
-                    ParentNames = new List<string>(),
+                    ParentTermIds = new List<int>(),
                 },
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyIdTopics,
                     TermName = "mega families",
-                    ParentNames = new List<string>(),
+                    ParentTermIds = new List<int>(),
                 },
             },
             NodeTermIds = new List<int>(),
@@ -205,6 +212,7 @@ internal sealed class FamilySizeMigrator(
     protected override async Task MigrateImpl()
     {
         await using var familySizeCreator = await familySizeCreatorFactory.CreateAsync(_postgresConnection);
-        await familySizeCreator.CreateAsync(GetFamilySizes());
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await familySizeCreator.CreateAsync(GetFamilySizes(nodeIdReader));
     }
 }

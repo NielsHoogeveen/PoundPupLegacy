@@ -2,6 +2,8 @@
 
 internal sealed class CoercedAdoptionCaseMigrator(
     IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
     IEntityCreatorFactory<EventuallyIdentifiableCoercedAdoptionCase> coercedAdoptionCaseCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
@@ -10,9 +12,13 @@ internal sealed class CoercedAdoptionCaseMigrator(
     protected override async Task MigrateImpl()
     {
         await using var coercedAdoptionCaseCreator = await coercedAdoptionCaseCreatorFactory.CreateAsync(_postgresConnection);
-        await coercedAdoptionCaseCreator.CreateAsync(ReadCoercedAdoptionCases());
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var termIdReader = await termIdReaderFactory.CreateAsync(_postgresConnection);
+        await coercedAdoptionCaseCreator.CreateAsync(ReadCoercedAdoptionCases(nodeIdReader,termIdReader));
     }
-    private async IAsyncEnumerable<NewCoercedAdoptionCase> ReadCoercedAdoptionCases()
+    private async IAsyncEnumerable<NewCoercedAdoptionCase> ReadCoercedAdoptionCases(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader)
     {
 
         var sql = $"""
@@ -93,16 +99,25 @@ internal sealed class CoercedAdoptionCaseMigrator(
 
 
         var reader = await readCommand.ExecuteReaderAsync();
+        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
 
+        var parentTermIds = new List<int> {
+            await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                Name = "coerced adoption",
+                VocabularyId = vocabularyId
+            })
+        };
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
             var vocabularyNames = new List<VocabularyName> {
                 new VocabularyName {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = name,
-                    ParentNames = new List<string>{ "coerced adoption"},
+                    ParentTermIds = parentTermIds,
                 }
             };
 

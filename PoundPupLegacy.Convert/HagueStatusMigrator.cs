@@ -2,6 +2,7 @@
 
 internal sealed class HagueStatusMigrator(
     IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IEntityCreatorFactory<EventuallyIdentifiableHagueStatus> hagueStatusCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
@@ -10,10 +11,12 @@ internal sealed class HagueStatusMigrator(
     protected override async Task MigrateImpl()
     {
         await using var hagueStatusCreator = await hagueStatusCreatorFactory.CreateAsync(_postgresConnection);
-        await hagueStatusCreator.CreateAsync(ReadHagueStatuses());
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await hagueStatusCreator.CreateAsync(ReadHagueStatuses(nodeIdReader));
     }
 
-    private async IAsyncEnumerable<NewHagueStatus> ReadHagueStatuses()
+    private async IAsyncEnumerable<NewHagueStatus> ReadHagueStatuses(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
         var sql = $"""
@@ -37,6 +40,10 @@ internal sealed class HagueStatusMigrator(
 
 
         var reader = await readCommand.ExecuteReaderAsync();
+        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_HAGUE_STATUS
+        });
 
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
@@ -45,10 +52,9 @@ internal sealed class HagueStatusMigrator(
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.OWNER_PARTIES,
-                        Name = Constants.VOCABULARY_HAGUE_STATUS,
+                        VocabularyId = vocabularyId,
                         TermName = name,
-                        ParentNames = new List<string>(),
+                        ParentTermIds = new List<int>(),
                     }
                 };
 

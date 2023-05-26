@@ -1,10 +1,12 @@
 ﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class ChildPlacementTypeMigrator(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-        IEntityCreatorFactory<EventuallyIdentifiableChildPlacementType> childPlacementTypeCreatorFactory
-    ) : MigratorPPL(databaseConnections)
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
+    IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
+    IEntityCreatorFactory<EventuallyIdentifiableChildPlacementType> childPlacementTypeCreatorFactory
+) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "child placement types";
 
@@ -12,10 +14,14 @@ internal sealed class ChildPlacementTypeMigrator(
     {
         await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
         await using var childPlacementTypeCreator = await childPlacementTypeCreatorFactory.CreateAsync(_postgresConnection);
-        await childPlacementTypeCreator.CreateAsync(ReadChildPlacementTypes(fileIdReaderByTenantFileId));
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var termIdReader = await termIdReaderFactory.CreateAsync(_postgresConnection);
+        await childPlacementTypeCreator.CreateAsync(ReadChildPlacementTypes(nodeIdReader,termIdReader,fileIdReaderByTenantFileId));
     }
 
     private async IAsyncEnumerable<NewChildPlacementType> ReadChildPlacementTypes(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)
     {
         var sql = $"""
@@ -63,32 +69,41 @@ internal sealed class ChildPlacementTypeMigrator(
 
 
         var reader = await readCommand.ExecuteReaderAsync();
+        var vocabularyIdTopics = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
+        var vocabularyIdChildPlacementType = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_CHILD_PLACEMENT_TYPE
+        });
 
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
             var topicName = reader.IsDBNull("topic_name") ? null : reader.GetString("topic_name");
-            var parentTopicName = reader.IsDBNull("parent_topic_name") ? null : reader.GetString("parent_topic_name");
+            var topicParentName = reader.IsDBNull("parent_topic_name") ? null : reader.GetString("parent_topic_name");
             var vocabularyNames = new List<VocabularyName>
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_CASES,
-                    Name = Constants.VOCABULARY_CHILD_PLACEMENT_TYPE,
+                    VocabularyId = vocabularyIdChildPlacementType,
                     TermName = name,
-                    ParentNames = new List<string>(),
+                    ParentTermIds = new List<int>(),
                 }
             };
             if (topicName != null) {
-                var parentNames = new List<string>();
-                if (parentTopicName != null) {
-                    parentNames.Add(parentTopicName);
+                var parentTermIds = new List<int>();
+                if (topicParentName != null) {
+                    parentTermIds.Add(await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                        Name = topicParentName,
+                        VocabularyId = vocabularyIdTopics
+                    }));
                 }
                 vocabularyNames.Add(new VocabularyName {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyIdTopics,
                     TermName = topicName,
-                    ParentNames = parentNames
+                    ParentTermIds = parentTermIds
                 });
             }
 

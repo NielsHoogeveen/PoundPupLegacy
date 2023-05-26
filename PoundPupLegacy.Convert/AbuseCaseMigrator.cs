@@ -3,7 +3,8 @@
 internal sealed class AbuseCaseMigrator(
     IDatabaseConnections databaseConnections,
     IEntityCreatorFactory<EventuallyIdentifiableAbuseCase> abuseCaseCreatorFactory,
-    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory
 ) : MigratorPPL(databaseConnections)
 {
 
@@ -12,10 +13,14 @@ internal sealed class AbuseCaseMigrator(
     protected override async Task MigrateImpl()
     {
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var termIdReader = await termIdReaderFactory.CreateAsync(_postgresConnection);
         await using var abuseCaseCreator = await abuseCaseCreatorFactory.CreateAsync(_postgresConnection);
-        await abuseCaseCreator.CreateAsync(ReadAbuseCases(nodeIdReader));
+        await abuseCaseCreator.CreateAsync(ReadAbuseCases(nodeIdReader, termIdReader));
     }
-    private async IAsyncEnumerable<NewAbuseCase> ReadAbuseCases(IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
+    private async IAsyncEnumerable<NewAbuseCase> ReadAbuseCases(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader
+        )
     {
         var sql = $"""
                 SELECT
@@ -119,24 +124,35 @@ internal sealed class AbuseCaseMigrator(
 
 
         var reader = await readCommand.ExecuteReaderAsync();
-
+        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
 
             var vocabularyNames = new List<VocabularyName>();
             var topicName = reader.GetString("topic_name");
-            var topicParentNames = reader.IsDBNull("topic_parent_names") ?
-                new List<string>() : reader.GetString("topic_parent_names")
+            var topicParentNames = reader.IsDBNull("topic_parent_names") 
+                ? new List<string>() 
+                : reader.GetString("topic_parent_names")
                 .Split(',')
                 .Where(x => !string.IsNullOrEmpty(x))
                 .ToList();
 
+            List<int> topicParentIds = new List<int>();
+            foreach ( var topicParentName in topicParentNames) {
+                topicParentIds.Add(await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                    Name = topicParentName,
+                    VocabularyId = vocabularyId
+                }));
+            }
+            
             vocabularyNames.Add(new VocabularyName {
-                OwnerId = Constants.OWNER_SYSTEM,
-                Name = Constants.VOCABULARY_TOPICS,
+                VocabularyId = vocabularyId,
                 TermName = topicName,
-                ParentNames = topicParentNames,
+                ParentTermIds = topicParentIds,
             });
 
             var country = new NewAbuseCase {

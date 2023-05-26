@@ -2,6 +2,7 @@
 
 internal sealed class InterPersonalRelationTypeMigrator(
     IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
     IEntityCreatorFactory<EventuallyIdentifiableInterPersonalRelationType> interPersonalRelationTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
@@ -12,9 +13,11 @@ internal sealed class InterPersonalRelationTypeMigrator(
     {
         await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
         await using var interPersonalRelationTypeCreator = await interPersonalRelationTypeCreatorFactory.CreateAsync(_postgresConnection);
-        await interPersonalRelationTypeCreator.CreateAsync(ReadInterPersonalRelationTypes(fileIdReaderByTenantFileId));
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await interPersonalRelationTypeCreator.CreateAsync(ReadInterPersonalRelationTypes(nodeIdReader,fileIdReaderByTenantFileId));
     }
     private async IAsyncEnumerable<NewInterPersonalRelationType> ReadInterPersonalRelationTypes(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)
     {
 
@@ -45,6 +48,10 @@ internal sealed class InterPersonalRelationTypeMigrator(
         readCommand.CommandText = sql;
 
         var reader = await readCommand.ExecuteReaderAsync();
+        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_INTER_PERSONAL_RELATION_TYPE
+        });
 
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
@@ -54,10 +61,9 @@ internal sealed class InterPersonalRelationTypeMigrator(
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_PARTIES,
-                    Name = Constants.VOCABULARY_INTERPERSONAL_RELATION_TYPE,
+                    VocabularyId = vocabularyId,
                     TermName = name,
-                    ParentNames = new List<string>(),
+                    ParentTermIds = new List<int>(),
                 }
             };
             yield return new NewInterPersonalRelationType {

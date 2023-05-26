@@ -2,6 +2,8 @@
 
 internal sealed class FathersRightsViolationsCaseMigrator(
     IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
     IEntityCreatorFactory<EventuallyIdentifiableFathersRightsViolationCase> fathersRightsViolationCaseCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
@@ -10,9 +12,13 @@ internal sealed class FathersRightsViolationsCaseMigrator(
     protected override async Task MigrateImpl()
     {
         await using var fathersRightsViolationCaseCreator = await fathersRightsViolationCaseCreatorFactory.CreateAsync(_postgresConnection);
-        await fathersRightsViolationCaseCreator.CreateAsync(ReadFathersRightsViolationCases());
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var termIdReader = await termIdReaderFactory.CreateAsync(_postgresConnection);
+        await fathersRightsViolationCaseCreator.CreateAsync(ReadFathersRightsViolationCases(nodeIdReader,termIdReader));
     }
-    private async IAsyncEnumerable<NewFathersRightsViolationCase> ReadFathersRightsViolationCases()
+    private async IAsyncEnumerable<NewFathersRightsViolationCase> ReadFathersRightsViolationCases(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader)
     {
 
         var sql = $"""
@@ -38,16 +44,25 @@ internal sealed class FathersRightsViolationsCaseMigrator(
 
 
         var reader = await readCommand.ExecuteReaderAsync();
+        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
 
+        var parentTermIds = new List<int> { 
+            await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                Name = "Father's rights violations",
+                VocabularyId = vocabularyId
+            })
+        };
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
             var vocabularyNames = new List<VocabularyName> {
                 new VocabularyName {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = name,
-                    ParentNames = new List<string>{ "Father's rights violations" },
+                    ParentTermIds = parentTermIds,
                 }
             };
 

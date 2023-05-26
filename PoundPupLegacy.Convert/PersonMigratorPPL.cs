@@ -2,6 +2,7 @@
 
 internal sealed class PersonMigratorPPL(
     IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
     IEntityCreatorFactory<EventuallyIdentifiablePerson> personCreatorFactory
 ) : MigratorPPL(databaseConnections)
@@ -12,7 +13,8 @@ internal sealed class PersonMigratorPPL(
     {
         await using var fileIdReader = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
         await using var personCreator = await personCreatorFactory.CreateAsync(_postgresConnection);
-        await personCreator.CreateAsync(ReadPersons(fileIdReader));
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await personCreator.CreateAsync(ReadPersons(nodeIdReader,fileIdReader));
     }
     private static DateTime? GetDateOfDeath(int id, DateTime? dateTime)
     {
@@ -126,6 +128,7 @@ internal sealed class PersonMigratorPPL(
     }
 
     private async IAsyncEnumerable<NewPerson> ReadPersons(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId
     )
     {
@@ -191,6 +194,10 @@ internal sealed class PersonMigratorPPL(
 
 
         var reader = await readCommand.ExecuteReaderAsync();
+        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
 
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
@@ -201,10 +208,9 @@ internal sealed class PersonMigratorPPL(
             var topicName = reader.IsDBNull("topic_name") ? null : reader.GetString("topic_name");
             var vocabularyNames = new List<VocabularyName> {
                 new VocabularyName {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = title,
-                    ParentNames = new List<string>(),
+                    ParentTermIds = new List<int>(),
                 }
             };
 

@@ -5,6 +5,7 @@ namespace PoundPupLegacy.Convert;
 internal sealed class OrganizationMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
+    IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
     ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
     IEntityCreatorFactory<EventuallyIdentifiableOrganization> organizationCreatorFactory
 ) : MigratorPPL(databaseConnections)
@@ -12,9 +13,15 @@ internal sealed class OrganizationMigratorPPL(
     protected override string Name => "organizations (ppl)";
 
     private async IAsyncEnumerable<EventuallyIdentifiableOrganization> GetOrganizations(
-        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader
     )
     {
+        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
+
         yield return new NewBasicOrganization {
             Id = null,
             PublisherId = 1,
@@ -55,10 +62,14 @@ internal sealed class OrganizationMigratorPPL(
             FileIdTileImage = null,
             VocabularyNames = new List<VocabularyName> {
                 new VocabularyName {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = "Colorado Adoption Center",
-                    ParentNames = new List<string>{ "adoption agencies" },
+                    ParentTermIds = new List<int>{
+                        await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                            Name = "adoption agencies",
+                            VocabularyId = vocabularyId
+                        })
+                    },
                 }
             },
             OrganizationTypeIds = new List<int>
@@ -116,10 +127,14 @@ internal sealed class OrganizationMigratorPPL(
             FileIdTileImage = null,
             VocabularyNames = new List<VocabularyName> {
                 new VocabularyName {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = "Popular Democratic Party",
-                    ParentNames = new List<string>{ "political party" },
+                    ParentTermIds = new List<int>{
+                        await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                            Name = "political party" ,
+                            VocabularyId = vocabularyId
+                        })
+                    },
                 }
             },
             OrganizationTypeIds = new List<int>
@@ -178,10 +193,14 @@ internal sealed class OrganizationMigratorPPL(
             FileIdTileImage = null,
             VocabularyNames = new List<VocabularyName> {
                 new VocabularyName {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = "Libertarian Party",
-                    ParentNames = new List<string>{ "political party" },
+                    ParentTermIds = new List<int>{
+                        await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                            Name = "political party" ,
+                            VocabularyId = vocabularyId
+                        }) 
+                    },
                 }
             },
             OrganizationTypeIds = new List<int>
@@ -239,10 +258,14 @@ internal sealed class OrganizationMigratorPPL(
             FileIdTileImage = null,
             VocabularyNames = new List<VocabularyName> {
                 new VocabularyName {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = "Government of Italy",
-                    ParentNames = new List<string>{ "governmental organization" },
+                    ParentTermIds = new List<int>{
+                        await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                            Name = "governmental organization" ,
+                            VocabularyId = vocabularyId
+                        })
+                    },
                 }
             },
             OrganizationTypeIds = new List<int>
@@ -265,13 +288,15 @@ internal sealed class OrganizationMigratorPPL(
     protected override async Task MigrateImpl()
     {
         await using var nodeIdReader = await nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
+        await using var termIdReader = await termIdReaderFactory.CreateAsync(_postgresConnection);
         await using var termReaderByNameableId = await termReaderByNameableIdFactory.CreateAsync(_postgresConnection);
         await using var organizationCreator = await organizationCreatorFactory.CreateAsync(_postgresConnection);
-        await organizationCreator.CreateAsync(GetOrganizations(nodeIdReader));
-        await organizationCreator.CreateAsync(ReadOrganizations(nodeIdReader, termReaderByNameableId));
+        await organizationCreator.CreateAsync(GetOrganizations(nodeIdReader,termIdReader));
+        await organizationCreator.CreateAsync(ReadOrganizations(nodeIdReader, termIdReader, termReaderByNameableId));
     }
     private async IAsyncEnumerable<EventuallyIdentifiableOrganization> ReadOrganizations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
         ISingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId
     )
     {
@@ -388,6 +413,10 @@ internal sealed class OrganizationMigratorPPL(
 
 
         var reader = await readCommand.ExecuteReaderAsync();
+        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
 
         while (await reader.ReadAsync()) {
             var vocabularyNames = new List<VocabularyName>();
@@ -461,12 +490,17 @@ internal sealed class OrganizationMigratorPPL(
                     .AddRange(organizationTypeTermNames)
                     .Distinct()
                     .ToList();
-
+            List<int> topicParentIds = new List<int>();
+            foreach (var topicParentName in topicParentNames) {
+                topicParentIds.Add(await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                    Name = topicParentName,
+                    VocabularyId = vocabularyId
+                }));
+            }
             vocabularyNames.Add(new VocabularyName {
-                OwnerId = Constants.OWNER_SYSTEM,
-                Name = Constants.VOCABULARY_TOPICS,
+                VocabularyId = vocabularyId,
                 TermName = topicName,
-                ParentNames = topicParentNames,
+                ParentTermIds = topicParentIds,
             });
 
             if (id == Constants.DEMOCRATIC_PARTY || id == Constants.REPUBLICAN_PARTY) {

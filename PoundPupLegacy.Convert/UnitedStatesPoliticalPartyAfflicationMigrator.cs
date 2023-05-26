@@ -12,7 +12,11 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
     )
     {
+        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_UNITED_STATES_POLITICAL_PARTY_AFFILITION_TYPE
 
+        });
         yield return new NewUnitedStatesPoliticalPartyAffliation {
             Id = null,
             PublisherId = 1,
@@ -51,10 +55,9 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.OWNER_PARTIES,
-                        Name = Constants.VOCABULARY_UNITED_STATES_POLITICAL_PARTY_AFFILITION_TYPE,
+                        VocabularyId = vocabularyId,
                         TermName = Constants.DEMOCRAT_NAME,
-                        ParentNames = new List<string>(),
+                        ParentTermIds = new List<int>(),
                     },
                 },
             UnitedStatesPoliticalPartyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
@@ -102,10 +105,9 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.OWNER_PARTIES,
-                        Name = Constants.VOCABULARY_UNITED_STATES_POLITICAL_PARTY_AFFILITION_TYPE,
+                        VocabularyId = vocabularyId,
                         TermName = Constants.REPUBLICAN_NAME,
-                        ParentNames = new List<string>(),
+                        ParentTermIds = new List<int>(),
                     },
                 },
             UnitedStatesPoliticalPartyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
@@ -152,10 +154,9 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.OWNER_PARTIES,
-                        Name = Constants.VOCABULARY_UNITED_STATES_POLITICAL_PARTY_AFFILITION_TYPE,
+                        VocabularyId = vocabularyId,
                         TermName = Constants.INDEPENDENT_NAME,
-                        ParentNames = new List<string>(),
+                        ParentTermIds = new List<int>(),
                     },
                 },
             UnitedStatesPoliticalPartyId = null,
@@ -199,10 +200,9 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.OWNER_PARTIES,
-                        Name = Constants.VOCABULARY_UNITED_STATES_POLITICAL_PARTY_AFFILITION_TYPE,
+                        VocabularyId = vocabularyId,
                         TermName = Constants.POPULAR_DEMOCRAT_NAME,
-                        ParentNames = new List<string>(),
+                        ParentTermIds = new List<int>(),
                     },
                 },
             UnitedStatesPoliticalPartyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
@@ -249,10 +249,9 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.OWNER_PARTIES,
-                        Name = Constants.VOCABULARY_UNITED_STATES_POLITICAL_PARTY_AFFILITION_TYPE,
+                        VocabularyId = vocabularyId,
                         TermName = Constants.LIBERTARIAN_NAME,
-                        ParentNames = new List<string>(),
+                        ParentTermIds = new List<int>(),
                     },
                 },
             UnitedStatesPoliticalPartyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {

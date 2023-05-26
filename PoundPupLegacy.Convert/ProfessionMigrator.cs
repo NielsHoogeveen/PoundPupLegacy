@@ -2,6 +2,7 @@
 
 internal sealed class ProfessionMigrator(
     IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
     IEntityCreatorFactory<EventuallyIdentifiableProfession> professionCreatorFactory
 ) : MigratorPPL(databaseConnections)
@@ -12,9 +13,11 @@ internal sealed class ProfessionMigrator(
     {
         await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
         await using var professionCreator = await professionCreatorFactory.CreateAsync(_postgresConnection);
-        await professionCreator.CreateAsync(ReadProfessions(fileIdReaderByTenantFileId));
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await professionCreator.CreateAsync(ReadProfessions(nodeIdReader, fileIdReaderByTenantFileId));
     }
     private async IAsyncEnumerable<NewProfession> ReadProfessions(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId
     )
     {
@@ -70,6 +73,14 @@ internal sealed class ProfessionMigrator(
         readCommand.CommandText = sql;
 
         var reader = await readCommand.ExecuteReaderAsync();
+        var topicsVocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
+        var professionVocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_PROFESSIONS
+        });
 
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
@@ -80,18 +91,16 @@ internal sealed class ProfessionMigrator(
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_PARTIES,
-                    Name = Constants.VOCABULARY_PROFESSION,
+                    VocabularyId = professionVocabularyId,
                     TermName = name,
-                    ParentNames = new List<string>(),
+                    ParentTermIds = new List<int>(),
                 }
             };
             if (topicName != null) {
                 vocabularyNames.Add(new VocabularyName {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = topicsVocabularyId,
                     TermName = topicName,
-                    ParentNames = new List<string>()
+                    ParentTermIds = new List<int>()
                 });
             }
 
@@ -178,10 +187,9 @@ internal sealed class ProfessionMigrator(
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_PARTIES,
-                    Name = Constants.VOCABULARY_PROFESSION,
+                    VocabularyId = professionVocabularyId,
                     TermName = "Senator",
-                    ParentNames = new List<string>(),
+                    ParentTermIds = new List<int>(),
                 }
             },
             HasConcreteSubtype = true,
@@ -225,10 +233,9 @@ internal sealed class ProfessionMigrator(
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_PARTIES,
-                    Name = Constants.VOCABULARY_PROFESSION,
+                    VocabularyId = professionVocabularyId,
                     TermName = "Representative",
-                    ParentNames = new List<string>(),
+                    ParentTermIds = new List<int>(),
                 }
             },
             HasConcreteSubtype = true,

@@ -58,10 +58,9 @@ internal sealed class ChildTraffickingCaseEditService(
             FileIdTileImage = null,
             VocabularyNames = new List<CreateModel.VocabularyName> {
                 new  CreateModel.VocabularyName {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = Constants.VOCABULARY_ID_TOPICS,
                     TermName = childTraffickingCase.Title,
-                    ParentNames = new List<string>(),
+                    ParentTermIds = new List<int>(),
                 }
             },
             NumberOfChildrenInvolved = childTraffickingCase.NumberOfChildrenInvolved,

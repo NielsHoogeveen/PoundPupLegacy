@@ -2,6 +2,8 @@
 
 internal sealed class DisruptedPlacementCaseMigrator(
     IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
     IEntityCreatorFactory<EventuallyIdentifiableDisruptedPlacementCase> disruptedPlacementCaseCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
@@ -10,9 +12,13 @@ internal sealed class DisruptedPlacementCaseMigrator(
     protected override async Task MigrateImpl()
     {
         await using var disruptedPlacementCaseCreator = await disruptedPlacementCaseCreatorFactory.CreateAsync(_postgresConnection);
-        await disruptedPlacementCaseCreator.CreateAsync(ReadDisruptedPlacementCases());
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var termIdReader = await termIdReaderFactory.CreateAsync(_postgresConnection);
+        await disruptedPlacementCaseCreator.CreateAsync(ReadDisruptedPlacementCases(nodeIdReader,termIdReader));
     }
-    private async IAsyncEnumerable<NewDisruptedPlacementCase> ReadDisruptedPlacementCases()
+    private async IAsyncEnumerable<NewDisruptedPlacementCase> ReadDisruptedPlacementCases(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader)
     {
 
         var sql = $"""
@@ -41,16 +47,25 @@ internal sealed class DisruptedPlacementCaseMigrator(
 
 
         var reader = await readCommand.ExecuteReaderAsync();
+        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
 
+        var parentTermIds = new List<int> {
+            await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                Name = "disrupted adoption",
+                VocabularyId = vocabularyId
+            })
+        };
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
             var vocabularyNames = new List<VocabularyName> {
                 new VocabularyName {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = name,
-                    ParentNames = new List<string>{ "disrupted adoption"},
+                    ParentTermIds = parentTermIds,
                 }
             };
             var country = new NewDisruptedPlacementCase {

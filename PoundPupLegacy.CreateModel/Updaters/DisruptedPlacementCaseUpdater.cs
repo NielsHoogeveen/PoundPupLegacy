@@ -1,6 +1,18 @@
 ﻿namespace PoundPupLegacy.CreateModel.Updaters;
 
 using Request = ImmediatelyIdentifiableDisruptedPlacementCase;
+internal sealed class DisruptedPlacementCaseChangerFactory(
+    IDatabaseUpdaterFactory<Request> databaseUpdaterFactory,
+    NodeDetailsChangerFactory nodeDetailsChangerFactory) : IEntityChangerFactory<Request>
+{
+    public async Task<IEntityChanger<Request>> CreateAsync(IDbConnection connection)
+    {
+        return new NodeChanger<Request>(
+            await databaseUpdaterFactory.CreateAsync(connection),
+            await nodeDetailsChangerFactory.CreateAsync(connection)
+        );
+    }
+}
 
 internal sealed class DisruptedPlacementCaseUpdaterFactory : DatabaseUpdaterFactory<Request>
 {

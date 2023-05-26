@@ -286,6 +286,11 @@ internal class MemberOfCongressMigrator(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
+        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
+
         var states = await GetStates().ToListAsync();
         var politicalPartyAffiliations = await GetPoliticalPartyAffiliations().ToListAsync();
 
@@ -354,7 +359,6 @@ internal class MemberOfCongressMigrator(
             readCommand.Parameters.Add("ballotpedia", NpgsqlTypes.NpgsqlDbType.Varchar);
             readCommand.Parameters.Add("date_of_birth", NpgsqlTypes.NpgsqlDbType.Timestamp);
             await readCommand.PrepareAsync();
-
 
             foreach (var memberOfCongress in _membersOfCongress) {
                 var id = await FindIdByGovtackId(memberOfCongress.id.govtrack, nodeIdReader);
@@ -604,10 +608,9 @@ internal class MemberOfCongressMigrator(
                     var title = memberOfCongress.name.official_full is null ? $"{memberOfCongress.name.first} {memberOfCongress.name.middle} {memberOfCongress.name.last} {memberOfCongress.name.suffix}".Replace("  ", " ") : memberOfCongress.name.official_full;
                     var vocabularyNames = new List<VocabularyName> {
                         new VocabularyName {
-                            OwnerId = Constants.OWNER_SYSTEM,
-                            Name = Constants.VOCABULARY_TOPICS,
+                            VocabularyId = vocabularyId,
                             TermName = title,
-                            ParentNames = new List<string>(),
+                            ParentTermIds = new List<int>(),
                         }
                     };
 

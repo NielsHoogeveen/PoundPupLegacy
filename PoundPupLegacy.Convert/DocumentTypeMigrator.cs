@@ -2,6 +2,7 @@
 
 internal sealed class DocumentTypeMigrator(
     IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IEntityCreatorFactory<EventuallyIdentifiableDocumentType> documentTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
@@ -10,9 +11,11 @@ internal sealed class DocumentTypeMigrator(
     protected override async Task MigrateImpl()
     {
         await using var documentTypeCreator = await documentTypeCreatorFactory.CreateAsync(_postgresConnection);
-        await documentTypeCreator.CreateAsync(ReadSelectionOptions());
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await documentTypeCreator.CreateAsync(ReadSelectionOptions(nodeIdReader));
     }
-    private async IAsyncEnumerable<NewDocumentType> ReadSelectionOptions()
+    private async IAsyncEnumerable<NewDocumentType> ReadSelectionOptions(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
         var sql = $"""
@@ -37,6 +40,10 @@ internal sealed class DocumentTypeMigrator(
         readCommand.CommandText = sql;
 
         var reader = await readCommand.ExecuteReaderAsync();
+        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_DOCUMENT_TYPE
+        });
 
         while (await reader.ReadAsync()) {
             var name = reader.GetString("title");
@@ -79,10 +86,9 @@ internal sealed class DocumentTypeMigrator(
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.OWNER_DOCUMENTATION,
-                        Name = Constants.VOCABULARY_DOCUMENT_TYPE,
+                        VocabularyId = vocabularyId,
                         TermName = name,
-                        ParentNames = new List<string>(),
+                        ParentTermIds = new List<int>(),
                     },
                 },
                 NodeTermIds = new List<int>(),

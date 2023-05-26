@@ -3,6 +3,7 @@
 internal sealed class ChildTraffickingCaseMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
         IEntityCreatorFactory<EventuallyIdentifiableChildTraffickingCase> childTraffickingCaseCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
@@ -11,11 +12,13 @@ internal sealed class ChildTraffickingCaseMigrator(
     protected override async Task MigrateImpl()
     {
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var termIdReader = await termIdReaderFactory.CreateAsync(_postgresConnection);
         await using var childTraffickingCaseCreator = await childTraffickingCaseCreatorFactory.CreateAsync(_postgresConnection);
-        await childTraffickingCaseCreator.CreateAsync(ReadChildTraffickingCases(nodeIdReader));
+        await childTraffickingCaseCreator.CreateAsync(ReadChildTraffickingCases(nodeIdReader,termIdReader));
     }
     private async IAsyncEnumerable<NewChildTraffickingCase> ReadChildTraffickingCases(
-        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader)
     {
         var sql = $"""
                 SELECT
@@ -45,6 +48,17 @@ internal sealed class ChildTraffickingCaseMigrator(
 
 
         var reader = await readCommand.ExecuteReaderAsync();
+        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
+
+        var parentTermIds = new List<int> {
+            await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                Name = "child trafficking",
+                VocabularyId = vocabularyId
+            })
+        };
 
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
@@ -52,10 +66,9 @@ internal sealed class ChildTraffickingCaseMigrator(
 
             var vocabularyNames = new List<VocabularyName> {
                 new VocabularyName {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = name,
-                    ParentNames = new List<string>{ "child trafficking" },
+                    ParentTermIds = parentTermIds,
                 }
             };
 

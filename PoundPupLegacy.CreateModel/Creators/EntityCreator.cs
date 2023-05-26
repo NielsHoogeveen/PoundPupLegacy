@@ -25,18 +25,14 @@ public class LocatableDetailsCreatorFactory(
 }
 public class NameableDetailsCreatorFactory(
     IDatabaseInserterFactory<Term> termInserterFactory,
-    IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, Term> termReaderFactory,
-    IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
-    IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderFactory
+    IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory
 )
 {
     public async Task<NameableDetailsCreator> CreateAsync(IDbConnection connection)
     {
         return new NameableDetailsCreator(
             await termInserterFactory.CreateAsync(connection),
-            await termReaderFactory.CreateAsync(connection),
-            await termHierarchyInserterFactory.CreateAsync(connection),
-            await vocabularyIdReaderFactory.CreateAsync(connection)
+            await termHierarchyInserterFactory.CreateAsync(connection)
         );
     }
 }
@@ -64,31 +60,21 @@ public class LocatableDetailsCreator(
 }
 public class NameableDetailsCreator(
     IDatabaseInserter<Term> termInserter,
-    IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, Term> termReader,
-    IDatabaseInserter<TermHierarchy> termHierarchyInserter,
-    IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReader
+    IDatabaseInserter<TermHierarchy> termHierarchyInserter
 ) : IAsyncDisposable
 {
     public async Task Process(EventuallyIdentifiableNameable nameable)
     {
         foreach (var vocabularyName in nameable.VocabularyNames) {
-            var vocubularyId = await vocabularyIdReader.ReadAsync(new VocabularyIdReaderByOwnerAndNameRequest {
-                OwnerId = vocabularyName.OwnerId,
-                Name = vocabularyName.Name
-            });
             var term = new Term {
                 Name = vocabularyName.TermName,
                 Id = null,
-                VocabularyId = vocubularyId,
+                VocabularyId = vocabularyName.VocabularyId,
                 NameableId = (int)nameable.Id!
             };
             await termInserter.InsertAsync(term);
-            foreach (var parent in vocabularyName.ParentNames) {
-                var parentTerm = await termReader.ReadAsync(new TermReaderByNameRequest {
-                    Name = parent,
-                    VocabularyId = vocubularyId
-                });
-                await termHierarchyInserter.InsertAsync(new TermHierarchy { TermIdPartent = parentTerm.Id!.Value, TermIdChild = (int)term.Id! });
+            foreach (var parent in vocabularyName.ParentTermIds) {
+                await termHierarchyInserter.InsertAsync(new TermHierarchy { TermIdPartent = parent, TermIdChild = (int)term.Id! });
             }
         }
     }
@@ -97,8 +83,6 @@ public class NameableDetailsCreator(
     {
         await termInserter.DisposeAsync();
         await termHierarchyInserter.DisposeAsync();
-        await termReader.DisposeAsync();
-        await vocabularyIdReader.DisposeAsync();
     }
 }
 public class CaseCreator<T>(

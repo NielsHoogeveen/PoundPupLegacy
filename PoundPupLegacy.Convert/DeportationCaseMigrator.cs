@@ -3,6 +3,7 @@
 internal sealed class DeportationCaseMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
     IEntityCreatorFactory<EventuallyIdentifiableDeportationCase> deportationCaseCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
@@ -11,11 +12,13 @@ internal sealed class DeportationCaseMigrator(
     protected override async Task MigrateImpl()
     {
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var termIdReader = await termIdReaderFactory.CreateAsync(_postgresConnection);
         await using var deportationCaseCreator = await deportationCaseCreatorFactory.CreateAsync(_postgresConnection);
-        await deportationCaseCreator.CreateAsync(ReadDeportationCases(nodeIdReader));
+        await deportationCaseCreator.CreateAsync(ReadDeportationCases(nodeIdReader,termIdReader));
     }
     private async IAsyncEnumerable<NewDeportationCase> ReadDeportationCases(
-        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader)
     {
 
         var sql = $"""
@@ -60,16 +63,25 @@ internal sealed class DeportationCaseMigrator(
 
 
         var reader = await readCommand.ExecuteReaderAsync();
+        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
+        var parentTermIds = new List<int> {
+            await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                Name = "adoptee deportation",
+                VocabularyId = vocabularyId
+            })
+        };
 
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
             var vocabularyNames = new List<VocabularyName> {
                 new VocabularyName {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = name,
-                    ParentNames = new List<string>{ "adoptee deportation"},
+                    ParentTermIds = parentTermIds,
                 }
             };
             var country = new NewDeportationCase {

@@ -2,6 +2,8 @@
 
 internal sealed class TypeOfAbuserMigrator(
     IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
     IEntityCreatorFactory<EventuallyIdentifiableTypeOfAbuser> typeOfAbuserCreatorFactory
 ) : MigratorPPL(databaseConnections)
@@ -12,9 +14,13 @@ internal sealed class TypeOfAbuserMigrator(
     {
         await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
         await using var typeOfAbuserCreator = await typeOfAbuserCreatorFactory.CreateAsync(_postgresConnection);
-        await typeOfAbuserCreator.CreateAsync(ReadTypesOfAbusers(fileIdReaderByTenantFileId));
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var termIdReader = await termIdReaderFactory.CreateAsync(_postgresConnection);
+        await typeOfAbuserCreator.CreateAsync(ReadTypesOfAbusers(nodeIdReader, termIdReader, fileIdReaderByTenantFileId));
     }
     private async IAsyncEnumerable<EventuallyIdentifiableTypeOfAbuser> ReadTypesOfAbusers(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId
     )
     {
@@ -77,6 +83,10 @@ internal sealed class TypeOfAbuserMigrator(
 
 
         var reader = await readCommand.ExecuteReaderAsync();
+        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
 
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
@@ -88,23 +98,24 @@ internal sealed class TypeOfAbuserMigrator(
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_CASES,
-                    Name = Constants.VOCABULARY_TYPE_OF_ABUSER,
+                    VocabularyId = vocabularyId,
                     TermName = name,
-                    ParentNames = new List<string>(),
+                    ParentTermIds = new List<int>(),
                 }
             };
             if (topicName != null) {
-                var lst = new List<string>();
+                var lst = new List<int>();
                 if (parentTopicName != null) {
-                    lst.Add(parentTopicName);
+                    lst.Add(await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                        Name = parentTopicName,
+                        VocabularyId = vocabularyId
+                    }));
                 }
 
                 vocabularyNames.Add(new VocabularyName {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = topicName,
-                    ParentNames = lst
+                    ParentTermIds = lst
                 });
             }
 

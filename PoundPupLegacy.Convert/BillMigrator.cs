@@ -3,6 +3,7 @@
 internal sealed class BillMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
         IEntityCreatorFactory<EventuallyIdentifiableHouseBill> houseBillCreatorFactory,
         IEntityCreatorFactory<EventuallyIdentifiableSenateBill> senateBillCreatorFactory
     ) : MigratorPPL(databaseConnections)
@@ -12,15 +13,16 @@ internal sealed class BillMigrator(
     protected override async Task MigrateImpl()
     {
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var termIdReader = await termIdReaderFactory.CreateAsync(_postgresConnection);
         await using var houseBillCreator = await houseBillCreatorFactory.CreateAsync(_postgresConnection);
         await using var senateBillCreator = await senateBillCreatorFactory.CreateAsync(_postgresConnection);
-        await houseBillCreator.CreateAsync(ReadHouseBills(nodeIdReader));
-        await senateBillCreator.CreateAsync(ReadSenateBills(nodeIdReader));
+        await houseBillCreator.CreateAsync(ReadHouseBills(nodeIdReader,termIdReader));
+        await senateBillCreator.CreateAsync(ReadSenateBills(nodeIdReader,termIdReader));
     }
 
     private async IAsyncEnumerable<NewHouseBill> ReadHouseBills(
-        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
-        )
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader)
     {
 
         var sql = $"""
@@ -130,6 +132,10 @@ internal sealed class BillMigrator(
         readCommand.CommandText = sql;
 
         var reader = await readCommand.ExecuteReaderAsync();
+        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
 
         while (await reader.ReadAsync()) {
 
@@ -145,19 +151,30 @@ internal sealed class BillMigrator(
                     .Where(x => !string.IsNullOrEmpty(x))
                     .ToList();
 
+                List<int> topicParentIds = new List<int>();
+                foreach (var topicParentName in topicParentNames) {
+                    topicParentIds.Add(await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                        Name = topicParentName,
+                        VocabularyId = vocabularyId
+                    }));
+                }
+
                 vocabularyNames.Add(new VocabularyName {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = topicName,
-                    ParentNames = topicParentNames,
+                    ParentTermIds = topicParentIds,
                 });
             }
             else {
                 vocabularyNames.Add(new VocabularyName {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = title,
-                    ParentNames = new List<string> { "US house bill" },
+                    ParentTermIds = new List<int> {
+                        await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                            Name = "US house bill" ,
+                            VocabularyId = vocabularyId
+                        })
+                    },
                 });
             }
 
@@ -197,8 +214,8 @@ internal sealed class BillMigrator(
         await reader.CloseAsync();
     }
     private async IAsyncEnumerable<NewSenateBill> ReadSenateBills(
-        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
-        )
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader)
     {
 
         var sql = $"""
@@ -308,6 +325,10 @@ internal sealed class BillMigrator(
         readCommand.CommandText = sql;
 
         var reader = await readCommand.ExecuteReaderAsync();
+        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
 
         while (await reader.ReadAsync()) {
 
@@ -323,23 +344,31 @@ internal sealed class BillMigrator(
                     .Split(',')
                     .Where(x => !string.IsNullOrEmpty(x))
                     .ToList();
-
+                List<int> topicParentIds = new List<int>();
+                foreach (var topicParentName in topicParentNames) {
+                    topicParentIds.Add(await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                        Name = topicParentName,
+                        VocabularyId = vocabularyId
+                    }));
+                }
                 vocabularyNames.Add(new VocabularyName {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = topicName,
-                    ParentNames = topicParentNames,
+                    ParentTermIds = topicParentIds,
                 });
             }
             else {
                 vocabularyNames.Add(new VocabularyName {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = title,
-                    ParentNames = new List<string> { "US senate bill" },
+                    ParentTermIds = new List<int> {
+                        await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                            Name = "US senate bill" ,
+                            VocabularyId = vocabularyId
+                        })
+                    },
                 });
             }
-
 
             yield return new NewSenateBill {
                 Id = null,

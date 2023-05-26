@@ -2,6 +2,8 @@
 
 internal sealed class WrongfulMedicationCaseMigrator(
     IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
     IEntityCreatorFactory<EventuallyIdentifiableWrongfulMedicationCase> wrongfulMedicationCaseCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
@@ -10,9 +12,14 @@ internal sealed class WrongfulMedicationCaseMigrator(
     protected override async Task MigrateImpl()
     {
         await using var wrongfulMedicationCaseCreator = await wrongfulMedicationCaseCreatorFactory.CreateAsync(_postgresConnection);
-        await wrongfulMedicationCaseCreator.CreateAsync(ReadWrongfulMedicationCases());
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var termIdReader = await termIdReaderFactory.CreateAsync(_postgresConnection);
+        await wrongfulMedicationCaseCreator.CreateAsync(ReadWrongfulMedicationCases(nodeIdReader,termIdReader));
     }
-    private async IAsyncEnumerable<NewWrongfulMedicationCase> ReadWrongfulMedicationCases()
+    private async IAsyncEnumerable<NewWrongfulMedicationCase> ReadWrongfulMedicationCases(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader
+    )
     {
 
         var sql = $"""
@@ -39,15 +46,24 @@ internal sealed class WrongfulMedicationCaseMigrator(
 
         var reader = await readCommand.ExecuteReaderAsync();
 
+        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
+        var parentTermIds = new List<int> {
+            await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                    Name = "overmedication in foster care",
+                    VocabularyId = vocabularyId
+                })
+        };
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var title = reader.GetString("title");
             var vocabularyNames = new List<VocabularyName> {
                 new VocabularyName {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = title,
-                    ParentNames = new List<string>{ "overmedication in foster care"},
+                    ParentTermIds = parentTermIds,
                 }
             };
 

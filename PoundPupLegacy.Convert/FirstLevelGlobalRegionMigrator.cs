@@ -1,10 +1,11 @@
 ﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class FirstLevelGlobalRegionMigrator(
-        IDatabaseConnections databaseConnections,
-        IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-        IEntityCreatorFactory<EventuallyIdentifiableFirstLevelGlobalRegion> firstLevelGlobalRegionCreatorFactory
-    ) : MigratorPPL(databaseConnections)
+    IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
+    IEntityCreatorFactory<EventuallyIdentifiableFirstLevelGlobalRegion> firstLevelGlobalRegionCreatorFactory
+) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "first level global regions";
 
@@ -12,10 +13,12 @@ internal sealed class FirstLevelGlobalRegionMigrator(
     {
         await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
         await using var firstLevelGlobalRegionCreator = await firstLevelGlobalRegionCreatorFactory.CreateAsync(_postgresConnection);
-        await firstLevelGlobalRegionCreator.CreateAsync(ReadFirstLevelGlobalRegions(fileIdReaderByTenantFileId));
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await firstLevelGlobalRegionCreator.CreateAsync(ReadFirstLevelGlobalRegions(nodeIdReader,fileIdReaderByTenantFileId));
     }
 
     private async IAsyncEnumerable<EventuallyIdentifiableFirstLevelGlobalRegion> ReadFirstLevelGlobalRegions(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)
     {
         var sql = $"""
@@ -45,6 +48,10 @@ internal sealed class FirstLevelGlobalRegionMigrator(
         readCommand.CommandText = sql;
 
         var reader = await readCommand.ExecuteReaderAsync();
+        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
 
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
@@ -54,10 +61,9 @@ internal sealed class FirstLevelGlobalRegionMigrator(
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = name,
-                    ParentNames = new List<string>(),
+                    ParentTermIds = new List<int>(),
                 }
             };
 

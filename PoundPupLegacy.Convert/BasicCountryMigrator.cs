@@ -3,6 +3,7 @@
 internal sealed class BasicCountryMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
     IEntityCreatorFactory<EventuallyIdentifiableBasicCountry> basicCountryCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
@@ -124,8 +125,13 @@ internal sealed class BasicCountryMigrator(
     }
 
     private async IAsyncEnumerable<EventuallyIdentifiableBasicCountry> GetBasicCountries(
-        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader)
     {
+        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
 
         yield return new NewBasicCountry {
             Id = null,
@@ -155,10 +161,14 @@ internal sealed class BasicCountryMigrator(
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = "Antigua and Barbuda",
-                    ParentNames = new List<string>{ "Caribbean" },
+                    ParentTermIds = new List<int>{
+                        await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                            Name = "Caribbean" ,
+                            VocabularyId = vocabularyId
+                        })
+                    },
                 },
             },
             SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
@@ -208,10 +218,14 @@ internal sealed class BasicCountryMigrator(
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = "Palestine",
-                    ParentNames = new List<string>{ "Western Asia" },
+                    ParentTermIds = new List<int>{
+                        await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                            Name = "Western Asia" ,
+                            VocabularyId = vocabularyId
+                        })
+                    },
                 },
             },
             SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
@@ -261,10 +275,14 @@ internal sealed class BasicCountryMigrator(
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = "Saint Helena, Ascension and Tristan da Cunha",
-                    ParentNames = new List<string>{ "Western Africa" },
+                    ParentTermIds = new List<int>{
+                        await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                            Name = "Western Africa" ,
+                            VocabularyId = vocabularyId
+                        })
+                    },
                 },
             },
             SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
@@ -314,10 +332,14 @@ internal sealed class BasicCountryMigrator(
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = "South Sudan",
-                    ParentNames = new List<string>{ "Eastern Africa" },
+                    ParentTermIds = new List<int>{
+                        await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                            Name = "Eastern Africa" ,
+                            VocabularyId = vocabularyId
+                        })
+                    },
                 },
             },
             SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
@@ -344,13 +366,15 @@ internal sealed class BasicCountryMigrator(
     protected override async Task MigrateImpl()
     {
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var termIdReader = await termIdReaderFactory.CreateAsync(_postgresConnection);
         await using var basicCountryCreator = await basicCountryCreatorFactory.CreateAsync(_postgresConnection);
-        await basicCountryCreator.CreateAsync(GetBasicCountries(nodeIdReader));
-        await basicCountryCreator.CreateAsync(ReadBasicCountries(nodeIdReader));
+        await basicCountryCreator.CreateAsync(GetBasicCountries(nodeIdReader,termIdReader));
+        await basicCountryCreator.CreateAsync(ReadBasicCountries(nodeIdReader,termIdReader));
     }
 
     private async IAsyncEnumerable<EventuallyIdentifiableBasicCountry> ReadBasicCountries(
-        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader)
     {
         var sql = $"""
                     SELECT
@@ -447,6 +471,10 @@ internal sealed class BasicCountryMigrator(
 
 
         var reader = await readCommand.ExecuteReaderAsync();
+        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
 
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
@@ -463,10 +491,14 @@ internal sealed class BasicCountryMigrator(
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = topicName,
-                    ParentNames = new List<string>{ regionName },
+                    ParentTermIds = new List<int>{
+                        await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                            Name = regionName,
+                            VocabularyId = vocabularyId
+                        })
+                    },
                 },
             };
             var country = new NewBasicCountry {

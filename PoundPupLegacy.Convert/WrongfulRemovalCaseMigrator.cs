@@ -2,7 +2,9 @@
 
 internal sealed class WrongfulRemovalCaseMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreatorFactory<EventuallyIdentifiableWrongfulRemovalCase> wrongfulRemovalCaseCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableWrongfulRemovalCase> wrongfulRemovalCaseCreatorFactory,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "wrongful removal case";
@@ -10,11 +12,15 @@ internal sealed class WrongfulRemovalCaseMigrator(
     protected override async Task MigrateImpl()
     {
         await using var wrongfulRemovalCaseCreator = await wrongfulRemovalCaseCreatorFactory.CreateAsync(_postgresConnection);
-        await wrongfulRemovalCaseCreator.CreateAsync(ReadWrongfulRemovalCases());
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var termIdReader = await termIdReaderFactory.CreateAsync(_postgresConnection);
+        await wrongfulRemovalCaseCreator.CreateAsync(ReadWrongfulRemovalCases(nodeIdReader, termIdReader));
     }
-    private async IAsyncEnumerable<EventuallyIdentifiableWrongfulRemovalCase> ReadWrongfulRemovalCases()
+    private async IAsyncEnumerable<EventuallyIdentifiableWrongfulRemovalCase> ReadWrongfulRemovalCases(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader
+    )
     {
-
         var sql = $"""
                 SELECT
                     n.nid id,
@@ -39,15 +45,24 @@ internal sealed class WrongfulRemovalCaseMigrator(
 
         var reader = await readCommand.ExecuteReaderAsync();
 
+        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
+
+        var parentTermIds = new List<int>{
+            await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+            Name = "wrongful removal",
+            VocabularyId = vocabularyId
+        })};
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var title = reader.GetString("title");
             var vocabularyNames = new List<VocabularyName> {
                 new VocabularyName {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = title,
-                    ParentNames = new List<string>{ "wrongful removal" },
+                    ParentTermIds = parentTermIds,
                 }
             };
 

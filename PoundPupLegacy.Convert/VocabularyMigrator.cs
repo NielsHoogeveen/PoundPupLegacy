@@ -29,7 +29,7 @@ internal sealed class VocabularyMigrator(
                         UrlPath = null,
                         NodeId = null,
                         SubgroupId = null,
-                        UrlId = Constants.CHILD_PLACEMENT_TYPE
+                        UrlId = Constants.VOCABULARY_ID_CHILD_PLACEMENT_TYPE
                     }
                 },
             NodeTypeId = 38,
@@ -55,7 +55,7 @@ internal sealed class VocabularyMigrator(
                         UrlPath = null,
                         NodeId = null,
                         SubgroupId = null,
-                        UrlId = Constants.TYPE_OF_ABUSE
+                        UrlId = Constants.VOCABULARY_ID_TYPE_OF_ABUSE
                     }
                 },
             NodeTypeId = 38,
@@ -81,7 +81,7 @@ internal sealed class VocabularyMigrator(
                         UrlPath = null,
                         NodeId = null,
                         SubgroupId = null,
-                        UrlId = Constants.TYPE_OF_ABUSER
+                        UrlId = Constants.VOCABULARY_ID_TYPE_OF_ABUSER
                     }
                 },
             NodeTypeId = 38,
@@ -107,7 +107,7 @@ internal sealed class VocabularyMigrator(
                         UrlPath = null,
                         NodeId = null,
                         SubgroupId = null,
-                        UrlId = Constants.FAMILY_SIZE
+                        UrlId = Constants.VOCABULARY_ID_FAMILY_SIZE
                     }
                 },
             NodeTypeId = 38,
@@ -133,7 +133,7 @@ internal sealed class VocabularyMigrator(
                         UrlPath = null,
                         NodeId = null,
                         SubgroupId = null,
-                        UrlId = Constants.BILL_ACTION
+                        UrlId = Constants.VOCABULARY_ID_BILL_ACTION
                     }
                 },
             NodeTypeId = 38,
@@ -159,7 +159,7 @@ internal sealed class VocabularyMigrator(
                         UrlPath = null,
                         NodeId = null,
                         SubgroupId = null,
-                        UrlId = Constants.ORGANIZATION_ACT_RELATION_TYPE
+                        UrlId = Constants.VOCABULARY_ID_ORGANIZATION_ACT_RELATION_TYPE
                     }
                 },
             NodeTypeId = 38,
@@ -185,7 +185,7 @@ internal sealed class VocabularyMigrator(
                         UrlPath = null,
                         NodeId = null,
                         SubgroupId = null,
-                        UrlId = Constants.SUBDIVISION_TYPE
+                        UrlId = Constants.VOCABULARY_ID_SUBDIVISION_TYPE
                     }
                 },
             NodeTypeId = 38,
@@ -211,7 +211,7 @@ internal sealed class VocabularyMigrator(
                         UrlPath = null,
                         NodeId = null,
                         SubgroupId = null,
-                        UrlId = Constants.UNITED_STATES_POLITICAL_PARTY_AFFILITION_TYPE
+                        UrlId = Constants.VOCABULARY_ID_UNITED_STATES_POLITICAL_PARTY_AFFILITION_TYPE
                     }
                 },
             NodeTypeId = 38,
@@ -237,7 +237,7 @@ internal sealed class VocabularyMigrator(
                         UrlPath = null,
                         NodeId = null,
                         SubgroupId = null,
-                        UrlId = Constants.CASE_PARTY_TYPE
+                        UrlId = Constants.VOCABULARY_ID_CASE_PARTY_TYPE
                     }
                 },
             NodeTypeId = 38,
@@ -249,7 +249,7 @@ internal sealed class VocabularyMigrator(
     private static string GetVocabularyName(int id, string name)
     {
         return id switch {
-            Constants.TOPICS => Constants.VOCABULARY_TOPICS,
+            Constants.VOCABULARY_ID_TOPICS => Constants.VOCABULARY_TOPICS,
             12622 => Constants.VOCABULARY_ORGANIZATION_TYPE,
             12637 => Constants.VOCABULARY_INTERORGANIZATIONAL_RELATION_TYPE,
             12652 => Constants.VOCABULARY_POLITICAL_ENTITY_RELATION_TYPE,
@@ -265,7 +265,7 @@ internal sealed class VocabularyMigrator(
     private static int GetOwner(int id)
     {
         return id switch {
-            Constants.TOPICS => Constants.OWNER_SYSTEM,
+            Constants.VOCABULARY_ID_TOPICS => Constants.OWNER_SYSTEM,
             3797 => Constants.OWNER_GEOGRAPHY,
             12622 => Constants.OWNER_PARTIES,
             12637 => Constants.OWNER_PARTIES,

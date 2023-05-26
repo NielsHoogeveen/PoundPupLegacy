@@ -21,11 +21,6 @@ public static class Constants
     public const int FOUR_TO_EIGHT = 112;
     public const int EIGHT_TO_TWELVE = 113;
     public const int MORE_THAN_TWELVE = 19392;
-    public const int CHILD_PLACEMENT_TYPE = 115;
-    public const int TYPE_OF_ABUSER = 116;
-    public const int FAMILY_SIZE = 117;
-    public const int BILL_ACTION = 124;
-    public const int ORGANIZATION_ACT_RELATION_TYPE = 126;
 
     public const int NON_LETHAL_PHYSICAL_ABUSE = 118;
     public const int LETHAL_PHYSICAL_ABUSE = 119;
@@ -53,27 +48,40 @@ public static class Constants
     public const int OTHER_FAMILY_MEMBER = 140;
     public const int OTHER_NON_FAMILY_MEMBER = 141;
     public const int UNDETERMINED = 142;
-    public const int TYPE_OF_ABUSE = 143;
+    
 
     public const int ADOPTION_IMPORT = 144;
     public const int ADOPTION_EXPORT = 145;
 
     public const int POPULAR_DEMOCRAT_PARTY = 146;
     public const int LIBERTARIAN_PARTY = 147;
-
     public const int POLITICAL_PARTY = 148;
 
-    public const int SUBDIVISION_TYPE = 149;
-    public const int UNITED_STATES_POLITICAL_PARTY_AFFILITION_TYPE = 150;
+    public const int VOCABULARY_ID_CHILD_PLACEMENT_TYPE = 115;
+    public const int VOCABULARY_ID_TYPE_OF_ABUSER = 116;
+    public const int VOCABULARY_ID_FAMILY_SIZE = 117;
+    public const int VOCABULARY_ID_BILL_ACTION = 124;
+    public const int VOCABULARY_ID_ORGANIZATION_ACT_RELATION_TYPE = 126;
+    public const int VOCABULARY_ID_TYPE_OF_ABUSE = 143;
+    public const int VOCABULARY_ID_SUBDIVISION_TYPE = 149;
+    public const int VOCABULARY_ID_UNITED_STATES_POLITICAL_PARTY_AFFILITION_TYPE = 150;
+    public const int VOCABULARY_ID_CASE_PARTY_TYPE = 156;
+    public const int VOCABULARY_ID_TOPICS = 4126;
+    public const int VOCABULARY_ID_ORGANIZATION_TYPE = 12622;
+    public const int VOCABULARY_ID_INTER_ORGANIZATIONAL_RELATION_TYPE = 12637;
+    public const int VOCABULARY_ID_POLITICAL_ENTITY_RELATION_TYPE = 12652;
+    public const int VOCABULARY_ID_PERSON_ORGANIZATION_RELATION_TYPE = 12663;
+    public const int VOCABULARY_ID_INTER_PERSONAL_RELATION_TYPE = 16900;
+    public const int VOCABULARY_ID_PROFESSIONS = 27213;
+    public const int VOCABULARY_ID_DENOMINATIONS = 39428;
+    public const int VOCABULARY_ID_HAGUE_STATUS = 41212;
+    public const int VOCABULARY_ID_DOCUMENT_TYPE = 42416;
 
     public const int DEMOCRAT = 151;
     public const int REPUBLICAN = 152;
     public const int INDEPENDENT = 153;
     public const int POPULAR_DEMOCRAT = 154;
     public const int LIBERTARIAN = 155;
-
-    public const int CASE_PARTY_TYPE = 156;
-
 
     public const int HOMESTUDY_CASE_TYPE = 157;
     public const int PLACEMENT_CASE_TYPE = 158;
@@ -83,7 +91,6 @@ public static class Constants
     public const int THERAPY_CASE_TYPE = 162;
     public const int AUTHORITIES_CASE_TYPE = 163;
 
-    public const int TOPICS = 4126;
 
     public const string POLITICAL_PARTY_NAME = "Political party";
 

@@ -1,9 +1,11 @@
-﻿namespace PoundPupLegacy.Convert;
+﻿using PoundPupLegacy.CreateModel;
+
+namespace PoundPupLegacy.Convert;
 
 internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
+    IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
     IEntityCreatorFactory<EventuallyIdentifiableCountryAndFirstAndSecondLevelSubdivision> countryAndFirstAndSecondLevelSubdivisionCreatorFactory
 ) : CountryMigrator(databaseConnections)
@@ -12,16 +14,20 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
 
     private async IAsyncEnumerable<NewCountryAndFirstAndSecondLevelSubdivision> GetRegionSubdivisionCountries(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReader,
+        IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
         IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, CreateModel.Term> termReaderByName
     )
     {
-        var vocabularyId = await vocabularyIdReader.ReadAsync(new VocabularyIdReaderByOwnerAndNameRequest {
-            OwnerId = Constants.OWNER_GEOGRAPHY,
-            Name = "Subdivision type"
+        var vocabularyIdSubdivisionTypes = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_SUBDIVISION_TYPE,
+        });
+        var vocabularyIdTopics = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
         });
         var subdivisionTypeId = (await termReaderByName.ReadAsync(new TermReaderByNameRequest {
-            VocabularyId = vocabularyId,
+            VocabularyId = vocabularyIdSubdivisionTypes,
             Name = "Overseas collectivity"
         }))!.NameableId;
 
@@ -63,10 +69,14 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyIdTopics,
                     TermName = "Saint Barthélemy",
-                    ParentNames = new List<string> { "Caribbean" },
+                    ParentTermIds = new List<int> {
+                        await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                            Name = "Caribbean",
+                            VocabularyId = vocabularyIdTopics
+                        })
+                    },
                 },
             },
             SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
@@ -132,10 +142,14 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.OWNER_SYSTEM,
-                        Name = Constants.VOCABULARY_TOPICS,
+                        VocabularyId = vocabularyIdTopics,
                         TermName = "Saint Martin",
-                        ParentNames = new List<string>{ "Caribbean" },
+                        ParentTermIds = new List<int>{
+                            await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                                Name = "Caribbean",
+                                VocabularyId = vocabularyIdTopics
+                            })
+                        },
                     },
                 },
             SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
@@ -201,10 +215,14 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.OWNER_SYSTEM,
-                        Name = Constants.VOCABULARY_TOPICS,
+                        VocabularyId = vocabularyIdTopics,
                         TermName = "French Southern Territories",
-                        ParentNames = new List<string>{ "Southern Africa" },
+                        ParentTermIds = new List<int>{
+                            await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                                Name = "Southern Africa",
+                                VocabularyId = vocabularyIdTopics
+                            })
+                        },
                     },
                 },
             SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
@@ -237,35 +255,38 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
     protected override async Task MigrateImpl()
     {
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await using var vocabularyIdReader = await vocabularyIdReaderByOwnerAndNameFactory.CreateAsync(_postgresConnection);
+        await using var termIdReader = await termIdReaderFactory.CreateAsync(_postgresConnection);
         await using var termReaderByName = await termReaderByNameFactory.CreateAsync(_postgresConnection);
-
         await using var countryAndFirstAndSecondLevelSubdivisionCreator = await countryAndFirstAndSecondLevelSubdivisionCreatorFactory.CreateAsync(_postgresConnection);
         await countryAndFirstAndSecondLevelSubdivisionCreator.CreateAsync(GetRegionSubdivisionCountries(
             nodeIdReader,
-            vocabularyIdReader,
+            termIdReader,
             termReaderByName
         ));
         await countryAndFirstAndSecondLevelSubdivisionCreator.CreateAsync(ReadCountryAndFirstAndSecondLevelSubdivision(
             nodeIdReader,
-            vocabularyIdReader,
+            termIdReader,
             termReaderByName
         ));
     }
     private async IAsyncEnumerable<NewCountryAndFirstAndSecondLevelSubdivision> ReadCountryAndFirstAndSecondLevelSubdivision(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReader,
+        IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
         IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, CreateModel.Term> termReaderByName
         )
     {
 
-        var vocabularyId = await vocabularyIdReader.ReadAsync(new VocabularyIdReaderByOwnerAndNameRequest {
-            OwnerId = Constants.OWNER_GEOGRAPHY,
-            Name = "Subdivision type"
+        var vocabularyIdSubdivisionTypes = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_SUBDIVISION_TYPE,
+        });
+        var vocabularyIdTopics = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
         });
         var subdivisionTypeId = (await termReaderByName.ReadAsync(new TermReaderByNameRequest {
             Name = "Overseas collectivity",
-            VocabularyId = vocabularyId
+            VocabularyId = vocabularyIdSubdivisionTypes
         })).NameableId;
 
         var sql = $"""
@@ -316,10 +337,14 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyIdTopics,
                     TermName = name,
-                    ParentNames = new List<string>{ regionName },
+                    ParentTermIds = new List<int>{
+                        await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                            Name = regionName ,
+                            VocabularyId = vocabularyIdTopics
+                        })
+                    },
                 },
             };
 

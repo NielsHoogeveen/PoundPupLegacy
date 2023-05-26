@@ -1,24 +1,27 @@
 ﻿namespace PoundPupLegacy.CreateModel.Updaters;
 
 using PoundPupLegacy.Common;
+using System.Data;
+using System.Threading.Tasks;
 using Request = ImmediatelyIdentifiableAbuseCase;
 
-
-internal sealed class AbuseCaseUpdater(
-    IDatabaseUpdaterFactory<Request> abuseCaseUpdaterFactory,
-    IDatabaseUpdaterFactory<ImmediatelyIdentifiableTenantNode> tenantNodeUpdater,
-    IDatabaseDeleterFactory<ImmediatelyIdentifiableTenantNode> tenantNodeDeleter,
-    IDatabaseInserterFactory<NewTenantNodeForExistingNode> tenantNodeInserter,
-    IDatabaseInserterFactory<NodeTerm> nodeTermInserter,
-    IDatabaseDeleterFactory<NodeTerm> nodeTermDeleter
-    ) : EntityUpdater<Request>(tenantNodeUpdater, tenantNodeDeleter, tenantNodeInserter, nodeTermInserter, nodeTermDeleter)
+internal sealed class AbuseCaseChangerFactory(
+    IDatabaseUpdaterFactory<Request> databaseUpdaterFactory,
+    NodeDetailsChangerFactory nodeDetailsChangerFactory) : IEntityChangerFactory<Request>
 {
-    
-    protected override async Task UpdateEntityAsync(Request request, IDbConnection connection)
+    public async Task<IEntityChanger<Request>> CreateAsync(IDbConnection connection)
     {
-        var updater = await abuseCaseUpdaterFactory.CreateAsync(connection);
-        await updater.UpdateAsync(request);
+        return new AbuseCaseChanger(
+            await databaseUpdaterFactory.CreateAsync(connection),
+            await nodeDetailsChangerFactory.CreateAsync(connection)
+        );
     }
+}
+internal sealed class AbuseCaseChanger(
+    IDatabaseUpdater<Request> databaseUpdater,
+    NodeDetailsChanger nodeDetailsChanger
+    ) : NodeChanger<Request>(databaseUpdater, nodeDetailsChanger)
+{
 }
 internal sealed class AbuseCaseUpdaterFactory : DatabaseUpdaterFactory<Request>
 {

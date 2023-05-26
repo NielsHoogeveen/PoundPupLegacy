@@ -2,6 +2,7 @@
 
 internal sealed class DenominationMigrator(
     IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
     IEntityCreatorFactory<EventuallyIdentifiableDenomination> denominationCreatorFactory
 ) : MigratorPPL(databaseConnections)
@@ -12,9 +13,11 @@ internal sealed class DenominationMigrator(
     {
         await using var fileIdReaderByTenantFileId = await fileIdReaderByTenantFileIdFactory.CreateAsync(_postgresConnection);
         await using var denominationCreator = await denominationCreatorFactory.CreateAsync(_postgresConnection);
-        await denominationCreator.CreateAsync(ReadDenominations(fileIdReaderByTenantFileId));
+        await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await denominationCreator.CreateAsync(ReadDenominations(nodeIdReader, fileIdReaderByTenantFileId));
     }
     private async IAsyncEnumerable<NewDenomination> ReadDenominations(
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)
     {
         var sql = $"""
@@ -62,6 +65,15 @@ internal sealed class DenominationMigrator(
         readCommand.CommandText = sql;
 
         var reader = await readCommand.ExecuteReaderAsync();
+        var vocabularyIdTopics = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
+
+        var vocabularyIdDenomination = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_DENOMINATIONS
+        });
 
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
@@ -72,18 +84,16 @@ internal sealed class DenominationMigrator(
             {
                 new VocabularyName
                 {
-                    OwnerId = Constants.OWNER_PARTIES,
-                    Name = Constants.VOCABULARY_DENOMINATION,
+                    VocabularyId =vocabularyIdDenomination,
                     TermName = name,
-                    ParentNames = new List<string>(),
+                    ParentTermIds = new List<int>(),
                 }
             };
             if (topicName != null) {
                 vocabularyNames.Add(new VocabularyName {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyIdTopics,
                     TermName = topicName,
-                    ParentNames = new List<string>()
+                    ParentTermIds = new List<int>()
                 });
             }
 

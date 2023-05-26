@@ -3,6 +3,7 @@
 internal sealed class BindingCountryMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
         IEntityCreatorFactory<EventuallyIdentifiableBindingCountry> bindingCountryCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
@@ -11,11 +12,13 @@ internal sealed class BindingCountryMigrator(
     protected override async Task MigrateImpl()
     {
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var termIdReader = await termIdReaderFactory.CreateAsync(_postgresConnection);
         await using var bindingCountryCreator = await bindingCountryCreatorFactory.CreateAsync(_postgresConnection);
-        await bindingCountryCreator.CreateAsync(ReadBindingCountries(nodeIdReader));
+        await bindingCountryCreator.CreateAsync(ReadBindingCountries(nodeIdReader, termIdReader));
     }
     private async IAsyncEnumerable<NewBindingCountry> ReadBindingCountries(
-        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
+        IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader)
     {
         var sql = $"""
                 SELECT
@@ -47,6 +50,10 @@ internal sealed class BindingCountryMigrator(
 
 
         var reader = await readCommand.ExecuteReaderAsync();
+        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
 
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
@@ -57,10 +64,14 @@ internal sealed class BindingCountryMigrator(
                 {
                     new VocabularyName
                     {
-                        OwnerId = Constants.OWNER_SYSTEM,
-                        Name = Constants.VOCABULARY_TOPICS,
+                        VocabularyId = vocabularyId,
                         TermName = name,
-                        ParentNames = new List<string>{ regionName},
+                        ParentTermIds = new List<int>{
+                            await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                                Name = regionName,
+                                VocabularyId = vocabularyId
+                            })
+                        },
                     },
                 };
 

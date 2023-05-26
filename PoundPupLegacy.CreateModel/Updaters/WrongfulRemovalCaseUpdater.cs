@@ -1,6 +1,18 @@
 ﻿namespace PoundPupLegacy.CreateModel.Updaters;
 
 using Request = ImmediatelyIdentifiableWrongfulRemovalCase;
+internal sealed class WrongfulRemovalCaseChangerFactory(
+    IDatabaseUpdaterFactory<Request> databaseUpdaterFactory,
+    NodeDetailsChangerFactory nodeDetailsChangerFactory) : IEntityChangerFactory<Request>
+{
+    public async Task<IEntityChanger<Request>> CreateAsync(IDbConnection connection)
+    {
+        return new NodeChanger<Request>(
+            await databaseUpdaterFactory.CreateAsync(connection),
+            await nodeDetailsChangerFactory.CreateAsync(connection)
+        );
+    }
+}
 
 internal sealed class WrongfulRemovalCaseUpdaterFactory : DatabaseUpdaterFactory<Request>
 {

@@ -6,7 +6,7 @@ internal sealed class OrganizationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReaderByUrlIdFactory,
-    ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
+    IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameableIdRequest, int> termIdReaderByNameableIdFactory,
     IEntityCreatorFactory<EventuallyIdentifiableOrganization> organizationCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
@@ -19,14 +19,14 @@ internal sealed class OrganizationMigratorCPCT(
     protected override async Task MigrateImpl()
     {
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await using var termReaderByNameableId = await termReaderByNameableIdFactory.CreateAsync(_postgresConnection);
+        await using var termIdReaderByNameableId = await termIdReaderByNameableIdFactory.CreateAsync(_postgresConnection);
         await using var organizationCreator = await organizationCreatorFactory.CreateAsync(_postgresConnection);
-        await organizationCreator.CreateAsync(ReadOrganizations(nodeIdReader, termReaderByNameableId));
+        await organizationCreator.CreateAsync(ReadOrganizations(nodeIdReader, termIdReaderByNameableId));
     }
 
     private async IAsyncEnumerable<NewBasicOrganization> ReadOrganizations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        ISingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId
+        IMandatorySingleItemDatabaseReader<TermIdReaderByNameableIdRequest, int> termIdReaderByNameableId
     )
     {
 
@@ -190,6 +190,10 @@ internal sealed class OrganizationMigratorCPCT(
             TenantId = Constants.PPL,
             UrlId = 12634
         });
+        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
 
         while (await reader.ReadAsync()) {
             var name = reader.GetString("title");
@@ -206,23 +210,20 @@ internal sealed class OrganizationMigratorCPCT(
                 });
                 organizationOrganizationTypeIds.Add(organizationTypeId);
             }
-            async IAsyncEnumerable<string> GetTermNamesForOrganizationsTypes(IEnumerable<int> organizationTypeIds)
+            async IAsyncEnumerable<int> GetTermNamesForOrganizationsTypes(IEnumerable<int> organizationTypeIds)
             {
                 foreach (var organizationTypeId in organizationTypeIds) {
-                    var res = await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
+                    yield return await termIdReaderByNameableId.ReadAsync(new TermIdReaderByNameableIdRequest {
                         NameableId = organizationTypeId,
-                        OwnerId = Constants.OWNER_SYSTEM,
-                        VocabularyName = Constants.VOCABULARY_TOPICS
+                        VocabularyId = vocabularyId
                     });
-                    yield return res!.Name;
                 }
             }
             var vocabularyNames = new List<VocabularyName> {
                 new VocabularyName {
-                    OwnerId = Constants.OWNER_SYSTEM,
-                    Name = Constants.VOCABULARY_TOPICS,
+                    VocabularyId = vocabularyId,
                     TermName = name,
-                    ParentNames = await GetTermNamesForOrganizationsTypes(organizationOrganizationTypeIds).ToListAsync(),
+                    ParentTermIds = await GetTermNamesForOrganizationsTypes(organizationOrganizationTypeIds).ToListAsync(),
                 }
             };
 

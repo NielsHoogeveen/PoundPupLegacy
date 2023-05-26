@@ -282,7 +282,7 @@ internal sealed class UserMigrator(
                         UrlPath = null,
                         NodeId = null,
                         SubgroupId = null,
-                        UrlId = Constants.TOPICS
+                        UrlId = Constants.VOCABULARY_ID_TOPICS
                     },
                     new NewTenantNodeForNewNode
                     {
@@ -292,7 +292,7 @@ internal sealed class UserMigrator(
                         UrlPath = null,
                         NodeId = null,
                         SubgroupId = null,
-                        UrlId = Constants.TOPICS
+                        UrlId = Constants.VOCABULARY_ID_TOPICS
                     }
 
                 },
