@@ -87,7 +87,12 @@ internal sealed class TypeOfAbuseMigrator(
 
 
         var reader = await readCommand.ExecuteReaderAsync();
-        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+        var vocabularyIdTypeOfAbuse = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TYPE_OF_ABUSE
+        });
+
+        var vocabularyIdTopics = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
             TenantId = Constants.PPL,
             UrlId = Constants.VOCABULARY_ID_TOPICS
         });
@@ -102,8 +107,8 @@ internal sealed class TypeOfAbuseMigrator(
             var vocabularyNames = new List<VocabularyName>
             {
                 new VocabularyName
-                {
-                    VocabularyId = vocabularyId,
+                { 
+                    VocabularyId = vocabularyIdTypeOfAbuse,
                     TermName = name,
                     ParentTermIds = new List<int>(),
                 }
@@ -113,17 +118,17 @@ internal sealed class TypeOfAbuseMigrator(
                 if (firstParentTopicName != null) {
                     lst.Add(await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
                         Name = firstParentTopicName,
-                        VocabularyId = vocabularyId
+                        VocabularyId = vocabularyIdTopics
                     }));
                 }
                 if (secondParentTopicName != null) {
                     lst.Add(await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
                         Name = secondParentTopicName,
-                        VocabularyId = vocabularyId
+                        VocabularyId = vocabularyIdTopics
                     }));
                 }
                 vocabularyNames.Add(new VocabularyName {
-                    VocabularyId = vocabularyId,
+                    VocabularyId = vocabularyIdTopics,
                     TermName = topicName,
                     ParentTermIds = lst
                 });

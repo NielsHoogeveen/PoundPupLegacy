@@ -98,7 +98,7 @@ internal sealed class SubdivisionTypeMigrator(
         };
         var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
             TenantId = Constants.PPL,
-            UrlId = Constants.VOCABULARY_ID_TOPICS
+            UrlId = Constants.VOCABULARY_ID_SUBDIVISION_TYPE
         });
 
         foreach (var name in names) {

@@ -83,7 +83,11 @@ internal sealed class TypeOfAbuserMigrator(
 
 
         var reader = await readCommand.ExecuteReaderAsync();
-        var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+        var vocabularyIdTypeOfAbuser = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TYPE_OF_ABUSER,
+        });
+        var vocabularyIdTopics = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
             TenantId = Constants.PPL,
             UrlId = Constants.VOCABULARY_ID_TOPICS
         });
@@ -98,7 +102,7 @@ internal sealed class TypeOfAbuserMigrator(
             {
                 new VocabularyName
                 {
-                    VocabularyId = vocabularyId,
+                    VocabularyId = vocabularyIdTypeOfAbuser,
                     TermName = name,
                     ParentTermIds = new List<int>(),
                 }
@@ -108,12 +112,12 @@ internal sealed class TypeOfAbuserMigrator(
                 if (parentTopicName != null) {
                     lst.Add(await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
                         Name = parentTopicName,
-                        VocabularyId = vocabularyId
+                        VocabularyId = vocabularyIdTopics
                     }));
                 }
 
                 vocabularyNames.Add(new VocabularyName {
-                    VocabularyId = vocabularyId,
+                    VocabularyId = vocabularyIdTopics,
                     TermName = topicName,
                     ParentTermIds = lst
                 });

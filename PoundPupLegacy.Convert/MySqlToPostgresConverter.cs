@@ -8,7 +8,6 @@ internal partial class MySqlToPostgresConverter
 
     public async Task Convert()
     {
-
         await TruncateDatabase();
         await _serviceProvider.Migrate<AuthoringStatusMigrator>();
         await _serviceProvider.Migrate<PollStatusMigrator>();

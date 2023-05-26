@@ -18,7 +18,7 @@ internal sealed class TermIdReaderByNameableIdFactory : MandatorySingleItemDatab
 
     const string SQL = """
         SELECT 
-            id, 
+            id
         FROM term t
         WHERE nameable_id = @nameable_id and vocabulary_id = @vocabulary_id
         """;
