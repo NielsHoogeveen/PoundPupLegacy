@@ -9,7 +9,7 @@ internal sealed class WrongfulRemovalCaseCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableCase> caseInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableWrongfulRemovalCase> wrongfulRemovalCaseInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    NameableDetailsCreatorFactory nameableDetailsCreatorFactory,
+    TermCreatorFactory nameableDetailsCreatorFactory,
     LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
     IEntityCreatorFactory<ExistingCaseNewCaseParties> caseCaseTypeCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableWrongfulRemovalCase>

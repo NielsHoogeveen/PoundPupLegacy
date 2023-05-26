@@ -3,7 +3,7 @@
 internal sealed class InterPersonalRelationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReaderByUrlIdFactory,
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForExistingNode> tenantNodeReaderByUrlIdFactory,
     IEntityCreatorFactory<EventuallyIdentifiableInterPersonalRelationForExistingParticipants> interPersonalRelationCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
@@ -24,7 +24,7 @@ internal sealed class InterPersonalRelationMigratorCPCT(
 
     private async IAsyncEnumerable<NewInterPersonalRelationForExistingParticipants> ReadInterPersonalRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReaderByUrlId
+        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, NewTenantNodeForExistingNode> tenantNodeReaderByUrlId
     )
     {
 
@@ -100,7 +100,6 @@ internal sealed class InterPersonalRelationMigratorCPCT(
                     TenantId = Constants.CPCT,
                     PublicationStatusId = reader.GetInt32("status"),
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = id
                 }
@@ -111,7 +110,6 @@ internal sealed class InterPersonalRelationMigratorCPCT(
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = null
                 });

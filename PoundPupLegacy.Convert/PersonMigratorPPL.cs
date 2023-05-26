@@ -206,10 +206,10 @@ internal sealed class PersonMigratorPPL(
                 _ => reader.GetString("title")
             };
             var topicName = reader.IsDBNull("topic_name") ? null : reader.GetString("topic_name");
-            var vocabularyNames = new List<VocabularyName> {
-                new VocabularyName {
+            var vocabularyNames = new List<NewTermForNewNameble> {
+                new NewTermForNewNameble {
                     VocabularyId = vocabularyId,
-                    TermName = title,
+                    Name = title,
                     ParentTermIds = new List<int>(),
                 }
             };
@@ -230,7 +230,6 @@ internal sealed class PersonMigratorPPL(
                         TenantId = Constants.PPL,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
                         UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id
                     },
@@ -240,7 +239,6 @@ internal sealed class PersonMigratorPPL(
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id < 33163 ? id : null
                     }
@@ -248,7 +246,7 @@ internal sealed class PersonMigratorPPL(
                 NodeTypeId = reader.GetInt16("node_type_id"),
                 Description = "",
                 FileIdTileImage = null,
-                VocabularyNames = vocabularyNames,
+                Terms = vocabularyNames,
                 DateOfBirth = GetDateOfBirth(reader.GetInt32("id"), reader.IsDBNull("date_of_birth") ? null : reader.GetDateTime("date_of_birth")),
                 DateOfDeath = GetDateOfDeath(reader.GetInt32("id"), reader.IsDBNull("date_of_death") ? null : reader.GetDateTime("date_of_death")),
                 FileIdPortrait = reader.IsDBNull("file_id_portrait")

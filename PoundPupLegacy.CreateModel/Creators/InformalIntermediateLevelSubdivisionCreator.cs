@@ -11,7 +11,7 @@ internal sealed class InformalIntermediateLevelSubdivisionCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableIntermediateLevelSubdivision> intermediateLevelSubdivisionInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableInformalIntermediateLevelSubdivision> informalIntermediateLevelSubdivisionInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    NameableDetailsCreatorFactory nameableDetailsCreatorFactory
+    TermCreatorFactory nameableDetailsCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableInformalIntermediateLevelSubdivision>
 {
     public async Task<IEntityCreator<EventuallyIdentifiableInformalIntermediateLevelSubdivision>> CreateAsync(IDbConnection connection) =>

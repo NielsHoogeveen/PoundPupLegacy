@@ -6,7 +6,7 @@ internal sealed class CasePartyTypeCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableCasePartyType> casePartyTypeInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    NameableDetailsCreatorFactory nameableDetailsCreatorFactory
+    TermCreatorFactory nameableDetailsCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableCasePartyType>
 {
     public async Task<IEntityCreator<EventuallyIdentifiableCasePartyType>> CreateAsync(IDbConnection connection) =>

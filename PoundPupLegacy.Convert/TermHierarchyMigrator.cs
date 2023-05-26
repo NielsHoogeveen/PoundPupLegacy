@@ -3,7 +3,7 @@
 internal sealed class TermHierarchyMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
-        ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
+        ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, ImmediatelyIdentifiableTerm> termReaderByNameableIdFactory,
         IEntityCreatorFactory<TermHierarchy> termHierarchyCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
@@ -18,9 +18,13 @@ internal sealed class TermHierarchyMigrator(
     }
     private async IAsyncEnumerable<TermHierarchy> ReadTermHierarchys(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        ISingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId
+        ISingleItemDatabaseReader<TermReaderByNameableIdRequest, ImmediatelyIdentifiableTerm> termReaderByNameableId
     )
     {
+        var vocabularyIdTopics = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
 
         var sql = $"""
                 SELECT
@@ -150,20 +154,18 @@ internal sealed class TermHierarchyMigrator(
                 UrlId = parentUrlId
             });
             var termIdChild = await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
-                OwnerId = Constants.OWNER_SYSTEM,
-                VocabularyName = Constants.VOCABULARY_TOPICS,
+                VocabularyId = vocabularyIdTopics,
                 NameableId = nodeIdChild
             });
             var termIdParent = await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
-                OwnerId = Constants.OWNER_SYSTEM,
-                VocabularyName = Constants.VOCABULARY_TOPICS,
+                VocabularyId = vocabularyIdTopics,
                 NameableId = nodeIdParent
             });
             if (termIdChild is not null && termIdParent is not null) {
                 return new TermHierarchy {
 
-                    TermIdChild = termIdChild.Id!.Value,
-                    TermIdPartent = termIdParent.Id!.Value,
+                    TermIdChild = termIdChild.Id,
+                    TermIdPartent = termIdParent.Id,
                 };
             }
             else {

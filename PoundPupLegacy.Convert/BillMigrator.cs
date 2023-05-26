@@ -139,7 +139,7 @@ internal sealed class BillMigrator(
 
         while (await reader.ReadAsync()) {
 
-            var vocabularyNames = new List<VocabularyName>();
+            var vocabularyNames = new List<NewTermForNewNameble>();
 
             var id = reader.GetInt32("id");
             var title = reader.GetString("title");
@@ -159,16 +159,16 @@ internal sealed class BillMigrator(
                     }));
                 }
 
-                vocabularyNames.Add(new VocabularyName {
+                vocabularyNames.Add(new NewTermForNewNameble {
                     VocabularyId = vocabularyId,
-                    TermName = topicName,
+                    Name = topicName,
                     ParentTermIds = topicParentIds,
                 });
             }
             else {
-                vocabularyNames.Add(new VocabularyName {
+                vocabularyNames.Add(new NewTermForNewNameble {
                     VocabularyId = vocabularyId,
-                    TermName = title,
+                    Name = title,
                     ParentTermIds = new List<int> {
                         await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
                             Name = "US house bill" ,
@@ -194,14 +194,13 @@ internal sealed class BillMigrator(
                         TenantId = 1,
                         PublicationStatusId = reader.GetInt32("status"),
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id
                     }
                 },
                 NodeTypeId = 56,
                 Description = reader.GetString("description"),
-                VocabularyNames = vocabularyNames,
+                Terms = vocabularyNames,
                 FileIdTileImage = null,
                 IntroductionDate = reader.IsDBNull("introduction_date") ? null : reader.GetDateTime("introduction_date"),
                 ActId = reader.IsDBNull("act_id") ? null : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
@@ -332,7 +331,7 @@ internal sealed class BillMigrator(
 
         while (await reader.ReadAsync()) {
 
-            var vocabularyNames = new List<VocabularyName>();
+            var vocabularyNames = new List<NewTermForNewNameble>();
 
             var id = reader.GetInt32("id");
             var title = reader.GetString("title");
@@ -351,16 +350,16 @@ internal sealed class BillMigrator(
                         VocabularyId = vocabularyId
                     }));
                 }
-                vocabularyNames.Add(new VocabularyName {
+                vocabularyNames.Add(new NewTermForNewNameble {
                     VocabularyId = vocabularyId,
-                    TermName = topicName,
+                    Name = topicName,
                     ParentTermIds = topicParentIds,
                 });
             }
             else {
-                vocabularyNames.Add(new VocabularyName {
+                vocabularyNames.Add(new NewTermForNewNameble {
                     VocabularyId = vocabularyId,
-                    TermName = title,
+                    Name = title,
                     ParentTermIds = new List<int> {
                         await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
                             Name = "US senate bill" ,
@@ -386,14 +385,13 @@ internal sealed class BillMigrator(
                         TenantId = 1,
                         PublicationStatusId = reader.GetInt32("status"),
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id
                     }
                 },
                 NodeTypeId = 57,
                 Description = reader.GetString("description"),
-                VocabularyNames = vocabularyNames,
+                Terms = vocabularyNames,
                 FileIdTileImage = null,
                 IntroductionDate = reader.IsDBNull("introduction_date") ? null : reader.GetDateTime("introduction_date"),
                 ActId = reader.IsDBNull("act_id") ? null : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {

@@ -6,7 +6,7 @@ internal sealed class ProfessionCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableProfession> professionInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    NameableDetailsCreatorFactory nameableDetailsCreatorFactory
+    TermCreatorFactory nameableDetailsCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableProfession>
 {
     public async Task<IEntityCreator<EventuallyIdentifiableProfession>> CreateAsync(IDbConnection connection) => 

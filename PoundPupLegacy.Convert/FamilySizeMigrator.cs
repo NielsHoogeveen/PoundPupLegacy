@@ -38,7 +38,6 @@ internal sealed class FamilySizeMigrator(
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.ONE_TO_FOUR
                 },
@@ -48,7 +47,6 @@ internal sealed class FamilySizeMigrator(
                     TenantId = Constants.CPCT,
                     PublicationStatusId = 2,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.ONE_TO_FOUR
                 }
@@ -56,12 +54,12 @@ internal sealed class FamilySizeMigrator(
             NodeTypeId = 28,
             Description = "",
             FileIdTileImage = null,
-            VocabularyNames = new List<VocabularyName>
+            Terms = new List<NewTermForNewNameble>
             {
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyIdFamilySize,
-                    TermName = "1 to 4",
+                    Name = "1 to 4",
                     ParentTermIds = new List<int>(),
                 },
             },
@@ -83,7 +81,6 @@ internal sealed class FamilySizeMigrator(
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.FOUR_TO_EIGHT
                 },
@@ -93,7 +90,6 @@ internal sealed class FamilySizeMigrator(
                     TenantId = Constants.CPCT,
                     PublicationStatusId = 2,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.FOUR_TO_EIGHT
                 }
@@ -101,12 +97,12 @@ internal sealed class FamilySizeMigrator(
             NodeTypeId = 28,
             Description = "",
             FileIdTileImage = null,
-            VocabularyNames = new List<VocabularyName>
+            Terms = new List<NewTermForNewNameble>
             {
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyIdFamilySize,
-                    TermName = "4 to 8",
+                    Name = "4 to 8",
                     ParentTermIds = new List<int>(),
                 },
             },
@@ -128,7 +124,6 @@ internal sealed class FamilySizeMigrator(
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.EIGHT_TO_TWELVE
                 },
@@ -138,7 +133,6 @@ internal sealed class FamilySizeMigrator(
                     TenantId = Constants.CPCT,
                     PublicationStatusId = 2,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.EIGHT_TO_TWELVE
                 }
@@ -146,12 +140,12 @@ internal sealed class FamilySizeMigrator(
             NodeTypeId = 28,
             Description = "",
             FileIdTileImage = null,
-            VocabularyNames = new List<VocabularyName>
+            Terms = new List<NewTermForNewNameble>
                 {
-                    new VocabularyName
+                    new NewTermForNewNameble
                     {
                         VocabularyId = vocabularyIdFamilySize,
-                        TermName = "8 to 12",
+                        Name = "8 to 12",
                         ParentTermIds = new List<int>(),
                     },
                 },
@@ -173,7 +167,6 @@ internal sealed class FamilySizeMigrator(
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.MORE_THAN_TWELVE
                 },
@@ -183,7 +176,6 @@ internal sealed class FamilySizeMigrator(
                     TenantId = Constants.CPCT,
                     PublicationStatusId = 2,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.MORE_THAN_TWELVE
                 }
@@ -191,18 +183,18 @@ internal sealed class FamilySizeMigrator(
             NodeTypeId = 28,
             Description = "",
             FileIdTileImage = null,
-            VocabularyNames = new List<VocabularyName>
+            Terms = new List<NewTermForNewNameble>
             {
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyIdFamilySize,
-                    TermName = "more than 12",
+                    Name = "more than 12",
                     ParentTermIds = new List<int>(),
                 },
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyIdTopics,
-                    TermName = "mega families",
+                    Name = "mega families",
                     ParentTermIds = new List<int>(),
                 },
             },

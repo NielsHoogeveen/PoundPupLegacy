@@ -2,7 +2,7 @@
 
 using Request = EventuallyIdentifiableTenantNodeForExistingNode;
 
-public sealed class TenantNodeInserterForExistingNodeFactory : AutoGenerateIdDatabaseInserterFactory<Request>
+public sealed class TenantNodeInserterFactory : AutoGenerateIdDatabaseInserterFactory<Request>
 {
     private static readonly NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
     private static readonly NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
@@ -16,7 +16,7 @@ public sealed class TenantNodeInserterForExistingNodeFactory : AutoGenerateIdDat
     {
         return new ParameterValue[] {
             ParameterValue.Create(TenantId, request.TenantId),
-            ParameterValue.Create(UrlId, request.NodeId),
+            ParameterValue.Create(UrlId, request.UrlId),
             ParameterValue.Create(UrlPath, request.UrlPath),
             ParameterValue.Create(NodeId, request.NodeId),
             ParameterValue.Create(SubgroupId, request.SubgroupId),

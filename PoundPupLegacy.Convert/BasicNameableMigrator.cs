@@ -114,7 +114,6 @@ internal sealed class BasicNameableMigrator(
                     TenantId = 1,
                     PublicationStatusId = 1,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = null
                 }
@@ -122,12 +121,12 @@ internal sealed class BasicNameableMigrator(
             NodeTypeId = 41,
             Description = "",
             FileIdTileImage = null,
-            VocabularyNames = new List<VocabularyName>
+            Terms = new List<NewTermForNewNameble>
             {
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyId,
-                    TermName = "organizations",
+                    Name = "organizations",
                     ParentTermIds = new List<int>(),
                 }
             },
@@ -147,12 +146,12 @@ internal sealed class BasicNameableMigrator(
                     VocabularyId = vocabularyId
                 }));
             }
-            var vocabularyNames = new List<VocabularyName>
+            var vocabularyNames = new List<NewTermForNewNameble>
                 {
-                    new VocabularyName
+                    new NewTermForNewNameble
                     {
                         VocabularyId = vocabularyId,
-                        TermName = name,
+                        Name = name,
                         ParentTermIds = topicParentIds,
                     }
                 };
@@ -173,7 +172,6 @@ internal sealed class BasicNameableMigrator(
                         TenantId = 1,
                         PublicationStatusId = reader.GetInt32("status"),
                         UrlPath = reader.IsDBNull("url_path") ? null: reader.GetString("url_path"),
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id
                     }
@@ -181,7 +179,7 @@ internal sealed class BasicNameableMigrator(
                 NodeTypeId = reader.GetInt32("node_type_id"),
                 Description = reader.GetString("description"),
                 FileIdTileImage = null,
-                VocabularyNames = vocabularyNames,
+                Terms = vocabularyNames,
                 NodeTermIds = new List<int>(),
             };
 
@@ -204,7 +202,6 @@ internal sealed class BasicNameableMigrator(
                     TenantId = 1,
                     PublicationStatusId = 1,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = null
                 }
@@ -212,12 +209,12 @@ internal sealed class BasicNameableMigrator(
             NodeTypeId = 41,
             Description = "",
             FileIdTileImage = null,
-            VocabularyNames = new List<VocabularyName>
+            Terms = new List<NewTermForNewNameble>
             {
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyId,
-                    TermName = "US senate bill",
+                    Name = "US senate bill",
                     ParentTermIds = new List<int>{
                         await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
                             Name = "United States Congress",
@@ -244,7 +241,6 @@ internal sealed class BasicNameableMigrator(
                     TenantId = 1,
                     PublicationStatusId = 1,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = null
                 }
@@ -252,12 +248,12 @@ internal sealed class BasicNameableMigrator(
             NodeTypeId = 41,
             Description = "",
             FileIdTileImage = null,
-            VocabularyNames = new List<VocabularyName>
+            Terms = new List<NewTermForNewNameble>
             {
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyId,
-                    TermName = "US house bill",
+                    Name = "US house bill",
                     ParentTermIds = new List<int>{
                         await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
                             Name = "United States Congress",
@@ -284,7 +280,6 @@ internal sealed class BasicNameableMigrator(
                     TenantId = 1,
                     PublicationStatusId = 1,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = null
                 }
@@ -292,12 +287,12 @@ internal sealed class BasicNameableMigrator(
             NodeTypeId = 41,
             Description = "",
             FileIdTileImage = null,
-            VocabularyNames = new List<VocabularyName>
+            Terms = new List<NewTermForNewNameble>
             {
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyId,
-                    TermName = "US act",
+                    Name = "US act",
                     ParentTermIds = new List<int>{
                         await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
                             Name = "United States Congress",

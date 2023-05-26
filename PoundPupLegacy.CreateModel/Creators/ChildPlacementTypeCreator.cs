@@ -6,7 +6,7 @@ internal sealed class ChildPlacementTypeCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableChildPlacementType> childPlacementTypeInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    NameableDetailsCreatorFactory nameableDetailsCreatorFactory
+    TermCreatorFactory nameableDetailsCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableChildPlacementType>
 {
     public async Task<IEntityCreator<EventuallyIdentifiableChildPlacementType>> CreateAsync(IDbConnection connection) =>

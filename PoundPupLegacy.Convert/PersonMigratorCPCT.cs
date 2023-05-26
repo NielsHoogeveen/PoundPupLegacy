@@ -3,7 +3,7 @@
 internal sealed class PersonMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReaderByUrlIdFactory,
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForExistingNode> tenantNodeReaderByUrlIdFactory,
     IEntityCreatorFactory<EventuallyIdentifiablePerson> personCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
@@ -90,10 +90,10 @@ internal sealed class PersonMigratorCPCT(
             };
 
 
-            var vocabularyNames = new List<VocabularyName> {
-                new VocabularyName {
+            var vocabularyNames = new List<NewTermForNewNameble> {
+                new NewTermForNewNameble {
                     VocabularyId = vocabularyId,
-                    TermName = title,
+                    Name = title,
                     ParentTermIds = new List<int>(),
                 }
             };
@@ -114,7 +114,6 @@ internal sealed class PersonMigratorCPCT(
                         TenantId = Constants.PPL,
                         PublicationStatusId = 1,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = null
                     },
@@ -124,7 +123,6 @@ internal sealed class PersonMigratorCPCT(
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id
                     }
@@ -132,7 +130,7 @@ internal sealed class PersonMigratorCPCT(
                 NodeTypeId = 24,
                 Description = "",
                 FileIdTileImage = null,
-                VocabularyNames = vocabularyNames,
+                Terms = vocabularyNames,
                 DateOfBirth = null,
                 DateOfDeath = null,
                 FileIdPortrait = null,

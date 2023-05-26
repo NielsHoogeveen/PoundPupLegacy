@@ -6,7 +6,7 @@ internal sealed class OrganizationMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
+    ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, ImmediatelyIdentifiableTerm> termReaderByNameableIdFactory,
     IEntityCreatorFactory<EventuallyIdentifiableOrganization> organizationCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
@@ -38,7 +38,6 @@ internal sealed class OrganizationMigratorPPL(
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.COLORADO_ADOPTION_CENTER
                 },
@@ -48,7 +47,6 @@ internal sealed class OrganizationMigratorPPL(
                     TenantId = Constants.CPCT,
                     PublicationStatusId = 2,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.COLORADO_ADOPTION_CENTER
                 }
@@ -60,10 +58,10 @@ internal sealed class OrganizationMigratorPPL(
             Terminated = null,
             Description = "",
             FileIdTileImage = null,
-            VocabularyNames = new List<VocabularyName> {
-                new VocabularyName {
+            Terms = new List<NewTermForNewNameble> {
+                new NewTermForNewNameble {
                     VocabularyId = vocabularyId,
-                    TermName = "Colorado Adoption Center",
+                    Name = "Colorado Adoption Center",
                     ParentTermIds = new List<int>{
                         await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
                             Name = "adoption agencies",
@@ -103,7 +101,6 @@ internal sealed class OrganizationMigratorPPL(
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.POPULAR_DEMOCRAT_PARTY
                 },
@@ -113,7 +110,6 @@ internal sealed class OrganizationMigratorPPL(
                     TenantId = Constants.CPCT,
                     PublicationStatusId = 2,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.POPULAR_DEMOCRAT_PARTY
                 }
@@ -125,10 +121,10 @@ internal sealed class OrganizationMigratorPPL(
             Terminated = null,
             Description = "",
             FileIdTileImage = null,
-            VocabularyNames = new List<VocabularyName> {
-                new VocabularyName {
+            Terms = new List<NewTermForNewNameble> {
+                new NewTermForNewNameble {
                     VocabularyId = vocabularyId,
-                    TermName = "Popular Democratic Party",
+                    Name = "Popular Democratic Party",
                     ParentTermIds = new List<int>{
                         await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
                             Name = "political party" ,
@@ -169,7 +165,6 @@ internal sealed class OrganizationMigratorPPL(
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.LIBERTARIAN_PARTY
                 },
@@ -179,7 +174,6 @@ internal sealed class OrganizationMigratorPPL(
                     TenantId = Constants.CPCT,
                     PublicationStatusId = 2,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.LIBERTARIAN_PARTY
                 }
@@ -191,10 +185,10 @@ internal sealed class OrganizationMigratorPPL(
             Terminated = null,
             Description = "",
             FileIdTileImage = null,
-            VocabularyNames = new List<VocabularyName> {
-                new VocabularyName {
+            Terms = new List<NewTermForNewNameble> {
+                new NewTermForNewNameble {
                     VocabularyId = vocabularyId,
-                    TermName = "Libertarian Party",
+                    Name = "Libertarian Party",
                     ParentTermIds = new List<int>{
                         await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
                             Name = "political party" ,
@@ -234,7 +228,6 @@ internal sealed class OrganizationMigratorPPL(
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = 17036
                 },
@@ -244,7 +237,6 @@ internal sealed class OrganizationMigratorPPL(
                     TenantId = Constants.CPCT,
                     PublicationStatusId = 2,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = 17036
                 }
@@ -256,10 +248,10 @@ internal sealed class OrganizationMigratorPPL(
             Terminated = null,
             Description = "",
             FileIdTileImage = null,
-            VocabularyNames = new List<VocabularyName> {
-                new VocabularyName {
+            Terms = new List<NewTermForNewNameble> {
+                new NewTermForNewNameble {
                     VocabularyId = vocabularyId,
-                    TermName = "Government of Italy",
+                    Name = "Government of Italy",
                     ParentTermIds = new List<int>{
                         await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
                             Name = "governmental organization" ,
@@ -297,7 +289,7 @@ internal sealed class OrganizationMigratorPPL(
     private async IAsyncEnumerable<EventuallyIdentifiableOrganization> ReadOrganizations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
-        ISingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId
+        ISingleItemDatabaseReader<TermReaderByNameableIdRequest, ImmediatelyIdentifiableTerm> termReaderByNameableId
     )
     {
 
@@ -419,7 +411,7 @@ internal sealed class OrganizationMigratorPPL(
         });
 
         while (await reader.ReadAsync()) {
-            var vocabularyNames = new List<VocabularyName>();
+            var vocabularyNames = new List<NewTermForNewNameble>();
 
 
             var typeIds = reader
@@ -441,8 +433,7 @@ internal sealed class OrganizationMigratorPPL(
                 foreach (var organizationTypeId in organizationTypeIds) {
                     var res = await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
                         NameableId = organizationTypeId,
-                        OwnerId = Constants.OWNER_SYSTEM,
-                        VocabularyName = Constants.VOCABULARY_TOPICS
+                        VocabularyId = vocabularyId
                     });
                     yield return res!.Name;
                 }
@@ -497,9 +488,9 @@ internal sealed class OrganizationMigratorPPL(
                     VocabularyId = vocabularyId
                 }));
             }
-            vocabularyNames.Add(new VocabularyName {
+            vocabularyNames.Add(new NewTermForNewNameble {
                 VocabularyId = vocabularyId,
-                TermName = topicName,
+                Name = topicName,
                 ParentTermIds = topicParentIds,
             });
 
@@ -518,7 +509,6 @@ internal sealed class OrganizationMigratorPPL(
                             TenantId = Constants.PPL,
                             PublicationStatusId = reader.GetInt32("node_status_id"),
                             UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                            NodeId = null,
                             SubgroupId = null,
                             UrlId = id
                         },
@@ -527,7 +517,6 @@ internal sealed class OrganizationMigratorPPL(
                             TenantId = Constants.CPCT,
                             PublicationStatusId = 2,
                             UrlPath = null,
-                            NodeId = null,
                             SubgroupId = null,
                             UrlId = id < 33163 ? id : null
                         }
@@ -539,7 +528,7 @@ internal sealed class OrganizationMigratorPPL(
                     Established = reader.IsDBNull("established") ? null : (new DateTimeRange(reader.GetDateTime("established"), reader.GetDateTime("established"))).ToFuzzyDate(),
                     Terminated = reader.IsDBNull("terminated") ? null : (new DateTimeRange(reader.GetDateTime("terminated"), reader.GetDateTime("terminated"))).ToFuzzyDate(),
                     FileIdTileImage = null,
-                    VocabularyNames = vocabularyNames,
+                    Terms = vocabularyNames,
                     OrganizationTypeIds = new List<int>
                     {
                         await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest
@@ -573,7 +562,6 @@ internal sealed class OrganizationMigratorPPL(
                             TenantId = Constants.PPL,
                             PublicationStatusId = reader.GetInt32("node_status_id"),
                             UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                            NodeId = null,
                             SubgroupId = null,
                             UrlId = id
                         },
@@ -583,7 +571,6 @@ internal sealed class OrganizationMigratorPPL(
                             TenantId = Constants.CPCT,
                             PublicationStatusId = 2,
                             UrlPath = null,
-                            NodeId = null,
                             SubgroupId = null,
                             UrlId = id < 33163 ? id : null
                         }
@@ -595,7 +582,7 @@ internal sealed class OrganizationMigratorPPL(
                     Established = reader.IsDBNull("established") ? null : (new DateTimeRange(reader.GetDateTime("established").Date, reader.GetDateTime("established").Date.AddDays(1).AddMilliseconds(-1))).ToFuzzyDate(),
                     Terminated = reader.IsDBNull("terminated") ? null : (new DateTimeRange(reader.GetDateTime("terminated").Date, reader.GetDateTime("terminated").Date.AddDays(1).AddMilliseconds(-1))).ToFuzzyDate(),
                     FileIdTileImage = null,
-                    VocabularyNames = vocabularyNames,
+                    Terms = vocabularyNames,
                     OrganizationTypeIds = organizationOrganizationTypeIds,
                     NodeTermIds = new List<int>(),
                     NewLocations = new List<EventuallyIdentifiableLocation>(),

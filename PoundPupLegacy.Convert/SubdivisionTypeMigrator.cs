@@ -118,7 +118,6 @@ internal sealed class SubdivisionTypeMigrator(
                         TenantId = Constants.PPL,
                         PublicationStatusId = 1,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = null
                     },
@@ -128,7 +127,6 @@ internal sealed class SubdivisionTypeMigrator(
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = null
                     }
@@ -136,12 +134,12 @@ internal sealed class SubdivisionTypeMigrator(
                 NodeTypeId = 51,
                 Description = "",
                 FileIdTileImage = null,
-                VocabularyNames = new List<VocabularyName>
+                Terms = new List<NewTermForNewNameble>
                 {
-                    new VocabularyName
+                    new NewTermForNewNameble
                     {
                         VocabularyId = vocabularyId,
-                        TermName = name,
+                        Name = name,
                         ParentTermIds = new List<int>(),
                     },
                 },

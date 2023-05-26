@@ -33,7 +33,6 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                         TenantId = Constants.PPL,
                         PublicationStatusId = 1,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = Constants.DEMOCRAT
                     },
@@ -43,7 +42,6 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = Constants.DEMOCRAT
                     }
@@ -51,12 +49,12 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
             NodeTypeId = 62,
             Description = "",
             FileIdTileImage = null,
-            VocabularyNames = new List<VocabularyName>
+            Terms = new List<NewTermForNewNameble>
                 {
-                    new VocabularyName
+                    new NewTermForNewNameble
                     {
                         VocabularyId = vocabularyId,
-                        TermName = Constants.DEMOCRAT_NAME,
+                        Name = Constants.DEMOCRAT_NAME,
                         ParentTermIds = new List<int>(),
                     },
                 },
@@ -83,7 +81,6 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                         TenantId = Constants.PPL,
                         PublicationStatusId = 1,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = Constants.REPUBLICAN
                     },
@@ -93,7 +90,6 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = Constants.REPUBLICAN
                     }
@@ -101,12 +97,12 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
             NodeTypeId = 62,
             Description = "",
             FileIdTileImage = null,
-            VocabularyNames = new List<VocabularyName>
+            Terms = new List<NewTermForNewNameble>
                 {
-                    new VocabularyName
+                    new NewTermForNewNameble
                     {
                         VocabularyId = vocabularyId,
-                        TermName = Constants.REPUBLICAN_NAME,
+                        Name = Constants.REPUBLICAN_NAME,
                         ParentTermIds = new List<int>(),
                     },
                 },
@@ -132,7 +128,6 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                         TenantId = Constants.PPL,
                         PublicationStatusId = 1,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = Constants.INDEPENDENT
                     },
@@ -142,7 +137,6 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = Constants.INDEPENDENT
                     }
@@ -150,12 +144,12 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
             NodeTypeId = 62,
             Description = "",
             FileIdTileImage = null,
-            VocabularyNames = new List<VocabularyName>
+            Terms = new List<NewTermForNewNameble>
                 {
-                    new VocabularyName
+                    new NewTermForNewNameble
                     {
                         VocabularyId = vocabularyId,
-                        TermName = Constants.INDEPENDENT_NAME,
+                        Name = Constants.INDEPENDENT_NAME,
                         ParentTermIds = new List<int>(),
                     },
                 },
@@ -178,7 +172,6 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                         TenantId = Constants.PPL,
                         PublicationStatusId = 1,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = Constants.POPULAR_DEMOCRAT
                     },
@@ -188,7 +181,6 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = Constants.POPULAR_DEMOCRAT
                     }
@@ -196,12 +188,12 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
             NodeTypeId = 62,
             Description = "",
             FileIdTileImage = null,
-            VocabularyNames = new List<VocabularyName>
+            Terms = new List<NewTermForNewNameble>
                 {
-                    new VocabularyName
+                    new NewTermForNewNameble
                     {
                         VocabularyId = vocabularyId,
-                        TermName = Constants.POPULAR_DEMOCRAT_NAME,
+                        Name = Constants.POPULAR_DEMOCRAT_NAME,
                         ParentTermIds = new List<int>(),
                     },
                 },
@@ -227,7 +219,6 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                         TenantId = Constants.PPL,
                         PublicationStatusId = 1,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = Constants.LIBERTARIAN
                     },
@@ -237,7 +228,6 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = Constants.LIBERTARIAN
                     }
@@ -245,12 +235,12 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
             NodeTypeId = 62,
             Description = "",
             FileIdTileImage = null,
-            VocabularyNames = new List<VocabularyName>
+            Terms = new List<NewTermForNewNameble>
                 {
-                    new VocabularyName
+                    new NewTermForNewNameble
                     {
                         VocabularyId = vocabularyId,
-                        TermName = Constants.LIBERTARIAN_NAME,
+                        Name = Constants.LIBERTARIAN_NAME,
                         ParentTermIds = new List<int>(),
                     },
                 },

@@ -6,7 +6,7 @@ internal sealed class TypeOfAbuserCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableTypeOfAbuser> typeOfAbuserInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    NameableDetailsCreatorFactory nameableDetailsCreatorFactory
+    TermCreatorFactory nameableDetailsCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableTypeOfAbuser>
 {
     public async Task<IEntityCreator<EventuallyIdentifiableTypeOfAbuser>> CreateAsync(IDbConnection connection) =>

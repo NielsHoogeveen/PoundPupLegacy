@@ -27,7 +27,6 @@ internal sealed class VocabularyMigrator(
                         TenantId = 1,
                         PublicationStatusId = 1,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = Constants.VOCABULARY_ID_CHILD_PLACEMENT_TYPE
                     }
@@ -53,7 +52,6 @@ internal sealed class VocabularyMigrator(
                         TenantId = 1,
                         PublicationStatusId = 1,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = Constants.VOCABULARY_ID_TYPE_OF_ABUSE
                     }
@@ -79,7 +77,6 @@ internal sealed class VocabularyMigrator(
                         TenantId = 1,
                         PublicationStatusId = 1,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = Constants.VOCABULARY_ID_TYPE_OF_ABUSER
                     }
@@ -105,7 +102,6 @@ internal sealed class VocabularyMigrator(
                         TenantId = 1,
                         PublicationStatusId = 1,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = Constants.VOCABULARY_ID_FAMILY_SIZE
                     }
@@ -131,7 +127,6 @@ internal sealed class VocabularyMigrator(
                         TenantId = 1,
                         PublicationStatusId = 1,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = Constants.VOCABULARY_ID_BILL_ACTION
                     }
@@ -157,7 +152,6 @@ internal sealed class VocabularyMigrator(
                         TenantId = 1,
                         PublicationStatusId = 1,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = Constants.VOCABULARY_ID_ORGANIZATION_ACT_RELATION_TYPE
                     }
@@ -183,7 +177,6 @@ internal sealed class VocabularyMigrator(
                         TenantId = 1,
                         PublicationStatusId = 1,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = Constants.VOCABULARY_ID_SUBDIVISION_TYPE
                     }
@@ -209,7 +202,6 @@ internal sealed class VocabularyMigrator(
                         TenantId = 1,
                         PublicationStatusId = 1,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = Constants.VOCABULARY_ID_UNITED_STATES_POLITICAL_PARTY_AFFILITION_TYPE
                     }
@@ -235,7 +227,6 @@ internal sealed class VocabularyMigrator(
                         TenantId = 1,
                         PublicationStatusId = 1,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = Constants.VOCABULARY_ID_CASE_PARTY_TYPE
                     }
@@ -334,7 +325,6 @@ internal sealed class VocabularyMigrator(
                         TenantId = 1,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id
                     }

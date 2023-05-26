@@ -115,7 +115,7 @@ internal sealed class ActMigrator(
 
         while (await reader.ReadAsync()) {
 
-            var vocabularyNames = new List<VocabularyName>();
+            var vocabularyNames = new List<NewTermForNewNameble>();
 
             var id = reader.GetInt32("id");
             var title = reader.GetString("title");
@@ -134,16 +134,16 @@ internal sealed class ActMigrator(
                         VocabularyId = vocabularyId
                     }));
                 }
-                vocabularyNames.Add(new VocabularyName {
+                vocabularyNames.Add(new NewTermForNewNameble {
                     VocabularyId = vocabularyId,
-                    TermName = topicName,
+                    Name = topicName,
                     ParentTermIds = topicParentIds,
                 });
             }
             else {
-                vocabularyNames.Add(new VocabularyName {
+                vocabularyNames.Add(new NewTermForNewNameble {
                     VocabularyId = vocabularyId,
-                    TermName = title,
+                    Name = title,
                     ParentTermIds = new List<int> {
                         await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
                             Name = "US house bill",
@@ -170,14 +170,13 @@ internal sealed class ActMigrator(
                         TenantId = 1,
                         PublicationStatusId = reader.GetInt32("status"),
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id
                     }
                 },
                 NodeTypeId = 36,
                 Description = reader.GetString("description"),
-                VocabularyNames = vocabularyNames,
+                Terms = vocabularyNames,
                 FileIdTileImage = null,
                 EnactmentDate = GetEnactmentDate(id),
                 NodeTermIds = new List<int>(),

@@ -3,7 +3,7 @@
 internal sealed class LocationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReaderByUrlIdFactory,
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForExistingNode> tenantNodeReaderByUrlIdFactory,
     IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166CodeFactory,
     IEntityCreatorFactory<EventuallyIdentifiableLocation> locationCreatorFactory,
     IDatabaseInserterFactory<LocationLocatable> locationLocatableInserterFactory

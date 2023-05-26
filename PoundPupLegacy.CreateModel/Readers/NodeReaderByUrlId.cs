@@ -8,7 +8,7 @@ public sealed record NodeReaderByUrlIdRequest : IRequest
     public required int UrlId { get; init; }
 }
 
-internal sealed class NodeReaderByUrlIdFactory : MandatorySingleItemDatabaseReaderFactory<Request, EventuallyIdentifiableNode>
+internal sealed class NodeReaderByUrlIdFactory : MandatorySingleItemDatabaseReaderFactory<Request, ImmediatelyIdentifiableNode>
 {
     private static readonly NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
     private static readonly NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
@@ -26,12 +26,8 @@ internal sealed class NodeReaderByUrlIdFactory : MandatorySingleItemDatabaseRead
     const string SQL = """
         SELECT 
         n.id,
-        n.publisher_id,
         n.title,
-        n.created_date_time,
-        n.changed_date_time,
-        n.node_type_id,
-        n.owner_id
+        n.changed_date_time
         FROM tenant_node t
         join node n on n.id = t.node_id
         WHERE t.tenant_id= @tenant_id AND t.url_id = @url_id
@@ -44,19 +40,18 @@ internal sealed class NodeReaderByUrlIdFactory : MandatorySingleItemDatabaseRead
         };
     }
 
-    protected override EventuallyIdentifiableNode Read(NpgsqlDataReader reader)
+    protected override ImmediatelyIdentifiableNode Read(NpgsqlDataReader reader)
     {
-        var node = new NewBasicNode {
+        var node = new ExistingBasicNode {
             Id = IdReader.GetValue(reader),
-            PublisherId = PublisherIdReader.GetValue(reader),
             Title = TitleReader.GetValue(reader),
-            CreatedDateTime = CreatedDateTimeReader.GetValue(reader),
             ChangedDateTime = ChangedDateTimeReader.GetValue(reader),
-            NodeTypeId = NodeTypeIdReader.GetValue(reader),
-            OwnerId = OwnerIdReader.GetValue(reader),
             AuthoringStatusId = 1,
-            TenantNodes = new List<NewTenantNodeForNewNode>(),
-            NodeTermIds = new List<int>(),
+            NewNodeTerms = new List<NodeTerm>(),
+            NewTenantNodes = new List<NewTenantNodeForExistingNode>(),
+            NodeTermsToRemove = new List<NodeTerm>(),
+            TenantNodesToRemove = new List<ExistingTenantNode>(),
+            TenantNodesToUpdate = new List<ExistingTenantNode>(),
         };
         return node;
     }

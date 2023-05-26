@@ -9,7 +9,7 @@ internal sealed class OrganizationCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableParty> partyInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableOrganization> organizationInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    NameableDetailsCreatorFactory nameableDetailsCreatorFactory,
+    TermCreatorFactory nameableDetailsCreatorFactory,
     LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableUnitedStatesPoliticalParty> unitedStatesPoliticalPartyInserterFactory,
     IDatabaseInserterFactory<OrganizationOrganizationType> organizationOrganizationTypeInserterFactory,
@@ -43,7 +43,7 @@ internal sealed class OrganizationCreatorFactory(
 public class OrganizationCreator(
     List<IDatabaseInserter<EventuallyIdentifiableOrganization>> inserter,
     NodeDetailsCreator nodeDetailsCreator,
-    NameableDetailsCreator nameableDetailsCreator,
+    TermCreator nameableDetailsCreator,
     LocatableDetailsCreator locatableDetailsCreator,
     IDatabaseInserter<EventuallyIdentifiableUnitedStatesPoliticalParty> unitedStatesPoliticalPartyInserter,
     IDatabaseInserter<OrganizationOrganizationType> organizationOrganizationTypeInserter,

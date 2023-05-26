@@ -6,8 +6,8 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
-        ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
-        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
+        ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, ImmediatelyIdentifiableTerm> termReaderByNameableIdFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReaderByNameFactory,
         IEntityCreatorFactory<EventuallyIdentifiableFormalIntermediateLevelSubdivision> formalIntermediateLevelSubdivisionCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
@@ -16,8 +16,8 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator(
     private async IAsyncEnumerable<NewFormalIntermediateLevelSubdivision> ReadFormalIntermediateLevelSubdivisionCsv(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
-        ISingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId,
-        IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, CreateModel.Term> termReaderByName
+        ISingleItemDatabaseReader<TermReaderByNameableIdRequest, ImmediatelyIdentifiableTerm> termReaderByNameableId,
+        IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReaderByName
         )
     {
 
@@ -40,20 +40,19 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator(
                 UrlId = int.Parse(parts[7])
             });
             var countryName = (await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
-                OwnerId = Constants.OWNER_SYSTEM,
-                VocabularyName = Constants.VOCABULARY_TOPICS,
+                VocabularyId = vocabularyIdTopics,
                 NameableId = countryId
             }))!.Name;
             yield return new NewFormalIntermediateLevelSubdivision {
                 Id = null,
                 CreatedDateTime = DateTime.Parse(parts[1]),
                 ChangedDateTime = DateTime.Parse(parts[2]),
-                VocabularyNames = new List<VocabularyName>
+                Terms = new List<NewTermForNewNameble>
                 {
-                    new VocabularyName
+                    new NewTermForNewNameble
                     {
                         VocabularyId = vocabularyIdTopics,
-                        TermName = title,
+                        Name = title,
                         ParentTermIds = new List<int> {
                             await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
                                 Name = countryName ,
@@ -75,7 +74,6 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator(
                         TenantId = Constants.PPL,
                         PublicationStatusId = int.Parse(parts[5]),
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id
                     },
@@ -85,7 +83,6 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator(
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id < 33163 ? id : null
                     }

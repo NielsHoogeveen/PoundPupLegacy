@@ -132,7 +132,7 @@ internal sealed class AbuseCaseMigrator(
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
 
-            var vocabularyNames = new List<VocabularyName>();
+            var vocabularyNames = new List<NewTermForNewNameble>();
             var topicName = reader.GetString("topic_name");
             var topicParentNames = reader.IsDBNull("topic_parent_names") 
                 ? new List<string>() 
@@ -149,9 +149,9 @@ internal sealed class AbuseCaseMigrator(
                 }));
             }
             
-            vocabularyNames.Add(new VocabularyName {
+            vocabularyNames.Add(new NewTermForNewNameble {
                 VocabularyId = vocabularyId,
-                TermName = topicName,
+                Name = topicName,
                 ParentTermIds = topicParentIds,
             });
 
@@ -173,7 +173,6 @@ internal sealed class AbuseCaseMigrator(
                         TenantId = Constants.PPL,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
                         UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id
                     },
@@ -183,7 +182,6 @@ internal sealed class AbuseCaseMigrator(
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id < 33163 ? id : null
                     }
@@ -203,7 +201,7 @@ internal sealed class AbuseCaseMigrator(
                 HomeschoolingInvolved = reader.IsDBNull("home_schooling_involved") ? null : reader.GetBoolean("home_schooling_involved"),
                 FundamentalFaithInvolved = reader.IsDBNull("fundamental_faith_involved") ? null : reader.GetBoolean("fundamental_faith_involved"),
                 DisabilitiesInvolved = reader.IsDBNull("disabilities_involved") ? null : reader.GetBoolean("disabilities_involved"),
-                VocabularyNames = vocabularyNames,
+                Terms = vocabularyNames,
                 NodeTermIds = new List<int>(),
                 NewLocations = new List<EventuallyIdentifiableLocation>(),
                 CaseParties = new List<NewCaseNewCaseParties>(),

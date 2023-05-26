@@ -40,7 +40,6 @@ internal sealed class CasePartyTypeMigrator(
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.HOMESTUDY_CASE_TYPE
                 },
@@ -50,7 +49,6 @@ internal sealed class CasePartyTypeMigrator(
                     TenantId = Constants.CPCT,
                     PublicationStatusId = 2,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.HOMESTUDY_CASE_TYPE
                 }
@@ -58,12 +56,12 @@ internal sealed class CasePartyTypeMigrator(
             NodeTypeId = 1,
             Description = "",
             FileIdTileImage = null,
-            VocabularyNames = new List<VocabularyName>
+            Terms = new List<NewTermForNewNameble>
             {
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyId,
-                    TermName = Constants.HOMESTUDY_CASE_TYPE_NAME,
+                    Name = Constants.HOMESTUDY_CASE_TYPE_NAME,
                     ParentTermIds = new List<int>(),
                 }
             },
@@ -85,7 +83,6 @@ internal sealed class CasePartyTypeMigrator(
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.PLACEMENT_CASE_TYPE
                 },
@@ -95,7 +92,6 @@ internal sealed class CasePartyTypeMigrator(
                     TenantId = Constants.CPCT,
                     PublicationStatusId = 2,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.PLACEMENT_CASE_TYPE
                 }
@@ -103,12 +99,12 @@ internal sealed class CasePartyTypeMigrator(
             NodeTypeId = 1,
             Description = "",
             FileIdTileImage = null,
-            VocabularyNames = new List<VocabularyName>
+            Terms = new List<NewTermForNewNameble>
             {
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyId,
-                    TermName = Constants.PLACEMENT_CASE_TYPE_NAME,
+                    Name = Constants.PLACEMENT_CASE_TYPE_NAME,
                     ParentTermIds = new List<int>(),
                 }
             },
@@ -130,7 +126,6 @@ internal sealed class CasePartyTypeMigrator(
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.POSTPLACEMENT_CASE_TYPE
                 },
@@ -140,7 +135,6 @@ internal sealed class CasePartyTypeMigrator(
                     TenantId = Constants.CPCT,
                     PublicationStatusId = 2,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.POSTPLACEMENT_CASE_TYPE
                 }
@@ -148,12 +142,12 @@ internal sealed class CasePartyTypeMigrator(
             NodeTypeId = 1,
             Description = "",
             FileIdTileImage = null,
-            VocabularyNames = new List<VocabularyName>
+            Terms = new List<NewTermForNewNameble>
             {
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyId,
-                    TermName = Constants.POSTPLACEMENT_CASE_TYPE_NAME,
+                    Name = Constants.POSTPLACEMENT_CASE_TYPE_NAME,
                     ParentTermIds = new List<int>(),
                 }
             },
@@ -175,7 +169,6 @@ internal sealed class CasePartyTypeMigrator(
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.FACILITATION_CASE_TYPE
                 },
@@ -185,7 +178,6 @@ internal sealed class CasePartyTypeMigrator(
                     TenantId = Constants.CPCT,
                     PublicationStatusId = 2,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.FACILITATION_CASE_TYPE
                 }
@@ -193,12 +185,12 @@ internal sealed class CasePartyTypeMigrator(
             NodeTypeId = 1,
             Description = "",
             FileIdTileImage = null,
-            VocabularyNames = new List<VocabularyName>
+            Terms = new List<NewTermForNewNameble>
             {
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyId,
-                    TermName = Constants.FACILITATION_CASE_TYPE_NAME,
+                    Name = Constants.FACILITATION_CASE_TYPE_NAME,
                     ParentTermIds = new List<int>(),
                 }
             },
@@ -220,7 +212,6 @@ internal sealed class CasePartyTypeMigrator(
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.INSTITUTION_CASE_TYPE
                 },
@@ -230,7 +221,6 @@ internal sealed class CasePartyTypeMigrator(
                     TenantId = Constants.CPCT,
                     PublicationStatusId = 2,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.INSTITUTION_CASE_TYPE
                 }
@@ -238,12 +228,12 @@ internal sealed class CasePartyTypeMigrator(
             NodeTypeId = 1,
             Description = "",
             FileIdTileImage = null,
-            VocabularyNames = new List<VocabularyName>
+            Terms = new List<NewTermForNewNameble>
             {
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyId,
-                    TermName = Constants.INSTITUTION_CASE_TYPE_NAME,
+                    Name = Constants.INSTITUTION_CASE_TYPE_NAME,
                     ParentTermIds = new List<int>(),
                 }
             },
@@ -265,7 +255,6 @@ internal sealed class CasePartyTypeMigrator(
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.THERAPY_CASE_TYPE
                 },
@@ -275,7 +264,6 @@ internal sealed class CasePartyTypeMigrator(
                     TenantId = Constants.CPCT,
                     PublicationStatusId = 2,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.THERAPY_CASE_TYPE
                 }
@@ -283,12 +271,12 @@ internal sealed class CasePartyTypeMigrator(
             NodeTypeId = 1,
             Description = "",
             FileIdTileImage = null,
-            VocabularyNames = new List<VocabularyName>
+            Terms = new List<NewTermForNewNameble>
             {
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyId,
-                    TermName = Constants.THERAPY_CASE_TYPE_NAME,
+                    Name = Constants.THERAPY_CASE_TYPE_NAME,
                     ParentTermIds = new List<int>(),
                 }
             },
@@ -310,7 +298,6 @@ internal sealed class CasePartyTypeMigrator(
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.AUTHORITIES_CASE_TYPE
                 },
@@ -320,7 +307,6 @@ internal sealed class CasePartyTypeMigrator(
                     TenantId = Constants.CPCT,
                     PublicationStatusId = 2,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.AUTHORITIES_CASE_TYPE
                 }
@@ -328,12 +314,12 @@ internal sealed class CasePartyTypeMigrator(
             NodeTypeId = 1,
             Description = "",
             FileIdTileImage = null,
-            VocabularyNames = new List<VocabularyName>
+            Terms = new List<NewTermForNewNameble>
             {
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyId,
-                    TermName = Constants.AUTHORITIES_CASE_TYPE_NAME,
+                    Name = Constants.AUTHORITIES_CASE_TYPE_NAME,
                     ParentTermIds = new List<int>(),
                 }
             },

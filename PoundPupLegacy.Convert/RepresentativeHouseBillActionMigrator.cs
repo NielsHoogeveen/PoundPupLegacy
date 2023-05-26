@@ -89,7 +89,6 @@ internal sealed class RepresentativeHouseBillActionMigrator(
                         TenantId = 1,
                         PublicationStatusId = reader.GetInt32("status"),
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id
                     },
@@ -99,7 +98,6 @@ internal sealed class RepresentativeHouseBillActionMigrator(
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id < 33163 ? id : null
                     }

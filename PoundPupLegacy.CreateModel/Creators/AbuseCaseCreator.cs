@@ -10,7 +10,7 @@ public class AbuseCaseCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableCase> caseInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableAbuseCase> abuseCaseInserterFactory,
     LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
-    NameableDetailsCreatorFactory nameableDetailsCreatorFactory,
+    TermCreatorFactory nameableDetailsCreatorFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     IEntityCreatorFactory<ExistingCaseNewCaseParties> caseCaseTypeCreatorFactory,
     IEntityCreatorFactory<AbuseCaseTypeOfAbuse> abuseCaseTypeOfAbuseCreatorFactory,
@@ -40,7 +40,7 @@ public class AbuseCaseCreatorFactory(
 public class AbuseCaseCreator(
     List<IDatabaseInserter<EventuallyIdentifiableAbuseCase>> inserters,
     NodeDetailsCreator nodeDetailsCreator,
-    NameableDetailsCreator nameableDetailsCreator,
+    TermCreator nameableDetailsCreator,
     LocatableDetailsCreator locatableDetailsCreator,
     IEntityCreator<ExistingCaseNewCaseParties> caseCaseTypeCreator,
     IEntityCreator<AbuseCaseTypeOfAbuse> abuseCaseTypeOfAbuseCreator,

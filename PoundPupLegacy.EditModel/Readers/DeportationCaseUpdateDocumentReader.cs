@@ -25,7 +25,7 @@ internal sealed class DeportationCaseUpdateDocumentReaderFactory : NodeUpdateDoc
                     nm.description,
                     'Date',
                     c.fuzzy_date,
-                    'SubdivisionFrom'
+                    'SubdivisionFrom',
                     case
                         when n2.id is null then null
                         else jsonb_build_object(
@@ -35,7 +35,7 @@ internal sealed class DeportationCaseUpdateDocumentReaderFactory : NodeUpdateDoc
                             n2.title
                         )
                     end,
-                    'CountryTo'
+                    'CountryTo',
                     case
                         when n1.id is null then null
                         else jsonb_build_object(

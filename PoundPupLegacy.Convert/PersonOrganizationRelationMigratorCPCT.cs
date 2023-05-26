@@ -3,7 +3,7 @@
 internal sealed class PersonOrganizationRelationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReaderByUrlIdFactory,
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForExistingNode> tenantNodeReaderByUrlIdFactory,
     IEntityCreatorFactory<EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants> personOrganizationRelationCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
@@ -23,7 +23,7 @@ internal sealed class PersonOrganizationRelationMigratorCPCT(
 
     private async IAsyncEnumerable<EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants> ReadPersonOrganizationRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReaderByUrlId
+        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, NewTenantNodeForExistingNode> tenantNodeReaderByUrlId
     )
     {
 
@@ -111,7 +111,6 @@ internal sealed class PersonOrganizationRelationMigratorCPCT(
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id
                     }
@@ -122,7 +121,6 @@ internal sealed class PersonOrganizationRelationMigratorCPCT(
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = null
                 });

@@ -7,7 +7,7 @@ internal sealed class DenominationCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableDenomination> denominationInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    NameableDetailsCreatorFactory nameableDetailsCreatorFactory
+    TermCreatorFactory nameableDetailsCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableDenomination>
 {
     public async Task<IEntityCreator<EventuallyIdentifiableDenomination>> CreateAsync(IDbConnection connection) =>

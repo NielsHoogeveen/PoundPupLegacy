@@ -10,7 +10,7 @@ internal sealed class ChildTraffickingCaseCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableChildTraffickingCase> childTraffickingCaseInserterFactory,
     LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    NameableDetailsCreatorFactory nameableDetailsCreatorFactory,
+    TermCreatorFactory nameableDetailsCreatorFactory,
     IEntityCreatorFactory<ExistingCaseNewCaseParties> caseCaseTypeCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableChildTraffickingCase>
 {

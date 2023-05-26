@@ -21,12 +21,22 @@ public sealed record NewTenantNodeForNewNode : EventuallyIdentifiableTenantNodeF
 
     public required string? UrlPath { get; init; }
 
-    public required int? NodeId { get; set; }
-
     public required int? SubgroupId { get; init; }
 
     public required int PublicationStatusId { get; init; }
 
+    public EventuallyIdentifiableTenantNodeForExistingNode ResolveNodeId(int nodeId)
+    {
+        return new NewTenantNodeForExistingNode {
+            Id = Id,
+            TenantId = TenantId,
+            UrlPath = UrlPath,
+            SubgroupId = SubgroupId,
+            PublicationStatusId = PublicationStatusId,
+            UrlId = UrlId ?? nodeId,
+            NodeId = nodeId
+        };
+    }
 }
 
 public sealed record NewTenantNodeForExistingNode : EventuallyIdentifiableTenantNodeForExistingNode
@@ -53,14 +63,13 @@ public interface EventuallyIdentifiableTenantNodeForNewNode : TenantNode, Eventu
     int TenantId { get; }
 
     int? UrlId { get; }
+    public EventuallyIdentifiableTenantNodeForExistingNode ResolveNodeId(int nodeId);
 
-    int? NodeId { get; }
 }
 public interface EventuallyIdentifiableTenantNodeForExistingNode : TenantNode, EventuallyIdentifiable
 {
     int TenantId { get; }
     int UrlId { get; }
-
     int NodeId { get; }
 }
 public interface TenantNode

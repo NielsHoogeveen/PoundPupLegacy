@@ -13,7 +13,7 @@ internal sealed class BasicSecondLevelSubdivisionCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableSecondLevelSubdivision> secondLevelSubdivisionInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableBasicSecondLevelSubdivision> basicSecondLevelSubdivisionInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    NameableDetailsCreatorFactory nameableDetailsCreatorFactory
+    TermCreatorFactory nameableDetailsCreatorFactory
     
 ) : IEntityCreatorFactory<EventuallyIdentifiableBasicSecondLevelSubdivision>
 {

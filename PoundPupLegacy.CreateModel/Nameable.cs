@@ -2,9 +2,11 @@
 
 public interface ImmediatelyIdentifiableNameable : Nameable, ImmediatelyIdentifiableSearchable
 {
+    public List<NewTermForNewNameble> TermsToAdd { get; }
 }
 public interface EventuallyIdentifiableNameable: Nameable, EventuallyIdentifiableSearchable
 {
+    public List<NewTermForNewNameble> Terms { get; }
 }
 
 public interface Nameable : Searchable
@@ -13,7 +15,7 @@ public interface Nameable : Searchable
 
     int? FileIdTileImage { get; }
 
-    public List<VocabularyName> VocabularyNames { get; }
+
 }
 
 public abstract record NewNameableBase: NewNodeBase, EventuallyIdentifiableNameable
@@ -22,7 +24,7 @@ public abstract record NewNameableBase: NewNodeBase, EventuallyIdentifiableNamea
 
     public required int? FileIdTileImage { get; init; }
 
-    public required List<VocabularyName> VocabularyNames { get; init; }
+    public required List<NewTermForNewNameble> Terms { get; init; }
 }
 
 public abstract record ExistingNameableBase : ExistingNodeBase, ImmediatelyIdentifiableNameable
@@ -31,5 +33,5 @@ public abstract record ExistingNameableBase : ExistingNodeBase, ImmediatelyIdent
 
     public required int? FileIdTileImage { get; init; }
 
-    public required List<VocabularyName> VocabularyNames { get; init; }
+    public required List<NewTermForNewNameble> TermsToAdd { get; init; }
 }

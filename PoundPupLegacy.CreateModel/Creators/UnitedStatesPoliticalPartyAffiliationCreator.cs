@@ -6,7 +6,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableUnitedStatesPoliticalPartyAffliation> unitedStatesPoliticalPartyAffliationInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    NameableDetailsCreatorFactory nameableDetailsCreatorFactory
+    TermCreatorFactory nameableDetailsCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableUnitedStatesPoliticalPartyAffliation>
 {
     public async Task<IEntityCreator<EventuallyIdentifiableUnitedStatesPoliticalPartyAffliation>> CreateAsync(IDbConnection connection) =>

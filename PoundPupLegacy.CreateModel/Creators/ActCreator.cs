@@ -7,7 +7,7 @@ internal sealed class ActCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableAct> actInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    NameableDetailsCreatorFactory nameableDetailsCreatorFactory
+    TermCreatorFactory nameableDetailsCreatorFactory
  ): IEntityCreatorFactory<EventuallyIdentifiableAct>
 {
     public async Task<IEntityCreator<EventuallyIdentifiableAct>> CreateAsync(IDbConnection connection) =>

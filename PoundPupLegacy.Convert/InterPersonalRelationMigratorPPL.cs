@@ -117,7 +117,6 @@ internal sealed class InterPersonalRelationMigratorPPL(
                         TenantId = Constants.PPL,
                         PublicationStatusId = reader.GetInt32("status"),
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id
                     },
@@ -127,7 +126,6 @@ internal sealed class InterPersonalRelationMigratorPPL(
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id < 33163 ? id : null
                     }

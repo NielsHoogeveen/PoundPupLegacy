@@ -3,7 +3,7 @@
 internal sealed class PartyPoliticalEntityRelationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReaderByUrlIdFactory,
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForExistingNode> tenantNodeReaderByUrlIdFactory,
     IEntityCreatorFactory<EventuallyIdentifiablePartyPoliticalEntityRelationForExistingParty> partyPoliticalEntityRelationCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
@@ -23,7 +23,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT(
 
     private async IAsyncEnumerable<NewPartyPoliticalEntityRelationForExistingParty> ReadPartyPoliticalEntityRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReader)
+        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, NewTenantNodeForExistingNode> tenantNodeReader)
     {
 
         var sql = $"""
@@ -110,7 +110,6 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT(
                     TenantId = Constants.CPCT,
                     PublicationStatusId = reader.GetInt32("status"),
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = id
                 }
@@ -121,7 +120,6 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT(
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = null
                 });

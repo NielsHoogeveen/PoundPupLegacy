@@ -5,7 +5,7 @@ namespace PoundPupLegacy.Convert;
 internal sealed class DocumentMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReaderByUrlIdFactory,
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForExistingNode> tenantNodeReaderByUrlIdFactory,
     IEntityCreatorFactory<EventuallyIdentifiableDocument> documentCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
@@ -26,7 +26,7 @@ internal sealed class DocumentMigratorCPCT(
     private async IAsyncEnumerable<(int, int)> GetDocumentablesWithStatus(
         IEnumerable<int> documentableIds,
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReader)
+        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, NewTenantNodeForExistingNode> tenantNodeReader)
     {
         foreach (var urlId in documentableIds) {
             yield return await GetNodeId(urlId, nodeIdReader, tenantNodeReader);
@@ -35,7 +35,7 @@ internal sealed class DocumentMigratorCPCT(
 
     private async IAsyncEnumerable<NewDocument> ReadDocuments(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReader)
+        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, NewTenantNodeForExistingNode> tenantNodeReader)
     {
 
 
@@ -123,7 +123,6 @@ internal sealed class DocumentMigratorCPCT(
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id
                     }
@@ -135,7 +134,6 @@ internal sealed class DocumentMigratorCPCT(
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = null
                 });

@@ -5,7 +5,7 @@ namespace PoundPupLegacy.Convert;
 internal sealed class OrganizationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReaderByUrlIdFactory,
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForExistingNode> tenantNodeReaderByUrlIdFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameableIdRequest, int> termIdReaderByNameableIdFactory,
     IEntityCreatorFactory<EventuallyIdentifiableOrganization> organizationCreatorFactory
 ) : MigratorCPCT(
@@ -219,10 +219,10 @@ internal sealed class OrganizationMigratorCPCT(
                     });
                 }
             }
-            var vocabularyNames = new List<VocabularyName> {
-                new VocabularyName {
+            var vocabularyNames = new List<NewTermForNewNameble> {
+                new NewTermForNewNameble {
                     VocabularyId = vocabularyId,
-                    TermName = name,
+                    Name = name,
                     ParentTermIds = await GetTermNamesForOrganizationsTypes(organizationOrganizationTypeIds).ToListAsync(),
                 }
             };
@@ -238,7 +238,6 @@ internal sealed class OrganizationMigratorCPCT(
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id
                     }
@@ -252,7 +251,6 @@ internal sealed class OrganizationMigratorCPCT(
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = null
                 });
@@ -274,7 +272,7 @@ internal sealed class OrganizationMigratorCPCT(
                 Established = reader.IsDBNull("established") ? null : (new DateTimeRange(reader.GetDateTime("established").Date, reader.GetDateTime("established").Date.AddDays(1).AddMilliseconds(-1))).ToFuzzyDate(),
                 Terminated = reader.IsDBNull("terminated") ? null : (new DateTimeRange(reader.GetDateTime("terminated").Date, reader.GetDateTime("terminated").Date.AddDays(1).AddMilliseconds(-1))).ToFuzzyDate(),
                 FileIdTileImage = null,
-                VocabularyNames = vocabularyNames,
+                Terms = vocabularyNames,
                 OrganizationTypeIds = organizationOrganizationTypeIds,
                 NodeTermIds = new List<int>(),
                 NewLocations = new List<EventuallyIdentifiableLocation>(),

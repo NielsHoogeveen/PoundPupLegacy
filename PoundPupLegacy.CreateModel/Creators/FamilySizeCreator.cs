@@ -7,7 +7,7 @@ internal sealed class FamilySizeCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableFamilySize> familySizeInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    NameableDetailsCreatorFactory nameableDetailsCreatorFactory
+    TermCreatorFactory nameableDetailsCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableFamilySize>
 {
     public async Task<IEntityCreator<EventuallyIdentifiableFamilySize>> CreateAsync(IDbConnection connection) =>

@@ -60,12 +60,12 @@ internal sealed class BindingCountryMigrator(
             var name = reader.GetString("title");
             var regionName = reader.GetString("second_level_region_name");
 
-            var vocabularyNames = new List<VocabularyName>
+            var vocabularyNames = new List<NewTermForNewNameble>
                 {
-                    new VocabularyName
+                    new NewTermForNewNameble
                     {
                         VocabularyId = vocabularyId,
-                        TermName = name,
+                        Name = name,
                         ParentTermIds = new List<int>{
                             await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
                                 Name = regionName,
@@ -91,7 +91,6 @@ internal sealed class BindingCountryMigrator(
                         TenantId = Constants.PPL,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
                         UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id
                     },
@@ -101,14 +100,13 @@ internal sealed class BindingCountryMigrator(
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id < 33163 ? id : null
                     }
                 },
                 NodeTypeId = 20,
                 Description = "",
-                VocabularyNames = vocabularyNames,
+                Terms = vocabularyNames,
                 Name = name,
                 SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     UrlId = reader.GetInt32("second_level_region_id"),

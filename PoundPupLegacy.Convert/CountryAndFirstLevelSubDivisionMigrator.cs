@@ -6,7 +6,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
-    IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
+    IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReaderByNameFactory,
     IEntityCreatorFactory<EventuallyIdentifiableCountryAndFirstAndBottomLevelSubdivision> countryAndFirstAndBottomLevelSubdivisionCreatorFactory
 ) : CountryMigrator(databaseConnections)
 {
@@ -32,7 +32,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
     private async IAsyncEnumerable<NewCountryAndFirstAndBottomLevelSubdivision> GetCountryAndFirstAndBottomLevelSubdivisions(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
-        IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, CreateModel.Term> termReader
+        IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReader
         )
     {
 
@@ -59,7 +59,6 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.ALAND
                 },
@@ -69,7 +68,6 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                     TenantId = Constants.CPCT,
                     PublicationStatusId = 2,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.ALAND
                 }
@@ -79,12 +77,12 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
             ChangedDateTime = DateTime.Now,
             PublisherId = 1,
             Description = "",
-            VocabularyNames = new List<VocabularyName>
+            Terms = new List<NewTermForNewNameble>
             {
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyIdTopics,
-                    TermName = "Åland",
+                    Name = "Åland",
                     ParentTermIds = new List<int>{
                         await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
                             Name = "Northern Europe" ,
@@ -135,7 +133,6 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
                     UrlPath = "curacao",
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.CURACAO
                 },
@@ -145,7 +142,6 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                     TenantId = Constants.CPCT,
                     PublicationStatusId = 2,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.CURACAO
                 }
@@ -155,12 +151,12 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
             ChangedDateTime = DateTime.Now,
             PublisherId = 1,
             Description = "",
-            VocabularyNames = new List<VocabularyName>
+            Terms = new List<NewTermForNewNameble>
             {
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyIdTopics,
-                    TermName = "Curaçao",
+                    Name = "Curaçao",
                     ParentTermIds = new List<int>{
                         await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
                             Name = "Caribbean",
@@ -211,7 +207,6 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
                     UrlPath = "sint_maarten",
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.SINT_MAARTEN
                 },
@@ -221,7 +216,6 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                     TenantId = Constants.CPCT,
                     PublicationStatusId = 2,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.SINT_MAARTEN
                 }
@@ -231,12 +225,12 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
             ChangedDateTime = DateTime.Now,
             PublisherId = 1,
             Description = "",
-            VocabularyNames = new List<VocabularyName>
+            Terms = new List<NewTermForNewNameble>
             {
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyIdTopics,
-                    TermName = "Sint Maarten",
+                    Name = "Sint Maarten",
                     ParentTermIds = new List<int>{
                         await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
                             Name = "Caribbean",
@@ -287,7 +281,6 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.UNITED_STATES_MINOR_OUTLYING_ISLANDS
                 },
@@ -297,7 +290,6 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                     TenantId = Constants.CPCT,
                     PublicationStatusId = 2,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.UNITED_STATES_MINOR_OUTLYING_ISLANDS
                 }
@@ -307,12 +299,12 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
             ChangedDateTime = DateTime.Now,
             PublisherId = 1,
             Description = "",
-            VocabularyNames = new List<VocabularyName>
+            Terms = new List<NewTermForNewNameble>
             {
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyIdTopics,
-                    TermName = "United States Minor Outlying Islands",
+                    Name = "United States Minor Outlying Islands",
                     ParentTermIds = new List<int>{
                         await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
                             Name = "Oceania" ,
@@ -354,7 +346,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
     private async IAsyncEnumerable<NewCountryAndFirstAndBottomLevelSubdivision> ReadCountryAndFirstAndIntermediateLevelSubdivisions(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
-        IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, CreateModel.Term> termReader
+        IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReader
     )
     {
 
@@ -422,12 +414,12 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                         reader.GetString("title");
 
             var regionName = reader.GetString("second_level_region_name");
-            var vocabularyNames = new List<VocabularyName>
+            var vocabularyNames = new List<NewTermForNewNameble>
             {
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyIdTopics,
-                    TermName = name,
+                    Name = name,
                     ParentTermIds = new List<int>{
                         await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
                             Name = regionName,
@@ -455,7 +447,6 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                         TenantId = Constants.PPL,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
                         UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id
                     },
@@ -465,14 +456,13 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id < 33163 ? id : null
                     }
                 },
                 NodeTypeId = 15,
                 Description = "",
-                VocabularyNames = vocabularyNames,
+                Terms = vocabularyNames,
                 SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("second_level_region_id")

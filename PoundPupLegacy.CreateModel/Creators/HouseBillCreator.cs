@@ -8,7 +8,7 @@ internal sealed class HouseBillCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableBill> billInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableHouseBill> houseBillInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    NameableDetailsCreatorFactory nameableDetailsCreatorFactory
+    TermCreatorFactory nameableDetailsCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableHouseBill>
 {
     public async Task<IEntityCreator<EventuallyIdentifiableHouseBill>> CreateAsync(IDbConnection connection) =>

@@ -141,17 +141,17 @@ internal sealed class OrganizationTypeMigrator(
                     VocabularyId = vocabularyIdTopics
                 }));
             }
-            var vocabularyNames = new List<VocabularyName>
+            var vocabularyNames = new List<NewTermForNewNameble>
             {
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyIdOrganizationType,
-                    TermName = name,
+                    Name = name,
                     ParentTermIds = new List<int>()
                 },
-                new VocabularyName {
+                new NewTermForNewNameble {
                     VocabularyId = vocabularyIdTopics,
-                    TermName = topicName,
+                    Name = topicName,
                     ParentTermIds = topicParentIds,
                 }
             };
@@ -172,7 +172,6 @@ internal sealed class OrganizationTypeMigrator(
                         TenantId = Constants.PPL,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
                         UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id
                     },
@@ -182,7 +181,6 @@ internal sealed class OrganizationTypeMigrator(
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id < 33163 ? id : null
                     }
@@ -195,7 +193,7 @@ internal sealed class OrganizationTypeMigrator(
                         TenantId = Constants.PPL,
                         TenantFileId = reader.GetInt32("file_id_tile_image")
                     }),
-                VocabularyNames = vocabularyNames,
+                Terms = vocabularyNames,
                 HasConcreteSubtype = reader.GetBoolean("has_concrete_subtype"),
                 NodeTermIds = new List<int>(),
             };
@@ -219,7 +217,6 @@ internal sealed class OrganizationTypeMigrator(
                         TenantId = Constants.PPL,
                         PublicationStatusId = 1,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = Constants.POLITICAL_PARTY
                     },
@@ -229,7 +226,6 @@ internal sealed class OrganizationTypeMigrator(
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = Constants.POLITICAL_PARTY
                     }
@@ -237,17 +233,17 @@ internal sealed class OrganizationTypeMigrator(
             NodeTypeId = 1,
             Description = "",
             FileIdTileImage = null,
-            VocabularyNames = new List<VocabularyName>
+            Terms = new List<NewTermForNewNameble>
             {
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyIdOrganizationType,
-                    TermName = Constants.POLITICAL_PARTY_NAME,
+                    Name = Constants.POLITICAL_PARTY_NAME,
                     ParentTermIds = new List<int>(),
                 },
-                new VocabularyName {
+                new NewTermForNewNameble {
                     VocabularyId = vocabularyIdTopics,
-                    TermName = Constants.POLITICAL_PARTY_NAME.ToLower(),
+                    Name = Constants.POLITICAL_PARTY_NAME.ToLower(),
                     ParentTermIds = new List<int>{
                         await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
                             Name = "organizations",

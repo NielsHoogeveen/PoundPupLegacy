@@ -53,7 +53,6 @@ internal sealed class ArticleMigrator(
                         TenantId = 1,
                         PublicationStatusId = reader.GetInt32("status"),
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = reader.GetInt32("id")
                     }

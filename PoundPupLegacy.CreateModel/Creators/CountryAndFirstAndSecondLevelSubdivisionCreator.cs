@@ -19,7 +19,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableBottomLevelSubdivision> bottomLevelSubdivisionInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableFirstAndSecondLevelSubdivision> firstAndSecondLevelSubdivisionInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    NameableDetailsCreatorFactory nameableDetailsCreatorFactory
+    TermCreatorFactory nameableDetailsCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableCountryAndFirstAndSecondLevelSubdivision>
 {
     public async Task<IEntityCreator<EventuallyIdentifiableCountryAndFirstAndSecondLevelSubdivision>> CreateAsync(IDbConnection connection) =>

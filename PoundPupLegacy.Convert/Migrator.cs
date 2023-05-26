@@ -52,11 +52,11 @@ internal abstract class MigratorPPL : Migrator
 internal abstract class MigratorCPCT : Migrator
 {
     protected readonly IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory;
-    protected readonly ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReaderByUrlIdFactory;
+    protected readonly ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForExistingNode> tenantNodeReaderByUrlIdFactory;
     public MigratorCPCT(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReaderByUrlIdFactory
+        ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForExistingNode> tenantNodeReaderByUrlIdFactory
     ) : base(databaseConnections.PostgressConnection, databaseConnections.MysqlConnectionCPCT)
     {
         this.nodeIdReaderFactory = nodeIdReaderFactory;
@@ -65,7 +65,7 @@ internal abstract class MigratorCPCT : Migrator
     protected async Task<(int, int)> GetNodeId(
         int urlId,
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReader)
+        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, NewTenantNodeForExistingNode> tenantNodeReader)
     {
 
         var (id, ownerId) = GetUrlIdAndTenant(urlId);

@@ -3,7 +3,7 @@
 internal sealed class NodeTermMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
+    ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, ImmediatelyIdentifiableTerm> termReaderByNameableIdFactory,
     IEntityCreatorFactory<NodeTerm> nodeTermCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
@@ -19,8 +19,12 @@ internal sealed class NodeTermMigrator(
     }
     private async IAsyncEnumerable<NodeTerm> ReadNodeTerms(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        ISingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId)
+        ISingleItemDatabaseReader<TermReaderByNameableIdRequest, ImmediatelyIdentifiableTerm> termReaderByNameableId)
     {
+        var vocabularyIdTopics = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
 
         var sql = $"""
             SELECT
@@ -92,9 +96,8 @@ internal sealed class NodeTermMigrator(
             });
 
             var term = await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
-                OwnerId = Constants.OWNER_SYSTEM,
                 NameableId = nameableId,
-                VocabularyName = Constants.VOCABULARY_TOPICS,
+                VocabularyId = vocabularyIdTopics,
             });
             yield return new NodeTerm {
                 NodeId = nodeId,

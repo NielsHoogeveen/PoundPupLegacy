@@ -87,7 +87,6 @@ internal sealed class PollMigrator(
                             TenantId = Constants.PPL,
                             PublicationStatusId = reader.GetInt32("status"),
                             UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                            NodeId = null,
                             SubgroupId = null,
                             UrlId = id
                         }
@@ -174,7 +173,6 @@ internal sealed class PollMigrator(
                         TenantId = Constants.PPL,
                         PublicationStatusId = reader.GetInt32("status"),
                         UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id
                     }
@@ -262,7 +260,6 @@ internal sealed class PollMigrator(
                                 TenantId = Constants.PPL,
                                 PublicationStatusId = reader.GetInt32("status"),
                                 UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                                NodeId = null,
                                 SubgroupId = null,
                                 UrlId = id
                             }

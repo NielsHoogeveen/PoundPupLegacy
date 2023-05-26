@@ -9,7 +9,7 @@ internal sealed class DisruptedPlacementCaseCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableCase> caseInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableDisruptedPlacementCase> disruptedPlacementCaseInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    NameableDetailsCreatorFactory nameableDetailsCreatorFactory,
+    TermCreatorFactory nameableDetailsCreatorFactory,
     LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
     IEntityCreatorFactory<ExistingCaseNewCaseParties> caseCaseTypeCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableDisruptedPlacementCase>

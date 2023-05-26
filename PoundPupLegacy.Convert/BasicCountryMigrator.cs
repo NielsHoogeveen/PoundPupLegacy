@@ -149,7 +149,6 @@ internal sealed class BasicCountryMigrator(
                         TenantId = 1,
                         PublicationStatusId = 1,
                         UrlPath = "antigua_and_barbuda",
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = Constants.ANTIGUA_AND_BARBUDA
                     }
@@ -157,12 +156,12 @@ internal sealed class BasicCountryMigrator(
             NodeTypeId = 13,
             Name = "Antigua and Barbuda",
             Description = "",
-            VocabularyNames = new List<VocabularyName>
+            Terms = new List<NewTermForNewNameble>
             {
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyId,
-                    TermName = "Antigua and Barbuda",
+                    Name = "Antigua and Barbuda",
                     ParentTermIds = new List<int>{
                         await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
                             Name = "Caribbean" ,
@@ -206,7 +205,6 @@ internal sealed class BasicCountryMigrator(
                     TenantId = 1,
                     PublicationStatusId = 1,
                     UrlPath = "palestine",
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.PALESTINE
                 }
@@ -214,12 +212,12 @@ internal sealed class BasicCountryMigrator(
             NodeTypeId = 13,
             Name = "Palestine",
             Description = "",
-            VocabularyNames = new List<VocabularyName>
+            Terms = new List<NewTermForNewNameble>
             {
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyId,
-                    TermName = "Palestine",
+                    Name = "Palestine",
                     ParentTermIds = new List<int>{
                         await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
                             Name = "Western Asia" ,
@@ -263,7 +261,6 @@ internal sealed class BasicCountryMigrator(
                     TenantId = 1,
                     PublicationStatusId = 1,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.SAINT_HELENA_ETC
                 }
@@ -271,12 +268,12 @@ internal sealed class BasicCountryMigrator(
             NodeTypeId = 13,
             Name = "Saint Helena, Ascension and Tristan da Cunha",
             Description = "",
-            VocabularyNames = new List<VocabularyName>
+            Terms = new List<NewTermForNewNameble>
             {
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyId,
-                    TermName = "Saint Helena, Ascension and Tristan da Cunha",
+                    Name = "Saint Helena, Ascension and Tristan da Cunha",
                     ParentTermIds = new List<int>{
                         await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
                             Name = "Western Africa" ,
@@ -320,7 +317,6 @@ internal sealed class BasicCountryMigrator(
                     TenantId = 1,
                     PublicationStatusId = 1,
                     UrlPath = "south_sudan",
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = Constants.SOUTH_SUDAN
                 }
@@ -328,12 +324,12 @@ internal sealed class BasicCountryMigrator(
             NodeTypeId = 13,
             Name = "South Sudan",
             Description = "",
-            VocabularyNames = new List<VocabularyName>
+            Terms = new List<NewTermForNewNameble>
             {
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyId,
-                    TermName = "South Sudan",
+                    Name = "South Sudan",
                     ParentTermIds = new List<int>{
                         await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
                             Name = "Eastern Africa" ,
@@ -487,12 +483,12 @@ internal sealed class BasicCountryMigrator(
             var regionName = reader.GetString("second_level_region_name");
             var topicName = reader.GetString("topic_name");
 
-            var vocabularyNames = new List<VocabularyName>
+            var vocabularyNames = new List<NewTermForNewNameble>
             {
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyId,
-                    TermName = topicName,
+                    Name = topicName,
                     ParentTermIds = new List<int>{
                         await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
                             Name = regionName,
@@ -517,7 +513,6 @@ internal sealed class BasicCountryMigrator(
                         TenantId = Constants.PPL,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
                         UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id
                     },
@@ -527,7 +522,6 @@ internal sealed class BasicCountryMigrator(
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id < 33163 ? id : null
                     }
@@ -535,7 +529,7 @@ internal sealed class BasicCountryMigrator(
                 NodeTypeId = 13,
                 Name = name,
                 Description = "",
-                VocabularyNames = vocabularyNames,
+                Terms = vocabularyNames,
                 SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("second_level_region_id"),

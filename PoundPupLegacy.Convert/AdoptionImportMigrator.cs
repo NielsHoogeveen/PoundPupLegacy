@@ -3,7 +3,7 @@
 internal sealed class AdoptionImportMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    IMandatorySingleItemDatabaseReaderFactory<NodeReaderByUrlIdRequest, EventuallyIdentifiableNode> nodeReaderFactory,
+    IMandatorySingleItemDatabaseReaderFactory<NodeReaderByUrlIdRequest, ImmediatelyIdentifiableNode> nodeReaderFactory,
     IEntityCreatorFactory<EventuallyIdentifiableInterCountryRelation> interCountryRelationCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
@@ -113,7 +113,7 @@ internal sealed class AdoptionImportMigrator(
         int countryIdFrom,
         int countryIdTo,
         int year, int numberOfChildren,
-        IMandatorySingleItemDatabaseReader<NodeReaderByUrlIdRequest, EventuallyIdentifiableNode> nodeReader,
+        IMandatorySingleItemDatabaseReader<NodeReaderByUrlIdRequest, ImmediatelyIdentifiableNode> nodeReader,
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
@@ -158,7 +158,6 @@ internal sealed class AdoptionImportMigrator(
                     TenantId = 1,
                     PublicationStatusId = 1,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = null
                 }
@@ -167,7 +166,7 @@ internal sealed class AdoptionImportMigrator(
         };
     }
     private async IAsyncEnumerable<NewInterCountryRelation> ReadAdoptionExportYears(
-        IMandatorySingleItemDatabaseReader<NodeReaderByUrlIdRequest, EventuallyIdentifiableNode> nodeReader,
+        IMandatorySingleItemDatabaseReader<NodeReaderByUrlIdRequest, ImmediatelyIdentifiableNode> nodeReader,
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 

@@ -66,7 +66,6 @@ internal sealed class DiscussionEditService(
                 Id = null,
                 PublicationStatusId = tn.TenantNode!.PublicationStatusId,
                 TenantId = tn.TenantNode!.TenantId,
-                NodeId = null,
                 UrlId = null,
                 UrlPath = tn.TenantNode!.UrlPath,
                 SubgroupId = tn.TenantNode!.SubgroupId,

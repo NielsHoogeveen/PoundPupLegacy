@@ -48,12 +48,12 @@ internal sealed class HagueStatusMigrator(
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
-            var vocabularyNames = new List<VocabularyName>
+            var vocabularyNames = new List<NewTermForNewNameble>
                 {
-                    new VocabularyName
+                    new NewTermForNewNameble
                     {
                         VocabularyId = vocabularyId,
-                        TermName = name,
+                        Name = name,
                         ParentTermIds = new List<int>(),
                     }
                 };
@@ -74,7 +74,6 @@ internal sealed class HagueStatusMigrator(
                         TenantId = Constants.PPL,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
                         UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id
                     },
@@ -84,7 +83,6 @@ internal sealed class HagueStatusMigrator(
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id < 33163 ? id : null
                     }
@@ -92,7 +90,7 @@ internal sealed class HagueStatusMigrator(
                 NodeTypeId = 8,
                 Description = "",
                 FileIdTileImage = null,
-                VocabularyNames = vocabularyNames,
+                Terms = vocabularyNames,
                 NodeTermIds = new List<int>(),
             };
 

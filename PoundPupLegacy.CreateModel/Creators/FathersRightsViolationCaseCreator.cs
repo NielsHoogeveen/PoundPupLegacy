@@ -9,7 +9,7 @@ internal sealed class FathersRightsViolationCaseCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableCase> caseInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableFathersRightsViolationCase> fathersRightsViolationCaseInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    NameableDetailsCreatorFactory nameableDetailsCreatorFactory,
+    TermCreatorFactory nameableDetailsCreatorFactory,
     LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
     IEntityCreatorFactory<ExistingCaseNewCaseParties> caseCaseTypeCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableFathersRightsViolationCase>

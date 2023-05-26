@@ -77,10 +77,10 @@ internal sealed class DeportationCaseMigrator(
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
-            var vocabularyNames = new List<VocabularyName> {
-                new VocabularyName {
+            var vocabularyNames = new List<NewTermForNewNameble> {
+                new NewTermForNewNameble {
                     VocabularyId = vocabularyId,
-                    TermName = name,
+                    Name = name,
                     ParentTermIds = parentTermIds,
                 }
             };
@@ -100,7 +100,6 @@ internal sealed class DeportationCaseMigrator(
                         TenantId = Constants.PPL,
                         PublicationStatusId = reader.GetInt32("status"),
                         UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id
                     },
@@ -110,13 +109,12 @@ internal sealed class DeportationCaseMigrator(
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id < 33163 ? id : null
                     }
                 },
                 NodeTypeId = reader.GetInt32("node_type_id"),
-                VocabularyNames = vocabularyNames,
+                Terms = vocabularyNames,
                 Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date"))?.ToFuzzyDate(),
                 Description = reader.GetString("description"),
                 SubdivisionIdFrom = reader.IsDBNull("subdivision_id_from")

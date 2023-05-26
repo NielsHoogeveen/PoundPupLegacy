@@ -98,12 +98,12 @@ internal sealed class TypeOfAbuserMigrator(
             var topicName = reader.IsDBNull("topic_name") ? null : reader.GetString("topic_name");
             var parentTopicName = reader.IsDBNull("parent_topic_name") ? null : reader.GetString("parent_topic_name");
 
-            var vocabularyNames = new List<VocabularyName>
+            var vocabularyNames = new List<NewTermForNewNameble>
             {
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyIdTypeOfAbuser,
-                    TermName = name,
+                    Name = name,
                     ParentTermIds = new List<int>(),
                 }
             };
@@ -116,9 +116,9 @@ internal sealed class TypeOfAbuserMigrator(
                     }));
                 }
 
-                vocabularyNames.Add(new VocabularyName {
+                vocabularyNames.Add(new NewTermForNewNameble {
                     VocabularyId = vocabularyIdTopics,
-                    TermName = topicName,
+                    Name = topicName,
                     ParentTermIds = lst
                 });
             }
@@ -139,7 +139,6 @@ internal sealed class TypeOfAbuserMigrator(
                         TenantId = Constants.PPL,
                         PublicationStatusId = reader.GetInt32("status"),
                         UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id
                     },
@@ -149,7 +148,6 @@ internal sealed class TypeOfAbuserMigrator(
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id < 33163 ? id : null
                     }
@@ -162,7 +160,7 @@ internal sealed class TypeOfAbuserMigrator(
                         TenantId = Constants.PPL,
                         TenantFileId = reader.GetInt32("file_id_tile_image"),
                     }),
-                VocabularyNames = vocabularyNames,
+                Terms = vocabularyNames,
                 NodeTermIds = new List<int>(),
             };
 

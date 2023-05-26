@@ -8,7 +8,7 @@ internal sealed class SenateBillCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableBill> billInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableSenateBill> senateBillInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    NameableDetailsCreatorFactory nameableDetailsCreatorFactory
+    TermCreatorFactory nameableDetailsCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableSenateBill>
 {
     public async Task<IEntityCreator<EventuallyIdentifiableSenateBill>> CreateAsync(IDbConnection connection) => 

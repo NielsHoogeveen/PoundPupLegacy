@@ -428,7 +428,6 @@ internal class MemberOfCongressMigrator(
                                         TenantId = 1,
                                         PublicationStatusId = 1,
                                         UrlPath = null,
-                                        NodeId = null,
                                         SubgroupId = null,
                                         UrlId = null
                                     }
@@ -455,7 +454,6 @@ internal class MemberOfCongressMigrator(
                                             TenantId = 1,
                                             PublicationStatusId = 1,
                                             UrlPath = null,
-                                            NodeId = null,
                                             SubgroupId = null,
                                             UrlId = null
                                         }
@@ -493,7 +491,6 @@ internal class MemberOfCongressMigrator(
                                     TenantId = 1,
                                     PublicationStatusId = 1,
                                     UrlPath = null,
-                                    NodeId = null,
                                     SubgroupId = null,
                                     UrlId = null
                                 }
@@ -528,7 +525,6 @@ internal class MemberOfCongressMigrator(
                                         TenantId = 1,
                                         PublicationStatusId = 1,
                                         UrlPath = null,
-                                        NodeId = null,
                                         SubgroupId = null,
                                         UrlId = null
                                     }
@@ -606,10 +602,10 @@ internal class MemberOfCongressMigrator(
 
                     }
                     var title = memberOfCongress.name.official_full is null ? $"{memberOfCongress.name.first} {memberOfCongress.name.middle} {memberOfCongress.name.last} {memberOfCongress.name.suffix}".Replace("  ", " ") : memberOfCongress.name.official_full;
-                    var vocabularyNames = new List<VocabularyName> {
-                        new VocabularyName {
+                    var vocabularyNames = new List<NewTermForNewNameble> {
+                        new NewTermForNewNameble {
                             VocabularyId = vocabularyId,
-                            TermName = title,
+                            Name = title,
                             ParentTermIds = new List<int>(),
                         }
                     };
@@ -628,7 +624,6 @@ internal class MemberOfCongressMigrator(
                                 TenantId = 1,
                                 PublicationStatusId = 1,
                                 UrlPath = null,
-                                NodeId = null,
                                 SubgroupId = null,
                                 UrlId = null
                             }
@@ -636,7 +631,7 @@ internal class MemberOfCongressMigrator(
                         NodeTypeId = 24,
                         Description = "",
                         FileIdTileImage = null,
-                        VocabularyNames = vocabularyNames,
+                        Terms = vocabularyNames,
                         DateOfBirth = memberOfCongress.bio.birthday,
                         DateOfDeath = null,
                         FileIdPortrait = null,
@@ -944,7 +939,6 @@ internal class MemberOfCongressMigrator(
                         TenantId = 1,
                         PublicationStatusId = 1,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = null
                     },
@@ -954,7 +948,6 @@ internal class MemberOfCongressMigrator(
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = null
                     }

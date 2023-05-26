@@ -12,7 +12,7 @@ internal sealed class BoundCountryCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableISOCodedSubdivision> isoCodedSubdivisionInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableBoundCountry> boundCountryInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    NameableDetailsCreatorFactory nameableDetailsCreatorFactory
+    TermCreatorFactory nameableDetailsCreatorFactory
 
 ) : IEntityCreatorFactory<EventuallyIdentifiableBoundCountry>
 {

@@ -9,7 +9,7 @@ internal sealed class FirstLevelGlobalRegionCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableGlobalRegion> globalRegionInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableFirstLevelGlobalRegion> firstLevelGlobalRegionInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    NameableDetailsCreatorFactory nameableDetailsCreatorFactory
+    TermCreatorFactory nameableDetailsCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableFirstLevelGlobalRegion>
 {
     public async Task<IEntityCreator<EventuallyIdentifiableFirstLevelGlobalRegion>> CreateAsync(IDbConnection connection) =>

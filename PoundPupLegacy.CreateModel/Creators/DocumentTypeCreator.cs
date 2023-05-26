@@ -6,7 +6,7 @@ internal sealed class DocumentTypeCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableDocumentType> documentTypeInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    NameableDetailsCreatorFactory nameableDetailsCreatorFactory
+    TermCreatorFactory nameableDetailsCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableDocumentType>
 {
     public async Task<IEntityCreator<EventuallyIdentifiableDocumentType>> CreateAsync(IDbConnection connection) =>

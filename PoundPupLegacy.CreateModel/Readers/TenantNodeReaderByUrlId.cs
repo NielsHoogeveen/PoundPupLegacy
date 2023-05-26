@@ -7,7 +7,7 @@ public sealed class TenantNodeReaderByUrlIdRequest : IRequest
     public required int TenantId { get; init; }
     public required int UrlId { get; init; }
 }
-internal sealed class TenantNodeReaderByUrlIdFactory : SingleItemDatabaseReaderFactory<Request, NewTenantNodeForNewNode>
+internal sealed class TenantNodeReaderByUrlIdFactory : SingleItemDatabaseReaderFactory<Request, NewTenantNodeForExistingNode>
 {
     private static readonly NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
     private static readonly NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
@@ -43,9 +43,9 @@ internal sealed class TenantNodeReaderByUrlIdFactory : SingleItemDatabaseReaderF
         };
     }
 
-    protected override NewTenantNodeForNewNode Read(NpgsqlDataReader reader)
+    protected override NewTenantNodeForExistingNode Read(NpgsqlDataReader reader)
     {
-        return new NewTenantNodeForNewNode {
+        return new NewTenantNodeForExistingNode {
             Id = IdReader.GetValue(reader),
             TenantId = TenantIdReader.GetValue(reader),
             UrlId = UrlIdReader.GetValue(reader),

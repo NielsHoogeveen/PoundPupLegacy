@@ -375,4 +375,12 @@ namespace PoundPupLegacy.Common
             return reader.GetBoolean(ordinal);
         }
     }
+
+    public sealed record class IntListValueReader : ValueReader<List<int>>
+    {
+        public override List<int> GetValue(NpgsqlDataReader reader)
+        {
+            return reader.GetFieldValue<int[]>(reader.GetOrdinal(Name)).ToList();
+        }
+    }
 }

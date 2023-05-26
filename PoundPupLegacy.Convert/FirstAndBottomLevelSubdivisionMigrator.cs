@@ -6,8 +6,8 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
-        ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
-        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
+        ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, ImmediatelyIdentifiableTerm> termReaderByNameableIdFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReaderByNameFactory,
         IEntityCreatorFactory<EventuallyIdentifiableFirstAndBottomLevelSubdivision> firstAndBottomLevelSubdivisionCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
@@ -15,8 +15,8 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
     private async IAsyncEnumerable<NewFirstAndBottomLevelSubdivision> ReadDirectSubDivisionCsv(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
-        ISingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId,
-        IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, CreateModel.Term> termReaderByName
+        ISingleItemDatabaseReader<TermReaderByNameableIdRequest, ImmediatelyIdentifiableTerm> termReaderByNameableId,
+        IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReaderByName
         )
     {
 
@@ -40,21 +40,20 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
                 UrlId = int.Parse(parts[7])
             });
             var countryName = (await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
-                OwnerId = Constants.OWNER_SYSTEM,
                 NameableId = countryId,
-                VocabularyName = Constants.VOCABULARY_TOPICS
+                VocabularyId = vocabularyIdTopics
             }))!.Name;
             yield return new NewFirstAndBottomLevelSubdivision {
                 Id = null,
                 CreatedDateTime = DateTime.Parse(parts[1]),
                 ChangedDateTime = DateTime.Parse(parts[2]),
                 Description = "",
-                VocabularyNames = new List<VocabularyName>
+                Terms = new List<NewTermForNewNameble>
                 {
-                    new VocabularyName
+                    new NewTermForNewNameble
                     {
                         VocabularyId = vocabularyIdTopics,
-                        TermName = title,
+                        Name = title,
                         ParentTermIds = new List<int> {
                             await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
                                 Name = countryName ,
@@ -74,7 +73,6 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
                         TenantId = Constants.PPL,
                         PublicationStatusId = int.Parse(parts[5]),
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id
                     },
@@ -84,7 +82,6 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id < 33163 ? id : null
                     }
@@ -376,7 +373,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
     private async IAsyncEnumerable<NewFirstAndBottomLevelSubdivision> ReadFormalFirstLevelSubdivisions(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
-        IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, CreateModel.Term> termReaderByName
+        IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReaderByName
         )
     {
 
@@ -453,12 +450,12 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
 
             var topicName = reader.GetString("topic_name");
             var countryName = reader.GetString("country_name");
-            var vocabularyNames = new List<VocabularyName>
+            var vocabularyNames = new List<NewTermForNewNameble>
             {
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyIdTopics,
-                    TermName = topicName,
+                    Name = topicName,
                     ParentTermIds = new List<int>{
                         await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
                             Name = countryName ,
@@ -485,13 +482,12 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
                         TenantId = 1,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
                         UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id
                     }
                 },
                 NodeTypeId = 17,
-                VocabularyNames = vocabularyNames,
+                Terms = vocabularyNames,
                 Description = "",
                 CountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     TenantId = Constants.PPL,

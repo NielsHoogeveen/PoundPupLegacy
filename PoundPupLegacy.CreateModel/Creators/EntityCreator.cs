@@ -23,15 +23,17 @@ public class LocatableDetailsCreatorFactory(
         );
     }
 }
-public class NameableDetailsCreatorFactory(
-    IDatabaseInserterFactory<Term> termInserterFactory,
+public class TermCreatorFactory(
+    IDatabaseInserterFactory<EventuallyIdentifiableTermForExistingNameable> termInserterFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory
 )
 {
-    public async Task<NameableDetailsCreator> CreateAsync(IDbConnection connection)
+    public async Task<TermCreator> CreateAsync(IDbConnection connection)
     {
-        return new NameableDetailsCreator(
-            await termInserterFactory.CreateAsync(connection),
+        return new TermCreator(
+            new() {
+                await termInserterFactory.CreateAsync(connection),
+            },
             await termHierarchyInserterFactory.CreateAsync(connection)
         );
     }
@@ -58,37 +60,31 @@ public class LocatableDetailsCreator(
         await locationLocatableInserter.DisposeAsync();
     }
 }
-public class NameableDetailsCreator(
-    IDatabaseInserter<Term> termInserter,
+public class TermCreator(
+    List<IDatabaseInserter<EventuallyIdentifiableTermForExistingNameable>> inserters,
     IDatabaseInserter<TermHierarchy> termHierarchyInserter
-) : IAsyncDisposable
+) : InsertingEntityCreator<EventuallyIdentifiableTermForExistingNameable>(inserters)
 {
-    public async Task Process(EventuallyIdentifiableNameable nameable)
+    public override async Task ProcessAsync(EventuallyIdentifiableTermForExistingNameable element)
     {
-        foreach (var vocabularyName in nameable.VocabularyNames) {
-            var term = new Term {
-                Name = vocabularyName.TermName,
-                Id = null,
-                VocabularyId = vocabularyName.VocabularyId,
-                NameableId = (int)nameable.Id!
-            };
-            await termInserter.InsertAsync(term);
-            foreach (var parent in vocabularyName.ParentTermIds) {
-                await termHierarchyInserter.InsertAsync(new TermHierarchy { TermIdPartent = parent, TermIdChild = (int)term.Id! });
-            }
+        await base.ProcessAsync(element);
+        foreach (var parent in element.ParentTermIds) {
+            await termHierarchyInserter.InsertAsync(new TermHierarchy 
+            { 
+                TermIdPartent = parent, 
+                TermIdChild = element.Id!.Value 
+            });
         }
     }
-
-    public async ValueTask DisposeAsync()
+    public override async ValueTask DisposeAsync()
     {
-        await termInserter.DisposeAsync();
         await termHierarchyInserter.DisposeAsync();
     }
 }
 public class CaseCreator<T>(
     List<IDatabaseInserter<T>> inserters,
     NodeDetailsCreator nodeDetailsCreator,
-    NameableDetailsCreator nameableDetailsCreator,
+    TermCreator nameableDetailsCreator,
     LocatableDetailsCreator locatableDetailsCreator,
     IEntityCreator<ExistingCaseNewCaseParties> casePartiesCreator
 ) : LocatableCreator<T>(
@@ -119,7 +115,7 @@ public class CaseCreator<T>(
 public class LocatableCreator<T>(
     List<IDatabaseInserter<T>> inserters,
     NodeDetailsCreator nodeDetailsCreator,
-    NameableDetailsCreator nameableDetailsCreator,
+    TermCreator nameableDetailsCreator,
     LocatableDetailsCreator locatableDetailsCreator
 ) : NameableCreator<T>(
     inserters,
@@ -143,7 +139,7 @@ public class LocatableCreator<T>(
 public class NameableCreator<T>(
     List<IDatabaseInserter<T>> inserters,
     NodeDetailsCreator nodeDetailsCreator,
-    NameableDetailsCreator nameableDetailsCreator
+    TermCreator termCreator
 ) : NodeCreator<T>(
     inserters,
     nodeDetailsCreator
@@ -153,18 +149,21 @@ public class NameableCreator<T>(
     public override async Task ProcessAsync(T element, int id)
     {
         await base.ProcessAsync(element, id);
-        await nameableDetailsCreator.Process(element);
+        await termCreator
+            .CreateAsync(element.Terms
+                .Select(x => x.ResolveNameable(id))
+                .ToAsyncEnumerable());
     }
 
     public override async ValueTask DisposeAsync()
     {
         await base.DisposeAsync();
-        await nameableDetailsCreator.DisposeAsync();
+        await termCreator.DisposeAsync();
     }
 }
 public class NodeDetailsCreatorFactory(
     IDatabaseInserterFactory<NodeTerm> nodeTermInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableTenantNodeForNewNode> tenantNodeInserterFactory
+    IDatabaseInserterFactory<EventuallyIdentifiableTenantNodeForExistingNode> tenantNodeInserterFactory
 )
 { 
     public async Task<NodeDetailsCreator> CreateAsync(IDbConnection connection)
@@ -178,18 +177,21 @@ public class NodeDetailsCreatorFactory(
 
 public class NodeDetailsCreator(
     IDatabaseInserter<NodeTerm> nodeTermInserter,
-    IDatabaseInserter<NewTenantNodeForNewNode> tenantNodeInserter
+    IDatabaseInserter<EventuallyIdentifiableTenantNodeForExistingNode> tenantNodeInserter
 ) : IAsyncDisposable
 {
-    public async Task ProcessAsync(EventuallyIdentifiableNode element)
+    public async Task ProcessAsync(EventuallyIdentifiableNode element, int id)
     {
         foreach (var nodeTermId in element.NodeTermIds) {
-            var nodeTerm = new NodeTerm { NodeId = element.Id!.Value, TermId = nodeTermId };
-            await nodeTermInserter.InsertAsync(nodeTerm);
+            await nodeTermInserter.InsertAsync(new NodeTerm 
+            { 
+                NodeId = id, 
+                TermId = nodeTermId 
+            });
         }
-        foreach (var tenantNode in element.TenantNodes) {
-            tenantNode.NodeId = element.Id;
-            await tenantNodeInserter.InsertAsync(tenantNode);
+        foreach(var tenantNode in element.TenantNodes)
+        { 
+            await tenantNodeInserter.InsertAsync(tenantNode.ResolveNodeId(id));
         }
     }
 
@@ -209,13 +211,12 @@ public class NodeCreator<T>(
 {
     public virtual async Task ProcessAsync(T element, int id)
     {
-        await Task.CompletedTask;
+        await nodeDetailsCreator.ProcessAsync(element, id);
     }
 
     public sealed override async Task ProcessAsync(T element)
     {
         await base.ProcessAsync(element);
-        await nodeDetailsCreator.ProcessAsync(element);
         await ProcessAsync(element, element.Id!.Value);
     }
 

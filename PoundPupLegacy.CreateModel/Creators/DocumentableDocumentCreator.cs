@@ -2,32 +2,38 @@
 
 internal sealed class DocumentableDocumentCreatorFactory(
     IDatabaseInserterFactory<NodeTerm> nodeTermInserterFactory,
-    ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, Term> termReaderByNameableIdFactory
+    IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameableIdRequest, int> termReaderByNameableIdFactory
 ) : IEntityCreatorFactory<DocumentableDocument>
 {
     public async Task<IEntityCreator<DocumentableDocument>> CreateAsync(IDbConnection connection) =>
         new DocumentableDocumentCreator(
             await nodeTermInserterFactory.CreateAsync(connection),
+            await nodeIdReaderFactory.CreateAsync(connection),
             await termReaderByNameableIdFactory.CreateAsync(connection)
         );
 }
 
 public class DocumentableDocumentCreator(
     IDatabaseInserter<NodeTerm> nodeTermInserter,
-    ISingleItemDatabaseReader<TermReaderByNameableIdRequest, Term> termReader
+    IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+    IMandatorySingleItemDatabaseReader<TermIdReaderByNameableIdRequest, int> termReader
 ) : EntityCreator<DocumentableDocument>
 {
     public override async Task ProcessAsync(DocumentableDocument element)
     {
         await base.ProcessAsync(element);
-        var term = await termReader.ReadAsync(new TermReaderByNameableIdRequest {
-            OwnerId = Constants.OWNER_SYSTEM,
+        var vocabularyIdTopics = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
+        var termId = await termReader.ReadAsync(new TermIdReaderByNameableIdRequest {
             NameableId = element.DocumentableId,
-            VocabularyName = Constants.VOCABULARY_TOPICS,
+            VocabularyId = vocabularyIdTopics,
         });
         await nodeTermInserter.InsertAsync(new NodeTerm {
             NodeId = element.DocumentId,
-            TermId = (int)term!.Id!,
+            TermId = termId,
         });
     }
 
@@ -36,5 +42,6 @@ public class DocumentableDocumentCreator(
         await base.DisposeAsync();
         await nodeTermInserter.DisposeAsync();
         await termReader.DisposeAsync();
+        await nodeIdReader.DisposeAsync();
     }
 }

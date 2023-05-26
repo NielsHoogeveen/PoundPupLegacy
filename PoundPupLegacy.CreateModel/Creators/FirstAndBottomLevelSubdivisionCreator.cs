@@ -14,7 +14,7 @@ internal sealed class FirstAndBottomLevelSubdivisionCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableBottomLevelSubdivision> bottomLevelSubdivisionInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableFirstAndBottomLevelSubdivision> firstAndBottomLevelSubdivisionInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    NameableDetailsCreatorFactory nameableDetailsCreatorFactory
+    TermCreatorFactory nameableDetailsCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableFirstAndBottomLevelSubdivision>
 {
     public async Task<IEntityCreator<EventuallyIdentifiableFirstAndBottomLevelSubdivision>> CreateAsync(IDbConnection connection) =>

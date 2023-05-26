@@ -9,7 +9,7 @@ internal sealed class PersonCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableParty> partyInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiablePerson> personInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    NameableDetailsCreatorFactory nameableDetailsCreatorFactory,
+    TermCreatorFactory nameableDetailsCreatorFactory,
     LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
     IEntityCreatorFactory<EventuallyIdentifiableProfessionalRoleForExistingPerson> professionalRoleCreatorFactory,
     IEntityCreatorFactory<EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants> personOrganizationRelationCreatorFactory,
@@ -43,7 +43,7 @@ internal sealed class PersonCreatorFactory(
 internal sealed class PersonCreator(
     List<IDatabaseInserter<EventuallyIdentifiablePerson>> inserters,
     NodeDetailsCreator nodeDetailsCreator,
-    NameableDetailsCreator nameableDetailsCreator,
+    TermCreator nameableDetailsCreator,
     LocatableDetailsCreator locatableDetailsCreator,
     IEntityCreator<EventuallyIdentifiableProfessionalRoleForExistingPerson> professionalRoleCreator,
     IEntityCreator<EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants> personOrganizationRelationCreator,

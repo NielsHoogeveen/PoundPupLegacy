@@ -11,7 +11,7 @@ internal sealed class BindingCountryCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableTopLevelCountry> topLevelCountryInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableBindingCountry> bindingCountryInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    NameableDetailsCreatorFactory nameableDetailsCreatorFactory
+    TermCreatorFactory nameableDetailsCreatorFactory
     
 ) : IEntityCreatorFactory<EventuallyIdentifiableBindingCountry>
 {

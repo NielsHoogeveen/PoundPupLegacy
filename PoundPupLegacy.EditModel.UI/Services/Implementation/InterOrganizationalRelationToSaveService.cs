@@ -59,7 +59,6 @@ internal class InterOrganizationalRelationToSaveService(
                         TenantId = Constants.PPL,
                         PublicationStatusId = tenantNode.PublicationStatusId,
                         UrlPath = tenantNode.UrlPath,
-                        NodeId = null,
                         SubgroupId = tenantNode.SubgroupId,
                         UrlId = null
                     }).ToList(),

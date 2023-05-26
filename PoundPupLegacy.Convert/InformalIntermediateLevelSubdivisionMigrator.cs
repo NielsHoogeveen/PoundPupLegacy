@@ -7,8 +7,8 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
-    ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableIdFactory,
-    IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, CreateModel.Term> termReaderByNameFactory,
+    ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, ImmediatelyIdentifiableTerm> termReaderByNameableIdFactory,
+    IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReaderByNameFactory,
     IEntityCreatorFactory<EventuallyIdentifiableInformalIntermediateLevelSubdivision> informalIntermediateLevelSubdivisionCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
@@ -17,8 +17,8 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
     private async IAsyncEnumerable<NewInformalIntermediateLevelSubdivision> ReadInformalIntermediateLevelSubdivisionCsv(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
-        ISingleItemDatabaseReader<TermReaderByNameableIdRequest, CreateModel.Term> termReaderByNameableId,
-        IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, CreateModel.Term> termReaderByName
+        ISingleItemDatabaseReader<TermReaderByNameableIdRequest, ImmediatelyIdentifiableTerm> termReaderByNameableId,
+        IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReaderByName
         )
     {
         var vocabularyIdSubdivisionType = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
@@ -41,19 +41,18 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
             });
             var countryName = (await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
                 NameableId = countryId,
-                OwnerId = Constants.OWNER_SYSTEM,
-                VocabularyName = Constants.VOCABULARY_TOPICS
+                VocabularyId = vocabularyIdTopics
             }))!.Name;
             yield return new NewInformalIntermediateLevelSubdivision {
                 Id = null,
                 CreatedDateTime = DateTime.Parse(parts[1]),
                 ChangedDateTime = DateTime.Parse(parts[2]),
-                VocabularyNames = new List<VocabularyName>
+                Terms = new List<NewTermForNewNameble>
                 {
-                    new VocabularyName
+                    new NewTermForNewNameble
                     {
                         VocabularyId = vocabularyIdTopics,
-                        TermName = title,
+                        Name = title,
                         ParentTermIds = new List<int> {
                             await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
                                 Name = countryName ,
@@ -75,7 +74,6 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
                         TenantId = Constants.PPL,
                         PublicationStatusId = int.Parse(parts[5]),
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id
                     },
@@ -85,7 +83,6 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id < 33163 ? id : null
                     }
@@ -127,7 +124,7 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
     private async IAsyncEnumerable<NewInformalIntermediateLevelSubdivision> ReadInformalIntermediateLevelSubdivisions(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
-        IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, CreateModel.Term> termReaderByName
+        IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReaderByName
     )
     {
 
@@ -173,12 +170,12 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
 
             var id = reader.GetInt32("id");
             var title = $"{reader.GetString("title")} (region of the USA)";
-            var vocabularyNames = new List<VocabularyName>
+            var vocabularyNames = new List<NewTermForNewNameble>
             {
-                new VocabularyName
+                new NewTermForNewNameble
                 {
                     VocabularyId = vocabularyIdTopics,
-                    TermName = title,
+                    Name = title,
                     ParentTermIds = parentTermIds
                 }
             };
@@ -199,7 +196,6 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
                         TenantId = Constants.PPL,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
                         UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id
                     },
@@ -209,7 +205,6 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = id
                     }
@@ -220,7 +215,7 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
                     UrlId = reader.GetInt32("country_id")
                 }),
                 Name = reader.GetString("title"),
-                VocabularyNames = vocabularyNames,
+                Terms = vocabularyNames,
                 Description = "",
                 FileIdTileImage = null,
                 SubdivisionTypeId = (await termReaderByName.ReadAsync(new TermReaderByNameRequest {

@@ -280,7 +280,6 @@ internal sealed class UserMigrator(
                         TenantId = Constants.PPL,
                         PublicationStatusId = 1,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = Constants.VOCABULARY_ID_TOPICS
                     },
@@ -290,7 +289,6 @@ internal sealed class UserMigrator(
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 1,
                         UrlPath = null,
-                        NodeId = null,
                         SubgroupId = null,
                         UrlId = Constants.VOCABULARY_ID_TOPICS
                     }

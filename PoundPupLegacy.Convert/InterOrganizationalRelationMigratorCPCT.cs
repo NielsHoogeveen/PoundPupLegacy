@@ -3,7 +3,7 @@
 internal sealed class InterOrganizationalRelationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReaderByUrlIdFactory,
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForExistingNode> tenantNodeReaderByUrlIdFactory,
     IEntityCreatorFactory<EventuallyIdentifiableInterOrganizationalRelationForExistingParticipants> interOrganizationalRelationCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
@@ -24,7 +24,7 @@ internal sealed class InterOrganizationalRelationMigratorCPCT(
 
     private async IAsyncEnumerable<NewInterOrganizationalRelationForExistingParticipants> ReadInterOrganizationalRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReaderByUrlId
+        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, NewTenantNodeForExistingNode> tenantNodeReaderByUrlId
     )
     {
         var sql = $"""
@@ -107,7 +107,6 @@ internal sealed class InterOrganizationalRelationMigratorCPCT(
                     TenantId = Constants.CPCT,
                     PublicationStatusId = 2,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = id
                 }
@@ -118,7 +117,6 @@ internal sealed class InterOrganizationalRelationMigratorCPCT(
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
                     UrlPath = null,
-                    NodeId = null,
                     SubgroupId = null,
                     UrlId = null
                 });

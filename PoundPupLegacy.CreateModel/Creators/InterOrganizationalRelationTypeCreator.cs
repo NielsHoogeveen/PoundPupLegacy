@@ -6,7 +6,7 @@ internal sealed class InterOrganizationalRelationTypeCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableInterOrganizationalRelationType> interOrganizationalRelationTypeInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    NameableDetailsCreatorFactory nameableDetailsCreatorFactory
+    TermCreatorFactory nameableDetailsCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableInterOrganizationalRelationType>
 {
     public async Task<IEntityCreator<EventuallyIdentifiableInterOrganizationalRelationType>> CreateAsync(IDbConnection connection) =>
