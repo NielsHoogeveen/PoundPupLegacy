@@ -35,7 +35,7 @@ internal sealed class PollQuestionCreator(
 {
     public override async Task ProcessAsync(EventuallyIdentifiablePollQuestion element, int id)
     {
-        await base.ProcessAsync(element);
+        await base.ProcessAsync(element, id);
         foreach (var pollOption in element.PollOptions) {
             pollOption.PollQuestionId = id;
             await pollOptionInserter.InsertAsync(pollOption);

@@ -3,8 +3,8 @@
 internal sealed class ProfessionalRoleCreatorFactory(
     IDatabaseInserterFactory<EventuallyIdentifiableProfessionalRoleForExistingPerson> professionalRoleInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableMemberOfCongressForExistingPerson> memberOfCongressInserterFactory,
-    IDatabaseInserterFactory<NewRepresentativeAsExistingPerson> representativeInserterFactory,
-    IDatabaseInserterFactory<NewSenatorAsExistingPerson> senatorInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableRepresentative> representativeInserterFactory,
+    IDatabaseInserterFactory<EventuallyIdentifiableSenator> senatorInserterFactory,
     IEntityCreatorFactory<EventuallyIdentifiableSenateTerm> senateTermCreatorFactory,
     IEntityCreatorFactory<EventuallyIdentifiableHouseTerm> houseTermCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableProfessionalRoleForExistingPerson>
@@ -26,8 +26,8 @@ internal sealed class ProfessionalRoleCreatorFactory(
 public class ProfessionalRoleCreator(
     List<IDatabaseInserter<EventuallyIdentifiableProfessionalRoleForExistingPerson>> inserters,
     IDatabaseInserter<EventuallyIdentifiableMemberOfCongressForExistingPerson> memberOfCongressInserter,
-    IDatabaseInserter<NewRepresentativeAsExistingPerson> representativeInserter,
-    IDatabaseInserter<NewSenatorAsExistingPerson> senatorInserter,
+    IDatabaseInserter<EventuallyIdentifiableRepresentative> representativeInserter,
+    IDatabaseInserter<EventuallyIdentifiableSenator> senatorInserter,
     IEntityCreator<EventuallyIdentifiableSenateTerm> senateTermCreator,
     IEntityCreator<EventuallyIdentifiableHouseTerm> houseTermCreator
 

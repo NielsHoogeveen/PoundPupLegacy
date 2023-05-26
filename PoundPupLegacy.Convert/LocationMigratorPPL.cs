@@ -4,7 +4,7 @@ internal sealed class LocationMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166CodeFactory,
-    IEntityCreatorFactory<EventuallyIdentifiable> locationCreatorFactory,
+    IEntityCreatorFactory<EventuallyIdentifiableLocation> locationCreatorFactory,
     IDatabaseInserterFactory<LocationLocatable> locationLocatableInserterFactory
 ) : MigratorPPL(databaseConnections)
 {
@@ -33,7 +33,7 @@ internal sealed class LocationMigratorPPL(
         }
     }
 
-    private async IAsyncEnumerable<(EventuallyIdentifiable, int)> GetLocations(
+    private async IAsyncEnumerable<(EventuallyIdentifiableLocation, int)> GetLocations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
     )
     {
@@ -1347,7 +1347,7 @@ internal sealed class LocationMigratorPPL(
 
 
 
-    private async IAsyncEnumerable<(EventuallyIdentifiable, int)> ReadLocations(
+    private async IAsyncEnumerable<(EventuallyIdentifiableLocation, int)> ReadLocations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166Code
     )

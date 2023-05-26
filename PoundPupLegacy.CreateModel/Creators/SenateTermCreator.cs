@@ -32,7 +32,7 @@ internal class SenateTermCreator(
 {
     public override async Task ProcessAsync(EventuallyIdentifiableSenateTerm element, int id)
     {
-        await base.ProcessAsync(element);
+        await base.ProcessAsync(element, id);
         foreach (var partyAffiliation in element.PartyAffiliations) {
             partyAffiliation.CongressionalTermId = id;
         }

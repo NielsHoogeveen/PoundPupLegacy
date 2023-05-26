@@ -54,7 +54,7 @@ internal sealed class PersonCreator(
 {
     public override async Task ProcessAsync(EventuallyIdentifiablePerson element, int id)
     {
-        await base.ProcessAsync(element);
+        await base.ProcessAsync(element, id);
         await professionalRoleCreator
             .CreateAsync(element.ProfessionalRoles
                 .Select(x => x.ResolvePerson(id))

@@ -1,5 +1,4 @@
-﻿using PoundPupLegacy.CreateModel.Creators;
-using System.Text.Json;
+﻿using System.Text.Json;
 using File = PoundPupLegacy.CreateModel.File;
 
 namespace PoundPupLegacy.Convert;
@@ -122,7 +121,7 @@ internal class MemberOfCongressMigrator(
         IEntityCreatorFactory<EventuallyIdentifiablePerson> personCreatorFactory,
         IEntityCreatorFactory<File> fileCreatorFactory,
         IEntityCreatorFactory<NodeFile> nodeFileCreatorFactory,
-        IEntityCreatorFactory<EventuallyIdentifiablePersonOrganizationRelationForNewPerson> personOrganizationRelationCreatorFactory,
+        IEntityCreatorFactory<EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants> personOrganizationRelationCreatorFactory,
         IEntityCreatorFactory<EventuallyIdentifiableProfessionalRoleForExistingPerson> professionalRoleCreatorFactory
 
     ) : MigratorPPL(databaseConnections)
@@ -802,7 +801,7 @@ internal class MemberOfCongressMigrator(
         }
     }
 
-    private async IAsyncEnumerable<NewPersonOrganizationRelationForNewPerson> GetPartyMembership()
+    private async IAsyncEnumerable<EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants> GetPartyMembership()
     {
 
         var sql = $"""
@@ -926,7 +925,7 @@ internal class MemberOfCongressMigrator(
 
 
             var now = DateTime.Now;
-            yield return new NewPersonOrganizationRelationForNewPerson {
+            yield return new NewPersonOrganizationRelationForExistingParticipants {
                 Id = null,
                 PublisherId = 2,
                 CreatedDateTime = now,

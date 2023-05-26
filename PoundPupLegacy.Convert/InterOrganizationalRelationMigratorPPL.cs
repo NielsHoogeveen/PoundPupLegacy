@@ -3,7 +3,7 @@
 internal sealed class InterOrganizationalRelationMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    IEntityCreatorFactory<EventuallyIdentifiableInterOrganizationalRelation> interOrganizationalRelationCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableInterOrganizationalRelationForExistingParticipants> interOrganizationalRelationCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
 

@@ -56,7 +56,7 @@ public class AbuseCaseCreator(
 {
     public override async Task ProcessAsync(EventuallyIdentifiableAbuseCase element, int id)
     {
-        await base.ProcessAsync(element);
+        await base.ProcessAsync(element, id);
         foreach (var typeOfAbuseId in element.TypeOfAbuseIds) {
             await abuseCaseTypeOfAbuseCreator.CreateAsync(
                 new AbuseCaseTypeOfAbuse {

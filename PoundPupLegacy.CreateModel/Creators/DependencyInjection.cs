@@ -9,6 +9,7 @@ internal static class DependencyInjection
         services.AddCreateModelInserters();
         services.AddTransient<NodeDetailsCreatorFactory>();
         services.AddTransient<NameableDetailsCreatorFactory>();
+        services.AddTransient<LocatableDetailsCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableAbuseCase>, AbuseCaseCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<AbuseCaseTypeOfAbuse>, AbuseCaseTypeOfAbuseCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<AbuseCaseTypeOfAbuser>, AbuseCaseTypeOfAbuserCreatorFactory>();

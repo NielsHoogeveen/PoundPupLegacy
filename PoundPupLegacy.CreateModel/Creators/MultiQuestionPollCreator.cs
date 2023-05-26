@@ -37,7 +37,7 @@ public class MultiQuestionPollCreator(
 
     public override async Task ProcessAsync(EventuallyIdentifiableMultiQuestionPoll element, int id)
     {
-        await base.ProcessAsync(element);
+        await base.ProcessAsync(element, id);
         foreach (var (question, index) in element.PollQuestions.Select((q, i) => (q, i))) {
             await pollQuestionCreatorFactory.CreateAsync(question);
             var pollQuestions = new MultiQuestionPollPollQuestion {

@@ -1,12 +1,15 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public interface EventuallyIdentifiableProfessionalRoleForNewPerson : ProfessionalRole, EventuallyIdentifiable
+public interface EventuallyIdentifiableProfessionalRoleForNewPerson : EventuallyIdentifiableProfessionalRole
 {
     public EventuallyIdentifiableProfessionalRoleForExistingPerson ResolvePerson(int personId);
 }
-public interface EventuallyIdentifiableProfessionalRoleForExistingPerson : ProfessionalRole, EventuallyIdentifiable
+public interface EventuallyIdentifiableProfessionalRoleForExistingPerson : EventuallyIdentifiableProfessionalRole
 {
     int PersonId { get; }
+}
+public interface EventuallyIdentifiableProfessionalRole : ProfessionalRole, EventuallyIdentifiable
+{
 }
 public interface ImmediatelyIdentifiableProfessionalRole : ProfessionalRole, ImmediatelyIdentifiable
 {

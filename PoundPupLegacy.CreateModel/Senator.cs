@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record NewSenatorAsNewPerson : NewProfessionalRoleBaseForNewPerson, EventuallyIdentifiableMemberOfCongressForNewPerson
+public sealed record NewSenatorAsNewPerson : NewProfessionalRoleBaseForNewPerson, EventuallyIdentifiableSenator, EventuallyIdentifiableMemberOfCongressForNewPerson
 {
     public required List<NewSenateTerm> SenateTerms { get; init; }
     public override EventuallyIdentifiableProfessionalRoleForExistingPerson ResolvePerson(int personId)
@@ -14,13 +14,25 @@ public sealed record NewSenatorAsNewPerson : NewProfessionalRoleBaseForNewPerson
         };
     }
 }
-public sealed record NewSenatorAsExistingPerson : NewProfessionalRoleBaseForExistingPerson, EventuallyIdentifiableMemberOfCongressForExistingPerson
+public sealed record NewSenatorAsExistingPerson : NewProfessionalRoleBaseForExistingPerson, EventuallyIdentifiableSenator, EventuallyIdentifiableMemberOfCongressForExistingPerson
 {
     public required List<NewSenateTerm> SenateTerms { get; init; }
 
 }
-public sealed record ExistingSenator : ExistingProfessionalRoleBase, ImmediatelyIdentifiableMemberOfCongress
+public sealed record ExistingSenator : ExistingProfessionalRoleBase, ImmediatelyIdentifiableSenator, ImmediatelyIdentifiableMemberOfCongress
 {
     public required List<NewSenateTerm> SenateTerms { get; init; }
+
+}
+public interface ImmediatelyIdentifiableSenator : Senator, ImmediatelyIdentifiableMemberOfCongress
+{
+
+}
+public interface EventuallyIdentifiableSenator : Senator, EventuallyIdentifiableMemberOfCongress
+{
+
+}
+public interface Senator: MemberOfCongress
+{
 
 }

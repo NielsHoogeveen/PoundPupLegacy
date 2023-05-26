@@ -3,7 +3,7 @@
 internal sealed class InterPersonalRelationMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    IEntityCreatorFactory<EventuallyIdentifiableInterPersonalRelation> interPersonalRelationCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableInterPersonalRelationForExistingParticipants> interPersonalRelationCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "inter personal relation";

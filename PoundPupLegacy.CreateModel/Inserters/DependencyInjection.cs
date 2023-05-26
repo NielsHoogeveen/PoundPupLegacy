@@ -119,7 +119,7 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<Publisher>, PublisherInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<PublicationStatus>, PublicationStatusInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<PublishingUserGroup>, PublishingUserGroupInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<NewRepresentativeAsNewPerson>, RepresentativeInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableRepresentative>, RepresentativeInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableRepresentativeHouseBillAction>, RepresentativeHouseBillActionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableReview>, ReviewInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableSearchable>, SearchableInserterFactory>();
@@ -127,7 +127,7 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableSecondLevelSubdivision>, SecondLevelSubdivisionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableSenateBill>, SenateBillInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableSenateTerm>, SenateTermInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<NewSenatorAsNewPerson>, SenatorInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableSenator>, SenatorInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableSenatorSenateBillAction>, SenatorSenateBillActionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableSimpleTextNode>, SimpleTextNodeInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableSingleQuestionPoll>, SingleQuestionPollInserterFactory>();

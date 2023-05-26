@@ -4,7 +4,7 @@ internal sealed class PersonOrganizationRelationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReaderByUrlIdFactory,
-    IEntityCreatorFactory<EventuallyIdentifiablePersonOrganizationRelationForNewPerson> personOrganizationRelationCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants> personOrganizationRelationCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
     nodeIdReaderFactory, 
@@ -21,7 +21,7 @@ internal sealed class PersonOrganizationRelationMigratorCPCT(
         await personOrganizationRelationCreator.CreateAsync(ReadPersonOrganizationRelations(nodeIdReader, tenantNodeReaderByUrlId));
     }
 
-    private async IAsyncEnumerable<EventuallyIdentifiablePersonOrganizationRelationForNewPerson> ReadPersonOrganizationRelations(
+    private async IAsyncEnumerable<EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants> ReadPersonOrganizationRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReaderByUrlId
     )
@@ -127,7 +127,7 @@ internal sealed class PersonOrganizationRelationMigratorCPCT(
                     UrlId = null
                 });
             }
-            yield return new NewPersonOrganizationRelationForNewPerson {
+            yield return new NewPersonOrganizationRelationForExistingParticipants {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

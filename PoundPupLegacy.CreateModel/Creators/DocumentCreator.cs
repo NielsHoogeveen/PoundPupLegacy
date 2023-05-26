@@ -31,7 +31,7 @@ public class DocumentCreator(
 {
     public override async Task ProcessAsync(EventuallyIdentifiableDocument element, int id)
     {
-        await base.ProcessAsync(element);
+        await base.ProcessAsync(element, id);
         foreach (var documentable in element.Documentables) {
             await documentableDocumentCreator.CreateAsync(new DocumentableDocument 
             { 

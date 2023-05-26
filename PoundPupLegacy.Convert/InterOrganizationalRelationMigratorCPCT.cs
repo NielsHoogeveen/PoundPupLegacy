@@ -4,7 +4,7 @@ internal sealed class InterOrganizationalRelationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForNewNode> tenantNodeReaderByUrlIdFactory,
-    IEntityCreatorFactory<EventuallyIdentifiableInterOrganizationalRelation> interOrganizationalRelationCreatorFactory
+    IEntityCreatorFactory<EventuallyIdentifiableInterOrganizationalRelationForExistingParticipants> interOrganizationalRelationCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
     nodeIdReaderFactory, 

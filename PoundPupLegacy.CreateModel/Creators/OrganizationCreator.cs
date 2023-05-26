@@ -54,7 +54,7 @@ public class OrganizationCreator(
 {
     public override async Task ProcessAsync(EventuallyIdentifiableOrganization element, int id)
     {
-        await base.ProcessAsync(element);
+        await base.ProcessAsync(element, id);
         if (element is NewUnitedStatesPoliticalParty pp) {
             await unitedStatesPoliticalPartyInserter.InsertAsync(pp);
         }

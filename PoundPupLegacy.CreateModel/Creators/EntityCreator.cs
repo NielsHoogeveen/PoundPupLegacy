@@ -117,7 +117,7 @@ public class CaseCreator<T>(
 {
     public override async Task ProcessAsync(T element, int id)
     {
-        await base.ProcessAsync(element);
+        await base.ProcessAsync(element, id);
         await casePartiesCreator.CreateAsync(element.CaseParties.Select(x => new ExistingCaseNewCaseParties 
         { 
             CaseId  = id,
