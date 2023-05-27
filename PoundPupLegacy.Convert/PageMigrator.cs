@@ -65,7 +65,7 @@ internal sealed class PageMigrator(
                 NodeTypeId = 42,
                 Text = TextToHtml(reader.GetString("text")),
                 Teaser = TextToTeaser(reader.GetString("text")),
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

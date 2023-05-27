@@ -80,9 +80,9 @@ internal sealed class DenominationMigrator(
             var name = reader.GetString("title");
             var topicName = reader.IsDBNull("topic_name") ? null : reader.GetString("topic_name");
 
-            var vocabularyNames = new List<NewTermForNewNameble>
+            var vocabularyNames = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId =vocabularyIdDenomination,
                     Name = name,
@@ -90,7 +90,7 @@ internal sealed class DenominationMigrator(
                 }
             };
             if (topicName != null) {
-                vocabularyNames.Add(new NewTermForNewNameble {
+                vocabularyNames.Add(new NewTermForNewNameable {
                     VocabularyId = vocabularyIdTopics,
                     Name = topicName,
                     ParentTermIds = new List<int>()
@@ -135,7 +135,7 @@ internal sealed class DenominationMigrator(
                         TenantFileId = reader.GetInt32("file_id_tile_image")
                     }),
                 Terms = vocabularyNames,
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
         }
         reader.Close();

@@ -99,7 +99,7 @@ internal sealed class PollMigrator(
                 NodeTypeId = 53,
                 PollVotes = new List<PollVote>(),
                 PollOptions = new List<PollOption>(),
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
             var delta = reader.GetInt32("delta");
             if (currentDelta is null || currentDelta != delta) {
@@ -183,7 +183,7 @@ internal sealed class PollMigrator(
                 DateTimeClosure = DateTime.Now.AddYears(-5),
                 PollStatusId = 0,
                 PollQuestions = new List<NewBasicPollQuestion>(),
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
             await reader.CloseAsync();
         }
@@ -270,7 +270,7 @@ internal sealed class PollMigrator(
                         NodeTypeId = 55,
                         PollVotes = new List<PollVote>(),
                         PollOptions = new List<PollOption>(),
-                        NodeTermIds = new List<int>(),
+                        TermIds = new List<int>(),
                     };
                     var delta = reader.GetInt32("delta");
                     if (currentDelta is null || currentDelta != delta) {

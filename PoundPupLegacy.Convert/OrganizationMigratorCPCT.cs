@@ -219,8 +219,8 @@ internal sealed class OrganizationMigratorCPCT(
                     });
                 }
             }
-            var vocabularyNames = new List<NewTermForNewNameble> {
-                new NewTermForNewNameble {
+            var vocabularyNames = new List<NewTermForNewNameable> {
+                new NewTermForNewNameable {
                     VocabularyId = vocabularyId,
                     Name = name,
                     ParentTermIds = await GetTermNamesForOrganizationsTypes(organizationOrganizationTypeIds).ToListAsync(),
@@ -274,8 +274,8 @@ internal sealed class OrganizationMigratorCPCT(
                 FileIdTileImage = null,
                 Terms = vocabularyNames,
                 OrganizationTypeIds = organizationOrganizationTypeIds,
-                NodeTermIds = new List<int>(),
-                NewLocations = new List<EventuallyIdentifiableLocation>(),
+                TermIds = new List<int>(),
+                Locations = new List<EventuallyIdentifiableLocation>(),
                 PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
                 PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewOrganization>(),
                 InterOrganizationalRelationsToAddFrom = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationFrom>(),

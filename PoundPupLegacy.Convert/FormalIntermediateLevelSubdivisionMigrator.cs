@@ -47,9 +47,9 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator(
                 Id = null,
                 CreatedDateTime = DateTime.Parse(parts[1]),
                 ChangedDateTime = DateTime.Parse(parts[2]),
-                Terms = new List<NewTermForNewNameble>
+                Terms = new List<NewTermForNewNameable>
                 {
-                    new NewTermForNewNameble
+                    new NewTermForNewNameable
                     {
                         VocabularyId = vocabularyIdTopics,
                         Name = title,
@@ -97,7 +97,7 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator(
                     VocabularyId = vocabularyIdSubdivisionType,
                     Name = parts[11].Trim()
                 })),
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
         }
     }

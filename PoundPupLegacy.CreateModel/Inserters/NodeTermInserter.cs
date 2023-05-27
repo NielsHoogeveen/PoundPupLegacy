@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = NodeTerm;
+using Request = NodeTermToAdd;
 
 public sealed class NodeTermInserterFactory : BasicDatabaseInserterFactory<Request>
 {

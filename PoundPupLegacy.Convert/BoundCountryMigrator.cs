@@ -77,9 +77,9 @@ internal sealed class BoundCountryMigrator(
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
             var bindingCountryName = reader.GetString("binding_country_name");
-            var vocabularyNames = new List<NewTermForNewNameble>
+            var vocabularyNames = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyIdTopics,
                     Name = name,
@@ -147,7 +147,7 @@ internal sealed class BoundCountryMigrator(
                 MarriageRequirements = null,
                 OtherRequirements = null,
                 SubdivisionTypeId = subdivisionType,
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
 
         }

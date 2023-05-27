@@ -2,7 +2,7 @@
 
 using Request = ImmediatelyIdentifiableTenantNode;
 
-public record TenantNodeDeleterRequest: IRequest
+public record TenantNodeToDelete: IRequest
 {
     public required int Id { get; init; }
 }

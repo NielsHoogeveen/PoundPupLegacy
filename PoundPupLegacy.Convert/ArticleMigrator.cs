@@ -63,7 +63,7 @@ internal sealed class ArticleMigrator(
                 DocumentTypeId = null,
                 Text = TextToHtml(reader.GetString("text")),
                 Teaser = TextToTeaser(reader.GetString("text")),
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

@@ -59,8 +59,8 @@ internal sealed class WrongfulMedicationCaseMigrator(
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var title = reader.GetString("title");
-            var vocabularyNames = new List<NewTermForNewNameble> {
-                new NewTermForNewNameble {
+            var vocabularyNames = new List<NewTermForNewNameable> {
+                new NewTermForNewNameable {
                     VocabularyId = vocabularyId,
                     Name = title,
                     ParentTermIds = parentTermIds,
@@ -101,8 +101,8 @@ internal sealed class WrongfulMedicationCaseMigrator(
                 Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date"))?.ToFuzzyDate(),
                 Description = reader.GetString("description"),
                 FileIdTileImage = null,
-                NodeTermIds = new List<int>(),
-                NewLocations = new List<EventuallyIdentifiableLocation>(),
+                TermIds = new List<int>(),
+                Locations = new List<EventuallyIdentifiableLocation>(),
                 CaseParties = new List<NewCaseNewCaseParties>(),
             };
             yield return country;

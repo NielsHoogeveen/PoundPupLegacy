@@ -1,12 +1,14 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿using PoundPupLegacy.CreateModel.Deleters;
+
+namespace PoundPupLegacy.CreateModel;
 
 public interface ImmediatelyIdentifiableNode : Node, ImmediatelyIdentifiable
 {
-    public List<NewTenantNodeForExistingNode> NewTenantNodes { get; }
+    public List<NewTenantNodeForExistingNode> TenantNodesToAdd { get; }
     public List<ExistingTenantNode> TenantNodesToUpdate { get; }
-    public List<ExistingTenantNode> TenantNodesToRemove { get; }
-    List<NodeTerm> NewNodeTerms { get; }
-    List<NodeTerm> NodeTermsToRemove { get; }
+    public List<TenantNodeToDelete> TenantNodesToRemove { get; }
+    List<NodeTermToAdd> NodeTermsToAdd { get; }
+    List<NodeTermToRemove> NodeTermsToRemove { get; }
 }
 public interface EventuallyIdentifiableNode : Node, EventuallyIdentifiable
 {
@@ -15,7 +17,7 @@ public interface EventuallyIdentifiableNode : Node, EventuallyIdentifiable
     int OwnerId { get; }
     int NodeTypeId { get; }
     List<NewTenantNodeForNewNode> TenantNodes { get; }
-    List<int> NodeTermIds { get; }
+    List<int> TermIds { get; }
 }
 public interface Node: IRequest 
 {
@@ -36,7 +38,7 @@ public abstract record NewNodeBase: EventuallyIdentifiableNode
     public required int AuthoringStatusId { get; init; }
     public required int NodeTypeId { get; init; }
     public required List<NewTenantNodeForNewNode> TenantNodes { get; init; }
-    public required List<int> NodeTermIds { get; init; }
+    public required List<int> TermIds { get; init; }
 
 }
 public abstract record ExistingNodeBase : ImmediatelyIdentifiableNode
@@ -45,9 +47,9 @@ public abstract record ExistingNodeBase : ImmediatelyIdentifiableNode
     public required DateTime ChangedDateTime { get; init; }
     public required string Title { get; init; }
     public required int AuthoringStatusId { get; init; }
-    public required List<NewTenantNodeForExistingNode> NewTenantNodes { get; init; }
+    public required List<NewTenantNodeForExistingNode> TenantNodesToAdd { get; init; }
     public required List<ExistingTenantNode> TenantNodesToUpdate { get; init; }
-    public required List<ExistingTenantNode> TenantNodesToRemove { get; init; }
-    public required List<NodeTerm> NewNodeTerms { get; init; }
-    public required List<NodeTerm> NodeTermsToRemove { get; init; }
+    public required List<TenantNodeToDelete> TenantNodesToRemove { get; init; }
+    public required List<NodeTermToAdd> NodeTermsToAdd { get; init; }
+    public required List<NodeTermToRemove> NodeTermsToRemove { get; init; }
 }

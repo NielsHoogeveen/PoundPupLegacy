@@ -4,7 +4,7 @@ internal sealed class NodeTermMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameableIdRequest, int> termIdReaderByNameableIdFactory,
-    IEntityCreatorFactory<NodeTerm> nodeTermCreatorFactory
+    IEntityCreatorFactory<NodeTermToAdd> nodeTermCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "node terms";
@@ -17,7 +17,7 @@ internal sealed class NodeTermMigrator(
         await using var nodeTermCreator = await nodeTermCreatorFactory.CreateAsync(_postgresConnection);
         await nodeTermCreator.CreateAsync(ReadNodeTerms(nodeIdReader, termReaderByNameableId));
     }
-    private async IAsyncEnumerable<NodeTerm> ReadNodeTerms(
+    private async IAsyncEnumerable<NodeTermToAdd> ReadNodeTerms(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameableIdRequest, int> termIdReaderByNameableId)
     {
@@ -99,7 +99,7 @@ internal sealed class NodeTermMigrator(
                 NameableId = nameableId,
                 VocabularyId = vocabularyIdTopics,
             });
-            yield return new NodeTerm {
+            yield return new NodeTermToAdd {
                 NodeId = nodeId,
                 TermId = termId,
             };

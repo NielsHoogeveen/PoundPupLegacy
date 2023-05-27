@@ -25,7 +25,7 @@ public sealed record NewPartyPoliticalEntityRelationForNewParty : NewNodeBase, E
             CreatedDateTime = CreatedDateTime,
             DateRange = DateRange,
             DocumentIdProof = DocumentIdProof,
-            NodeTermIds = NodeTermIds,
+            TermIds = TermIds,
             NodeTypeId = NodeTypeId,
             OwnerId = OwnerId,
             PoliticalEntityId = PoliticalEntityId,

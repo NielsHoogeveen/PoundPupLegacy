@@ -115,7 +115,7 @@ internal sealed class ActMigrator(
 
         while (await reader.ReadAsync()) {
 
-            var vocabularyNames = new List<NewTermForNewNameble>();
+            var vocabularyNames = new List<NewTermForNewNameable>();
 
             var id = reader.GetInt32("id");
             var title = reader.GetString("title");
@@ -134,14 +134,14 @@ internal sealed class ActMigrator(
                         VocabularyId = vocabularyId
                     }));
                 }
-                vocabularyNames.Add(new NewTermForNewNameble {
+                vocabularyNames.Add(new NewTermForNewNameable {
                     VocabularyId = vocabularyId,
                     Name = topicName,
                     ParentTermIds = topicParentIds,
                 });
             }
             else {
-                vocabularyNames.Add(new NewTermForNewNameble {
+                vocabularyNames.Add(new NewTermForNewNameable {
                     VocabularyId = vocabularyId,
                     Name = title,
                     ParentTermIds = new List<int> {
@@ -179,7 +179,7 @@ internal sealed class ActMigrator(
                 Terms = vocabularyNames,
                 FileIdTileImage = null,
                 EnactmentDate = GetEnactmentDate(id),
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

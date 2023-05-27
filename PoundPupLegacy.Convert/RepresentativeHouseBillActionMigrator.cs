@@ -107,7 +107,7 @@ internal sealed class RepresentativeHouseBillActionMigrator(
                 HouseBillId = billId,
                 BillActionTypeId = billActionTypeId,
                 Date = reader.GetDateTime("date"),
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-public abstract record CaseBase : NameableBase, Case
+public abstract record CaseBase : LocatableBase, Case
 {
 
     public FuzzyDate? Date {get; set;}
@@ -14,7 +14,7 @@ public abstract record CaseBase : NameableBase, Case
 
 }
 
-public interface Case : Nameable
+public interface Case : Locatable
 {
     FuzzyDate? Date { get; set; }
 }

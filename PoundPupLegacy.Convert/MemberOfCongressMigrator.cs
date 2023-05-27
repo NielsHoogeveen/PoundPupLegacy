@@ -436,7 +436,7 @@ internal class MemberOfCongressMigrator(
                                 PoliticalPartyAffiliationId = GetPoliticalPartyAffiliationId(term.party),
                                 CongressionalTermId = null,
                                 DateTimeRange = new DateTimeRange(term.start, term.end),
-                                NodeTermIds = new List<int>(),
+                                TermIds = new List<int>(),
                             }
                         };
                     }
@@ -462,7 +462,7 @@ internal class MemberOfCongressMigrator(
                         PoliticalPartyAffiliationId = GetPoliticalPartyAffiliationId(party_affiliations.party),
                         CongressionalTermId = null,
                         DateTimeRange = new DateTimeRange(party_affiliations.start, party_affiliations.end),
-                        NodeTermIds = new List<int>(),
+                        TermIds = new List<int>(),
                     }
                     ).ToList();
                 }
@@ -500,7 +500,7 @@ internal class MemberOfCongressMigrator(
                             DateTimeRange = new DateTimeRange(term.start, term.end),
                             SubdivisionId = subdivisionId,
                             PartyAffiliations = partyAffiliations,
-                            NodeTermIds = new List<int>(),
+                            TermIds = new List<int>(),
                         };
                         return senateTerm;
                     }).ToList();
@@ -535,7 +535,7 @@ internal class MemberOfCongressMigrator(
                             DateTimeRange = new DateTimeRange(term.start, term.end),
                             SubdivisionId = subdivisionId,
                             PartyAffiliations = partyAffiliations,
-                            NodeTermIds = new List<int>(),
+                            TermIds = new List<int>(),
                         };
                         return houseTerm;
                     }).ToList();
@@ -602,8 +602,8 @@ internal class MemberOfCongressMigrator(
 
                     }
                     var title = memberOfCongress.name.official_full is null ? $"{memberOfCongress.name.first} {memberOfCongress.name.middle} {memberOfCongress.name.last} {memberOfCongress.name.suffix}".Replace("  ", " ") : memberOfCongress.name.official_full;
-                    var vocabularyNames = new List<NewTermForNewNameble> {
-                        new NewTermForNewNameble {
+                    var vocabularyNames = new List<NewTermForNewNameable> {
+                        new NewTermForNewNameable {
                             VocabularyId = vocabularyId,
                             Name = title,
                             ParentTermIds = new List<int>(),
@@ -644,8 +644,8 @@ internal class MemberOfCongressMigrator(
                         ProfessionalRoles = professionalRolesNewPerson,
                         Bioguide = memberOfCongress.id.bioguide,
                         PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewPerson>(),
-                        NodeTermIds = new List<int>(),
-                        NewLocations = new List<EventuallyIdentifiableLocation>(),
+                        TermIds = new List<int>(),
+                        Locations = new List<EventuallyIdentifiableLocation>(),
                         PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
                         InterPersonalRelationsToAddFrom = new List<EventuallyIdentifiableInterPersonalRelationForNewPersonFrom>(),
                         InterPersonalRelationsToAddTo = new List<EventuallyIdentifiableInterPersonalRelationForNewPersonTo>(),
@@ -960,7 +960,7 @@ internal class MemberOfCongressMigrator(
                 DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null : reader.GetDateTime("end_date")),
                 DocumentIdProof = null,
                 Description = null,
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

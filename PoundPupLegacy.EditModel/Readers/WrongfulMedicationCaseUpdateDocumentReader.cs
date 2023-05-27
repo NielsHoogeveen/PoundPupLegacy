@@ -25,6 +25,8 @@ internal sealed class WrongfulMedicationCaseUpdateDocumentReaderFactory : NodeUp
                     nm.description,
                     'Date',
                     c.fuzzy_date,
+                    'VocabularyIdTagging',
+                    (select id from tagging_vocabulary),
                     'Tags', 
                     (select document from tags_document),
                     'TenantNodes',

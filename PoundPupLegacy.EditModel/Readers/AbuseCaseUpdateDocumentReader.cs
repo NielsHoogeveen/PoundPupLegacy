@@ -8,8 +8,8 @@ internal sealed class AbuseCaseUpdateDocumentReaderFactory : NodeUpdateDocumentR
 
     const string SQL = $"""
             {CTE_EDIT},
-            {TYPE_OF_ABUSE_IDS_DOCUMENT},
-            {TYPE_OF_ABUSER_IDS_DOCUMENT},
+            {TYPE_OF_ABUSE_DOCUMENT},
+            {TYPE_OF_ABUSER_DOCUMENT},
             {SharedSql.FAMILY_SIZES_DOCUMENT},
             {SharedSql.CHILD_PLACEMENT_TYPES_DOCUMENT},
             {SharedSql.TYPES_OF_ABUSER_DOCUMENT},
@@ -43,6 +43,8 @@ internal sealed class AbuseCaseUpdateDocumentReaderFactory : NodeUpdateDocumentR
                     ac.fundamental_faith_involved,
                     'DisabilitiesInvolved',
                     ac.disabilities_involved,
+                    'VocabularyIdTagging',
+                    (select id from tagging_vocabulary),
                     'Tags', 
                     (select document from tags_document),
                     'TenantNodes',
@@ -55,18 +57,18 @@ internal sealed class AbuseCaseUpdateDocumentReaderFactory : NodeUpdateDocumentR
                     (select document from locations_document),
                     'CasePartyTypesCaseParties',
                     (select document from case_case_party_document),
-                    'FamilySizes',
+                    'FamilySizesToSelectFrom',
                     (select document from family_sizes_document),
-                    'ChildPlacementTypes',
+                    'ChildPlacementTypesToSelectFrom',
                     (select document from child_placement_types_document),
-                    'TypesOfAbuse',
+                    'TypesOfAbuseToSelectFrom',
                     (select document from types_of_abuse_document),
-                    'TypesOfAbuser',
+                    'TypesOfAbuserToSelectFrom',
                     (select document from types_of_abuser_document),
-                    'TypeOfAbuseIds',
-                    (select document from type_of_abuse_ids_document),
-                    'TypeOfAbuserIds',
-                    (select document from type_of_abuser_ids_document)
+                    'TypseOfAbuse',
+                    (select document from type_of_abuse_document),
+                    'TypesOfAbuser',
+                    (select document from type_of_abuser_document)
             ) document
             from node n
             join node_type nt on nt.id = n.node_type_id
@@ -77,20 +79,40 @@ internal sealed class AbuseCaseUpdateDocumentReaderFactory : NodeUpdateDocumentR
             where tn.tenant_id = @tenant_id and tn.url_id = @url_id
         """;
 
-    const string TYPE_OF_ABUSE_IDS_DOCUMENT = """
-        type_of_abuse_ids_document as(
+    const string TYPE_OF_ABUSE_DOCUMENT = """
+        type_of_abuse_document as(
             select
-            jsonb_agg(type_of_abuse_id) document
+                jsonb_agg(
+                    json_build_object(
+                        'Id',
+                        toa.id,
+                        'Name',
+                        toa.title,
+                        'HasBeenDeleted',
+                        false
+                    )
+                ) document
             from abuse_case_type_of_abuse actoa
+            join node toa on toa.id = actoa.type_of_abuse_id
             join tenant_node tn on tn.node_id = actoa.abuse_case_id
             where tn.tenant_id = @tenant_id and tn.url_id = @url_id
         )
         """;
-    const string TYPE_OF_ABUSER_IDS_DOCUMENT = """
-        type_of_abuser_ids_document as(
+    const string TYPE_OF_ABUSER_DOCUMENT = """
+        type_of_abuser_document as(
             select
-            jsonb_agg(type_of_abuser_id) document
+                jsonb_agg(
+                    json_build_object(
+                        'Id',
+                        toa.id,
+                        'Name',
+                        toa.title,
+                        'HasBeenDeleted',
+                        false
+                    )
+                ) document
             from abuse_case_type_of_abuser actoa
+            join node toa on toa.id = actoa.type_of_abuser_id
             join tenant_node tn on tn.node_id = actoa.abuse_case_id
             where tn.tenant_id = @tenant_id and tn.url_id = @url_id
         )

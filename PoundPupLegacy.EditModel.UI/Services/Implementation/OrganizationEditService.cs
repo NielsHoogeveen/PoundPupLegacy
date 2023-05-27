@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using PoundPupLegacy.CreateModel;
+using PoundPupLegacy.CreateModel.Deleters;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
@@ -45,15 +46,15 @@ internal sealed class OrganizationEditService(
             ChangedDateTime = DateTime.Now,
             AuthoringStatusId = 1,
             FileIdTileImage = null,
-            NewNodeTerms = new List<NodeTerm>(),
-            NewTenantNodes = new List<NewTenantNodeForExistingNode>(),
-            NodeTermsToRemove = new List<NodeTerm>(),
+            NodeTermsToAdd = new List<NodeTermToAdd>(),
+            TenantNodesToAdd = new List<NewTenantNodeForExistingNode>(),
+            NodeTermsToRemove = new List<NodeTermToRemove>(),
             OrganizationTypeIdsToAdd = new List<int>(),
             OrganizationTypeIdsToRemove = new List<int>(),
-            TenantNodesToRemove = new List<ExistingTenantNode>(),
+            TenantNodesToRemove = new List<TenantNodeToDelete>(),
             TenantNodesToUpdate = new List<ExistingTenantNode>(),
-            TermsToAdd = new List<NewTermForNewNameble>(),
-            NewLocations = new List<EventuallyIdentifiableLocation>(),
+            TermsToAdd = new List<NewTermForExistingNameable>(),
+            LocationsToAdd = new List<EventuallyIdentifiableLocation>(),
             LocationsToDelete = new List<int>(),
             LocationsToUpdate = new List<ImmediatelyIdentifiableLocation>(),
             PartyPoliticalEntityRelationsToAdd = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForExistingParty>(),
@@ -82,11 +83,11 @@ internal sealed class OrganizationEditService(
             AuthoringStatusId = 1,
             PublisherId = newViewModel.PublisherId,
             FileIdTileImage = null,
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
             OrganizationTypeIds = new List<int>(),
             TenantNodes = new List<NewTenantNodeForNewNode>(),
-            Terms = new List<NewTermForNewNameble>(),
-            NewLocations = new List<EventuallyIdentifiableLocation>(),
+            Terms = new List<NewTermForNewNameable>(),
+            Locations = new List<EventuallyIdentifiableLocation>(),
             PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
             PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewOrganization>(),
             InterOrganizationalRelationsToAddFrom = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationFrom>(),

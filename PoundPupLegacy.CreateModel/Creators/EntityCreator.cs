@@ -45,7 +45,7 @@ public class LocatableDetailsCreator(
 {
     public async Task Process(EventuallyIdentifiableLocatable locatable)
     {
-        foreach(var location in locatable.NewLocations) {
+        foreach(var location in locatable.Locations) {
             await locationInserter.InsertAsync(location);
             await locationLocatableInserter.InsertAsync(new LocationLocatable {
                 LocatableId = locatable.Id!.Value,
@@ -162,7 +162,7 @@ public class NameableCreator<T>(
     }
 }
 public class NodeDetailsCreatorFactory(
-    IDatabaseInserterFactory<NodeTerm> nodeTermInserterFactory,
+    IDatabaseInserterFactory<NodeTermToAdd> nodeTermInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableTenantNodeForExistingNode> tenantNodeInserterFactory
 )
 { 
@@ -176,14 +176,14 @@ public class NodeDetailsCreatorFactory(
 }
 
 public class NodeDetailsCreator(
-    IDatabaseInserter<NodeTerm> nodeTermInserter,
+    IDatabaseInserter<NodeTermToAdd> nodeTermInserter,
     IDatabaseInserter<EventuallyIdentifiableTenantNodeForExistingNode> tenantNodeInserter
 ) : IAsyncDisposable
 {
     public async Task ProcessAsync(EventuallyIdentifiableNode element, int id)
     {
-        foreach (var nodeTermId in element.NodeTermIds) {
-            await nodeTermInserter.InsertAsync(new NodeTerm 
+        foreach (var nodeTermId in element.TermIds) {
+            await nodeTermInserter.InsertAsync(new NodeTermToAdd 
             { 
                 NodeId = id, 
                 TermId = nodeTermId 

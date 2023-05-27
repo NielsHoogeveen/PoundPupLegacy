@@ -2,23 +2,23 @@
 
 public record CasePartyTypeCaseParties
 {
+    public required int? Id { get; init; }
+    public required int? CaseId { get; init; }
     public required int CasePartyTypeId { get; init; }
-
     public required string CasePartyTypeName { get; init; }
-
     public required string? OrganizationsText { get; init; }
-
     public required string? PersonsText { get; init; }
 
-    private List<OrganizationListItem> organizations = new List<OrganizationListItem>();
-    private List<PersonListItem> persons = new List<PersonListItem>();
+    private List<OrganizationCaseParty> organizations = new List<OrganizationCaseParty>();
 
-    public List<OrganizationListItem> Organizations {
+    private List<PersonCaseParty> persons = new List<PersonCaseParty>();
+
+    public List<OrganizationCaseParty> Organizations {
         get => organizations;
-        init => organizations = value ?? new List<OrganizationListItem>();
+        init => organizations = value ?? new List<OrganizationCaseParty>();
     }
-    public List<PersonListItem> Persons {
+    public List<PersonCaseParty> Persons {
         get => persons;
-        init => persons = value ?? new List<PersonListItem>();
+        init => persons = value ?? new List<PersonCaseParty>();
     }
 }

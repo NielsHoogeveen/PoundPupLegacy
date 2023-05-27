@@ -59,7 +59,7 @@
         (var countryId, var countryName) = DefaultCountryService.GetDefaultCountry(TenantId);
         locationToEdit = new Location {
             LocationId = null,
-            LocatableId = NodeId,
+            //LocatableId = NodeId,
             Street = null,
             Addition = null,
             PostalCode = null,  
@@ -82,7 +82,7 @@
     private void OnOkLocationDialog()
     {
         if (locationToEdit is not null) {
-            if (locationToEdit.LocationId is null || locationToEdit.LocatableId is null) {
+            if (locationToEdit.LocationId is null) {
                 Locatable!.Locations.Add(locationToEdit);
             }
             locationToEdit = null;

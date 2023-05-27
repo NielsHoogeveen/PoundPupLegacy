@@ -94,7 +94,7 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableNameableType>, NameableTypeInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<NodeFile>, NodeFileInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableNode>, NodeInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<NodeTerm>, NodeTermInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<NodeTermToAdd>, NodeTermInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableNodeType>, NodeTypeInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<EventuallyIdentifiableOrganization>, OrganizationInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<OrganizationOrganizationType>, OrganizationOrganizationTypeInserterFactory>();

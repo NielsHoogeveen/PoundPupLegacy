@@ -55,9 +55,9 @@ internal sealed class PersonOrganizationRelationTypeMigrator(
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
 
-            var vocabularyNames = new List<NewTermForNewNameble>
+            var vocabularyNames = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyId,
                     Name = name,
@@ -104,7 +104,7 @@ internal sealed class PersonOrganizationRelationTypeMigrator(
                     }),
                 Terms = vocabularyNames,
                 HasConcreteSubtype = false,
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
 
         }

@@ -60,9 +60,9 @@ internal sealed class BindingCountryMigrator(
             var name = reader.GetString("title");
             var regionName = reader.GetString("second_level_region_name");
 
-            var vocabularyNames = new List<NewTermForNewNameble>
+            var vocabularyNames = new List<NewTermForNewNameable>
                 {
-                    new NewTermForNewNameble
+                    new NewTermForNewNameable
                     {
                         VocabularyId = vocabularyId,
                         Name = name,
@@ -125,7 +125,7 @@ internal sealed class BindingCountryMigrator(
                 IncomeRequirements = null,
                 MarriageRequirements = null,
                 OtherRequirements = null,
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
             yield return country;
 

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record NewTermForNewNameble: EventuallyIdentifiableTermForNewNameable
+public sealed record NewTermForNewNameable: EventuallyIdentifiableTermForNewNameable
 {
     public int? Id { get; set; } = null;
     public required int VocabularyId { get; init; }

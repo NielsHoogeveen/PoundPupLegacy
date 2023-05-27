@@ -55,9 +55,9 @@ IDatabaseConnections databaseConnections,
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
 
-            var vocabularyNames = new List<NewTermForNewNameble>
+            var vocabularyNames = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyId,
                     Name = name,
@@ -103,7 +103,7 @@ IDatabaseConnections databaseConnections,
                     }),
                 Terms = vocabularyNames,
                 IsSymmetric = reader.GetBoolean("is_symmetric"),
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
 
         }

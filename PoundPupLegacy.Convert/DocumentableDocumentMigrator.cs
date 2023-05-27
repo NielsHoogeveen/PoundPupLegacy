@@ -4,7 +4,7 @@ internal sealed class DocumentableDocumentMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameableIdRequest, int> termReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    IEntityCreatorFactory<NodeTerm> nodeTermCreatorFactory
+    IEntityCreatorFactory<NodeTermToAdd> nodeTermCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "documentable documents";
@@ -18,7 +18,7 @@ internal sealed class DocumentableDocumentMigrator(
 
     }
 
-    private async IAsyncEnumerable<NodeTerm> ReadArticles(
+    private async IAsyncEnumerable<NodeTermToAdd> ReadArticles(
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameableIdRequest, int> termReader,
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
@@ -101,7 +101,7 @@ internal sealed class DocumentableDocumentMigrator(
                 NameableId = nameableId,
                 VocabularyId = vocabularyIdTopics,
             });
-            yield return new NodeTerm { NodeId = nodeId, TermId = termId };
+            yield return new NodeTermToAdd { NodeId = nodeId, TermId = termId };
         }
         await reader.CloseAsync();
     }

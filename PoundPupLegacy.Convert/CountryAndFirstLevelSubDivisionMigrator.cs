@@ -77,9 +77,9 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
             ChangedDateTime = DateTime.Now,
             PublisherId = 1,
             Description = "",
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyIdTopics,
                     Name = "Åland",
@@ -117,7 +117,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                 VocabularyId = vocabularyIdSubdivisionTypes,
                 Name = "Autonomous region"
             })),
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewCountryAndFirstAndBottomLevelSubdivision {
             Id = null,
@@ -151,9 +151,9 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
             ChangedDateTime = DateTime.Now,
             PublisherId = 1,
             Description = "",
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyIdTopics,
                     Name = "Curaçao",
@@ -191,7 +191,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                 VocabularyId = vocabularyIdSubdivisionTypes,
                 Name = "Country"
             })),
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewCountryAndFirstAndBottomLevelSubdivision {
             Id = null,
@@ -225,9 +225,9 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
             ChangedDateTime = DateTime.Now,
             PublisherId = 1,
             Description = "",
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyIdTopics,
                     Name = "Sint Maarten",
@@ -265,7 +265,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                 VocabularyId = vocabularyIdSubdivisionTypes,
                 Name = "Country"
             })),
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewCountryAndFirstAndBottomLevelSubdivision {
             Id = null,
@@ -299,9 +299,9 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
             ChangedDateTime = DateTime.Now,
             PublisherId = 1,
             Description = "",
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyIdTopics,
                     Name = "United States Minor Outlying Islands",
@@ -339,7 +339,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                 VocabularyId = vocabularyIdSubdivisionTypes,
                 Name = "Outlying area"
             })),
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
     }
 
@@ -414,9 +414,9 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                         reader.GetString("title");
 
             var regionName = reader.GetString("second_level_region_name");
-            var vocabularyNames = new List<NewTermForNewNameble>
+            var vocabularyNames = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyIdTopics,
                     Name = name,
@@ -492,7 +492,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                     VocabularyId = vocabularyIdSubdivisionTypes,
                     Name = reader.GetString("subdivision_type_name")
                 })),
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

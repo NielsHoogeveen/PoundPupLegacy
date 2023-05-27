@@ -56,16 +56,16 @@ internal sealed class CasePartyTypeMigrator(
             NodeTypeId = 1,
             Description = "",
             FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyId,
                     Name = Constants.HOMESTUDY_CASE_TYPE_NAME,
                     ParentTermIds = new List<int>(),
                 }
             },
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewCasePartyType {
             Id = null,
@@ -99,16 +99,16 @@ internal sealed class CasePartyTypeMigrator(
             NodeTypeId = 1,
             Description = "",
             FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyId,
                     Name = Constants.PLACEMENT_CASE_TYPE_NAME,
                     ParentTermIds = new List<int>(),
                 }
             },
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewCasePartyType {
             Id = null,
@@ -142,16 +142,16 @@ internal sealed class CasePartyTypeMigrator(
             NodeTypeId = 1,
             Description = "",
             FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyId,
                     Name = Constants.POSTPLACEMENT_CASE_TYPE_NAME,
                     ParentTermIds = new List<int>(),
                 }
             },
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewCasePartyType {
             Id = null,
@@ -185,16 +185,16 @@ internal sealed class CasePartyTypeMigrator(
             NodeTypeId = 1,
             Description = "",
             FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyId,
                     Name = Constants.FACILITATION_CASE_TYPE_NAME,
                     ParentTermIds = new List<int>(),
                 }
             },
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewCasePartyType {
             Id = null,
@@ -228,16 +228,16 @@ internal sealed class CasePartyTypeMigrator(
             NodeTypeId = 1,
             Description = "",
             FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyId,
                     Name = Constants.INSTITUTION_CASE_TYPE_NAME,
                     ParentTermIds = new List<int>(),
                 }
             },
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewCasePartyType {
             Id = null,
@@ -271,16 +271,16 @@ internal sealed class CasePartyTypeMigrator(
             NodeTypeId = 1,
             Description = "",
             FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyId,
                     Name = Constants.THERAPY_CASE_TYPE_NAME,
                     ParentTermIds = new List<int>(),
                 }
             },
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewCasePartyType {
             Id = null,
@@ -314,16 +314,16 @@ internal sealed class CasePartyTypeMigrator(
             NodeTypeId = 1,
             Description = "",
             FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyId,
                     Name = Constants.AUTHORITIES_CASE_TYPE_NAME,
                     ParentTermIds = new List<int>(),
                 }
             },
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
     }
 }

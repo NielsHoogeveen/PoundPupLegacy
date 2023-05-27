@@ -46,7 +46,8 @@ public sealed record NewChildTraffickingCase : ChildTraffickingCaseBase, NewNode
             TenantNodes = TenantNodes,
             Tenants = Tenants,
             Terms = Terms,
-            Title = Title
+            Title = Title,
+            VocabularyIdTagging = VocabularyIdTagging,
         };
     }
 

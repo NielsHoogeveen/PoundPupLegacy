@@ -121,16 +121,16 @@ internal sealed class BasicNameableMigrator(
             NodeTypeId = 41,
             Description = "",
             FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyId,
                     Name = "organizations",
                     ParentTermIds = new List<int>(),
                 }
             },
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
 
         while (await reader.ReadAsync()) {
@@ -146,9 +146,9 @@ internal sealed class BasicNameableMigrator(
                     VocabularyId = vocabularyId
                 }));
             }
-            var vocabularyNames = new List<NewTermForNewNameble>
+            var vocabularyNames = new List<NewTermForNewNameable>
                 {
-                    new NewTermForNewNameble
+                    new NewTermForNewNameable
                     {
                         VocabularyId = vocabularyId,
                         Name = name,
@@ -180,7 +180,7 @@ internal sealed class BasicNameableMigrator(
                 Description = reader.GetString("description"),
                 FileIdTileImage = null,
                 Terms = vocabularyNames,
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
 
         }
@@ -209,9 +209,9 @@ internal sealed class BasicNameableMigrator(
             NodeTypeId = 41,
             Description = "",
             FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyId,
                     Name = "US senate bill",
@@ -223,7 +223,7 @@ internal sealed class BasicNameableMigrator(
                     },
                 }
             },
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewBasicNameable {
             Id = null,
@@ -248,9 +248,9 @@ internal sealed class BasicNameableMigrator(
             NodeTypeId = 41,
             Description = "",
             FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyId,
                     Name = "US house bill",
@@ -262,7 +262,7 @@ internal sealed class BasicNameableMigrator(
                     },
                 }
             },
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewBasicNameable {
             Id = null,
@@ -287,9 +287,9 @@ internal sealed class BasicNameableMigrator(
             NodeTypeId = 41,
             Description = "",
             FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyId,
                     Name = "US act",
@@ -301,7 +301,7 @@ internal sealed class BasicNameableMigrator(
                     },
                 }
             },
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
     }
 }

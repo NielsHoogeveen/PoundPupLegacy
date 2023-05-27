@@ -1,4 +1,5 @@
 ﻿using PoundPupLegacy.CreateModel;
+using PoundPupLegacy.CreateModel.Deleters;
 using PoundPupLegacy.CreateModel.Updaters;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
@@ -30,10 +31,10 @@ internal class OrganizationPoliticalEntityRelationSaveService(
                 DocumentIdProof = relation.ProofDocument?.Id,
                 AuthoringStatusId = 1,
                 ChangedDateTime = DateTime.Now,
-                NewNodeTerms = new List<NodeTerm>(),
-                NewTenantNodes = new List<NewTenantNodeForExistingNode>(),
-                NodeTermsToRemove = new List<NodeTerm>(),
-                TenantNodesToRemove = new List<ExistingTenantNode>(),
+                NodeTermsToAdd = new List<NodeTermToAdd>(),
+                TenantNodesToAdd = new List<NewTenantNodeForExistingNode>(),
+                NodeTermsToRemove = new List<NodeTermToRemove>(),
+                TenantNodesToRemove = new List<TenantNodeToDelete>(),
                 TenantNodesToUpdate = new List<ExistingTenantNode>(),
             });
         }
@@ -64,7 +65,7 @@ internal class OrganizationPoliticalEntityRelationSaveService(
                     PartyPoliticalEntityRelationTypeId = relation.OrganizationPoliticalEntityRelationType.Id,
                     DateRange = relation.DateRange is null ? new DateTimeRange(null, null) : relation.DateRange,
                     DocumentIdProof = relation.ProofDocument?.Id,
-                    NodeTermIds = new List<int>(),
+                    TermIds = new List<int>(),
                 };
             }
         }

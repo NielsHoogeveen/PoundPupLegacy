@@ -167,7 +167,7 @@ internal sealed class PersonOrganizationRelationMigratorPPL(
                         UrlId = reader.GetInt32("document_id_proof")
                     }),
                 Description = reader.IsDBNull("description") ? null : reader.GetString("description"),
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

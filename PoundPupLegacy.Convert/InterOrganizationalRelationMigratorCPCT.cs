@@ -141,7 +141,7 @@ internal sealed class InterOrganizationalRelationMigratorCPCT(
                 Description = reader.IsDBNull("description") ? null : reader.GetString("description"),
                 MoneyInvolved = reader.IsDBNull("money_involved") ? null : reader.GetDecimal("money_involved"),
                 NumberOfChildrenInvolved = reader.IsDBNull("number_of_children_involved") ? null : reader.GetInt32("number_of_children_involved"),
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

@@ -106,7 +106,7 @@ internal sealed class SenatorSenateBillActionMigrator(
                 SenateBillId = billId,
                 BillActionTypeId = billActionTypeId,
                 Date = reader.GetDateTime("date"),
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

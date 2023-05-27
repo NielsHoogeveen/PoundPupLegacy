@@ -142,7 +142,7 @@ internal sealed class InterPersonalRelationMigratorPPL(
                         UrlId = reader.GetInt32("document_id_proof")
                     }),
                 Description = null,
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

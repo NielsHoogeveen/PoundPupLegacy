@@ -80,16 +80,16 @@ internal sealed class DocumentTypeMigrator(
                 NodeTypeId = 9,
                 Description = "",
                 FileIdTileImage = null,
-                Terms = new List<NewTermForNewNameble>
+                Terms = new List<NewTermForNewNameable>
                 {
-                    new NewTermForNewNameble
+                    new NewTermForNewNameable
                     {
                         VocabularyId = vocabularyId,
                         Name = name,
                         ParentTermIds = new List<int>(),
                     },
                 },
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

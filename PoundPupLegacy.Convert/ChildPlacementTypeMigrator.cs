@@ -83,9 +83,9 @@ internal sealed class ChildPlacementTypeMigrator(
             var name = reader.GetString("title");
             var topicName = reader.IsDBNull("topic_name") ? null : reader.GetString("topic_name");
             var topicParentName = reader.IsDBNull("parent_topic_name") ? null : reader.GetString("parent_topic_name");
-            var vocabularyNames = new List<NewTermForNewNameble>
+            var vocabularyNames = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyIdChildPlacementType,
                     Name = name,
@@ -100,7 +100,7 @@ internal sealed class ChildPlacementTypeMigrator(
                         VocabularyId = vocabularyIdTopics
                     }));
                 }
-                vocabularyNames.Add(new NewTermForNewNameble {
+                vocabularyNames.Add(new NewTermForNewNameable {
                     VocabularyId = vocabularyIdTopics,
                     Name = topicName,
                     ParentTermIds = parentTermIds
@@ -145,7 +145,7 @@ internal sealed class ChildPlacementTypeMigrator(
                         TenantFileId = reader.GetInt32("file_id_tile_image")
                     }),
                 Terms = vocabularyNames,
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
 
         }

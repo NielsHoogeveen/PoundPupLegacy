@@ -57,9 +57,9 @@ internal sealed class FirstLevelGlobalRegionMigrator(
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
 
-            var vocabularyNames = new List<NewTermForNewNameble>
+            var vocabularyNames = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyId,
                     Name = name,
@@ -106,7 +106,7 @@ internal sealed class FirstLevelGlobalRegionMigrator(
                         TenantFileId = reader.GetInt32("file_id_tile_image")
                     }),
                 Name = name,
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

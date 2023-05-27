@@ -70,7 +70,7 @@ internal class CaseCaseRelationsMigrator(
                     Organizations = reader.IsDBNull("organizations_text") ? null : reader.GetString("organizations_text"),
                     Persons = reader.IsDBNull("persons_text") ? null : reader.GetString("persons_text"),
                     OrganizationIds = organizationIds,
-                    PersonsIds = personIds
+                    PersonIds = personIds
                 },
                 CasePartyTypeId = casePartyTypeId,
             };

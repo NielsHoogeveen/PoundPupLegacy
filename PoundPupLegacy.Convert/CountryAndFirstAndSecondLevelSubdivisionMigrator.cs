@@ -63,9 +63,9 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             ChangedDateTime = DateTime.Now,
             PublisherId = 1,
             Description = "",
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyIdTopics,
                     Name = "Saint Barthélemy",
@@ -100,7 +100,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             MarriageRequirements = null,
             OtherRequirements = null,
             SubdivisionTypeId = subdivisionTypeId,
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewCountryAndFirstAndSecondLevelSubdivision {
             Id = null,
@@ -134,9 +134,9 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             ChangedDateTime = DateTime.Now,
             PublisherId = 1,
             Description = "",
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
                 {
-                    new NewTermForNewNameble
+                    new NewTermForNewNameable
                     {
                         VocabularyId = vocabularyIdTopics,
                         Name = "Saint Martin",
@@ -171,7 +171,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             MarriageRequirements = null,
             OtherRequirements = null,
             SubdivisionTypeId = subdivisionTypeId,
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewCountryAndFirstAndSecondLevelSubdivision {
             Id = null,
@@ -205,9 +205,9 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             ChangedDateTime = DateTime.Now,
             PublisherId = 1,
             Description = "",
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
                 {
-                    new NewTermForNewNameble
+                    new NewTermForNewNameable
                     {
                         VocabularyId = vocabularyIdTopics,
                         Name = "French Southern Territories",
@@ -242,7 +242,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             MarriageRequirements = null,
             OtherRequirements = null,
             SubdivisionTypeId = subdivisionTypeId,
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
     }
 
@@ -327,9 +327,9 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             var name = reader.GetInt32("id") == 3879 ? "Réunion" :
                         reader.GetString("title");
             var regionName = reader.GetString("second_level_region_name");
-            var vocabularyNames = new List<NewTermForNewNameble>
+            var vocabularyNames = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyIdTopics,
                     Name = name,
@@ -402,7 +402,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
                 MarriageRequirements = null,
                 OtherRequirements = null,
                 SubdivisionTypeId = subdivisionTypeId,
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

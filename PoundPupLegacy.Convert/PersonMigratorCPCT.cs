@@ -90,8 +90,8 @@ internal sealed class PersonMigratorCPCT(
             };
 
 
-            var vocabularyNames = new List<NewTermForNewNameble> {
-                new NewTermForNewNameble {
+            var vocabularyNames = new List<NewTermForNewNameable> {
+                new NewTermForNewNameable {
                     VocabularyId = vocabularyId,
                     Name = title,
                     ParentTermIds = new List<int>(),
@@ -143,8 +143,8 @@ internal sealed class PersonMigratorCPCT(
                 Suffix = null,
                 ProfessionalRoles = new List<EventuallyIdentifiableProfessionalRoleForNewPerson>(),
                 PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewPerson>(),
-                NodeTermIds = new List<int>(),
-                NewLocations = new List<EventuallyIdentifiableLocation>(),
+                TermIds = new List<int>(),
+                Locations = new List<EventuallyIdentifiableLocation>(),
                 PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
                 InterPersonalRelationsToAddFrom = new List<EventuallyIdentifiableInterPersonalRelationForNewPersonFrom>(),
                 InterPersonalRelationsToAddTo = new List<EventuallyIdentifiableInterPersonalRelationForNewPersonTo>(),

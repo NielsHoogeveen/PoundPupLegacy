@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using PoundPupLegacy.CreateModel;
+using PoundPupLegacy.CreateModel.Deleters;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
@@ -55,11 +56,11 @@ internal sealed class ChildTraffickingCaseEditService(
             }).ToList(),
             Date = childTraffickingCase.Date,
             FileIdTileImage = null,
-            Terms = new List<CreateModel.NewTermForNewNameble>(),
+            Terms = new List<CreateModel.NewTermForNewNameable>(),
             NumberOfChildrenInvolved = childTraffickingCase.NumberOfChildrenInvolved,
             CountryIdFrom = childTraffickingCase.CountryFrom.Id,
-            NodeTermIds = new List<int>(),
-            NewLocations = new List<EventuallyIdentifiableLocation>(),
+            TermIds = new List<int>(),
+            Locations = new List<EventuallyIdentifiableLocation>(),
             CaseParties = new List<NewCaseNewCaseParties>(),
         };
     }
@@ -76,17 +77,16 @@ internal sealed class ChildTraffickingCaseEditService(
             Date = viewModel.Date,
             NumberOfChildrenInvolved = viewModel.NumberOfChildrenInvolved,
             FileIdTileImage = null,
-            NewNodeTerms = new List<NodeTerm>(),
-            NewTenantNodes = new List<NewTenantNodeForExistingNode>(),
-            NodeTermsToRemove = new List<NodeTerm>(),
-            TenantNodesToRemove = new List<ExistingTenantNode>(),
+            NodeTermsToAdd = new List<NodeTermToAdd>(),
+            TenantNodesToAdd = new List<NewTenantNodeForExistingNode>(),
+            NodeTermsToRemove = new List<NodeTermToRemove>(),
+            TenantNodesToRemove = new List<TenantNodeToDelete>(),
             TenantNodesToUpdate = new List<ExistingTenantNode>(),
-            TermsToAdd = new List<NewTermForNewNameble>(),
+            TermsToAdd = new List<NewTermForExistingNameable>(),
             LocationsToDelete = new List<int>(),
             LocationsToUpdate = new List<ImmediatelyIdentifiableLocation>(),
-            NewLocations = new List<EventuallyIdentifiableLocation>(),
+            LocationsToAdd = new List<EventuallyIdentifiableLocation>(),
             CasePartiesToAdd = new List<ExistingCaseNewCaseParties>(),
-            CasePartiesToRemove = new List<int>(),
             CasePartiesToUpdate = new List<ExistingCaseExistingCaseParties>(),
         };
     }

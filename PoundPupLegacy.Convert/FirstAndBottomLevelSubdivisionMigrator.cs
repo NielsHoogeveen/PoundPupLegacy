@@ -48,9 +48,9 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
                 CreatedDateTime = DateTime.Parse(parts[1]),
                 ChangedDateTime = DateTime.Parse(parts[2]),
                 Description = "",
-                Terms = new List<NewTermForNewNameble>
+                Terms = new List<NewTermForNewNameable>
                 {
-                    new NewTermForNewNameble
+                    new NewTermForNewNameable
                     {
                         VocabularyId = vocabularyIdTopics,
                         Name = title,
@@ -97,7 +97,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
                     VocabularyId = vocabularyIdSubdivision,
                     Name = parts[11].Trim()
                 })),
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
         }
     }
@@ -450,9 +450,9 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
 
             var topicName = reader.GetString("topic_name");
             var countryName = reader.GetString("country_name");
-            var vocabularyNames = new List<NewTermForNewNameble>
+            var vocabularyNames = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyIdTopics,
                     Name = topicName,
@@ -502,7 +502,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
                     VocabularyId = vocabularyIdSubdisionTypes,
                     Name = reader.GetString("subdivision_type_name")
                 })),
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
 
         }

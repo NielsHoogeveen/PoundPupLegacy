@@ -174,7 +174,7 @@ internal sealed class DocumentMigratorCPCT(
                         TenantId = Constants.CPCT,
                         UrlId = reader.GetInt32("document_type_id")
                     }),
-                NodeTermIds = termIds,
+                TermIds = termIds,
             };
 
         }

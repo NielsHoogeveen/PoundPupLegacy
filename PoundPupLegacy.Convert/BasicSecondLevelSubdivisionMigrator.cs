@@ -79,9 +79,9 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                 Title = title,
                 Name = parts[9],
                 Description = "",
-                Terms = new List<NewTermForNewNameble>
+                Terms = new List<NewTermForNewNameable>
                 {
-                    new NewTermForNewNameble
+                    new NewTermForNewNameable
                     {
                         VocabularyId = vocabularyIdTopics,
                         Name = title,
@@ -101,7 +101,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                     VocabularyId = vocabularyIdSubdivisionTypes,
                     Name = parts[12].Trim()
                 })),
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
         }
     }
@@ -170,9 +170,9 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                 Title = title,
                 Name = parts[9],
                 Description = "",
-                Terms = new List<NewTermForNewNameble>
+                Terms = new List<NewTermForNewNameable>
                 {
-                    new NewTermForNewNameble
+                    new NewTermForNewNameable
                     {
                         VocabularyId = vocabularyIdTopics,
                         Name = title,
@@ -192,7 +192,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                     VocabularyId = vocabularyIdSubdivisionTypes,
                     Name = parts[12].Trim()
                 })),
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
         }
     }
@@ -278,9 +278,9 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
             var id = reader.GetInt32("id");
             var title = $"{reader.GetString("title").Replace(" (state)", "")} (state of the USA)";
             var subdivisioName = $"{reader.GetString("subdivision_name")} (region of the USA)";
-            var vocabularyNames = new List<NewTermForNewNameble>
+            var vocabularyNames = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyIdTopics,
                     Name = title,
@@ -340,7 +340,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                     VocabularyId = vocabularyIdSubdivisionTypes,
                     Name = "State"
                 })),
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

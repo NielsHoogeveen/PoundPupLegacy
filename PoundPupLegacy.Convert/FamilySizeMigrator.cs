@@ -54,16 +54,16 @@ internal sealed class FamilySizeMigrator(
             NodeTypeId = 28,
             Description = "",
             FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyIdFamilySize,
                     Name = "1 to 4",
                     ParentTermIds = new List<int>(),
                 },
             },
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewFamilySize {
             Id = null,
@@ -97,16 +97,16 @@ internal sealed class FamilySizeMigrator(
             NodeTypeId = 28,
             Description = "",
             FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyIdFamilySize,
                     Name = "4 to 8",
                     ParentTermIds = new List<int>(),
                 },
             },
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewFamilySize {
             Id = null,
@@ -140,16 +140,16 @@ internal sealed class FamilySizeMigrator(
             NodeTypeId = 28,
             Description = "",
             FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
                 {
-                    new NewTermForNewNameble
+                    new NewTermForNewNameable
                     {
                         VocabularyId = vocabularyIdFamilySize,
                         Name = "8 to 12",
                         ParentTermIds = new List<int>(),
                     },
                 },
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewFamilySize {
             Id = null,
@@ -183,22 +183,22 @@ internal sealed class FamilySizeMigrator(
             NodeTypeId = 28,
             Description = "",
             FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyIdFamilySize,
                     Name = "more than 12",
                     ParentTermIds = new List<int>(),
                 },
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyIdTopics,
                     Name = "mega families",
                     ParentTermIds = new List<int>(),
                 },
             },
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
     }
     protected override async Task MigrateImpl()

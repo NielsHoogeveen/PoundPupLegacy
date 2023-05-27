@@ -58,8 +58,8 @@ internal sealed class OrganizationMigratorPPL(
             Terminated = null,
             Description = "",
             FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameble> {
-                new NewTermForNewNameble {
+            Terms = new List<NewTermForNewNameable> {
+                new NewTermForNewNameable {
                     VocabularyId = vocabularyId,
                     Name = "Colorado Adoption Center",
                     ParentTermIds = new List<int>{
@@ -78,8 +78,8 @@ internal sealed class OrganizationMigratorPPL(
                     UrlId = 12625
                 })
             },
-            NodeTermIds = new List<int>(),
-            NewLocations = new List<EventuallyIdentifiableLocation>(),
+            TermIds = new List<int>(),
+            Locations = new List<EventuallyIdentifiableLocation>(),
             PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
             PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewOrganization>(),
             InterOrganizationalRelationsToAddFrom = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationFrom>(),
@@ -121,8 +121,8 @@ internal sealed class OrganizationMigratorPPL(
             Terminated = null,
             Description = "",
             FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameble> {
-                new NewTermForNewNameble {
+            Terms = new List<NewTermForNewNameable> {
+                new NewTermForNewNameable {
                     VocabularyId = vocabularyId,
                     Name = "Popular Democratic Party",
                     ParentTermIds = new List<int>{
@@ -141,8 +141,8 @@ internal sealed class OrganizationMigratorPPL(
                     UrlId = Constants.POLITICAL_PARTY
                 })
             },
-            NodeTermIds = new List<int>(),
-            NewLocations = new List<EventuallyIdentifiableLocation>(),
+            TermIds = new List<int>(),
+            Locations = new List<EventuallyIdentifiableLocation>(),
             PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
             PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewOrganization>(),
             InterOrganizationalRelationsToAddFrom = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationFrom>(),
@@ -185,8 +185,8 @@ internal sealed class OrganizationMigratorPPL(
             Terminated = null,
             Description = "",
             FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameble> {
-                new NewTermForNewNameble {
+            Terms = new List<NewTermForNewNameable> {
+                new NewTermForNewNameable {
                     VocabularyId = vocabularyId,
                     Name = "Libertarian Party",
                     ParentTermIds = new List<int>{
@@ -205,8 +205,8 @@ internal sealed class OrganizationMigratorPPL(
                     UrlId = Constants.POLITICAL_PARTY
                 })
             },
-            NodeTermIds = new List<int>(),
-            NewLocations = new List<EventuallyIdentifiableLocation>(),
+            TermIds = new List<int>(),
+            Locations = new List<EventuallyIdentifiableLocation>(),
             PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
             PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewOrganization>(),
             InterOrganizationalRelationsToAddFrom = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationFrom>(),
@@ -248,8 +248,8 @@ internal sealed class OrganizationMigratorPPL(
             Terminated = null,
             Description = "",
             FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameble> {
-                new NewTermForNewNameble {
+            Terms = new List<NewTermForNewNameable> {
+                new NewTermForNewNameable {
                     VocabularyId = vocabularyId,
                     Name = "Government of Italy",
                     ParentTermIds = new List<int>{
@@ -268,8 +268,8 @@ internal sealed class OrganizationMigratorPPL(
                     UrlId = 12630
                 })
             },
-            NodeTermIds = new List<int>(),
-            NewLocations = new List<EventuallyIdentifiableLocation>(),
+            TermIds = new List<int>(),
+            Locations = new List<EventuallyIdentifiableLocation>(),
             PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
             PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewOrganization>(),
             InterOrganizationalRelationsToAddFrom = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationFrom>(),
@@ -411,7 +411,7 @@ internal sealed class OrganizationMigratorPPL(
         });
 
         while (await reader.ReadAsync()) {
-            var vocabularyNames = new List<NewTermForNewNameble>();
+            var vocabularyNames = new List<NewTermForNewNameable>();
 
 
             var typeIds = reader
@@ -488,7 +488,7 @@ internal sealed class OrganizationMigratorPPL(
                     VocabularyId = vocabularyId
                 }));
             }
-            vocabularyNames.Add(new NewTermForNewNameble {
+            vocabularyNames.Add(new NewTermForNewNameable {
                 VocabularyId = vocabularyId,
                 Name = topicName,
                 ParentTermIds = topicParentIds,
@@ -537,8 +537,8 @@ internal sealed class OrganizationMigratorPPL(
                             UrlId = Constants.POLITICAL_PARTY
                         })
                     },
-                    NodeTermIds = new List<int>(),
-                    NewLocations = new List<EventuallyIdentifiableLocation>(),
+                    TermIds = new List<int>(),
+                    Locations = new List<EventuallyIdentifiableLocation>(),
                     PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
                     PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewOrganization>(),
                     InterOrganizationalRelationsToAddFrom = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationFrom>(),
@@ -584,8 +584,8 @@ internal sealed class OrganizationMigratorPPL(
                     FileIdTileImage = null,
                     Terms = vocabularyNames,
                     OrganizationTypeIds = organizationOrganizationTypeIds,
-                    NodeTermIds = new List<int>(),
-                    NewLocations = new List<EventuallyIdentifiableLocation>(),
+                    TermIds = new List<int>(),
+                    Locations = new List<EventuallyIdentifiableLocation>(),
                     PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
                     PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewOrganization>(),
                     InterOrganizationalRelationsToAddFrom = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationFrom>(),

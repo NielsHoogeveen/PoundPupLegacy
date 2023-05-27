@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using PoundPupLegacy.CreateModel;
+using PoundPupLegacy.CreateModel.Deleters;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
@@ -55,9 +56,9 @@ internal sealed class WrongfulMedicationCaseEditService(
             }).ToList(),
             Date = viewModel.Date,
             FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameble>(),
-            NodeTermIds = new List<int>(),
-            NewLocations = new List<EventuallyIdentifiableLocation>(),
+            Terms = new List<NewTermForNewNameable>(),
+            TermIds = new List<int>(),
+            Locations = new List<EventuallyIdentifiableLocation>(),
             CaseParties = new List<NewCaseNewCaseParties>(),
         };
     }
@@ -72,17 +73,16 @@ internal sealed class WrongfulMedicationCaseEditService(
             AuthoringStatusId = 1,
             Date = viewModel.Date,
             FileIdTileImage = null,
-            NewNodeTerms = new List<NodeTerm>(),
-            NewTenantNodes = new List<NewTenantNodeForExistingNode>(),
-            NodeTermsToRemove = new List<NodeTerm>(),
-            TenantNodesToRemove = new List<ExistingTenantNode>(),
+            NodeTermsToAdd = new List<NodeTermToAdd>(),
+            TenantNodesToAdd = new List<NewTenantNodeForExistingNode>(),
+            NodeTermsToRemove = new List<NodeTermToRemove>(),
+            TenantNodesToRemove = new List<TenantNodeToDelete>(),
             TenantNodesToUpdate = new List<ExistingTenantNode>(),
-            TermsToAdd = new List<NewTermForNewNameble>(),
-            NewLocations = new List<EventuallyIdentifiableLocation>(),
+            TermsToAdd = new List<NewTermForExistingNameable>(),
+            LocationsToAdd = new List<EventuallyIdentifiableLocation>(),
             LocationsToDelete = new List<int>(),
             LocationsToUpdate = new List<ImmediatelyIdentifiableLocation>(),
             CasePartiesToAdd = new List<ExistingCaseNewCaseParties>(),
-            CasePartiesToRemove = new List<int>(),
             CasePartiesToUpdate = new List<ExistingCaseExistingCaseParties>(),
         };
     }

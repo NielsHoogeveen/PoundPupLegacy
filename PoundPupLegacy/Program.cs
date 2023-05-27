@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.FileProviders;
 using Npgsql;
 using PoundPupLegacy.Common;
+using PoundPupLegacy.EditModel;
 using PoundPupLegacy.Services;
 using Quartz;
 using System.Data;
@@ -163,6 +164,8 @@ public sealed class Program
             EditModel.NewPersonJsonContext.Default,
             EditModel.OrganizationNameJsonContext.Default,
             EditModel.PersonNameJsonContext.Default,
+            EditModel.PersonCasePartyJsonContext.Default,
+            EditModel.OrganizationCasePartyJsonContext.Default,
             EditModel.ExistingPersonOrganizationRelationForPersonJsonContext.Default,
             EditModel.ExistingPersonOrganizationRelationForOrganizationJsonContext.Default,
             EditModel.PersonOrganizationRelationTypeListItemJsonContext.Default,

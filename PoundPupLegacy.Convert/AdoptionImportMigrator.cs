@@ -162,7 +162,7 @@ internal sealed class AdoptionImportMigrator(
                     UrlId = null
                 }
             },
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
     }
     private async IAsyncEnumerable<NewInterCountryRelation> ReadAdoptionExportYears(

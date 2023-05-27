@@ -14,7 +14,7 @@ public abstract record NameableBase : NodeBase, Nameable
             }
         }
     }
-
+    public required int VocabularyIdTagging { get; init; }
 }
 public interface Nameable : Node
 {

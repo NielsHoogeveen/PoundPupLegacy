@@ -5,7 +5,7 @@ using PoundPupLegacy.CreateModel.Updaters;
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal class LocationsSaveService(
-    IDatabaseDeleterFactory<LocationDeleterRequest> locationDeleterFactory,
+    IDatabaseDeleterFactory<LocationToDelete> locationDeleterFactory,
     IDatabaseUpdaterFactory<LocationUpdaterRequest> locationUpdaterFactory,
     IEntityCreatorFactory<EventuallyIdentifiableLocation> locationCreatorFactory
 ) : ISaveService<IEnumerable<Location>>
@@ -20,7 +20,7 @@ internal class LocationsSaveService(
                 throw new Exception("locatable id of location should be set in order to delete");
             if (!location.LocationId.HasValue)
                 throw new Exception("location id of location should be set in order to delete");
-            await deleter.DeleteAsync(new LocationDeleterRequest {
+            await deleter.DeleteAsync(new LocationToDelete {
                 LocatableId = location.LocatableId.Value,
                 LocationId = location.LocationId.Value
             });

@@ -53,9 +53,9 @@ internal sealed class BillActionTypeMigrator(
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
 
-            var vocabularyNames = new List<NewTermForNewNameble>
+            var vocabularyNames = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyId,
                     Name = name,
@@ -101,7 +101,7 @@ internal sealed class BillActionTypeMigrator(
                         TenantFileId = reader.GetInt32("file_id_tile_image")
                     }),
                 Terms = vocabularyNames,
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
 
         }

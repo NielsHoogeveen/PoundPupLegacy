@@ -2,7 +2,7 @@
 
 public interface ImmediatelyIdentifiableLocatable : Locatable, ImmediatelyIdentifiableNameable, ImmediatelyIdentifiableDocumentable
 {
-    List<EventuallyIdentifiableLocation> NewLocations { get; }
+    List<EventuallyIdentifiableLocation> LocationsToAdd { get; }
 
     List<int> LocationsToDelete { get; }
 
@@ -11,7 +11,7 @@ public interface ImmediatelyIdentifiableLocatable : Locatable, ImmediatelyIdenti
 
 public interface EventuallyIdentifiableLocatable: Locatable, EventuallyIdentifiableNameable,EventuallyIdentifiableDocumentable 
 {
-    List<EventuallyIdentifiableLocation> NewLocations { get; }
+    List<EventuallyIdentifiableLocation> Locations { get; }
 }
 
 public interface Locatable : Nameable, Documentable
@@ -20,12 +20,12 @@ public interface Locatable : Nameable, Documentable
 
 public abstract record NewLocatableBase : NewNameableBase, EventuallyIdentifiableLocatable
 {
-    public required List<EventuallyIdentifiableLocation> NewLocations { get; init; }
+    public required List<EventuallyIdentifiableLocation> Locations { get; init; }
 }
 
 public abstract record ExistingLocatableBase : ExistingNameableBase, ImmediatelyIdentifiableLocatable
 {
-    public required List<EventuallyIdentifiableLocation> NewLocations { get; init; }
+    public required List<EventuallyIdentifiableLocation> LocationsToAdd { get; init; }
 
     public required List<int> LocationsToDelete { get; init; }
 

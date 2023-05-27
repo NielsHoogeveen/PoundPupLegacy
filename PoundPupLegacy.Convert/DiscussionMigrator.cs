@@ -61,7 +61,7 @@ internal sealed class DiscussionMigrator(
                 NodeTypeId = 37,
                 Text = TextToHtml(reader.GetString("text")),
                 Teaser = TextToTeaser(reader.GetString("text")),
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
             yield return discussion;
 

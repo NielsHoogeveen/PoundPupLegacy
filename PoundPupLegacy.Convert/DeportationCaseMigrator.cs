@@ -77,8 +77,8 @@ internal sealed class DeportationCaseMigrator(
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
-            var vocabularyNames = new List<NewTermForNewNameble> {
-                new NewTermForNewNameble {
+            var vocabularyNames = new List<NewTermForNewNameable> {
+                new NewTermForNewNameable {
                     VocabularyId = vocabularyId,
                     Name = name,
                     ParentTermIds = parentTermIds,
@@ -130,8 +130,8 @@ internal sealed class DeportationCaseMigrator(
                         UrlId = reader.GetInt32("country_id_to")
                     }),
                 FileIdTileImage = null,
-                NodeTermIds = new List<int>(),
-                NewLocations = new List<EventuallyIdentifiableLocation>(),
+                TermIds = new List<int>(),
+                Locations = new List<EventuallyIdentifiableLocation>(),
                 CaseParties = new List<NewCaseNewCaseParties>(),
             };
             yield return country;

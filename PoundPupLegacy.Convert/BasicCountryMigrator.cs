@@ -156,9 +156,9 @@ internal sealed class BasicCountryMigrator(
             NodeTypeId = 13,
             Name = "Antigua and Barbuda",
             Description = "",
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyId,
                     Name = "Antigua and Barbuda",
@@ -187,7 +187,7 @@ internal sealed class BasicCountryMigrator(
             IncomeRequirements = null,
             MarriageRequirements = null,
             OtherRequirements = null,
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewBasicCountry {
             Id = null,
@@ -212,9 +212,9 @@ internal sealed class BasicCountryMigrator(
             NodeTypeId = 13,
             Name = "Palestine",
             Description = "",
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyId,
                     Name = "Palestine",
@@ -243,7 +243,7 @@ internal sealed class BasicCountryMigrator(
             IncomeRequirements = null,
             MarriageRequirements = null,
             OtherRequirements = null,
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewBasicCountry {
             Id = null,
@@ -268,9 +268,9 @@ internal sealed class BasicCountryMigrator(
             NodeTypeId = 13,
             Name = "Saint Helena, Ascension and Tristan da Cunha",
             Description = "",
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyId,
                     Name = "Saint Helena, Ascension and Tristan da Cunha",
@@ -299,7 +299,7 @@ internal sealed class BasicCountryMigrator(
             IncomeRequirements = null,
             MarriageRequirements = null,
             OtherRequirements = null,
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewBasicCountry {
             Id = null,
@@ -324,9 +324,9 @@ internal sealed class BasicCountryMigrator(
             NodeTypeId = 13,
             Name = "South Sudan",
             Description = "",
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyId,
                     Name = "South Sudan",
@@ -355,7 +355,7 @@ internal sealed class BasicCountryMigrator(
             IncomeRequirements = null,
             MarriageRequirements = null,
             OtherRequirements = null,
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
     }
 
@@ -483,9 +483,9 @@ internal sealed class BasicCountryMigrator(
             var regionName = reader.GetString("second_level_region_name");
             var topicName = reader.GetString("topic_name");
 
-            var vocabularyNames = new List<NewTermForNewNameble>
+            var vocabularyNames = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyId,
                     Name = topicName,
@@ -550,7 +550,7 @@ internal sealed class BasicCountryMigrator(
                 HealthRequirements = reader.IsDBNull("health_requirements") ? null : reader.GetString("health_requirements"),
                 IncomeRequirements = reader.IsDBNull("income_requirements") ? null : reader.GetString("income_requirements"),
                 OtherRequirements = reader.IsDBNull("other_requirements") ? null : reader.GetString("other_requirements"),
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
             yield return country;
 

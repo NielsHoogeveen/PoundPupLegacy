@@ -61,7 +61,7 @@ internal sealed class BlogPostMigrator(
                 NodeTypeId = 35,
                 Text = TextToHtml(text),
                 Teaser = TextToTeaser(text),
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
             yield return discussion;
 

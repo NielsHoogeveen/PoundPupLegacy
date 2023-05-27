@@ -1,4 +1,5 @@
 ﻿using PoundPupLegacy.CreateModel;
+using PoundPupLegacy.CreateModel.Deleters;
 using PoundPupLegacy.CreateModel.Updaters;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
@@ -32,10 +33,10 @@ internal class PersonOrganizationRelationSaveService(
                 GeographicalEntityId = relation.GeographicalEntity?.Id,
                 AuthoringStatusId = 1,
                 ChangedDateTime = DateTime.Now,
-                NewNodeTerms = new List<NodeTerm>(),
-                NewTenantNodes = new List<NewTenantNodeForExistingNode>(),
-                NodeTermsToRemove = new List<NodeTerm>(),
-                TenantNodesToRemove = new List<ExistingTenantNode>(),
+                NodeTermsToAdd = new List<NodeTermToAdd>(),
+                TenantNodesToAdd = new List<NewTenantNodeForExistingNode>(),
+                NodeTermsToRemove = new List<NodeTermToRemove>(),
+                TenantNodesToRemove = new List<TenantNodeToDelete>(),
                 TenantNodesToUpdate = new List<ExistingTenantNode>(),
             });
         }
@@ -68,7 +69,7 @@ internal class PersonOrganizationRelationSaveService(
                     DocumentIdProof = relation.ProofDocument?.Id,
                     GeographicalEntityId = relation.GeographicalEntity?.Id,
                     Description = relation.Description,
-                    NodeTermIds = new List<int>(),
+                    TermIds = new List<int>(),
                 };
             }
         }

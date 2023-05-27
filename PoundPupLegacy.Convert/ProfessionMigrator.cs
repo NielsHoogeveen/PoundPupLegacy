@@ -87,9 +87,9 @@ internal sealed class ProfessionMigrator(
             var name = reader.GetString("title");
             var topicName = reader.IsDBNull("topic_name") ? null : reader.GetString("topic_name");
 
-            var vocabularyNames = new List<NewTermForNewNameble>
+            var vocabularyNames = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = professionVocabularyId,
                     Name = name,
@@ -97,7 +97,7 @@ internal sealed class ProfessionMigrator(
                 }
             };
             if (topicName != null) {
-                vocabularyNames.Add(new NewTermForNewNameble {
+                vocabularyNames.Add(new NewTermForNewNameable {
                     VocabularyId = topicsVocabularyId,
                     Name = topicName,
                     ParentTermIds = new List<int>()
@@ -143,7 +143,7 @@ internal sealed class ProfessionMigrator(
                     }),
                 Terms = vocabularyNames,
                 HasConcreteSubtype = reader.GetBoolean("has_concrete_subtype"),
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
         }
         reader.Close();
@@ -179,9 +179,9 @@ internal sealed class ProfessionMigrator(
             NodeTypeId = 6,
             Description = "",
             FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = professionVocabularyId,
                     Name = "Senator",
@@ -189,7 +189,7 @@ internal sealed class ProfessionMigrator(
                 }
             },
             HasConcreteSubtype = true,
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewProfession {
             Id = null,
@@ -223,9 +223,9 @@ internal sealed class ProfessionMigrator(
             NodeTypeId = 6,
             Description = "",
             FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = professionVocabularyId,
                     Name = "Representative",
@@ -233,7 +233,7 @@ internal sealed class ProfessionMigrator(
                 }
             },
             HasConcreteSubtype = true,
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
 
     }

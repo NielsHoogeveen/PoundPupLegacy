@@ -45,6 +45,8 @@ internal sealed class DeportationCaseUpdateDocumentReaderFactory : NodeUpdateDoc
                             n1.title
                         )
                     end,
+                    'VocabularyIdTagging',
+                    (select id from tagging_vocabulary),
                     'Tags', 
                     (select document from tags_document),
                     'TenantNodes',

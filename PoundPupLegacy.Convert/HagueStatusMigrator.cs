@@ -48,9 +48,9 @@ internal sealed class HagueStatusMigrator(
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
-            var vocabularyNames = new List<NewTermForNewNameble>
+            var vocabularyNames = new List<NewTermForNewNameable>
                 {
-                    new NewTermForNewNameble
+                    new NewTermForNewNameable
                     {
                         VocabularyId = vocabularyId,
                         Name = name,
@@ -91,7 +91,7 @@ internal sealed class HagueStatusMigrator(
                 Description = "",
                 FileIdTileImage = null,
                 Terms = vocabularyNames,
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
 
         }

@@ -64,9 +64,9 @@ internal sealed class SecondLevelGlobalRegionMigrator(
             var name = reader.GetString("title");
             var parentRegionName = reader.GetString("first_level_global_region_name");
 
-            var vocabularyNames = new List<NewTermForNewNameble>
+            var vocabularyNames = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyId,
                     Name = name,
@@ -122,7 +122,7 @@ internal sealed class SecondLevelGlobalRegionMigrator(
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("first_level_global_region_id")
                 }),
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
 
         }

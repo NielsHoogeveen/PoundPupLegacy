@@ -132,7 +132,7 @@ internal sealed class AbuseCaseMigrator(
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
 
-            var vocabularyNames = new List<NewTermForNewNameble>();
+            var vocabularyNames = new List<NewTermForNewNameable>();
             var topicName = reader.GetString("topic_name");
             var topicParentNames = reader.IsDBNull("topic_parent_names") 
                 ? new List<string>() 
@@ -149,7 +149,7 @@ internal sealed class AbuseCaseMigrator(
                 }));
             }
             
-            vocabularyNames.Add(new NewTermForNewNameble {
+            vocabularyNames.Add(new NewTermForNewNameable {
                 VocabularyId = vocabularyId,
                 Name = topicName,
                 ParentTermIds = topicParentIds,
@@ -202,8 +202,8 @@ internal sealed class AbuseCaseMigrator(
                 FundamentalFaithInvolved = reader.IsDBNull("fundamental_faith_involved") ? null : reader.GetBoolean("fundamental_faith_involved"),
                 DisabilitiesInvolved = reader.IsDBNull("disabilities_involved") ? null : reader.GetBoolean("disabilities_involved"),
                 Terms = vocabularyNames,
-                NodeTermIds = new List<int>(),
-                NewLocations = new List<EventuallyIdentifiableLocation>(),
+                TermIds = new List<int>(),
+                Locations = new List<EventuallyIdentifiableLocation>(),
                 CaseParties = new List<NewCaseNewCaseParties>(),
             };
             yield return country;

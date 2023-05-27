@@ -20,6 +20,7 @@ where TResponse : class, Node
 {
     protected const string CTE_EDIT = $""""
         WITH
+        {TAGGING_VOCABULARY},
         {TAGS_DOCUMENT_EDIT},
         {TENANT_NODES_DOCUMENT},
         {TENANTS_DOCUMENT},
@@ -32,6 +33,7 @@ where TResponse : class, Node
 
     protected const string CTE_CREATE = $"""
         WITH
+        {TAGGING_VOCABULARY},
         {TENANTS_DOCUMENT},
         {DOCUMENT_TYPES_DOCUMENT_CREATE},
         {TAGS_DOCUMENT_CREATE}
@@ -478,5 +480,12 @@ where TResponse : class, Node
         )
         """;
 
+    const string TAGGING_VOCABULARY = """
+        tagging_vocabulary as (
+            select
+            max(vocabulary_id_tagging) id
+            from system_group
+        )
+        """;
 
 }

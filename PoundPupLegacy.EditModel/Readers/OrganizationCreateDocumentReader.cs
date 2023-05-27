@@ -35,6 +35,8 @@ internal sealed class OrganizationCreateDocumentReaderFactory : NodeCreateDocume
                     (select document from tenants_document),
                     'Files',
                     null,
+                    'VocabularyIdTagging',
+                    (select id from tagging_vocabulary),
                     'Tags',
                     (select document from tags_document),
                     'OrganizationTypes',

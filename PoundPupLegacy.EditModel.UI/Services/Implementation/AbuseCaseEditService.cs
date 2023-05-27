@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using PoundPupLegacy.CreateModel;
+using PoundPupLegacy.CreateModel.Deleters;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
@@ -55,8 +56,8 @@ internal sealed class AbuseCaseEditService(
             }).ToList(),
             Date = viewModel.Date,
             FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameble>(),
-            NodeTermIds = new List<int>(),
+            Terms = new List<NewTermForNewNameable>(),
+            TermIds = new List<int>(),
             TypeOfAbuseIds = new List<int>(),
             TypeOfAbuserIds = new List<int>(),
             ChildPlacementTypeId = viewModel.ChildPlacementTypeId,
@@ -64,7 +65,7 @@ internal sealed class AbuseCaseEditService(
             FamilySizeId = viewModel.FamilySizeId,
             FundamentalFaithInvolved  = viewModel.FundamentalFaithInvolved,
             HomeschoolingInvolved = viewModel.HomeschoolingInvolved,
-            NewLocations = new List<EventuallyIdentifiableLocation>(),
+            Locations = new List<EventuallyIdentifiableLocation>(),
             CaseParties = new List<NewCaseNewCaseParties>(),
         };
     }
@@ -79,14 +80,16 @@ internal sealed class AbuseCaseEditService(
             AuthoringStatusId = 1,
             Date = viewModel.Date,
             FileIdTileImage = null,
-            NewNodeTerms = new List<NodeTerm>(),
-            NewTenantNodes = new List<NewTenantNodeForExistingNode>(),
-            NodeTermsToRemove = new List<NodeTerm>(),
-            TenantNodesToRemove = new List<ExistingTenantNode>(),
+            NodeTermsToAdd = new List<NodeTermToAdd>(),
+            TenantNodesToAdd = new List<NewTenantNodeForExistingNode>(),
+            NodeTermsToRemove = new List<NodeTermToRemove>(),
+            TenantNodesToRemove = new List<TenantNodeToDelete>(),
             TenantNodesToUpdate = new List<ExistingTenantNode>(),
-            TermsToAdd = new List<NewTermForNewNameble>(),
-            TypeOfAbuseIds = viewModel.TypeOfAbuseIds,
-            TypeOfAbuserIds = viewModel.TypeOfAbuserIds,
+            TermsToAdd = new List<NewTermForExistingNameable>(),
+            TypeOfAbuseIdsToAdd = new List<int>(),
+            TypeOfAbuserIdsToAdd = new List<int>(),
+            TypeOfAbuseIdsToRemove = new List<int>(),
+            TypeOfAbuserIdsToRemove = new List<int>(),
             ChildPlacementTypeId = viewModel.ChildPlacementTypeId,
             DisabilitiesInvolved = viewModel.DisabilitiesInvolved,
             FamilySizeId = viewModel.FamilySizeId,
@@ -94,9 +97,8 @@ internal sealed class AbuseCaseEditService(
             HomeschoolingInvolved = viewModel.HomeschoolingInvolved,
             LocationsToDelete = new List<int>(),
             LocationsToUpdate = new List<ImmediatelyIdentifiableLocation>(),
-            NewLocations = new List<EventuallyIdentifiableLocation>(),
+            LocationsToAdd = new List<EventuallyIdentifiableLocation>(),
             CasePartiesToAdd = new List<ExistingCaseNewCaseParties>(),
-            CasePartiesToRemove = new List<int>(),
             CasePartiesToUpdate = new List<ExistingCaseExistingCaseParties>(),
         };
     }

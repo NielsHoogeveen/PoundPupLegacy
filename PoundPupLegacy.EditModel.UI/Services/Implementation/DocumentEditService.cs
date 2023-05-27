@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using PoundPupLegacy.CreateModel;
+using PoundPupLegacy.CreateModel.Deleters;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
@@ -43,10 +44,10 @@ internal sealed class DocumentEditService(
             SourceUrl = item.SourceUrl,
             ChangedDateTime = DateTime.Now,
             AuthoringStatusId = 1,
-            NewNodeTerms = new List<NodeTerm>(),
-            NodeTermsToRemove = new List<NodeTerm>(),
-            NewTenantNodes = new List<NewTenantNodeForExistingNode>(),
-            TenantNodesToRemove = new List<ExistingTenantNode>(),
+            NodeTermsToAdd = new List<NodeTermToAdd>(),
+            NodeTermsToRemove = new List<NodeTermToRemove>(),
+            TenantNodesToAdd = new List<NewTenantNodeForExistingNode>(),
+            TenantNodesToRemove = new List<TenantNodeToDelete>(),
             TenantNodesToUpdate = new List<ExistingTenantNode>()
         };
     }
@@ -76,7 +77,7 @@ internal sealed class DocumentEditService(
                 UrlPath = tn.TenantNode!.UrlPath,
                 SubgroupId = tn.TenantNode!.SubgroupId,
             }).ToList(),
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
     }
 }

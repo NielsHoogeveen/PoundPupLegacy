@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Deleters;
 
-using Request = NodeTerm;
+using Request = NodeTermToRemove;
 
 internal sealed class NodeTermDeleterFactory : DatabaseDeleterFactory<Request>
 {

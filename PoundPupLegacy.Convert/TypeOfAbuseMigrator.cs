@@ -104,9 +104,9 @@ internal sealed class TypeOfAbuseMigrator(
             var firstParentTopicName = reader.IsDBNull("first_parent_topic_name") ? null : reader.GetString("first_parent_topic_name");
             var secondParentTopicName = reader.IsDBNull("second_parent_topic_name") ? null : reader.GetString("second_parent_topic_name");
 
-            var vocabularyNames = new List<NewTermForNewNameble>
+            var vocabularyNames = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 { 
                     VocabularyId = vocabularyIdTypeOfAbuse,
                     Name = name,
@@ -127,7 +127,7 @@ internal sealed class TypeOfAbuseMigrator(
                         VocabularyId = vocabularyIdTopics
                     }));
                 }
-                vocabularyNames.Add(new NewTermForNewNameble {
+                vocabularyNames.Add(new NewTermForNewNameable {
                     VocabularyId = vocabularyIdTopics,
                     Name = topicName,
                     ParentTermIds = lst
@@ -172,7 +172,7 @@ internal sealed class TypeOfAbuseMigrator(
                     TenantFileId = reader.GetInt32("file_id_tile_image"),
                 }),
                 Terms = vocabularyNames,
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
 
         }

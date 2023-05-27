@@ -589,6 +589,8 @@ internal static class SharedSql
             select
             jsonb_agg(
                 jsonb_build_object(
+                    'CaseId',
+                    null,
                     'CasePartyTypeId',
                     n.id,
                     'CasePartyTypeName',
@@ -615,6 +617,10 @@ internal static class SharedSql
             select
             jsonb_agg(
         	    jsonb_build_object(
+                    'Id',
+                    case_party_id,
+                    'CaseId',
+                    c.id,
         		    'CasePartyTypeId',
         		    n.id,
         		    'CasePartyTypeName',
@@ -637,6 +643,7 @@ internal static class SharedSql
             join node n2 on n2.id = c.id
             left join (
         	    select
+                cp.id case_party_id,
         	    ccp.case_id,
         	    ccp.case_party_type_id,
         	    cp.organizations organizations_text,
@@ -645,24 +652,34 @@ internal static class SharedSql
         			WHEN COUNT(DISTINCT cpo.organization_id) = 0 THEN NULL
         			else jsonb_agg(
         				distinct
-        				jsonb_build_object(
-        					'Id',
-        					cpo.organization_id,
-        					'Name',
-        					cpo.organization_name
-        				)
+                        jsonb_build_object(
+                            'Organization',
+        				    jsonb_build_object(
+        					    'Id',
+        					    cpo.organization_id,
+        					    'Name',
+        					    cpo.organization_name
+                            ),
+                            'HasBeenDeleted',
+                            false
+                		)
         			) 
         		end organizations,
                 CASE 
         			WHEN COUNT(DISTINCT cpp.person_id) = 0 THEN NULL
         			else jsonb_agg(
         				distinct
-        				jsonb_build_object(
-        					'Id',
-        					cpp.person_id,
-        					'Name',
-        					cpp.person_name
-        				)
+                        jsonb_build_object(
+                            'Person',
+        				    jsonb_build_object(
+        					    'Id',
+        					    cpp.person_id,
+        					    'Name',
+        					    cpp.person_name
+        				    ),
+                            'HasBeenDeleted',
+                            false
+                        )
         			) 
         		END persons
                 from case_case_parties ccp
@@ -691,10 +708,12 @@ internal static class SharedSql
         	    ccp.case_id,
         	    ccp.case_party_type_id,
         	    cp.organizations,
-        	    cp.persons
+        	    cp.persons,
+                cp.id
             ) ccp on ccp.case_id = c.id and ccp.case_party_type_id = cpt.id
             where ctpt.case_type_id = n2.node_type_id
         )
         """;
+
 
 }

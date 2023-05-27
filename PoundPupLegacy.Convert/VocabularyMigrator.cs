@@ -33,7 +33,7 @@ internal sealed class VocabularyMigrator(
                 },
             NodeTypeId = 38,
             Description = "",
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewVocabulary {
             Id = null,
@@ -58,7 +58,7 @@ internal sealed class VocabularyMigrator(
                 },
             NodeTypeId = 38,
             Description = "",
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewVocabulary {
             Id = null,
@@ -83,7 +83,7 @@ internal sealed class VocabularyMigrator(
                 },
             NodeTypeId = 38,
             Description = "",
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewVocabulary {
             Id = null,
@@ -108,7 +108,7 @@ internal sealed class VocabularyMigrator(
                 },
             NodeTypeId = 38,
             Description = "",
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewVocabulary {
             Id = null,
@@ -133,7 +133,7 @@ internal sealed class VocabularyMigrator(
                 },
             NodeTypeId = 38,
             Description = "",
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewVocabulary {
             Id = null,
@@ -158,7 +158,7 @@ internal sealed class VocabularyMigrator(
                 },
             NodeTypeId = 38,
             Description = "",
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewVocabulary {
             Id = null,
@@ -183,7 +183,7 @@ internal sealed class VocabularyMigrator(
                 },
             NodeTypeId = 38,
             Description = "",
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewVocabulary {
             Id = null,
@@ -208,7 +208,7 @@ internal sealed class VocabularyMigrator(
                 },
             NodeTypeId = 38,
             Description = "",
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewVocabulary {
             Id = null,
@@ -233,7 +233,7 @@ internal sealed class VocabularyMigrator(
                 },
             NodeTypeId = 38,
             Description = "",
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
     }
 
@@ -332,7 +332,7 @@ internal sealed class VocabularyMigrator(
                 NodeTypeId = 38,
                 Name = GetVocabularyName(id, name),
                 Description = reader.GetString("description"),
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
 
         }

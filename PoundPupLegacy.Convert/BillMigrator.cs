@@ -139,7 +139,7 @@ internal sealed class BillMigrator(
 
         while (await reader.ReadAsync()) {
 
-            var vocabularyNames = new List<NewTermForNewNameble>();
+            var vocabularyNames = new List<NewTermForNewNameable>();
 
             var id = reader.GetInt32("id");
             var title = reader.GetString("title");
@@ -159,14 +159,14 @@ internal sealed class BillMigrator(
                     }));
                 }
 
-                vocabularyNames.Add(new NewTermForNewNameble {
+                vocabularyNames.Add(new NewTermForNewNameable {
                     VocabularyId = vocabularyId,
                     Name = topicName,
                     ParentTermIds = topicParentIds,
                 });
             }
             else {
-                vocabularyNames.Add(new NewTermForNewNameble {
+                vocabularyNames.Add(new NewTermForNewNameable {
                     VocabularyId = vocabularyId,
                     Name = title,
                     ParentTermIds = new List<int> {
@@ -207,7 +207,7 @@ internal sealed class BillMigrator(
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("act_id")
                 }),
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();
@@ -331,7 +331,7 @@ internal sealed class BillMigrator(
 
         while (await reader.ReadAsync()) {
 
-            var vocabularyNames = new List<NewTermForNewNameble>();
+            var vocabularyNames = new List<NewTermForNewNameable>();
 
             var id = reader.GetInt32("id");
             var title = reader.GetString("title");
@@ -350,14 +350,14 @@ internal sealed class BillMigrator(
                         VocabularyId = vocabularyId
                     }));
                 }
-                vocabularyNames.Add(new NewTermForNewNameble {
+                vocabularyNames.Add(new NewTermForNewNameable {
                     VocabularyId = vocabularyId,
                     Name = topicName,
                     ParentTermIds = topicParentIds,
                 });
             }
             else {
-                vocabularyNames.Add(new NewTermForNewNameble {
+                vocabularyNames.Add(new NewTermForNewNameable {
                     VocabularyId = vocabularyId,
                     Name = title,
                     ParentTermIds = new List<int> {
@@ -398,7 +398,7 @@ internal sealed class BillMigrator(
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("act_id")
                 }),
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

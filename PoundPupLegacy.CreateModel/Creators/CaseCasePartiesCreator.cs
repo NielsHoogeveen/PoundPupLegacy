@@ -34,7 +34,7 @@ public class CaseCasePartiesCreator(
                 OrganizationId = organizationId
             });
         }
-        foreach (var personId in element.CaseParties.PersonsIds) {
+        foreach (var personId in element.CaseParties.PersonIds) {
             await casePartiesPersonInserter.InsertAsync(new CasePartiesPerson {
                 CasePartiesId = element.CaseParties.Id!.Value,
                 PersonId = personId

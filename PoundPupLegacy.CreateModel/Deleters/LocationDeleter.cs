@@ -1,8 +1,8 @@
 ﻿namespace PoundPupLegacy.CreateModel.Deleters;
 
-using Request = LocationDeleterRequest;
+using Request = LocationToDelete;
 
-public sealed record LocationDeleterRequest : IRequest
+public sealed record LocationToDelete : IRequest
 {
     public required int LocationId { get; init; }
     public required int LocatableId { get; init; }

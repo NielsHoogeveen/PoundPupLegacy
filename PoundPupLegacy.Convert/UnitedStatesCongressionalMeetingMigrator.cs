@@ -37,9 +37,9 @@ internal sealed class UnitedStatesCongressionalMeetingMigrator(
                 Id = null,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
-                Terms = new List<NewTermForNewNameble>
+                Terms = new List<NewTermForNewNameable>
                 {
-                    new NewTermForNewNameble
+                    new NewTermForNewNameable
                     {
                         VocabularyId = vocabularyId,
                         Name = title,
@@ -67,7 +67,7 @@ internal sealed class UnitedStatesCongressionalMeetingMigrator(
                 Title = title,
                 DateRange = new DateTimeRange(startDate, endDate),
                 Number = number,
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
         }
     }

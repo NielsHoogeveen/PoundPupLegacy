@@ -49,9 +49,9 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
             NodeTypeId = 62,
             Description = "",
             FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
                 {
-                    new NewTermForNewNameble
+                    new NewTermForNewNameable
                     {
                         VocabularyId = vocabularyId,
                         Name = Constants.DEMOCRAT_NAME,
@@ -62,7 +62,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 TenantId = Constants.PPL,
                 UrlId = Constants.DEMOCRATIC_PARTY
             }),
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
 
         yield return new NewUnitedStatesPoliticalPartyAffliation {
@@ -97,9 +97,9 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
             NodeTypeId = 62,
             Description = "",
             FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
                 {
-                    new NewTermForNewNameble
+                    new NewTermForNewNameable
                     {
                         VocabularyId = vocabularyId,
                         Name = Constants.REPUBLICAN_NAME,
@@ -110,7 +110,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 TenantId = Constants.PPL,
                 UrlId = Constants.REPUBLICAN_PARTY
             }),
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewUnitedStatesPoliticalPartyAffliation {
             Id = null,
@@ -144,9 +144,9 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
             NodeTypeId = 62,
             Description = "",
             FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
                 {
-                    new NewTermForNewNameble
+                    new NewTermForNewNameable
                     {
                         VocabularyId = vocabularyId,
                         Name = Constants.INDEPENDENT_NAME,
@@ -154,7 +154,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                     },
                 },
             UnitedStatesPoliticalPartyId = null,
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewUnitedStatesPoliticalPartyAffliation {
             Id = null,
@@ -188,9 +188,9 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
             NodeTypeId = 62,
             Description = "",
             FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
                 {
-                    new NewTermForNewNameble
+                    new NewTermForNewNameable
                     {
                         VocabularyId = vocabularyId,
                         Name = Constants.POPULAR_DEMOCRAT_NAME,
@@ -201,7 +201,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 TenantId = Constants.PPL,
                 UrlId = Constants.POPULAR_DEMOCRAT_PARTY
             }),
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
         yield return new NewUnitedStatesPoliticalPartyAffliation {
             Id = null,
@@ -235,9 +235,9 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
             NodeTypeId = 62,
             Description = "",
             FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
                 {
-                    new NewTermForNewNameble
+                    new NewTermForNewNameable
                     {
                         VocabularyId = vocabularyId,
                         Name = Constants.LIBERTARIAN_NAME,
@@ -248,7 +248,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 TenantId = Constants.PPL,
                 UrlId = Constants.LIBERTARIAN_PARTY
             }),
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
     }
     protected override async Task MigrateImpl()

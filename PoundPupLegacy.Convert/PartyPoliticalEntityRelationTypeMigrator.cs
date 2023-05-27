@@ -57,9 +57,9 @@ internal sealed class PartyPoliticalEntityRelationTypeMigrator(
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
 
-            var vocabularyNames = new List<NewTermForNewNameble>
+            var vocabularyNames = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyId,
                     Name = name,
@@ -106,7 +106,7 @@ internal sealed class PartyPoliticalEntityRelationTypeMigrator(
                     }),
                 HasConcreteSubtype = reader.GetBoolean("has_concrete_subtype"),
                 Terms = vocabularyNames,
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
 
         }

@@ -141,15 +141,15 @@ internal sealed class OrganizationTypeMigrator(
                     VocabularyId = vocabularyIdTopics
                 }));
             }
-            var vocabularyNames = new List<NewTermForNewNameble>
+            var vocabularyNames = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyIdOrganizationType,
                     Name = name,
                     ParentTermIds = new List<int>()
                 },
-                new NewTermForNewNameble {
+                new NewTermForNewNameable {
                     VocabularyId = vocabularyIdTopics,
                     Name = topicName,
                     ParentTermIds = topicParentIds,
@@ -195,7 +195,7 @@ internal sealed class OrganizationTypeMigrator(
                     }),
                 Terms = vocabularyNames,
                 HasConcreteSubtype = reader.GetBoolean("has_concrete_subtype"),
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
         }
         reader.Close();
@@ -233,15 +233,15 @@ internal sealed class OrganizationTypeMigrator(
             NodeTypeId = 1,
             Description = "",
             FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameble>
+            Terms = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyIdOrganizationType,
                     Name = Constants.POLITICAL_PARTY_NAME,
                     ParentTermIds = new List<int>(),
                 },
-                new NewTermForNewNameble {
+                new NewTermForNewNameable {
                     VocabularyId = vocabularyIdTopics,
                     Name = Constants.POLITICAL_PARTY_NAME.ToLower(),
                     ParentTermIds = new List<int>{
@@ -253,7 +253,7 @@ internal sealed class OrganizationTypeMigrator(
                 }
             },
             HasConcreteSubtype = true,
-            NodeTermIds = new List<int>(),
+            TermIds = new List<int>(),
         };
     }
 }

@@ -2,11 +2,11 @@
 
 public interface ImmediatelyIdentifiableNameable : Nameable, ImmediatelyIdentifiableSearchable
 {
-    public List<NewTermForNewNameble> TermsToAdd { get; }
+    public List<NewTermForExistingNameable> TermsToAdd { get; }
 }
 public interface EventuallyIdentifiableNameable: Nameable, EventuallyIdentifiableSearchable
 {
-    public List<NewTermForNewNameble> Terms { get; }
+    public List<NewTermForNewNameable> Terms { get; }
 }
 
 public interface Nameable : Searchable
@@ -24,7 +24,7 @@ public abstract record NewNameableBase: NewNodeBase, EventuallyIdentifiableNamea
 
     public required int? FileIdTileImage { get; init; }
 
-    public required List<NewTermForNewNameble> Terms { get; init; }
+    public required List<NewTermForNewNameable> Terms { get; init; }
 }
 
 public abstract record ExistingNameableBase : ExistingNodeBase, ImmediatelyIdentifiableNameable
@@ -33,5 +33,5 @@ public abstract record ExistingNameableBase : ExistingNodeBase, ImmediatelyIdent
 
     public required int? FileIdTileImage { get; init; }
 
-    public required List<NewTermForNewNameble> TermsToAdd { get; init; }
+    public required List<NewTermForExistingNameable> TermsToAdd { get; init; }
 }

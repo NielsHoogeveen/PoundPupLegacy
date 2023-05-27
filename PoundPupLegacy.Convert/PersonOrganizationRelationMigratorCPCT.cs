@@ -142,7 +142,7 @@ internal sealed class PersonOrganizationRelationMigratorCPCT(
                 DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null : reader.GetDateTime("end_date")),
                 DocumentIdProof = null,
                 Description = reader.IsDBNull("description") ? null : reader.GetString("description"),
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

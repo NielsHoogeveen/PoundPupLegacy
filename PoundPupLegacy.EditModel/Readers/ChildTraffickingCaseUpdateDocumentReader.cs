@@ -34,6 +34,8 @@ internal sealed class ChildTraffickingCaseUpdateDocumentReaderFactory : NodeUpda
                     ),
                     'NumberOfChildrenInvolved',
                     ctc.number_of_children_involved,
+                    'VocabularyIdTagging',
+                    (select id from tagging_vocabulary),
                     'Tags', 
                     (select document from tags_document),
                     'TenantNodes',

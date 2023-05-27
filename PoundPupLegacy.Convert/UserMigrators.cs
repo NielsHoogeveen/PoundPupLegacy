@@ -296,7 +296,7 @@ internal sealed class UserMigrator(
                 },
                 NodeTypeId = Constants.VOCABULARY,
                 Description = "",
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             }
         });
 

@@ -1,4 +1,5 @@
 ﻿using PoundPupLegacy.CreateModel;
+using PoundPupLegacy.CreateModel.Deleters;
 using PoundPupLegacy.CreateModel.Updaters;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
@@ -32,12 +33,12 @@ internal class InterOrganizationalRelationFromSaveService(
                 DocumentIdProof = relation.ProofDocument?.Id,
                 MoneyInvolved = relation.MoneyInvolved,
                 NumberOfChildrenInvolved = relation.NumberOfChildrenInvolved,
-                NewNodeTerms = new List<NodeTerm>(),
-                NodeTermsToRemove = new List<NodeTerm>(),
+                NodeTermsToAdd = new List<NodeTermToAdd>(),
+                NodeTermsToRemove = new List<NodeTermToRemove>(),
                 AuthoringStatusId = 1,
                 ChangedDateTime = DateTime.Now,
-                NewTenantNodes = new List<NewTenantNodeForExistingNode>(),
-                TenantNodesToRemove = new List<ExistingTenantNode>(),
+                TenantNodesToAdd = new List<NewTenantNodeForExistingNode>(),
+                TenantNodesToRemove = new List<TenantNodeToDelete>(),
                 TenantNodesToUpdate = new List<ExistingTenantNode>()
             });
         }
@@ -72,7 +73,7 @@ internal class InterOrganizationalRelationFromSaveService(
                     Description = relation.Description,
                     MoneyInvolved = relation.MoneyInvolved,
                     NumberOfChildrenInvolved = relation.NumberOfChildrenInvolved,
-                    NodeTermIds = new List<int>(),
+                    TermIds = new List<int>(),
                 };
             }
         }

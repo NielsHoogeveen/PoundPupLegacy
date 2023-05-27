@@ -47,9 +47,9 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
                 Id = null,
                 CreatedDateTime = DateTime.Parse(parts[1]),
                 ChangedDateTime = DateTime.Parse(parts[2]),
-                Terms = new List<NewTermForNewNameble>
+                Terms = new List<NewTermForNewNameable>
                 {
-                    new NewTermForNewNameble
+                    new NewTermForNewNameable
                     {
                         VocabularyId = vocabularyIdTopics,
                         Name = title,
@@ -95,7 +95,7 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
                     Name = "Region",
                     VocabularyId = vocabularyIdSubdivisionType
                 })),
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
         }
     }
@@ -170,9 +170,9 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
 
             var id = reader.GetInt32("id");
             var title = $"{reader.GetString("title")} (region of the USA)";
-            var vocabularyNames = new List<NewTermForNewNameble>
+            var vocabularyNames = new List<NewTermForNewNameable>
             {
-                new NewTermForNewNameble
+                new NewTermForNewNameable
                 {
                     VocabularyId = vocabularyIdTopics,
                     Name = title,
@@ -222,7 +222,7 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
                     Name = "Region",
                     VocabularyId = vocabularyIdSubdivision
                 })),
-                NodeTermIds = new List<int>(),
+                TermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

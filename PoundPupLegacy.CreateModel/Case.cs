@@ -4,7 +4,6 @@ public interface ImmediatelyIdentifiableCase : Case, ImmediatelyIdentifiableLoca
     List<ExistingCaseExistingCaseParties> CasePartiesToUpdate { get; }
 
     List<ExistingCaseNewCaseParties> CasePartiesToAdd { get; }
-    List<int> CasePartiesToRemove { get; }
 }
 
 public interface EventuallyIdentifiableCase : Case, EventuallyIdentifiableLocatable, EventuallyIdentifiableDocumentable, EventuallyIdentifiableNameable 
@@ -27,5 +26,4 @@ public abstract record ExistingCaseBase : ExistingLocatableBase, ImmediatelyIden
     public required FuzzyDate? Date { get; init; }
     public required List<ExistingCaseExistingCaseParties> CasePartiesToUpdate { get; init; }
     public required List<ExistingCaseNewCaseParties> CasePartiesToAdd { get; init; }
-    public required List<int> CasePartiesToRemove { get; init; }
 }
