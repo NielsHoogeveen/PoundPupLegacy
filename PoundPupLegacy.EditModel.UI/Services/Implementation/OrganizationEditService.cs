@@ -52,7 +52,7 @@ internal sealed class OrganizationEditService(
             OrganizationTypeIdsToAdd = new List<int>(),
             OrganizationTypeIdsToRemove = new List<int>(),
             TenantNodesToRemove = new List<TenantNodeToDelete>(),
-            TenantNodesToUpdate = new List<ExistingTenantNode>(),
+            TenantNodesToUpdate = new List<CreateModel.ExistingTenantNode>(),
             TermsToAdd = new List<NewTermForExistingNameable>(),
             LocationsToAdd = new List<EventuallyIdentifiableLocation>(),
             LocationsToDelete = new List<int>(),

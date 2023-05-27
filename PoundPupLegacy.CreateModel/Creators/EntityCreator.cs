@@ -162,7 +162,7 @@ public class NameableCreator<T>(
     }
 }
 public class NodeDetailsCreatorFactory(
-    IDatabaseInserterFactory<NodeTermToAdd> nodeTermInserterFactory,
+    IDatabaseInserterFactory<ResolvedNodeTermToAdd> nodeTermInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableTenantNodeForExistingNode> tenantNodeInserterFactory
 )
 { 
@@ -176,14 +176,14 @@ public class NodeDetailsCreatorFactory(
 }
 
 public class NodeDetailsCreator(
-    IDatabaseInserter<NodeTermToAdd> nodeTermInserter,
+    IDatabaseInserter<ResolvedNodeTermToAdd> nodeTermInserter,
     IDatabaseInserter<EventuallyIdentifiableTenantNodeForExistingNode> tenantNodeInserter
 ) : IAsyncDisposable
 {
     public async Task ProcessAsync(EventuallyIdentifiableNode element, int id)
     {
         foreach (var nodeTermId in element.TermIds) {
-            await nodeTermInserter.InsertAsync(new NodeTermToAdd 
+            await nodeTermInserter.InsertAsync(new ResolvedNodeTermToAdd 
             { 
                 NodeId = id, 
                 TermId = nodeTermId 

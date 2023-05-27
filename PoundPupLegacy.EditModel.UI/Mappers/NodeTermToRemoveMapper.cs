@@ -7,14 +7,12 @@ internal class NodeTermToRemoveMapper : IEnumerableMapper<Tags, NodeTermToRemove
     public IEnumerable<NodeTermToRemove> Map(IEnumerable<Tags> source)
     {
         foreach (var tag in source.SelectMany(x => x.Entries)) {
-            if(!tag.NodeId.HasValue)
-                continue;
-            if(!tag.HasBeenDeleted)
-                continue;
-            yield return new NodeTermToRemove {
-                NodeId = tag.NodeId.Value,
-                TermId = tag.TermId
-            };
+            if(tag is NodeTerm.ExistingNodeTerm existingNodeTerm && existingNodeTerm.HasBeenDeleted) {
+                yield return new NodeTermToRemove {
+                    NodeId = existingNodeTerm.NodeId,
+                    TermId = existingNodeTerm.TermId
+                };
+            }
         }
     }
 }

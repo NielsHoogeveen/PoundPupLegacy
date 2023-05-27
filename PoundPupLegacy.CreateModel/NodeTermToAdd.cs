@@ -1,15 +1,27 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record NodeTermToAdd : NodeTermBase
+public sealed record NodeTermToAdd : IRequest
 {
-}
+    public required int TermId { get; init; }
 
-public sealed record NodeTermToRemove : NodeTermBase
-{
+    public ResolvedNodeTermToAdd Resolve(int nodeId)
+    {
+        return new ResolvedNodeTermToAdd {
+            NodeId = nodeId,
+            TermId = TermId
+        };
+    }
 }
-
-public abstract record NodeTermBase: IRequest
+public sealed record ResolvedNodeTermToAdd : IRequest
 {
     public required int NodeId { get; init; }
     public required int TermId { get; init; }
 }
+
+public sealed record NodeTermToRemove : IRequest
+{
+    public required int NodeId { get; init; }
+    public required int TermId { get; init; }
+
+}
+

@@ -174,7 +174,7 @@ public sealed class Program
             EditModel.SubgroupJsonContext.Default,
             EditModel.TagNodeTypeJsonContext.Default,
             EditModel.TenantJsonContext.Default,
-            EditModel.TenantNodeJsonContext.Default,
+            EditModel.ExistingTenantNodeJsonContext.Default,
             EditModel.TermJsonContext.Default,
             EditModel.ExistingWrongfulMedicationCaseJsonContext.Default,
             EditModel.NewWrongfulMedicationCaseJsonContext.Default,

@@ -81,7 +81,7 @@ internal sealed class ChildTraffickingCaseEditService(
             TenantNodesToAdd = new List<NewTenantNodeForExistingNode>(),
             NodeTermsToRemove = new List<NodeTermToRemove>(),
             TenantNodesToRemove = new List<TenantNodeToDelete>(),
-            TenantNodesToUpdate = new List<ExistingTenantNode>(),
+            TenantNodesToUpdate = new List<CreateModel.ExistingTenantNode>(),
             TermsToAdd = new List<NewTermForExistingNameable>(),
             LocationsToDelete = new List<int>(),
             LocationsToUpdate = new List<ImmediatelyIdentifiableLocation>(),

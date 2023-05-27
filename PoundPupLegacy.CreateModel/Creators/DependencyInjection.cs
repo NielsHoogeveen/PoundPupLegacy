@@ -74,7 +74,7 @@ internal static class DependencyInjection
         services.AddTransient<IEntityCreatorFactory<LocationLocatable>, LocationLocatableCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableMultiQuestionPoll>, MultiQuestionPollCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<NodeFile>, NodeFileCreatorFactory>();
-        services.AddTransient<IEntityCreatorFactory<NodeTermToAdd>, NodeTermCreatorFactory>();
+        services.AddTransient<IEntityCreatorFactory<ResolvedNodeTermToAdd>, NodeTermCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<BasicNodeType>, NodeTypeCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableOrganization>, OrganizationCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableOrganizationType>, OrganizationTypeCreatorFactory>();

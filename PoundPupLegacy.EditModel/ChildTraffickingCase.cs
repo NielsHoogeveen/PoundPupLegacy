@@ -44,7 +44,7 @@ public sealed record NewChildTraffickingCase : NewCaseBase, NewNode, ChildTraffi
             OwnerId = OwnerId,
             PublisherId = PublisherId,
             Tags = Tags,
-            TenantNodes = TenantNodes,
+            TenantNodesToAdd = TenantNodesToAdd,
             Tenants = Tenants,
             Terms = Terms,
             Title = Title,

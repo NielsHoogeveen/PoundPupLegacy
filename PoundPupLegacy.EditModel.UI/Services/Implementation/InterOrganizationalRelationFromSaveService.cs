@@ -39,7 +39,7 @@ internal class InterOrganizationalRelationFromSaveService(
                 ChangedDateTime = DateTime.Now,
                 TenantNodesToAdd = new List<NewTenantNodeForExistingNode>(),
                 TenantNodesToRemove = new List<TenantNodeToDelete>(),
-                TenantNodesToUpdate = new List<ExistingTenantNode>()
+                TenantNodesToUpdate = new List<CreateModel.ExistingTenantNode>()
             });
         }
         IEnumerable<CreateModel.NewInterOrganizationalRelationForExistingParticipants> GetRelationsToInsert()

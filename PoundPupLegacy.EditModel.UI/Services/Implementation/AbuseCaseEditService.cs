@@ -84,7 +84,7 @@ internal sealed class AbuseCaseEditService(
             TenantNodesToAdd = new List<NewTenantNodeForExistingNode>(),
             NodeTermsToRemove = new List<NodeTermToRemove>(),
             TenantNodesToRemove = new List<TenantNodeToDelete>(),
-            TenantNodesToUpdate = new List<ExistingTenantNode>(),
+            TenantNodesToUpdate = new List<CreateModel.ExistingTenantNode>(),
             TermsToAdd = new List<NewTermForExistingNameable>(),
             TypeOfAbuseIdsToAdd = new List<int>(),
             TypeOfAbuserIdsToAdd = new List<int>(),

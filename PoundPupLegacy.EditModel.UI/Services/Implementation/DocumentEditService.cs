@@ -48,7 +48,7 @@ internal sealed class DocumentEditService(
             NodeTermsToRemove = new List<NodeTermToRemove>(),
             TenantNodesToAdd = new List<NewTenantNodeForExistingNode>(),
             TenantNodesToRemove = new List<TenantNodeToDelete>(),
-            TenantNodesToUpdate = new List<ExistingTenantNode>()
+            TenantNodesToUpdate = new List<CreateModel.ExistingTenantNode>()
         };
     }
 

@@ -7,6 +7,8 @@ internal class LocationsToUpdateMapper : IEnumerableMapper<Location.ExistingLoca
     public IEnumerable<ImmediatelyIdentifiableLocation> Map(IEnumerable<Location.ExistingLocation> source)
     {
         foreach(var location in source) {
+            if(location.HasBeenDeleted)
+                continue;
             yield return new CreateModel.ExistingLocation { 
                 Id = location.Id,
                 Additional = location.Addition,

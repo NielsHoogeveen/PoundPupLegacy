@@ -79,7 +79,7 @@ internal sealed class DeportationCaseEditService(
             TenantNodesToAdd = new List<NewTenantNodeForExistingNode>(),
             NodeTermsToRemove = new List<NodeTermToRemove>(),
             TenantNodesToRemove = new List<TenantNodeToDelete>(),
-            TenantNodesToUpdate = new List<ExistingTenantNode>(),
+            TenantNodesToUpdate = new List<CreateModel.ExistingTenantNode>(),
             TermsToAdd = new List<NewTermForExistingNameable>(),
             CountryIdTo = viewModel.CountryTo?.Id,
             SubdivisionIdFrom = viewModel.SubdivisionFrom?.Id,

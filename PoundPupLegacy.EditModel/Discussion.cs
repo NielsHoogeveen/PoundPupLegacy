@@ -1,29 +1,19 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-
 public interface Discussion : SimpleTextNode, ResolvedNode
 {
-
-}
-public abstract record DiscussionBase : SimpleTextNodeBase, Discussion
-{
-
 }
 
 [JsonSerializable(typeof(ExistingDiscussion))]
 public partial class ExistingDiscussionJsonContext : JsonSerializerContext { }
 
-public sealed record ExistingDiscussion : DiscussionBase, ExistingNode
+public sealed record ExistingDiscussion : ExistingSimpleTextNodeBase, Discussion
 {
-    public int NodeId { get; init; }
-
-    public int UrlId { get; set; }
-
 }
 
 [JsonSerializable(typeof(NewDiscussion))]
 public partial class NewDiscussionJsonContext : JsonSerializerContext { }
 
-public sealed record NewDiscussion : DiscussionBase, ResolvedNewNode
+public sealed record NewDiscussion : NewSimpleTextNodeBase, ResolvedNewNode, Discussion
 {
 }

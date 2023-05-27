@@ -11,7 +11,7 @@ public interface Node
     string Title { get; set; }
     List<Tags> Tags { get; }
 
-    List<TenantNode> TenantNodes { get; }
+    IEnumerable<TenantNode> TenantNodes { get; }
 
     List<Tenant> Tenants { get; }
 
@@ -38,11 +38,57 @@ public interface ExistingNode : ResolvedNode
 
 public abstract record NewNodeBase : NodeBase, NewNode
 {
+    private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
+
+    public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
+        get => tenantNodesToAdd;
+        init {
+            if (value is not null) {
+                tenantNodesToAdd = value;
+            }
+        }
+    }
+
+    public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
+
 }
 public abstract record ExistingNodeBase : NodeBase, ExistingNode
 {
     public required int NodeId { get; init; }
     public required int UrlId { get; init; }
+
+    private List<TenantNode.NewTenantNodeForExistingNode> tenantNodesToAdd = new();
+
+    public List<TenantNode.NewTenantNodeForExistingNode> TenantNodesToAdd {
+        get => tenantNodesToAdd;
+        init {
+            if (value is not null) {
+                tenantNodesToAdd = value;
+            }
+        }
+    }
+    private List<TenantNode.ExistingTenantNode> tenantNodesToUpdate = new();
+
+    public List<TenantNode.ExistingTenantNode> TenantNodesToUpdate {
+        get => tenantNodesToUpdate;
+        init {
+            if (value is not null) {
+                tenantNodesToUpdate = value;
+            }
+        }
+    }
+
+    public override IEnumerable<TenantNode> TenantNodes => GetTenantNodes();
+
+    private IEnumerable<TenantNode> GetTenantNodes()
+    {
+        foreach(var elem in tenantNodesToUpdate) {
+            yield return elem;
+        }
+        foreach (var elem in tenantNodesToAdd) {
+            yield return elem;
+        }
+    }
 }
 public abstract record NodeBase : Node
 {
@@ -60,16 +106,6 @@ public abstract record NodeBase : Node
         init {
             if (value is not null) {
                 tags = value;
-            }
-        }
-    }
-    private List<TenantNode> tenantNodes = new();
-
-    public List<TenantNode> TenantNodes {
-        get => tenantNodes;
-        init {
-            if (value is not null) {
-                tenantNodes = value;
             }
         }
     }
@@ -93,4 +129,5 @@ public abstract record NodeBase : Node
             }
         }
     }
+    public abstract IEnumerable<TenantNode> TenantNodes { get; }
 }

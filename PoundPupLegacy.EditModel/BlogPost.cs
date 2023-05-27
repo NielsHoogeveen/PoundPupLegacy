@@ -7,19 +7,12 @@ public interface BlogPost : SimpleTextNode, ResolvedNode
 {
 
 }
-public abstract record BlogPostBase : SimpleTextNodeBase, BlogPost
+
+public sealed record ExistingBlogPost : ExistingSimpleTextNodeBase, BlogPost
 {
 
 }
 
-public sealed record ExistingBlogPost : BlogPostBase, ExistingNode
-{
-    public int NodeId { get; init; }
-
-    public int UrlId { get; set; }
-
-}
-
-public sealed record NewBlogPost : BlogPostBase, ResolvedNewNode
+public sealed record NewBlogPost : NewSimpleTextNodeBase, ResolvedNewNode, BlogPost
 {
 }

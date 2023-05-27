@@ -1,11 +1,11 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class NodeTermCreatorFactory(
-    IDatabaseInserterFactory<NodeTermToAdd> nodeTermInserterFactory
-) : IEntityCreatorFactory<NodeTermToAdd>
+    IDatabaseInserterFactory<ResolvedNodeTermToAdd> nodeTermInserterFactory
+) : IEntityCreatorFactory<ResolvedNodeTermToAdd>
 {
-    public async Task<IEntityCreator<NodeTermToAdd>> CreateAsync(IDbConnection connection) =>
-        new InsertingEntityCreator<NodeTermToAdd>(new() { 
+    public async Task<IEntityCreator<ResolvedNodeTermToAdd>> CreateAsync(IDbConnection connection) =>
+        new InsertingEntityCreator<ResolvedNodeTermToAdd>(new() { 
                 await nodeTermInserterFactory.CreateAsync(connection) 
         });
 }

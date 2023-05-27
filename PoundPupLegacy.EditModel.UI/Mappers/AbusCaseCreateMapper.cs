@@ -5,7 +5,7 @@ namespace PoundPupLegacy.EditModel.UI.Mappers;
 
 internal class AbusCaseCreateMapper(
     ITextService textService,
-    IEnumerableMapper<TenantNode, NewTenantNodeForNewNode> tenantNodeMapper,
+    IEnumerableMapper<TenantNode.NewTenantNodeForNewNode, NewTenantNodeForNewNode> tenantNodeMapper,
     IEnumerableMapper<Tags, int> termIdsMapper,
     IEnumerableMapper<Location.NewLocation, EventuallyIdentifiableLocation> locationMapper,
     IEnumerableMapper<CasePartyTypeCaseParties, NewCaseNewCaseParties> casePartiesAddMapper
@@ -24,7 +24,7 @@ internal class AbusCaseCreateMapper(
             OwnerId = viewModel.OwnerId,
             AuthoringStatusId = 1,
             PublisherId = viewModel.PublisherId,
-            TenantNodes = tenantNodeMapper.Map(viewModel.TenantNodes).ToList(),
+            TenantNodes = tenantNodeMapper.Map(viewModel.TenantNodesToAdd).ToList(),
             Date = viewModel.Date,
             FileIdTileImage = null,
             Terms = new List<NewTermForNewNameable>{

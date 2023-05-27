@@ -3,7 +3,7 @@
 public interface ITopicSearchService
 {
     [RequireNamedArgs]
-    Task<List<Tag>> GetTerms(int? nodeId, int tenantId, string searchString, int[] nodeTypeIds);
+    Task<List<NodeTerm.NewNodeTerm>> GetTerms(int tenantId, string searchString, int[] nodeTypeIds);
 
     Task<bool> DoesTopicExist(string name);
 }

@@ -23,7 +23,7 @@ public static class InterPersonalRelationExtentions{
             PublisherId = publisherId,
             ProofDocument = null,
             Tags = new List<Tags>(),
-            TenantNodes = new List<TenantNode>(),
+            TenantNodesToAdd = new List<TenantNode.NewTenantNodeForNewNode>(),
             Tenants = new List<Tenant>(),
         };
     }
@@ -43,7 +43,7 @@ public static class InterPersonalRelationExtentions{
             PublisherId = publisherId,
             ProofDocument = null,
             Tags = new List<Tags>(),
-            TenantNodes = new List<TenantNode>(),
+            TenantNodesToAdd = new List<TenantNode.NewTenantNodeForNewNode>(),
             Tenants = new List<Tenant>(),
         };
 
@@ -64,7 +64,7 @@ public static class InterPersonalRelationExtentions{
             PublisherId = publisherId,
             ProofDocument = null,
             Tags = new List<Tags>(),
-            TenantNodes = new List<TenantNode>(),
+            TenantNodesToAdd = new List<TenantNode.NewTenantNodeForNewNode>(),
             Tenants = new List<Tenant>(),
         };
     }
@@ -84,7 +84,7 @@ public static class InterPersonalRelationExtentions{
             PublisherId = publisherId,
             ProofDocument = null,
             Tags = new List<Tags>(),
-            TenantNodes = new List<TenantNode>(),
+            TenantNodesToAdd = new List<TenantNode.NewTenantNodeForNewNode>(),
             Tenants = new List<Tenant>(),
         };
     }
@@ -144,8 +144,20 @@ public abstract record InterPersonalRelation : RelationBase
                 }
                 public sealed override string PersonToName => PersonTo is null ? "" : PersonTo.Name;
 
-                public sealed record NewInterPersonalNewFromRelation : NewIncompleteInterPersonalRelationFrom
+                public sealed record NewInterPersonalNewFromRelation : NewIncompleteInterPersonalRelationFrom, NewNode
                 {
+                    private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
+
+                    public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
+                        get => tenantNodesToAdd;
+                        init {
+                            if (value is not null) {
+                                tenantNodesToAdd = value;
+                            }
+                        }
+                    }
+                    public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
+
                     public required PersonName PersonFrom { get; set; }
                     public sealed override void SetName(string name)
                     {
@@ -169,7 +181,7 @@ public abstract record InterPersonalRelation : RelationBase
                             OwnerId = OwnerId,
                             PublisherId = PublisherId,
                             Tags = Tags,
-                            TenantNodes = TenantNodes,
+                            TenantNodesToAdd = TenantNodesToAdd,
                             Tenants = Tenants,
                             Title = Title
                         };
@@ -190,15 +202,27 @@ public abstract record InterPersonalRelation : RelationBase
                             OwnerId = OwnerId,
                             PublisherId = PublisherId,
                             Tags = Tags,
-                            TenantNodes = TenantNodes,
+                            TenantNodesToAdd = TenantNodesToAdd,
                             Tenants = Tenants,
                             Title = Title,
                         };
                     }
                 }
 
-                public sealed record NewInterPersonalExistingFromRelation : NewIncompleteInterPersonalRelationFrom
+                public sealed record NewInterPersonalExistingFromRelation : NewIncompleteInterPersonalRelationFrom, NewNode
                 {
+                    private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
+
+                    public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
+                        get => tenantNodesToAdd;
+                        init {
+                            if (value is not null) {
+                                tenantNodesToAdd = value;
+                            }
+                        }
+                    }
+                    public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
+
                     public required PersonListItem PersonFrom { get; set; }
                     public sealed override void SetName(string name)
                     {
@@ -222,7 +246,7 @@ public abstract record InterPersonalRelation : RelationBase
                             OwnerId = OwnerId,
                             PublisherId = PublisherId,
                             Tags = Tags,
-                            TenantNodes = TenantNodes,
+                            TenantNodesToAdd = TenantNodesToAdd,
                             Tenants = Tenants,
                             Title = Title
                         };
@@ -244,7 +268,7 @@ public abstract record InterPersonalRelation : RelationBase
                             OwnerId = OwnerId,
                             PublisherId = PublisherId,
                             Tags = Tags,
-                            TenantNodes = TenantNodes,
+                            TenantNodesToAdd = TenantNodesToAdd,
                             Tenants = Tenants,
                             Title = Title,
                         };
@@ -280,8 +304,20 @@ public abstract record InterPersonalRelation : RelationBase
                 }
             }
 
-            public sealed record CompletedNewInterPersonalNewFromRelation : CompletedInterPersonalRelationFrom
+            public sealed record CompletedNewInterPersonalNewFromRelation : CompletedInterPersonalRelationFrom, NewNode
             {
+                private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
+
+                public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
+                    get => tenantNodesToAdd;
+                    init {
+                        if (value is not null) {
+                            tenantNodesToAdd = value;
+                        }
+                    }
+                }
+                public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
+
                 public required PersonName PersonFrom { get; set; }
 
                 public sealed override void SetName(string name)
@@ -307,7 +343,7 @@ public abstract record InterPersonalRelation : RelationBase
                         OwnerId = OwnerId,
                         PublisherId = PublisherId,
                         Tags = Tags,
-                        TenantNodes = TenantNodes,
+                        TenantNodesToAdd = TenantNodesToAdd,
                         Tenants = Tenants,
                         Title = Title
                     };
@@ -331,6 +367,39 @@ public abstract record InterPersonalRelation : RelationBase
                 {
                     public int NodeId { get; init; }
                     public int UrlId { get; set; }
+
+                    private List<TenantNode.NewTenantNodeForExistingNode> tenantNodesToAdd = new();
+
+                    public List<TenantNode.NewTenantNodeForExistingNode> TenantNodesToAdd {
+                        get => tenantNodesToAdd;
+                        init {
+                            if (value is not null) {
+                                tenantNodesToAdd = value;
+                            }
+                        }
+                    }
+                    private List<TenantNode.ExistingTenantNode> tenantNodesToUpdate = new();
+
+                    public List<TenantNode.ExistingTenantNode> TenantNodesToUpdate {
+                        get => tenantNodesToUpdate;
+                        init {
+                            if (value is not null) {
+                                tenantNodesToUpdate = value;
+                            }
+                        }
+                    }
+
+                    public override IEnumerable<TenantNode> TenantNodes => GetTenantNodes();
+
+                    private IEnumerable<TenantNode> GetTenantNodes()
+                    {
+                        foreach (var elem in tenantNodesToUpdate) {
+                            yield return elem;
+                        }
+                        foreach (var elem in tenantNodesToAdd) {
+                            yield return elem;
+                        }
+                    }
                     public sealed override ExistingInterPersonalRelationTo SwapFromAndTo()
                     {
                         return new ExistingInterPersonalRelationTo {
@@ -347,7 +416,7 @@ public abstract record InterPersonalRelation : RelationBase
                             OwnerId = OwnerId,
                             PublisherId = PublisherId,
                             Tags = Tags,
-                            TenantNodes = TenantNodes,
+                            TenantNodesToAdd = TenantNodesToAdd,
                             Tenants = Tenants,
                             Title = Title
                         };
@@ -356,8 +425,20 @@ public abstract record InterPersonalRelation : RelationBase
 
                 }
 
-                public sealed record NewInterPersonalExistingRelationFrom : ResolvedInterPersonalRelationFrom
+                public sealed record NewInterPersonalExistingRelationFrom : ResolvedInterPersonalRelationFrom, NewNode
                 {
+
+                    private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
+
+                    public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
+                        get => tenantNodesToAdd;
+                        init {
+                            if (value is not null) {
+                                tenantNodesToAdd = value;
+                            }
+                        }
+                    }
+                    public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
 
                     public sealed override NewInterPersonalExistingRelationTo SwapFromAndTo()
                     {
@@ -375,7 +456,7 @@ public abstract record InterPersonalRelation : RelationBase
                             OwnerId = OwnerId,
                             PublisherId = PublisherId,
                             Tags = Tags,
-                            TenantNodes = TenantNodes,
+                            TenantNodesToAdd = TenantNodesToAdd,
                             Tenants = Tenants,
                             Title = Title
                         };
@@ -426,8 +507,20 @@ public abstract record InterPersonalRelation : RelationBase
                         organizationItemFrom = value;
                     }
                 }
-                public sealed record NewInterPersonalExistingToRelation : NewIncompleteInterPersonalRelationTo
+                public sealed record NewInterPersonalExistingToRelation : NewIncompleteInterPersonalRelationTo, NewNode
                 {
+                    private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
+
+                    public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
+                        get => tenantNodesToAdd;
+                        init {
+                            if (value is not null) {
+                                tenantNodesToAdd = value;
+                            }
+                        }
+                    }
+                    public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
+
                     public required PersonListItem PersonTo { get; set; }
                     public sealed override void SetName(string name)
                     {
@@ -451,7 +544,7 @@ public abstract record InterPersonalRelation : RelationBase
                             OwnerId = OwnerId,
                             PublisherId = PublisherId,
                             Tags = Tags,
-                            TenantNodes = TenantNodes,
+                            TenantNodesToAdd = TenantNodesToAdd,
                             Tenants = Tenants,
                             Title = Title
                         };
@@ -473,15 +566,28 @@ public abstract record InterPersonalRelation : RelationBase
                             OwnerId = OwnerId,
                             PublisherId = PublisherId,
                             Tags = Tags,
-                            TenantNodes = TenantNodes,
+                            TenantNodesToAdd = TenantNodesToAdd,
                             Tenants = Tenants,
                             Title = Title,
                         };
                     }
                 }
 
-                public sealed record NewInterPersonalNewToRelation : NewIncompleteInterPersonalRelationTo
+                public sealed record NewInterPersonalNewToRelation : NewIncompleteInterPersonalRelationTo, NewNode
                 {
+                    private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
+
+                    public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
+                        get => tenantNodesToAdd;
+                        init {
+                            if (value is not null) {
+                                tenantNodesToAdd = value;
+                            }
+                        }
+                    }
+
+                    public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
+
                     public required PersonName PersonTo { get; set; }
                     public sealed override void SetName(string name)
                     {
@@ -506,7 +612,7 @@ public abstract record InterPersonalRelation : RelationBase
                             OwnerId = OwnerId,
                             PublisherId = PublisherId,
                             Tags = Tags,
-                            TenantNodes = TenantNodes,
+                            TenantNodesToAdd = TenantNodesToAdd,
                             Tenants = Tenants,
                             Title = Title
                         };
@@ -527,7 +633,7 @@ public abstract record InterPersonalRelation : RelationBase
                             OwnerId = OwnerId,
                             PublisherId = PublisherId,
                             Tags = Tags,
-                            TenantNodes = TenantNodes,
+                            TenantNodesToAdd = TenantNodesToAdd,
                             Tenants = Tenants,
                             Title = Title,
                         };
@@ -563,8 +669,21 @@ public abstract record InterPersonalRelation : RelationBase
                 return completedInterPersonalRelationTo(this);
             }
 
-            public sealed record CompletedNewInterPersonalNewToRelation : CompletedInterPersonalRelationTo
+            public sealed record CompletedNewInterPersonalNewToRelation : CompletedInterPersonalRelationTo, NewNode
             {
+                private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
+
+                public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
+                    get => tenantNodesToAdd;
+                    init {
+                        if (value is not null) {
+                            tenantNodesToAdd = value;
+                        }
+                    }
+                }
+
+                public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
+
                 public required PersonName PersonTo { get; set; }
 
                 public sealed override void SetName(string name)
@@ -590,7 +709,7 @@ public abstract record InterPersonalRelation : RelationBase
                         OwnerId = OwnerId,
                         PublisherId = PublisherId,
                         Tags = Tags,
-                        TenantNodes = TenantNodes,
+                        TenantNodesToAdd = TenantNodesToAdd,
                         Tenants = Tenants,
                         Title = Title
                     };
@@ -615,6 +734,38 @@ public abstract record InterPersonalRelation : RelationBase
                 {
                     public int NodeId { get; init; }
                     public int UrlId { get; set; }
+                    private List<TenantNode.NewTenantNodeForExistingNode> tenantNodesToAdd = new();
+
+                    public List<TenantNode.NewTenantNodeForExistingNode> TenantNodesToAdd {
+                        get => tenantNodesToAdd;
+                        init {
+                            if (value is not null) {
+                                tenantNodesToAdd = value;
+                            }
+                        }
+                    }
+                    private List<TenantNode.ExistingTenantNode> tenantNodesToUpdate = new();
+
+                    public List<TenantNode.ExistingTenantNode> TenantNodesToUpdate {
+                        get => tenantNodesToUpdate;
+                        init {
+                            if (value is not null) {
+                                tenantNodesToUpdate = value;
+                            }
+                        }
+                    }
+
+                    public override IEnumerable<TenantNode> TenantNodes => GetTenantNodes();
+
+                    private IEnumerable<TenantNode> GetTenantNodes()
+                    {
+                        foreach (var elem in tenantNodesToUpdate) {
+                            yield return elem;
+                        }
+                        foreach (var elem in tenantNodesToAdd) {
+                            yield return elem;
+                        }
+                    }
                     public sealed override ExistingInterPersonalRelationFrom SwapFromAndTo()
                     {
                         return new ExistingInterPersonalRelationFrom {
@@ -631,15 +782,28 @@ public abstract record InterPersonalRelation : RelationBase
                             OwnerId = OwnerId,
                             PublisherId = PublisherId,
                             Tags = Tags,
-                            TenantNodes = TenantNodes,
+                            TenantNodesToAdd = TenantNodesToAdd,
                             Tenants = Tenants,
                             Title = Title
                         };
                     }
                 }
 
-                public sealed record NewInterPersonalExistingRelationTo : ResolvedInterPersonalRelationTo
+                public sealed record NewInterPersonalExistingRelationTo : ResolvedInterPersonalRelationTo, NewNode
                 {
+                    private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
+
+                    public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
+                        get => tenantNodesToAdd;
+                        init {
+                            if (value is not null) {
+                                tenantNodesToAdd = value;
+                            }
+                        }
+                    }
+
+                    public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
+
 
                     public sealed override NewInterPersonalExistingRelationFrom SwapFromAndTo()
                     {
@@ -657,7 +821,7 @@ public abstract record InterPersonalRelation : RelationBase
                             OwnerId = OwnerId,
                             PublisherId = PublisherId,
                             Tags = Tags,
-                            TenantNodes = TenantNodes,
+                            TenantNodesToAdd = TenantNodesToAdd,
                             Tenants = Tenants,
                             Title = Title
                         };

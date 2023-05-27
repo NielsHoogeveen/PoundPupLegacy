@@ -38,7 +38,7 @@ internal class InterPersonalRelationToSaveService(
                 TenantNodesToAdd = new List<NewTenantNodeForExistingNode>(),
                 NodeTermsToRemove = new List<NodeTermToRemove>(),
                 TenantNodesToRemove = new List<TenantNodeToDelete>(),
-                TenantNodesToUpdate = new List<ExistingTenantNode>(),
+                TenantNodesToUpdate = new List<CreateModel.ExistingTenantNode>(),
             });
         }
         IEnumerable<CreateModel.NewInterPersonalRelationForExistingParticipants> GetRelationsToInsert()

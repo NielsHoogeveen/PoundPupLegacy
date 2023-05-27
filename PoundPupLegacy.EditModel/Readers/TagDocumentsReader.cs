@@ -5,15 +5,13 @@ using SearchOption = Common.SearchOption;
 
 public sealed record TagDocumentsReaderRequest : IRequest
 {
-    public required int? NodeId { get; init; }
     public required int TenantId { get; init; }
     public required string SearchString { get; init; }
     public required int[] NodeTypeIds { get; init; }
 }
 
-internal sealed class TagDocumentsReaderFactory : EnumerableDatabaseReaderFactory<Request, Tag>
+internal sealed class TagDocumentsReaderFactory : EnumerableDatabaseReaderFactory<Request, NodeTerm.NewNodeTerm>
 {
-    private static readonly NullableIntegerDatabaseParameter NodeIdParameter = new() { Name = "node_id" };
     private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     private static readonly SearchOptionDatabaseParameter SearchOptionParameter = new() { Name = "search_option" };
     private static readonly NonNullableStringDatabaseParameter SearchStringParameter = new() { Name = "search_string" };
@@ -31,7 +29,6 @@ internal sealed class TagDocumentsReaderFactory : EnumerableDatabaseReaderFactor
         distinct
         id term_id,
         name,
-        @node_id node_id,
         node_type_id 
         from(
             select
@@ -61,7 +58,6 @@ internal sealed class TagDocumentsReaderFactory : EnumerableDatabaseReaderFactor
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(NodeIdParameter, request.NodeId),
             ParameterValue.Create(TenantIdParameter, request.TenantId),
             ParameterValue.Create(SearchStringParameter, request.SearchString),
             ParameterValue.Create(SearchOptionParameter, (request.SearchString, SearchOption.StartsWith)),
@@ -69,16 +65,12 @@ internal sealed class TagDocumentsReaderFactory : EnumerableDatabaseReaderFactor
         };
     }
 
-    protected override Tag Read(NpgsqlDataReader reader)
+    protected override NodeTerm.NewNodeTerm Read(NpgsqlDataReader reader)
     {
-        return new Tag {
+        return new NodeTerm.NewNodeTerm {
             Name = NameReader.GetValue(reader),
-            NodeId = NodeIdReader.GetValue(reader),
             TermId = TermIdReader.GetValue(reader),
-            NodeTypeId = NodeTypeIdReader.GetValue(reader),
-            HasBeenDeleted = false,
-            IsStored = false
+            NodeTypeId = NodeTypeIdReader.GetValue(reader)
         };
     }
-
 }

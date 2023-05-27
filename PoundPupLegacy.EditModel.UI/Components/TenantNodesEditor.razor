@@ -110,8 +110,7 @@
                     break;
                 case ExistingNode e:
                     var t = Node.Tenants.First(x => x.Id == TenantId);
-                    t.TenantNode = new TenantNode {
-                            Id = null,
+                    t.TenantNode = new TenantNode.NewTenantNodeForExistingNode {
                             TenantId = TenantId,
                             HasBeenDeleted = false,
                             NodeId = e.NodeId,
@@ -135,8 +134,8 @@
             if(tenant.TenantNode is null) {
                 throw new NullReferenceException("Tenant Node should not be null");
             }
-            if (tenant.TenantNode.Id.HasValue) {
-                tenant.TenantNode.HasBeenDeleted = true;
+            if (tenant.TenantNode is TenantNode.ExistingTenantNode existingTenantNode) {
+                existingTenantNode.HasBeenDeleted = true;
             }
             else {
                 tenant.TenantNode = null;
@@ -149,24 +148,34 @@
     {
         if (Node is not null) {
             var tenant = Node.Tenants.First(x => x.Id == tenantId);
-            if (tenant.TenantNode is not null && tenant.TenantNode.Id.HasValue) {
+            if (tenant.TenantNode is TenantNode.ExistingTenantNode existingTenantNode) {
                 tenant.TenantNode.HasBeenDeleted = false;
             }
+            else if (tenant.TenantNode is TenantNode.NewTenantNodeForExistingNode newTenantNodeForExistingNode) {
+                tenant.TenantNode = new TenantNode.NewTenantNodeForExistingNode
+                {
+                    TenantId = tenantId,
+                    HasBeenDeleted = false,
+                    PublicationStatusId = tenant.PublicationStatusIdDefault,
+                    NodeId = newTenantNodeForExistingNode.NodeId,
+                    UrlId = newTenantNodeForExistingNode.NodeId,
+                    UrlPath = null,
+                    SubgroupId = null,
+                    CanBeUnchecked = true,
+                    HasBeenStored = false
+                };
+            }
             else {
-
-                tenant.TenantNode = new TenantNode
-                    {
-                        Id = null,
-                        TenantId = tenantId,
-                        HasBeenDeleted = false,
-                        NodeId = NodeId,
-                        UrlId = NodeId,
-                        PublicationStatusId = tenant.PublicationStatusIdDefault,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        CanBeUnchecked = true,
-                        HasBeenStored = false
-                    };
+                tenant.TenantNode = new TenantNode.NewTenantNodeForNewNode
+                {
+                    TenantId = tenantId,
+                    HasBeenDeleted = false,
+                    PublicationStatusId = tenant.PublicationStatusIdDefault,
+                    UrlPath = null,
+                    SubgroupId = null,
+                    CanBeUnchecked = true,
+                    HasBeenStored = false
+                };
             }
             StateHasChanged();
         }

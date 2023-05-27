@@ -24,7 +24,7 @@ public static class InterOrganizationalRelationExtentions
             GeographicalEntity = null,
             ProofDocument = null,
             Tags = new List<Tags>(),
-            TenantNodes = new List<TenantNode>(),
+            TenantNodesToAdd = new List<TenantNode.NewTenantNodeForNewNode>(),
             Tenants = new List<Tenant>(),
         };
     }
@@ -45,7 +45,7 @@ public static class InterOrganizationalRelationExtentions
             GeographicalEntity = null,
             ProofDocument = null,
             Tags = new List<Tags>(),
-            TenantNodes = new List<TenantNode>(),
+            TenantNodesToAdd = new List<TenantNode.NewTenantNodeForNewNode>(),
             Tenants = new List<Tenant>(),
         };
     }
@@ -66,7 +66,7 @@ public static class InterOrganizationalRelationExtentions
             GeographicalEntity = null,
             ProofDocument = null,
             Tags = new List<Tags>(),
-            TenantNodes = new List<TenantNode>(),
+            TenantNodesToAdd = new List<TenantNode.NewTenantNodeForNewNode>(),
             Tenants = new List<Tenant>(),
         };
 
@@ -88,7 +88,7 @@ public static class InterOrganizationalRelationExtentions
             GeographicalEntity = null,
             ProofDocument = null,
             Tags = new List<Tags>(),
-            TenantNodes = new List<TenantNode>(),
+            TenantNodesToAdd = new List<TenantNode.NewTenantNodeForNewNode>(),
             Tenants = new List<Tenant>(),
         };
     }
@@ -149,8 +149,21 @@ public abstract record InterOrganizationalRelation : RelationBase
                 }
                 public sealed override string OrganizationToName => OrganizationTo is null ? "" : OrganizationTo.Name;
 
-                public sealed record NewInterOrganizationalNewFromRelation : NewIncompleteInterOrganizationalRelationFrom
+                public sealed record NewInterOrganizationalNewFromRelation : NewIncompleteInterOrganizationalRelationFrom, NewNode
                 {
+                    private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
+
+                    public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
+                        get => tenantNodesToAdd;
+                        init {
+                            if (value is not null) {
+                                tenantNodesToAdd = value;
+                            }
+                        }
+                    }
+
+                    public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
+
                     public required OrganizationName OrganizationFrom { get; set; }
 
                     public sealed override void SetName(string name)
@@ -178,7 +191,7 @@ public abstract record InterOrganizationalRelation : RelationBase
                             OwnerId = OwnerId,
                             PublisherId = PublisherId,
                             Tags = Tags,
-                            TenantNodes = TenantNodes,
+                            TenantNodesToAdd = TenantNodesToAdd,
                             Tenants = Tenants,
                             Title = Title
                         };
@@ -202,15 +215,27 @@ public abstract record InterOrganizationalRelation : RelationBase
                             OwnerId = OwnerId,
                             PublisherId = PublisherId,
                             Tags = Tags,
-                            TenantNodes = TenantNodes,
+                            TenantNodesToAdd = TenantNodesToAdd,
                             Tenants = Tenants,
                             Title = Title,
                         };
                     }
                 }
 
-                public sealed record NewInterOrganizationalExistingFromRelation : NewIncompleteInterOrganizationalRelationFrom
+                public sealed record NewInterOrganizationalExistingFromRelation : NewIncompleteInterOrganizationalRelationFrom, NewNode
                 {
+                    private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
+
+                    public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
+                        get => tenantNodesToAdd;
+                        init {
+                            if (value is not null) {
+                                tenantNodesToAdd = value;
+                            }
+                        }
+                    }
+                    public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
+
                     public required OrganizationListItem OrganizationFrom { get; set; }
                     public sealed override void SetName(string name)
                     {
@@ -237,7 +262,7 @@ public abstract record InterOrganizationalRelation : RelationBase
                             OwnerId = OwnerId,
                             PublisherId = PublisherId,
                             Tags = Tags,
-                            TenantNodes = TenantNodes,
+                            TenantNodesToAdd = TenantNodesToAdd,
                             Tenants = Tenants,
                             Title = Title
                         };
@@ -262,7 +287,7 @@ public abstract record InterOrganizationalRelation : RelationBase
                             OwnerId = OwnerId,
                             PublisherId = PublisherId,
                             Tags = Tags,
-                            TenantNodes = TenantNodes,
+                            TenantNodesToAdd = TenantNodesToAdd,
                             Tenants = Tenants,
                             Title = Title,
                         };
@@ -296,8 +321,20 @@ public abstract record InterOrganizationalRelation : RelationBase
                 }
             }
 
-            public sealed record CompletedNewInterOrganizationalNewFromRelation : CompletedInterOrganizationalRelationFrom
+            public sealed record CompletedNewInterOrganizationalNewFromRelation : CompletedInterOrganizationalRelationFrom, NewNode
             {
+                private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
+
+                public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
+                    get => tenantNodesToAdd;
+                    init {
+                        if (value is not null) {
+                            tenantNodesToAdd = value;
+                        }
+                    }
+                }
+                public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
+
                 public required OrganizationName OrganizationFrom { get; set; }
                 
                 public sealed override void SetName(string name)
@@ -326,7 +363,7 @@ public abstract record InterOrganizationalRelation : RelationBase
                         OwnerId = OwnerId,
                         PublisherId = PublisherId,
                         Tags = Tags,
-                        TenantNodes = TenantNodes,
+                        TenantNodesToAdd = TenantNodesToAdd,
                         Tenants = Tenants,
                         Title = Title
                     };
@@ -350,6 +387,39 @@ public abstract record InterOrganizationalRelation : RelationBase
                 {
                     public int NodeId { get; init; }
                     public int UrlId { get; set; }
+                    private List<TenantNode.NewTenantNodeForExistingNode> tenantNodesToAdd = new();
+
+                    public List<TenantNode.NewTenantNodeForExistingNode> TenantNodesToAdd {
+                        get => tenantNodesToAdd;
+                        init {
+                            if (value is not null) {
+                                tenantNodesToAdd = value;
+                            }
+                        }
+                    }
+                    private List<TenantNode.ExistingTenantNode> tenantNodesToUpdate = new();
+
+                    public List<TenantNode.ExistingTenantNode> TenantNodesToUpdate {
+                        get => tenantNodesToUpdate;
+                        init {
+                            if (value is not null) {
+                                tenantNodesToUpdate = value;
+                            }
+                        }
+                    }
+
+                    public override IEnumerable<TenantNode> TenantNodes => GetTenantNodes();
+
+                    private IEnumerable<TenantNode> GetTenantNodes()
+                    {
+                        foreach (var elem in tenantNodesToUpdate) {
+                            yield return elem;
+                        }
+                        foreach (var elem in tenantNodesToAdd) {
+                            yield return elem;
+                        }
+                    }
+
                     public sealed override ExistingInterOrganizationalRelationTo SwapFromAndTo()
                     {
                         return new ExistingInterOrganizationalRelationTo {
@@ -369,15 +439,26 @@ public abstract record InterOrganizationalRelation : RelationBase
                             OwnerId = OwnerId,
                             PublisherId = PublisherId,
                             Tags = Tags,
-                            TenantNodes = TenantNodes,
+                            TenantNodesToAdd = TenantNodesToAdd,
                             Tenants = Tenants,
                             Title = Title
                         };
                     }
                 }
 
-                public sealed record NewInterOrganizationalExistingRelationFrom : ResolvedInterOrganizationalRelationFrom
+                public sealed record NewInterOrganizationalExistingRelationFrom : ResolvedInterOrganizationalRelationFrom, NewNode
                 {
+                    private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
+
+                    public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
+                        get => tenantNodesToAdd;
+                        init {
+                            if (value is not null) {
+                                tenantNodesToAdd = value;
+                            }
+                        }
+                    }
+                    public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
 
                     public sealed override NewInterOrganizationalExistingRelationTo SwapFromAndTo()
                     {
@@ -398,7 +479,7 @@ public abstract record InterOrganizationalRelation : RelationBase
                             OwnerId = OwnerId,
                             PublisherId = PublisherId,
                             Tags = Tags,
-                            TenantNodes = TenantNodes,
+                            TenantNodesToAdd = TenantNodesToAdd,
                             Tenants = Tenants,
                             Title = Title
                         };
@@ -449,8 +530,20 @@ public abstract record InterOrganizationalRelation : RelationBase
                         organizationItemFrom = value;
                     }
                 }
-                public sealed record NewInterOrganizationalExistingToRelation : NewIncompleteInterOrganizationalRelationTo
+                public sealed record NewInterOrganizationalExistingToRelation : NewIncompleteInterOrganizationalRelationTo, NewNode
                 {
+                    private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
+
+                    public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
+                        get => tenantNodesToAdd;
+                        init {
+                            if (value is not null) {
+                                tenantNodesToAdd = value;
+                            }
+                        }
+                    }
+                    public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
+
                     public required OrganizationListItem OrganizationTo { get; set; }
                     public sealed override void SetName(string name)
                     {
@@ -478,7 +571,7 @@ public abstract record InterOrganizationalRelation : RelationBase
                             OwnerId = OwnerId,
                             PublisherId = PublisherId,
                             Tags = Tags,
-                            TenantNodes = TenantNodes,
+                            TenantNodesToAdd = TenantNodesToAdd,
                             Tenants = Tenants,
                             Title = Title
                         };
@@ -503,15 +596,27 @@ public abstract record InterOrganizationalRelation : RelationBase
                             OwnerId = OwnerId,
                             PublisherId = PublisherId,
                             Tags = Tags,
-                            TenantNodes = TenantNodes,
+                            TenantNodesToAdd = TenantNodesToAdd,
                             Tenants = Tenants,
                             Title = Title,
                         };
                     }
                 }
 
-                public sealed record NewInterOrganizationalNewToRelation : NewIncompleteInterOrganizationalRelationTo
+                public sealed record NewInterOrganizationalNewToRelation : NewIncompleteInterOrganizationalRelationTo, NewNode
                 {
+                    private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
+
+                    public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
+                        get => tenantNodesToAdd;
+                        init {
+                            if (value is not null) {
+                                tenantNodesToAdd = value;
+                            }
+                        }
+                    }
+                    public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
+
                     public required OrganizationName OrganizationTo { get; set; }
                     public sealed override void SetName(string name)
                     {
@@ -539,7 +644,7 @@ public abstract record InterOrganizationalRelation : RelationBase
                             OwnerId = OwnerId,
                             PublisherId = PublisherId,
                             Tags = Tags,
-                            TenantNodes = TenantNodes,
+                            TenantNodesToAdd = TenantNodesToAdd,
                             Tenants = Tenants,
                             Title = Title
                         };
@@ -563,7 +668,7 @@ public abstract record InterOrganizationalRelation : RelationBase
                             OwnerId = OwnerId,
                             PublisherId = PublisherId,
                             Tags = Tags,
-                            TenantNodes = TenantNodes,
+                            TenantNodesToAdd = TenantNodesToAdd,
                             Tenants = Tenants,
                             Title = Title,
                         };
@@ -596,8 +701,21 @@ public abstract record InterOrganizationalRelation : RelationBase
             {
                 return completedInterOrganizationalRelationTo(this);
             }
-            public sealed record CompletedNewInterOrganizationalNewToRelation : CompletedInterOrganizationalRelationTo
+            public sealed record CompletedNewInterOrganizationalNewToRelation : CompletedInterOrganizationalRelationTo, NewNode
             {
+                private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
+
+                public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
+                    get => tenantNodesToAdd;
+                    init {
+                        if (value is not null) {
+                            tenantNodesToAdd = value;
+                        }
+                    }
+                }
+
+                public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
+
                 public required OrganizationName OrganizationTo { get; set; }
 
                 public sealed override void SetName(string name)
@@ -626,7 +744,7 @@ public abstract record InterOrganizationalRelation : RelationBase
                         OwnerId = OwnerId,
                         PublisherId = PublisherId,
                         Tags = Tags,
-                        TenantNodes = TenantNodes,
+                        TenantNodesToAdd = TenantNodesToAdd,
                         Tenants = Tenants,
                         Title = Title
                     };
@@ -651,6 +769,39 @@ public abstract record InterOrganizationalRelation : RelationBase
                 {
                     public int NodeId { get; init; }
                     public int UrlId { get; set; }
+                    private List<TenantNode.NewTenantNodeForExistingNode> tenantNodesToAdd = new();
+
+                    public List<TenantNode.NewTenantNodeForExistingNode> TenantNodesToAdd {
+                        get => tenantNodesToAdd;
+                        init {
+                            if (value is not null) {
+                                tenantNodesToAdd = value;
+                            }
+                        }
+                    }
+                    private List<TenantNode.ExistingTenantNode> tenantNodesToUpdate = new();
+
+                    public List<TenantNode.ExistingTenantNode> TenantNodesToUpdate {
+                        get => tenantNodesToUpdate;
+                        init {
+                            if (value is not null) {
+                                tenantNodesToUpdate = value;
+                            }
+                        }
+                    }
+
+                    public override IEnumerable<TenantNode> TenantNodes => GetTenantNodes();
+
+                    private IEnumerable<TenantNode> GetTenantNodes()
+                    {
+                        foreach (var elem in tenantNodesToUpdate) {
+                            yield return elem;
+                        }
+                        foreach (var elem in tenantNodesToAdd) {
+                            yield return elem;
+                        }
+                    }
+
                     public sealed override ExistingInterOrganizationalRelationFrom SwapFromAndTo()
                     {
                         return new ExistingInterOrganizationalRelationFrom {
@@ -670,15 +821,27 @@ public abstract record InterOrganizationalRelation : RelationBase
                             OwnerId = OwnerId,
                             PublisherId = PublisherId,
                             Tags = Tags,
-                            TenantNodes = TenantNodes,
+                            TenantNodesToAdd = TenantNodesToAdd,
                             Tenants = Tenants,
                             Title = Title
                         };
                     }
                 }
 
-                public sealed record NewInterOrganizationalExistingRelationTo : ResolvedInterOrganizationalRelationTo
+                public sealed record NewInterOrganizationalExistingRelationTo : ResolvedInterOrganizationalRelationTo, NewNode
                 {
+
+                    private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
+
+                    public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
+                        get => tenantNodesToAdd;
+                        init {
+                            if (value is not null) {
+                                tenantNodesToAdd = value;
+                            }
+                        }
+                    }
+                    public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
 
                     public sealed override NewInterOrganizationalExistingRelationFrom SwapFromAndTo()
                     {
@@ -699,7 +862,7 @@ public abstract record InterOrganizationalRelation : RelationBase
                             OwnerId = OwnerId,
                             PublisherId = PublisherId,
                             Tags = Tags,
-                            TenantNodes = TenantNodes,
+                            TenantNodesToAdd = TenantNodesToAdd,
                             Tenants = Tenants,
                             Title = Title
                         };

@@ -23,9 +23,8 @@
         @foreach (var elem in NodeTypeTags.Entries)
         {
 
-                            
-            if (!elem.HasBeenDeleted)
-            {
+
+            if (!(elem is NodeTerm.ExistingNodeTerm existingNodeTerm && existingNodeTerm.HasBeenDeleted)) {
                 <div class="tag-element">
                         <span class="tag-element-name">@elem.Name</span>
                     <button type="button" @onclick="() => SetTagToDeleted(elem.TermId)">delete</button>
@@ -45,7 +44,7 @@
     [EditorRequired]
     public int? NodeId { get; set; }
 
-    List<Tag> termOptions = new();
+    List<NodeTerm.NewNodeTerm> termOptions = new();
 
     string topicSearch { get; set; } = "";
 
@@ -54,20 +53,22 @@
         var tag = termOptions.FirstOrDefault(x => x.TermId == termId);
         if (tag is not null)
         {
-            var elem = NodeTypeTags.Entries.FirstOrDefault(x => x.TermId == termId);
-            if (elem is null)
-            {
-                NodeTypeTags.Entries.Add(tag);
-            }
-            else
-            {
-                elem.HasBeenDeleted = false;
+            switch (NodeTypeTags.Entries.FirstOrDefault(x => x.TermId == termId)) {
+                case NodeTerm.ExistingNodeTerm existingNodeTerm:
+                    if (existingNodeTerm.HasBeenDeleted) {
+                        existingNodeTerm.HasBeenDeleted = false;
+                    }
+                    break;
+                case null:
+                    NodeTypeTags.Entries.Add(tag);
+                    break;
+                default:
+                    break;
             }
         }
         termOptions.Clear();
         topicSearch = "";
         StateHasChanged();
-
     }
 
     private async Task OnSetTopicSearch(ChangeEventArgs args)
@@ -77,7 +78,6 @@
         if (!string.IsNullOrEmpty(searchString))
         {
             termOptions = await topicSearchService.GetTerms(
-                nodeId: NodeId, 
                 tenantId: TenantId, 
                 searchString: searchString,
                 nodeTypeIds: NodeTypeTags.TagNodeType.NodeTypeIds
@@ -92,9 +92,9 @@
         var elem = NodeTypeTags.Entries.FirstOrDefault(x => x.TermId == termId);
         if (elem is not null)
         {
-            if (elem.IsStored)
+            if (elem is NodeTerm.ExistingNodeTerm existingNodeTerm)
             {
-                elem.SetToDeleted();
+                existingNodeTerm.HasBeenDeleted = true;
             }
             else
             {
