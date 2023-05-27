@@ -277,7 +277,6 @@ internal sealed class DocumentMigratorPPL(
                         UrlId = reader.GetInt32("document_type_id"),
                         TenantId = Constants.PPL,
                     }),
-                Documentables = new List<int>(),
                 NodeTermIds = new List<int>(),
             };
 

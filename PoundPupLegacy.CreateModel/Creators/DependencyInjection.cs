@@ -50,7 +50,6 @@ internal static class DependencyInjection
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableDeportationCase>, DeportationCaseCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableDiscussion>, DiscussionCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableDisruptedPlacementCase>, DisruptedPlacementCaseCreatorFactory>();
-        services.AddTransient<IEntityCreatorFactory<DocumentableDocument>, DocumentableDocumentCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableDocument>, DocumentCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableDocumentType>, DocumentTypeCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EditNodeAction>, EditNodeActionCreatorFactory>();

@@ -2,8 +2,9 @@
 
 internal sealed class DocumentableDocumentMigrator(
     IDatabaseConnections databaseConnections,
+    IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameableIdRequest, int> termReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    IEntityCreatorFactory<DocumentableDocument> documentableDocumentCreatorFactory
+    IEntityCreatorFactory<NodeTerm> nodeTermCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "documentable documents";
@@ -11,12 +12,14 @@ internal sealed class DocumentableDocumentMigrator(
     protected override async Task MigrateImpl()
     {
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await using var documentableDocumentCreator = await documentableDocumentCreatorFactory.CreateAsync(_postgresConnection);
-        await documentableDocumentCreator.CreateAsync(ReadArticles(nodeIdReader));
+        await using var termReader = await termReaderFactory.CreateAsync(_postgresConnection);
+        await using var nodeTermCreator = await nodeTermCreatorFactory.CreateAsync(_postgresConnection);
+        await nodeTermCreator.CreateAsync(ReadArticles(termReader,nodeIdReader));
 
     }
 
-    private async IAsyncEnumerable<DocumentableDocument> ReadArticles(
+    private async IAsyncEnumerable<NodeTerm> ReadArticles(
+        IMandatorySingleItemDatabaseReader<TermIdReaderByNameableIdRequest, int> termReader,
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
@@ -76,21 +79,29 @@ internal sealed class DocumentableDocumentMigrator(
 
         var reader = await readCommand.ExecuteReaderAsync();
 
+        var vocabularyIdTopics = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
+
         while (await reader.ReadAsync()) {
 
 
             var documentableId = reader.GetInt32("documentable_id");
             var documentId = reader.GetInt32("document_id");
-            yield return new DocumentableDocument {
-                DocumentableId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                    TenantId = Constants.PPL,
-                    UrlId = documentableId
-                }),
-                DocumentId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                    TenantId = Constants.PPL,
-                    UrlId = documentId
-                }),
-            };
+            var nodeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+                TenantId = Constants.PPL,
+                UrlId = documentId
+            });
+            var nameableId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+                TenantId = Constants.PPL,
+                UrlId = documentableId
+            });
+            var termId = await termReader.ReadAsync(new TermIdReaderByNameableIdRequest {
+                NameableId = nameableId,
+                VocabularyId = vocabularyIdTopics,
+            });
+            yield return new NodeTerm { NodeId = nodeId, TermId = termId };
         }
         await reader.CloseAsync();
     }

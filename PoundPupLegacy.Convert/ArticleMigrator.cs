@@ -58,7 +58,6 @@ internal sealed class ArticleMigrator(
                     }
                 },
                 NodeTypeId = 10,
-                Documentables = new List<int>(),
                 Published = null,
                 SourceUrl = null,
                 DocumentTypeId = null,

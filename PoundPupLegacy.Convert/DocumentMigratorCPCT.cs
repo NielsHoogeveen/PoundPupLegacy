@@ -1,10 +1,12 @@
 ﻿using PoundPupLegacy.CreateModel.Creators;
+using System.Xml.Linq;
 
 namespace PoundPupLegacy.Convert;
 
 internal sealed class DocumentMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
+    IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameableIdRequest, int> termReaderFactory,
     ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForExistingNode> tenantNodeReaderByUrlIdFactory,
     IEntityCreatorFactory<EventuallyIdentifiableDocument> documentCreatorFactory
 ) : MigratorCPCT(
@@ -18,9 +20,10 @@ internal sealed class DocumentMigratorCPCT(
     protected override async Task MigrateImpl()
     {
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
+        await using var termReader = await termReaderFactory.CreateAsync(_postgresConnection);
         await using var tenantNodeReader = await tenantNodeReaderByUrlIdFactory.CreateAsync(_postgresConnection);
         await using var documentCreator = await documentCreatorFactory.CreateAsync(_postgresConnection);
-        await documentCreator.CreateAsync(ReadDocuments(nodeIdReader, tenantNodeReader));
+        await documentCreator.CreateAsync(ReadDocuments(nodeIdReader, termReader, tenantNodeReader));
     }
 
     private async IAsyncEnumerable<(int, int)> GetDocumentablesWithStatus(
@@ -35,6 +38,7 @@ internal sealed class DocumentMigratorCPCT(
 
     private async IAsyncEnumerable<NewDocument> ReadDocuments(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
+        IMandatorySingleItemDatabaseReader<TermIdReaderByNameableIdRequest, int> termReader,
         ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, NewTenantNodeForExistingNode> tenantNodeReader)
     {
 
@@ -95,6 +99,10 @@ internal sealed class DocumentMigratorCPCT(
 
         var reader = await readCommand.ExecuteReaderAsync();
 
+        var vocabularyIdTopics = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+            TenantId = Constants.PPL,
+            UrlId = Constants.VOCABULARY_ID_TOPICS
+        });
 
         while (await reader.ReadAsync()) {
             var publicationDate = StringToDateTimeRange(reader.IsDBNull("publication_date")
@@ -138,7 +146,14 @@ internal sealed class DocumentMigratorCPCT(
                     UrlId = null
                 });
             }
-
+            List<int> termIds = new();
+            foreach (var nameableId in documentable.Select(x => x.Item1)) {
+                var termId = await termReader.ReadAsync(new TermIdReaderByNameableIdRequest {
+                    NameableId = nameableId,
+                    VocabularyId = vocabularyIdTopics,
+                });
+                termIds.Add(termId);
+            }
             yield return new NewDocument {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
@@ -159,8 +174,7 @@ internal sealed class DocumentMigratorCPCT(
                         TenantId = Constants.CPCT,
                         UrlId = reader.GetInt32("document_type_id")
                     }),
-                Documentables = documentable.Select(x => x.Item1).ToList(),
-                NodeTermIds = new List<int>(),
+                NodeTermIds = termIds,
             };
 
         }

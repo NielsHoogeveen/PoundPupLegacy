@@ -5,14 +5,14 @@ public sealed record NewDocument : NewSimpleTextNodeBase, EventuallyIdentifiable
     public required FuzzyDate? Published { get; init; }
     public required string? SourceUrl { get; init; }
     public required int? DocumentTypeId { get; init; }
-    public required List<int> Documentables { get; init; }
+    //public required List<int> Documentables { get; init; }
 }
 public sealed record ExistingDocument : ExistingSimpleTextNodeBase, ImmediatelyIdentifiableDocument
 {
     public required FuzzyDate? Published { get; init; }
     public required string? SourceUrl { get; init; }
     public required int DocumentTypeId { get; init; }
-    public required List<int> Documentables { get; init; }
+    //public required List<int> Documentables { get; init; }
 }
 public interface ImmediatelyIdentifiableDocument : Document, ImmediatelyIdentifiableSimpleTextNode
 {
@@ -27,5 +27,5 @@ public interface Document : SimpleTextNode
 {
     FuzzyDate? Published { get;  }
     string? SourceUrl { get; }
-    List<int> Documentables { get; }
+    //List<int> Documentables { get; }
 }
