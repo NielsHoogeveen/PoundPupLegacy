@@ -3,7 +3,7 @@
 internal sealed class NodeTermMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TermIdReaderByNameableIdRequest, int> termIdReaderByNameableIdFactory,
+    IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameableIdRequest, int> termIdReaderByNameableIdFactory,
     IEntityCreatorFactory<NodeTerm> nodeTermCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
@@ -19,7 +19,7 @@ internal sealed class NodeTermMigrator(
     }
     private async IAsyncEnumerable<NodeTerm> ReadNodeTerms(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        ISingleItemDatabaseReader<TermIdReaderByNameableIdRequest, int> termIdReaderByNameableId)
+        IMandatorySingleItemDatabaseReader<TermIdReaderByNameableIdRequest, int> termIdReaderByNameableId)
     {
         var vocabularyIdTopics = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
             TenantId = Constants.PPL,
