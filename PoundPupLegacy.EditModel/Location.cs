@@ -1,12 +1,10 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(Location))]
+[JsonSerializable(typeof(ExistingLocation))]
 public partial class LocationJsonContext : JsonSerializerContext { }
 
-public sealed record Location
+public abstract record Location
 {
-    public int? LocationId { get; set; }
-    public int? LocatableId { get; set; }
     public string? Street { get; set; }
     public string? Addition { get; set; }
     public string? City { get; set; }
@@ -18,7 +16,7 @@ public sealed record Location
     public decimal? Latitude { get; set; }
     public decimal? Longitude { get; set; }
 
-    public bool HasBeenDeleted { get; set; } = false;
+    private Location() { }
 
     private List<SubdivisionListItem> subdivivisions = new();
     public required List<SubdivisionListItem> Subdivisions {
@@ -28,5 +26,13 @@ public sealed record Location
                 subdivivisions = value;
             }
         }
+    }
+    public sealed record ExistingLocation : Location
+    {
+        public int Id { get; init; }
+        public bool HasBeenDeleted { get; set; } = false;
+    }
+    public sealed record NewLocation : Location
+    {
     }
 }

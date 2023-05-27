@@ -1,6 +1,7 @@
 ﻿global using Npgsql;
 global using PoundPupLegacy.Common;
 global using System.Text.Json.Serialization;
+global using static PoundPupLegacy.EditModel.Location;
 global using static PoundPupLegacy.EditModel.InterOrganizationalRelation.InterOrganizationalRelationFrom.IncompleteInterOrganizationalRelationFrom.NewIncompleteInterOrganizationalRelationFrom;
 global using static PoundPupLegacy.EditModel.InterOrganizationalRelation.InterOrganizationalRelationFrom.CompletedInterOrganizationalRelationFrom;
 global using static PoundPupLegacy.EditModel.InterOrganizationalRelation.InterOrganizationalRelationFrom.CompletedInterOrganizationalRelationFrom.ResolvedInterOrganizationalRelationFrom;

@@ -35,6 +35,15 @@ public interface ExistingNode : ResolvedNode
     int UrlId { get; }
 
 }
+
+public abstract record NewNodeBase : NodeBase, NewNode
+{
+}
+public abstract record ExistingNodeBase : NodeBase, ExistingNode
+{
+    public required int NodeId { get; init; }
+    public required int UrlId { get; init; }
+}
 public abstract record NodeBase : Node
 {
     public required string NodeTypeName { get; set; }

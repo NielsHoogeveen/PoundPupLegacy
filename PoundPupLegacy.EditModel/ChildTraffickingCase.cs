@@ -16,21 +16,22 @@ public interface ResolvedChildTraffickingCase : ChildTraffickingCase, ResolvedNo
 {
     new CountryListItem CountryFrom { get; set; }
 }
-public sealed record ExistingChildTraffickingCase : ChildTraffickingCaseBase, ResolvedChildTraffickingCase, ExistingNode
+public sealed record ExistingChildTraffickingCase : ExistingCaseBase, ResolvedChildTraffickingCase, ExistingLocatable
 {
-    public int NodeId { get; set; }
+    public required int? NumberOfChildrenInvolved { get; set; }
 
-    public int UrlId { get; set; }
-    
-    public new required CountryListItem CountryFrom { get; set; }
+    public required CountryListItem CountryFrom { get; set; }
 }
-public sealed record ResolvedNewChildTraffickingCase : ChildTraffickingCaseBase, ResolvedChildTraffickingCase, ResolvedNewNode
+public sealed record ResolvedNewChildTraffickingCase : NewCaseBase, ResolvedChildTraffickingCase, ResolvedNewNode, NewLocatable
 {
-    public new required CountryListItem CountryFrom { get; set; }
+    public required int? NumberOfChildrenInvolved { get; set; }
+    public required CountryListItem CountryFrom { get; set; }
 }
-public sealed record NewChildTraffickingCase : ChildTraffickingCaseBase, NewNode
+public sealed record NewChildTraffickingCase : NewCaseBase, NewNode, ChildTraffickingCase
 {
-    ResolvedNewChildTraffickingCase Resolve(CountryListItem CountryFrom)
+    public required int? NumberOfChildrenInvolved { get; set; }
+    public required CountryListItem CountryFrom { get; set; }
+    public ResolvedNewChildTraffickingCase Resolve(CountryListItem CountryFrom)
     {
         return new ResolvedNewChildTraffickingCase {
             CountryFrom = CountryFrom,
@@ -50,11 +51,4 @@ public sealed record NewChildTraffickingCase : ChildTraffickingCaseBase, NewNode
             VocabularyIdTagging = VocabularyIdTagging,
         };
     }
-
-}
-public abstract record ChildTraffickingCaseBase : CaseBase, ChildTraffickingCase
-{
-    public int? NumberOfChildrenInvolved { get; set; }
-
-    public CountryListItem? CountryFrom { get; set; }
 }

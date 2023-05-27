@@ -9,16 +9,9 @@ public partial class NewWrongfulMedicationCaseJsonContext : JsonSerializerContex
 public interface WrongfulMedicationCase : Case, ResolvedNode
 {
 }
-public sealed record ExistingWrongfulMedicationCase : WrongfulMedicationCaseBase, ExistingNode
-{
-    public int NodeId { get; set; }
-
-    public int UrlId { get; set; }
-}
-public sealed record NewWrongfulMedicationCase : WrongfulMedicationCaseBase, ResolvedNewNode
+public sealed record ExistingWrongfulMedicationCase : ExistingCaseBase, ExistingNode, WrongfulMedicationCase
 {
 }
-public abstract record WrongfulMedicationCaseBase : CaseBase, WrongfulMedicationCase
+public sealed record NewWrongfulMedicationCase : NewCaseBase, ResolvedNewNode, WrongfulMedicationCase
 {
-
 }

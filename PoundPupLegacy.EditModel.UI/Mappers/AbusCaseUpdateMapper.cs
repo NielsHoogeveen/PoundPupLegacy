@@ -11,9 +11,9 @@ internal class AbusCaseUpdateMapper(
     IEnumerableMapper<TenantNode, TenantNodeToDelete> tenantNodeToRemoveMapper,
     IEnumerableMapper<Tags, NodeTermToAdd> nodeTermsToAddMapper,
     IEnumerableMapper<Tags, NodeTermToRemove> nodeTermsToRemoveMapper,
-    IEnumerableMapper<Location, int> locationsToDeleteMapper,
-    IEnumerableMapper<Location, EventuallyIdentifiableLocation> locationsToAddMapper,
-    IEnumerableMapper<Location, ImmediatelyIdentifiableLocation> locationsToUpdateMapper,
+    IEnumerableMapper<Location.ExistingLocation, int> locationsToDeleteMapper,
+    IEnumerableMapper<Location.ExistingLocation, EventuallyIdentifiableLocation> locationsToAddMapper,
+    IEnumerableMapper<Location.ExistingLocation, ImmediatelyIdentifiableLocation> locationsToUpdateMapper,
     IEnumerableMapper<CasePartyTypeCaseParties, ExistingCaseExistingCaseParties> casePartiesUpdateMapper,
     IEnumerableMapper<CasePartyTypeCaseParties, ExistingCaseNewCaseParties> casePartiesAddMapper
     ) : IMapper<ExistingAbuseCase, ImmediatelyIdentifiableAbuseCase>
@@ -44,9 +44,9 @@ internal class AbusCaseUpdateMapper(
             FamilySizeId = viewModel.FamilySizeId,
             FundamentalFaithInvolved = viewModel.FundamentalFaithInvolved,
             HomeschoolingInvolved = viewModel.HomeschoolingInvolved,
-            LocationsToDelete = locationsToDeleteMapper.Map(viewModel.Locations).ToList(),
-            LocationsToUpdate = locationsToUpdateMapper.Map(viewModel.Locations).ToList(),
-            LocationsToAdd = locationsToAddMapper.Map(viewModel.Locations).ToList(),
+            LocationsToDelete = locationsToDeleteMapper.Map(viewModel.LocationsToUpdate).ToList(),
+            LocationsToUpdate = locationsToUpdateMapper.Map(viewModel.LocationsToUpdate).ToList(),
+            LocationsToAdd = locationsToAddMapper.Map(viewModel.LocationsToUpdate).ToList(),
             CasePartiesToAdd = casePartiesAddMapper.Map(viewModel.CasePartyTypesCaseParties).ToList(),
             CasePartiesToUpdate = casePartiesUpdateMapper.Map(viewModel.CasePartyTypesCaseParties).ToList(),
         };

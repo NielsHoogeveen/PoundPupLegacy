@@ -19,7 +19,6 @@ public interface Organization : Party, ResolvedNode
 
     List<OrganizationPoliticalEntityRelationTypeListItem> OrganizationPoliticalEntityRelationTypes { get; }
 
-
     string? WebSiteUrl { get; set; }
     string? EmailAddress { get; set; }
     FuzzyDate? Establishment { get; set; }
@@ -33,11 +32,8 @@ public interface Organization : Party, ResolvedNode
 }
 
 
-public sealed record ExistingOrganization : OrganizationBase, ExistingNode
+public sealed record ExistingOrganization : ExistingPartyBase, Organization
 {
-    public int NodeId { get; init; }
-    public int UrlId { get; set; }
-
     private List<ExistingOrganizationPoliticalEntityRelation> existingOrganizationPoliticalEntityRelations = new();
 
     public List<ExistingOrganizationPoliticalEntityRelation> ExistingOrganizationPoliticalEntityRelations {
@@ -48,7 +44,7 @@ public sealed record ExistingOrganization : OrganizationBase, ExistingNode
             }
         }
     }
-    public override IEnumerable<CompletedOrganizationPoliticalEntityRelation> OrganizationPoliticalEntityRelations => GetOrganizationPoliticalEntityRelations();
+    public IEnumerable<CompletedOrganizationPoliticalEntityRelation> OrganizationPoliticalEntityRelations => GetOrganizationPoliticalEntityRelations();
     private IEnumerable<CompletedOrganizationPoliticalEntityRelation> GetOrganizationPoliticalEntityRelations()
     {
         foreach (var elem in ExistingOrganizationPoliticalEntityRelations) {
@@ -79,7 +75,7 @@ public sealed record ExistingOrganization : OrganizationBase, ExistingNode
             }
         }
     }
-    public override IEnumerable<CompletedInterOrganizationalRelationFrom> InterOrganizationalRelationsFrom => GetInterOrganizationalRelationsFrom();
+    public IEnumerable<CompletedInterOrganizationalRelationFrom> InterOrganizationalRelationsFrom => GetInterOrganizationalRelationsFrom();
     private IEnumerable<CompletedInterOrganizationalRelationFrom> GetInterOrganizationalRelationsFrom()
     {
         foreach (var elem in ExistingInterOrganizationalRelationsFrom) {
@@ -89,7 +85,7 @@ public sealed record ExistingOrganization : OrganizationBase, ExistingNode
             yield return elem;
         }
     }
-    public override IEnumerable<CompletedInterOrganizationalRelationTo> InterOrganizationalRelationsTo => GetInterOrganizationalRelationsTo();
+    public IEnumerable<CompletedInterOrganizationalRelationTo> InterOrganizationalRelationsTo => GetInterOrganizationalRelationsTo();
     private IEnumerable<CompletedInterOrganizationalRelationTo> GetInterOrganizationalRelationsTo()
     {
         foreach (var elem in ExistingInterOrganizationalRelationsTo) {
@@ -111,7 +107,7 @@ public sealed record ExistingOrganization : OrganizationBase, ExistingNode
     }
 
 
-    public override IEnumerable<CompletedPersonOrganizationRelationForOrganization> PersonOrganizationRelations => GetPersonOrganizationRelations();
+    public IEnumerable<CompletedPersonOrganizationRelationForOrganization> PersonOrganizationRelations => GetPersonOrganizationRelations();
     private IEnumerable<CompletedPersonOrganizationRelationForOrganization> GetPersonOrganizationRelations()
     {
         foreach (var elem in ExistingPersonOrganizationRelations) {
@@ -120,21 +116,9 @@ public sealed record ExistingOrganization : OrganizationBase, ExistingNode
         foreach (var elem in NewPersonOrganizationRelations) {
             yield return elem;
         }
-
     }
 
-    public override OrganizationItem OrganizationItem => new OrganizationListItem { Id = NodeId, Name = Title };
-}
-public sealed record NewOrganization : OrganizationBase, ResolvedNewNode
-{
-    public override IEnumerable<CompletedOrganizationPoliticalEntityRelation> OrganizationPoliticalEntityRelations => NewOrganizationPoliticalEntityRelations;
-    public override IEnumerable<CompletedInterOrganizationalRelationFrom> InterOrganizationalRelationsFrom => NewInterOrganizationalRelationsFrom;
-    public override IEnumerable<CompletedInterOrganizationalRelationTo> InterOrganizationalRelationsTo => NewInterOrganizationalRelationsTo;
-    public override IEnumerable<CompletedPersonOrganizationRelationForOrganization> PersonOrganizationRelations => NewPersonOrganizationRelations;
-    public override OrganizationItem OrganizationItem => new OrganizationName { Name = Title };
-}
-public abstract record OrganizationBase : PartyBase, Organization
-{
+    public OrganizationItem OrganizationItem => new OrganizationListItem { Id = NodeId, Name = Title };
 
     public List<CompletedOrganizationPoliticalEntityRelation> NewOrganizationPoliticalEntityRelations { get; } = new();
 
@@ -148,8 +132,6 @@ public abstract record OrganizationBase : PartyBase, Organization
             }
         }
     }
-    public abstract IEnumerable<CompletedOrganizationPoliticalEntityRelation> OrganizationPoliticalEntityRelations { get; }
-
     public string? WebSiteUrl { get; set; }
     public string? EmailAddress { get; set; }
     public FuzzyDate? Establishment { get; set; }
@@ -189,11 +171,6 @@ public abstract record OrganizationBase : PartyBase, Organization
             }
         }
     }
-    public abstract OrganizationItem OrganizationItem { get; }
-    public abstract IEnumerable<CompletedInterOrganizationalRelationFrom> InterOrganizationalRelationsFrom { get; }
-    public abstract IEnumerable<CompletedInterOrganizationalRelationTo> InterOrganizationalRelationsTo { get; }
-
-    public abstract IEnumerable<CompletedPersonOrganizationRelationForOrganization> PersonOrganizationRelations { get; }
     public List<CompletedNewPersonOrganizationRelationForOrganization> NewPersonOrganizationRelations { get; } = new();
 
     private List<PersonOrganizationRelationTypeListItem> personOrganizationRelationTypes = new();
@@ -205,5 +182,75 @@ public abstract record OrganizationBase : PartyBase, Organization
             }
         }
     }
+}
+public sealed record NewOrganization : NewPartyBase, ResolvedNewNode, Organization
+{
+    public IEnumerable<CompletedOrganizationPoliticalEntityRelation> OrganizationPoliticalEntityRelations => NewOrganizationPoliticalEntityRelations;
+    public IEnumerable<CompletedInterOrganizationalRelationFrom> InterOrganizationalRelationsFrom => NewInterOrganizationalRelationsFrom;
+    public IEnumerable<CompletedInterOrganizationalRelationTo> InterOrganizationalRelationsTo => NewInterOrganizationalRelationsTo;
+    public IEnumerable<CompletedPersonOrganizationRelationForOrganization> PersonOrganizationRelations => NewPersonOrganizationRelations;
+    public OrganizationItem OrganizationItem => new OrganizationName { Name = Title };
 
+    public List<CompletedOrganizationPoliticalEntityRelation> NewOrganizationPoliticalEntityRelations { get; } = new();
+
+    private List<OrganizationPoliticalEntityRelationTypeListItem> personPoliticalEntityRelationTypes = new();
+
+    public List<OrganizationPoliticalEntityRelationTypeListItem> OrganizationPoliticalEntityRelationTypes {
+        get => personPoliticalEntityRelationTypes;
+        init {
+            if (value is not null) {
+                personPoliticalEntityRelationTypes = value;
+            }
+        }
+    }
+    public string? WebSiteUrl { get; set; }
+    public string? EmailAddress { get; set; }
+    public FuzzyDate? Establishment { get; set; }
+    public FuzzyDate? Termination { get; set; }
+
+    private List<OrganizationOrganizationType> organizationOrganizationTypes = new();
+
+    public List<OrganizationOrganizationType> OrganizationOrganizationTypes {
+        get => organizationOrganizationTypes;
+        init {
+            if (value is not null) {
+                organizationOrganizationTypes = value;
+            }
+        }
+    }
+    private List<OrganizationType> organizationTypes = new();
+
+    public List<OrganizationType> OrganizationTypes {
+        get => organizationTypes;
+        init {
+            if (value is not null) {
+                organizationTypes = value;
+            }
+        }
+    }
+
+    public List<CompletedInterOrganizationalRelationFrom> NewInterOrganizationalRelationsFrom { get; } = new();
+    public List<CompletedInterOrganizationalRelationTo> NewInterOrganizationalRelationsTo { get; } = new();
+
+    private List<InterOrganizationalRelationTypeListItem> interOrganizationalRelationTypes = new();
+
+    public List<InterOrganizationalRelationTypeListItem> InterOrganizationalRelationTypes {
+        get => interOrganizationalRelationTypes;
+        init {
+            if (value is not null) {
+                interOrganizationalRelationTypes = value;
+            }
+        }
+    }
+    public List<CompletedNewPersonOrganizationRelationForOrganization> NewPersonOrganizationRelations { get; } = new();
+
+    private List<PersonOrganizationRelationTypeListItem> personOrganizationRelationTypes = new();
+    public List<PersonOrganizationRelationTypeListItem> PersonOrganizationRelationTypes {
+        get => personOrganizationRelationTypes;
+        init {
+            if (value is not null) {
+                personOrganizationRelationTypes = value;
+            }
+        }
+    }
 }

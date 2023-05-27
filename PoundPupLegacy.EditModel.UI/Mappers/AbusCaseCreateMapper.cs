@@ -7,7 +7,7 @@ internal class AbusCaseCreateMapper(
     ITextService textService,
     IEnumerableMapper<TenantNode, NewTenantNodeForNewNode> tenantNodeMapper,
     IEnumerableMapper<Tags, int> termIdsMapper,
-    IEnumerableMapper<Location, EventuallyIdentifiableLocation> locationMapper,
+    IEnumerableMapper<Location.NewLocation, EventuallyIdentifiableLocation> locationMapper,
     IEnumerableMapper<CasePartyTypeCaseParties, NewCaseNewCaseParties> casePartiesAddMapper
 ) : IMapper<NewAbuseCase, EventuallyIdentifiableAbuseCase>
 {
@@ -44,7 +44,7 @@ internal class AbusCaseCreateMapper(
             FamilySizeId = viewModel.FamilySizeId,
             FundamentalFaithInvolved = viewModel.FundamentalFaithInvolved,
             HomeschoolingInvolved = viewModel.HomeschoolingInvolved,
-            Locations = locationMapper.Map(viewModel.Locations).ToList(),
+            Locations = locationMapper.Map(viewModel.LocationsToAdd).ToList(),
             CaseParties = casePartiesAddMapper.Map(viewModel.CasePartyTypesCaseParties).ToList(),
         };
     }

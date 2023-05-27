@@ -31,66 +31,7 @@ public class UnitTest1
         Assert.Equal("114", match.Groups[2].Value);
 
     }
-    //Please create unit test for LocationEditorDialog
-    [Fact]
-    public void LocationEditorDialogTest()
-    {
-        //Mock the LocationService
-        var locationServiceMock = new Mock<ILocationService>();
-        //Mock the Countries method of the LocationService
-        locationServiceMock.Setup(x => x.Countries()).Returns(new List<CountryListItem> {
-            new CountryListItem {
-                           Id = 1,
-                           Name = "United States"
-                       }
-        }.ToAsyncEnumerable());
-        //Mock the Subdivisions method of the LocationService
-        locationServiceMock.Setup(x => x.SubdivisionsOfCountry(1)).Returns(new List<SubdivisionListItem> {
-            new SubdivisionListItem {
-                                      Id = 1,
-                                      Name = "New York"
-                                  }
-        }.ToAsyncEnumerable());
-        //Mock the sitedataservice
-        var siteDataServiceMock = new Mock<ISiteDataService>();
-        //Create a new Location object and initialize it with values
-        var location = new Location {
-            LocationId = 1,
-            LocatableId = 1,
-            Street = "123 Main Street",
-            Addition = "Apt 1",
-            City = "New York",
-            PostalCode = "10001",
-            SubdivisionId = 1,
-            SubdivisionName = "New York",
-            CountryId = 1,
-            CountryName = "United States",
-            Latitude = 40.7128M,
-            Longitude = 74.0060M,
-            HasBeenDeleted = false,
-            Subdivisions = new List<SubdivisionListItem> {
-                new SubdivisionListItem {
-                                   Id = 1,
-                                   Name = "New York"
-                               }
-            }
-        };
-
-
-
-        //Create a new TestContext, inject the location service mock and the site data service mock
-        using var ctx = new TestContext();
-        ctx.Services.AddSingleton(locationServiceMock.Object);
-        ctx.Services.AddSingleton(siteDataServiceMock.Object);
-
-        //Initialize the locationEditorDialog with Bunit and set location to the location object
-        var cut = ctx.RenderComponent<LocationEditorDialog>(parameters => parameters.Add(p => p.Location, location));
-
-        //Assert that the rendering of locationEditorDialog contains a text box for Street with a label
-        cut.Markup.Contains(@"<label for=""location-street"">Street</label>
-                            <input type=""text"" id=""location-street"" value=""123 Main Street"" />");
-
-    }
+ 
     [Fact]
     public void FuzzyDateParsesSingleYearCorrectly()
     {

@@ -9,16 +9,9 @@ public partial class NewDisruptedPlacementCaseJsonContext : JsonSerializerContex
 public interface DisruptedPlacementCase : Case, ResolvedNode
 {
 }
-public sealed record ExistingDisruptedPlacementCase : DisruptedPlacementCaseBase, ExistingNode
-{
-    public int NodeId { get; set; }
-
-    public int UrlId { get; set; }
-}
-public sealed record NewDisruptedPlacementCase : DisruptedPlacementCaseBase, ResolvedNewNode
+public sealed record ExistingDisruptedPlacementCase : ExistingCaseBase, DisruptedPlacementCase
 {
 }
-public abstract record DisruptedPlacementCaseBase : CaseBase, DisruptedPlacementCase
+public sealed record NewDisruptedPlacementCase : NewCaseBase, ResolvedNewNode, DisruptedPlacementCase
 {
-
 }

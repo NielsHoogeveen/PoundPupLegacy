@@ -1,15 +1,13 @@
 ﻿namespace PoundPupLegacy.EditModel.UI.Mappers;
 
-internal class LocationsToRemoveMapper : IEnumerableMapper<Location, int>
+internal class LocationsToRemoveMapper : IEnumerableMapper<ExistingLocation, int>
 {
-    public IEnumerable<int> Map(IEnumerable<Location> source)
+    public IEnumerable<int> Map(IEnumerable<ExistingLocation> source)
     {
         foreach (var location in source) {
-            if (!location.LocationId.HasValue)
-                continue;
             if (!location.HasBeenDeleted)
                 continue;
-            yield return location.LocationId.Value;
+            yield return location.Id;
         }
     }
 }

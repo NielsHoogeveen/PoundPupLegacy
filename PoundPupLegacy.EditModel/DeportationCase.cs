@@ -10,25 +10,17 @@ public interface DeportationCase : Case, ResolvedNode
 {
     SubdivisionListItem? SubdivisionFrom { get;  }
     CountryListItem? CountryTo { get;  }
-
 }
 
-public sealed record ExistingDeportationCase : DeportationCaseBase, ExistingNode
+public sealed record ExistingDeportationCase : ExistingCaseBase, DeportationCase
 {
-    public int NodeId { get; set; }
-
-    public int UrlId { get; set; }
+    public SubdivisionListItem? SubdivisionFrom { get; set; }
+    public CountryListItem? CountryTo { get; set; }
 }
 
-public sealed record NewDeportationCase : DeportationCaseBase, ResolvedNewNode
-{
-}
-public abstract record DeportationCaseBase : CaseBase, DeportationCase
+public sealed record NewDeportationCase : NewCaseBase, ResolvedNewNode, DeportationCase
 {
     public SubdivisionListItem? SubdivisionFrom { get; set; }
     public CountryListItem? CountryTo { get; set; }
 
 }
-
-
-
