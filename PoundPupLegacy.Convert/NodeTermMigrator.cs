@@ -3,7 +3,7 @@
 internal sealed class NodeTermMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, ImmediatelyIdentifiableTerm> termReaderByNameableIdFactory,
+    ISingleItemDatabaseReaderFactory<TermIdReaderByNameableIdRequest, int> termIdReaderByNameableIdFactory,
     IEntityCreatorFactory<NodeTerm> nodeTermCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
@@ -12,14 +12,14 @@ internal sealed class NodeTermMigrator(
     protected override async Task MigrateImpl()
     {
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
-        await using var termReaderByNameableId = await termReaderByNameableIdFactory.CreateAsync(_postgresConnection);
+        await using var termReaderByNameableId = await termIdReaderByNameableIdFactory.CreateAsync(_postgresConnection);
 
         await using var nodeTermCreator = await nodeTermCreatorFactory.CreateAsync(_postgresConnection);
         await nodeTermCreator.CreateAsync(ReadNodeTerms(nodeIdReader, termReaderByNameableId));
     }
     private async IAsyncEnumerable<NodeTerm> ReadNodeTerms(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        ISingleItemDatabaseReader<TermReaderByNameableIdRequest, ImmediatelyIdentifiableTerm> termReaderByNameableId)
+        ISingleItemDatabaseReader<TermIdReaderByNameableIdRequest, int> termIdReaderByNameableId)
     {
         var vocabularyIdTopics = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
             TenantId = Constants.PPL,
@@ -95,13 +95,13 @@ internal sealed class NodeTermMigrator(
                 UrlId = nameableUrlId,
             });
 
-            var term = await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
+            var termId = await termIdReaderByNameableId.ReadAsync(new TermIdReaderByNameableIdRequest {
                 NameableId = nameableId,
                 VocabularyId = vocabularyIdTopics,
             });
             yield return new NodeTerm {
                 NodeId = nodeId,
-                TermId = (int)term!.Id!,
+                TermId = termId,
             };
 
         }

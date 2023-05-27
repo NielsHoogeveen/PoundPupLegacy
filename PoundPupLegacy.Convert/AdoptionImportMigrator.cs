@@ -3,7 +3,7 @@
 internal sealed class AdoptionImportMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    IMandatorySingleItemDatabaseReaderFactory<NodeReaderByUrlIdRequest, ImmediatelyIdentifiableNode> nodeReaderFactory,
+    IMandatorySingleItemDatabaseReaderFactory<NodeReaderByUrlIdRequest, NodeTitle> nodeReaderFactory,
     IEntityCreatorFactory<EventuallyIdentifiableInterCountryRelation> interCountryRelationCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
@@ -113,7 +113,7 @@ internal sealed class AdoptionImportMigrator(
         int countryIdFrom,
         int countryIdTo,
         int year, int numberOfChildren,
-        IMandatorySingleItemDatabaseReader<NodeReaderByUrlIdRequest, ImmediatelyIdentifiableNode> nodeReader,
+        IMandatorySingleItemDatabaseReader<NodeReaderByUrlIdRequest, NodeTitle> nodeReader,
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
@@ -132,8 +132,8 @@ internal sealed class AdoptionImportMigrator(
             //The relation is about imports so the relation from is the receiving party
             //and relation to is the sending party
             //even though the children go from the sending party to the receiving party
-            CountryIdFrom = (int)nodeTo.Id!,
-            CountryIdTo = (int)nodeFrom.Id!,
+            CountryIdFrom = nodeTo.Id,
+            CountryIdTo = nodeFrom.Id,
             DateTimeRange = GetDateTimeRange(countryIdTo, year),
             Title = title,
             OwnerId = Constants.OWNER_GEOGRAPHY,
@@ -166,7 +166,7 @@ internal sealed class AdoptionImportMigrator(
         };
     }
     private async IAsyncEnumerable<NewInterCountryRelation> ReadAdoptionExportYears(
-        IMandatorySingleItemDatabaseReader<NodeReaderByUrlIdRequest, ImmediatelyIdentifiableNode> nodeReader,
+        IMandatorySingleItemDatabaseReader<NodeReaderByUrlIdRequest, NodeTitle> nodeReader,
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 

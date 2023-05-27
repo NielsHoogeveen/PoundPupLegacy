@@ -8,7 +8,13 @@ public sealed record NodeReaderByUrlIdRequest : IRequest
     public required int UrlId { get; init; }
 }
 
-internal sealed class NodeReaderByUrlIdFactory : MandatorySingleItemDatabaseReaderFactory<Request, ImmediatelyIdentifiableNode>
+public sealed record NodeTitle
+{
+    public required int Id { get; init; }
+    public required string Title { get; init; }
+}
+
+internal sealed class NodeReaderByUrlIdFactory : MandatorySingleItemDatabaseReaderFactory<Request, NodeTitle>
 {
     private static readonly NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
     private static readonly NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
@@ -40,18 +46,11 @@ internal sealed class NodeReaderByUrlIdFactory : MandatorySingleItemDatabaseRead
         };
     }
 
-    protected override ImmediatelyIdentifiableNode Read(NpgsqlDataReader reader)
+    protected override NodeTitle Read(NpgsqlDataReader reader)
     {
-        var node = new ExistingBasicNode {
+        var node = new NodeTitle {
             Id = IdReader.GetValue(reader),
             Title = TitleReader.GetValue(reader),
-            ChangedDateTime = ChangedDateTimeReader.GetValue(reader),
-            AuthoringStatusId = 1,
-            NewNodeTerms = new List<NodeTerm>(),
-            NewTenantNodes = new List<NewTenantNodeForExistingNode>(),
-            NodeTermsToRemove = new List<NodeTerm>(),
-            TenantNodesToRemove = new List<ExistingTenantNode>(),
-            TenantNodesToUpdate = new List<ExistingTenantNode>(),
         };
         return node;
     }

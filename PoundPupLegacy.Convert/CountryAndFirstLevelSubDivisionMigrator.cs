@@ -6,7 +6,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
-    IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReaderByNameFactory,
+    IMandatorySingleItemDatabaseReaderFactory<NameableIdReaderByTermNameRequest, int> termReaderByNameFactory,
     IEntityCreatorFactory<EventuallyIdentifiableCountryAndFirstAndBottomLevelSubdivision> countryAndFirstAndBottomLevelSubdivisionCreatorFactory
 ) : CountryMigrator(databaseConnections)
 {
@@ -32,7 +32,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
     private async IAsyncEnumerable<NewCountryAndFirstAndBottomLevelSubdivision> GetCountryAndFirstAndBottomLevelSubdivisions(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
-        IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReader
+        IMandatorySingleItemDatabaseReader<NameableIdReaderByTermNameRequest, int> termReader
         )
     {
 
@@ -113,10 +113,10 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
             IncomeRequirements = null,
             MarriageRequirements = null,
             OtherRequirements = null,
-            SubdivisionTypeId = (await termReader.ReadAsync(new TermReaderByNameRequest {
+            SubdivisionTypeId = (await termReader.ReadAsync(new NameableIdReaderByTermNameRequest {
                 VocabularyId = vocabularyIdSubdivisionTypes,
                 Name = "Autonomous region"
-            }))!.NameableId,
+            })),
             NodeTermIds = new List<int>(),
         };
         yield return new NewCountryAndFirstAndBottomLevelSubdivision {
@@ -187,10 +187,10 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
             IncomeRequirements = null,
             MarriageRequirements = null,
             OtherRequirements = null,
-            SubdivisionTypeId = (await termReader.ReadAsync(new TermReaderByNameRequest {
+            SubdivisionTypeId = (await termReader.ReadAsync(new NameableIdReaderByTermNameRequest {
                 VocabularyId = vocabularyIdSubdivisionTypes,
                 Name = "Country"
-            }))!.NameableId,
+            })),
             NodeTermIds = new List<int>(),
         };
         yield return new NewCountryAndFirstAndBottomLevelSubdivision {
@@ -261,10 +261,10 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
             IncomeRequirements = null,
             MarriageRequirements = null,
             OtherRequirements = null,
-            SubdivisionTypeId = (await termReader.ReadAsync(new TermReaderByNameRequest {
+            SubdivisionTypeId = (await termReader.ReadAsync(new NameableIdReaderByTermNameRequest {
                 VocabularyId = vocabularyIdSubdivisionTypes,
                 Name = "Country"
-            }))!.NameableId,
+            })),
             NodeTermIds = new List<int>(),
         };
         yield return new NewCountryAndFirstAndBottomLevelSubdivision {
@@ -335,10 +335,10 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
             IncomeRequirements = null,
             MarriageRequirements = null,
             OtherRequirements = null,
-            SubdivisionTypeId = (await termReader.ReadAsync(new TermReaderByNameRequest {
+            SubdivisionTypeId = (await termReader.ReadAsync(new NameableIdReaderByTermNameRequest {
                 VocabularyId = vocabularyIdSubdivisionTypes,
                 Name = "Outlying area"
-            }))!.NameableId,
+            })),
             NodeTermIds = new List<int>(),
         };
     }
@@ -346,7 +346,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
     private async IAsyncEnumerable<NewCountryAndFirstAndBottomLevelSubdivision> ReadCountryAndFirstAndIntermediateLevelSubdivisions(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
-        IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReader
+        IMandatorySingleItemDatabaseReader<NameableIdReaderByTermNameRequest, int> termReader
     )
     {
 
@@ -488,10 +488,10 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                 IncomeRequirements = null,
                 MarriageRequirements = null,
                 OtherRequirements = null,
-                SubdivisionTypeId = (await termReader.ReadAsync(new TermReaderByNameRequest {
+                SubdivisionTypeId = (await termReader.ReadAsync(new NameableIdReaderByTermNameRequest {
                     VocabularyId = vocabularyIdSubdivisionTypes,
                     Name = reader.GetString("subdivision_type_name")
-                }))!.NameableId,
+                })),
                 NodeTermIds = new List<int>(),
             };
         }

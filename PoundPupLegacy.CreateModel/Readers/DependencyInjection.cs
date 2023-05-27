@@ -13,16 +13,17 @@ internal static class DependencyInjection
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<EditOwnNodeActionIdReaderByNodeTypeIdRequest, int>, EditOwnNodeActionIdReaderByNodeTypeIdFactory>();
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int>, FileIdReaderByTenantFileIdFactory>();
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int>, NodeIdReaderByUrlIdFactory>();
-        services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<NodeReaderByUrlIdRequest, ImmediatelyIdentifiableNode>, NodeReaderByUrlIdFactory>();
+        services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<NodeReaderByUrlIdRequest, NodeTitle>, NodeReaderByUrlIdFactory>();
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<ProfessionIdReaderRequest, int>, ProfessionIdReaderFactory>();
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int>, SubdivisionIdReaderByIso3166CodeFactory>();
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByNameRequest, int>, SubdivisionIdReaderByNameFactory>();
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<TenantNodeIdReaderByUrlIdRequest, int>, TenantNodeIdReaderByUrlIdFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForExistingNode>, TenantNodeReaderByUrlIdFactory>();
-        services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, ImmediatelyIdentifiableTerm>, TermReaderByNameFactory>();
+        services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<NameableIdReaderByTermNameRequest, int>, NameableIdReaderByTermNameFactory>();
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int>, TermIdReaderByNameFactory>();
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameableIdRequest, int>, TermIdReaderByNameableIdFactory>();
-        services.AddTransient<ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, ImmediatelyIdentifiableTerm>, TermReaderByNameableIdFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<PossibleTermReaderByNameableIdRequest, PossibleTerm>, PossibleTermReaderByNameableIdFactory>();
+        services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<TermNameReaderByNameableIdRequest, string>, TermNameReaderByNameableIdFactory>();
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int>, VocabularyIdReaderByOwnerAndNameFactory>();
     }
     

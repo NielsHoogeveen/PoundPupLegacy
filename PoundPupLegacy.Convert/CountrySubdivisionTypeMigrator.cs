@@ -4,7 +4,7 @@ internal sealed class CountrySubdivisionTypeMigratorPartOne(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
-    IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReaderByNameFactory,
+    IMandatorySingleItemDatabaseReaderFactory<NameableIdReaderByTermNameRequest, int> termReaderByNameFactory,
     IEntityCreatorFactory<CountrySubdivisionType> countrySubdivisionTypeCreatorFactory
 ) : CountrySubdivisionTypeMigrator(
     databaseConnections, 
@@ -20,7 +20,7 @@ internal sealed class CountrySubdivisionTypeMigratorPartTwo(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
-    IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReaderByNameFactory,
+    IMandatorySingleItemDatabaseReaderFactory<NameableIdReaderByTermNameRequest, int> termReaderByNameFactory,
     IEntityCreatorFactory<CountrySubdivisionType> countrySubdivisionTypeCreatorFactory
 ) : CountrySubdivisionTypeMigrator(
     databaseConnections, 
@@ -37,7 +37,7 @@ internal sealed class CountrySubdivisionTypeMigratorPartThree : CountrySubdivisi
     public CountrySubdivisionTypeMigratorPartThree(IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
-        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReaderByNameFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NameableIdReaderByTermNameRequest, int> termReaderByNameFactory,
         IEntityCreatorFactory<CountrySubdivisionType> countrySubdivisionTypeCreatorFactory
     ) : base(databaseConnections, nodeIdReaderFactory, vocabularyIdReaderByOwnerAndNameFactory, termReaderByNameFactory, countrySubdivisionTypeCreatorFactory)
     {
@@ -50,7 +50,7 @@ internal abstract class CountrySubdivisionTypeMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
-        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReaderByNameFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NameableIdReaderByTermNameRequest, int> termReaderByNameFactory,
         IEntityCreatorFactory<CountrySubdivisionType> countrySubdivisionTypeCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
@@ -61,7 +61,7 @@ internal abstract class CountrySubdivisionTypeMigrator(
     private async IAsyncEnumerable<CountrySubdivisionType> ReadCountrySubdivisionTypesCsv(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReader,
-        IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReader
+        IMandatorySingleItemDatabaseReader<NameableIdReaderByTermNameRequest, int> termReader
         )
     {
 
@@ -78,16 +78,13 @@ internal abstract class CountrySubdivisionTypeMigrator(
                 TenantId = Constants.PPL,
                 UrlId = int.Parse(parts[0])
             });
-            var subdivisionType = await termReader.ReadAsync(new TermReaderByNameRequest {
+            var subdivisionType = await termReader.ReadAsync(new NameableIdReaderByTermNameRequest {
                 VocabularyId = vocabularyId,
                 Name = name
             });
-            if (subdivisionType is null) {
-                Console.WriteLine(name);
-            }
             yield return new CountrySubdivisionType {
                 CountryId = countryId,
-                SubdivisionTypeId = subdivisionType!.NameableId,
+                SubdivisionTypeId = subdivisionType,
             };
         }
     }

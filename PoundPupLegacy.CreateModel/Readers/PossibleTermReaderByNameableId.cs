@@ -1,26 +1,30 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
 
-using Request = TermNameReaderByNameableIdRequest;
+using Request = PossibleTermReaderByNameableIdRequest;
 
-public sealed class TermNameReaderByNameableIdRequest : IRequest
+public sealed class PossibleTermReaderByNameableIdRequest : IRequest
 {
     public required int VocabularyId { get; init; }
     public required int NameableId { get; init; }
 }
-public sealed class TermNameReaderByNameableIdFactory : MandatorySingleItemDatabaseReaderFactory<Request, string>
+public sealed class PossibleTerm : IRequest
+{
+    public required int TermId { get; init; }
+}
+internal sealed class PossibleTermReaderByNameableIdFactory : SingleItemDatabaseReaderFactory<Request, PossibleTerm>
 {
     private static readonly NonNullableIntegerDatabaseParameter VocabularyId = new() { Name = "vocabulary_id" };
     private static readonly NonNullableIntegerDatabaseParameter NameableId = new() { Name = "nameable_id" };
 
-    private static readonly StringValueReader NameReader = new() { Name = "name" };
+    private static readonly IntValueReader IdReader = new() { Name = "id" };
 
     public override string Sql => SQL;
 
     const string SQL = """
         SELECT 
-        name
-        FROM term
-        WHERE vocabulary_id = @vocabulary_id AND nameable_id = @nameable_id
+            id
+        FROM term t
+        WHERE nameable_id = @nameable_id and vocabulary_id = @vocabulary_id
         """;
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
@@ -30,13 +34,8 @@ public sealed class TermNameReaderByNameableIdFactory : MandatorySingleItemDatab
         };
     }
 
-    protected override string Read(NpgsqlDataReader reader)
+    protected override PossibleTerm Read(NpgsqlDataReader reader)
     {
-        return NameReader.GetValue(reader);
-    }
-
-    protected override string GetErrorMessage(Request request)
-    {
-        return $"Couldn't find term name for nameable {request.NameableId} in vocabulary {request.VocabularyId}";
+        return new PossibleTerm { TermId = IdReader.GetValue(reader) };
     }
 }

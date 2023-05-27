@@ -7,8 +7,8 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByNameRequest, int> subdivisionIdByNameReaderFactory,
-        ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, ImmediatelyIdentifiableTerm> termReaderByNameableIdFactory,
-        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReaderByNameFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermNameReaderByNameableIdRequest, string> termReaderByNameableIdFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NameableIdReaderByTermNameRequest, int> termReaderByNameFactory,
         IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166CodeFactory,
         IEntityCreatorFactory<EventuallyIdentifiableBasicSecondLevelSubdivision> basicSecondLevelSubdivisionCreatorFactory
     ) : MigratorPPL(databaseConnections)
@@ -18,8 +18,8 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
         IMandatorySingleItemDatabaseReader<SubdivisionIdReaderByNameRequest, int> subdivisionIdByNameReader,
-        ISingleItemDatabaseReader<TermReaderByNameableIdRequest, ImmediatelyIdentifiableTerm> termReaderByNameableId,
-        IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReaderByName
+        IMandatorySingleItemDatabaseReader<TermNameReaderByNameableIdRequest, string> termReaderByNameableId,
+        IMandatorySingleItemDatabaseReader<NameableIdReaderByTermNameRequest, int> termReaderByName
         )
     {
         var vocabularyIdSubdivisionTypes = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
@@ -42,10 +42,10 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                 CountryId = countryId,
                 Name = parts[11]
             });
-            var topicName = (await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
+            var topicName = (await termReaderByNameableId.ReadAsync(new TermNameReaderByNameableIdRequest {
                 NameableId = subdivisionId,
                 VocabularyId = vocabularyIdTopics
-            }))!.Name;
+            }));
             yield return new NewBasicSecondLevelSubdivision {
                 Id = null,
                 CreatedDateTime = DateTime.Parse(parts[1]),
@@ -97,10 +97,10 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                 IntermediateLevelSubdivisionId = subdivisionId,
                 FileIdFlag = null,
                 FileIdTileImage = null,
-                SubdivisionTypeId = (await termReaderByName.ReadAsync(new TermReaderByNameRequest {
+                SubdivisionTypeId = (await termReaderByName.ReadAsync(new NameableIdReaderByTermNameRequest {
                     VocabularyId = vocabularyIdSubdivisionTypes,
                     Name = parts[12].Trim()
-                })).NameableId,
+                })),
                 NodeTermIds = new List<int>(),
             };
         }
@@ -110,8 +110,8 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
         IMandatorySingleItemDatabaseReader<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166Code,
-        ISingleItemDatabaseReader<TermReaderByNameableIdRequest, ImmediatelyIdentifiableTerm> termReaderByNameableId,
-        IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReaderByName
+        IMandatorySingleItemDatabaseReader<TermNameReaderByNameableIdRequest, string> termReaderByNameableId,
+        IMandatorySingleItemDatabaseReader<NameableIdReaderByTermNameRequest, int> termReaderByName
         )
     {
         var vocabularyIdSubdivisionTypes = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
@@ -130,10 +130,10 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
             var subdivisionId = await subdivisionIdReaderByIso3166Code.ReadAsync(new SubdivisionIdReaderByIso3166CodeRequest {
                 Iso3166Code = parts[11]
             });
-            var topicName = (await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
+            var topicName = (await termReaderByNameableId.ReadAsync(new TermNameReaderByNameableIdRequest {
                 NameableId = subdivisionId,
                 VocabularyId = vocabularyIdTopics
-            }))!.Name;
+            }));
             yield return new NewBasicSecondLevelSubdivision {
                 Id = null,
                 CreatedDateTime = DateTime.Parse(parts[1]),
@@ -188,10 +188,10 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                 IntermediateLevelSubdivisionId = subdivisionId,
                 FileIdFlag = null,
                 FileIdTileImage = null,
-                SubdivisionTypeId = (await termReaderByName.ReadAsync(new TermReaderByNameRequest {
+                SubdivisionTypeId = (await termReaderByName.ReadAsync(new NameableIdReaderByTermNameRequest {
                     VocabularyId = vocabularyIdSubdivisionTypes,
                     Name = parts[12].Trim()
-                })).NameableId,
+                })),
                 NodeTermIds = new List<int>(),
             };
         }
@@ -230,7 +230,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
     private async IAsyncEnumerable<NewBasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisions(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
-        IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReaderByName
+        IMandatorySingleItemDatabaseReader<NameableIdReaderByTermNameRequest, int> termReaderByName
         )
     {
         var vocabularyIdSubdivisionTypes = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
@@ -336,10 +336,10 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                 ISO3166_2_Code = reader.GetString("iso_3166_2_code"),
                 FileIdFlag = reader.IsDBNull("file_id_flag") ? null : reader.GetInt32("file_id_flag"),
                 FileIdTileImage = null,
-                SubdivisionTypeId = (await termReaderByName.ReadAsync(new TermReaderByNameRequest {
+                SubdivisionTypeId = (await termReaderByName.ReadAsync(new NameableIdReaderByTermNameRequest {
                     VocabularyId = vocabularyIdSubdivisionTypes,
                     Name = "State"
-                })).NameableId,
+                })),
                 NodeTermIds = new List<int>(),
             };
         }

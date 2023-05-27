@@ -1,41 +1,26 @@
 ﻿namespace PoundPupLegacy.CreateModel.Readers;
 
-using Request = TermReaderByNameRequest;
+using Request = NameableIdReaderByTermNameRequest;
 
-public sealed class TermReaderByNameRequest : IRequest
+public sealed class NameableIdReaderByTermNameRequest : IRequest
 {
     public required int VocabularyId { get; init; }
     public required string Name { get; init; }
 }
-public sealed class TermReaderByNameFactory : MandatorySingleItemDatabaseReaderFactory<Request, ImmediatelyIdentifiableTerm>
+public sealed class NameableIdReaderByTermNameFactory : MandatorySingleItemDatabaseReaderFactory<Request, int>
 {
     private static readonly NonNullableIntegerDatabaseParameter VocabularyId = new() { Name = "vocabulary_id" };
     private static readonly TrimmingNonNullableStringDatabaseParameter Name = new() { Name = "name" };
 
-    private static readonly IntValueReader IdReader = new() { Name = "id" };
-    private static readonly StringValueReader NameReader = new() { Name = "name" };
     private static readonly IntValueReader NameableIdReader = new() { Name = "nameable_id" };
-    private static readonly IntValueReader VocabularyIdReader = new() { Name = "vocabulary_id" };
-    private static readonly IntListValueReader ParentTermIdsReader = new() { Name = "parent_term_ids" };
 
     public override string Sql => SQL;
 
     const string SQL = """
         SELECT 
-            t.id, 
-            t.name,
-            t.nameable_id,
-            t.vocabulary_id,
-            array_remove(array_agg(th.term_id_parent), null) as parent_term_ids
-        FROM term t
-        left join term_hierarchy th on t.id = th.term_id_child
-        WHERE t.vocabulary_id = @vocabulary_id
-        AND name = @name 
-        GROUP BY     
-            t.id, 
-            t.nameable_id,
-            t.name,
-            t.vocabulary_id
+            nameable_id
+        FROM term
+        WHERE vocabulary_id = @vocabulary_id AND name = @name 
         """;
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
@@ -45,15 +30,9 @@ public sealed class TermReaderByNameFactory : MandatorySingleItemDatabaseReaderF
         };
     }
 
-    protected override ImmediatelyIdentifiableTerm Read(NpgsqlDataReader reader)
+    protected override int Read(NpgsqlDataReader reader)
     {
-        return new ExistingTerm {
-            Id = IdReader.GetValue(reader),
-            Name = NameReader.GetValue(reader),
-            VocabularyId = VocabularyIdReader.GetValue(reader),
-            NameableId = NameableIdReader.GetValue(reader),
-            ParentTermIds = ParentTermIdsReader.GetValue(reader),
-        };
+        return NameableIdReader.GetValue(reader);
     }
     protected override string GetErrorMessage(Request request)
     {

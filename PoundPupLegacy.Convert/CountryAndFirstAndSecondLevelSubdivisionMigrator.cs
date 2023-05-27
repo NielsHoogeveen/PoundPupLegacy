@@ -6,7 +6,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
-    IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReaderByNameFactory,
+    IMandatorySingleItemDatabaseReaderFactory<NameableIdReaderByTermNameRequest, int> termReaderByNameFactory,
     IEntityCreatorFactory<EventuallyIdentifiableCountryAndFirstAndSecondLevelSubdivision> countryAndFirstAndSecondLevelSubdivisionCreatorFactory
 ) : CountryMigrator(databaseConnections)
 {
@@ -15,7 +15,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
     private async IAsyncEnumerable<NewCountryAndFirstAndSecondLevelSubdivision> GetRegionSubdivisionCountries(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
-        IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReaderByName
+        IMandatorySingleItemDatabaseReader<NameableIdReaderByTermNameRequest, int> termReaderByName
     )
     {
         var vocabularyIdSubdivisionTypes = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
@@ -26,10 +26,10 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             TenantId = Constants.PPL,
             UrlId = Constants.VOCABULARY_ID_TOPICS
         });
-        var subdivisionTypeId = (await termReaderByName.ReadAsync(new TermReaderByNameRequest {
+        var subdivisionTypeId = (await termReaderByName.ReadAsync(new NameableIdReaderByTermNameRequest {
             VocabularyId = vocabularyIdSubdivisionTypes,
             Name = "Overseas collectivity"
-        }))!.NameableId;
+        }));
 
         yield return new NewCountryAndFirstAndSecondLevelSubdivision {
             Id = null,
@@ -266,7 +266,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
     private async IAsyncEnumerable<NewCountryAndFirstAndSecondLevelSubdivision> ReadCountryAndFirstAndSecondLevelSubdivision(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
-        IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReaderByName
+        IMandatorySingleItemDatabaseReader<NameableIdReaderByTermNameRequest, int> termReaderByName
         )
     {
 
@@ -278,10 +278,10 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             TenantId = Constants.PPL,
             UrlId = Constants.VOCABULARY_ID_TOPICS
         });
-        var subdivisionTypeId = (await termReaderByName.ReadAsync(new TermReaderByNameRequest {
+        var subdivisionTypeId = (await termReaderByName.ReadAsync(new NameableIdReaderByTermNameRequest {
             Name = "Overseas collectivity",
             VocabularyId = vocabularyIdSubdivisionTypes
-        })).NameableId;
+        }));
 
         var sql = $"""
             SELECT

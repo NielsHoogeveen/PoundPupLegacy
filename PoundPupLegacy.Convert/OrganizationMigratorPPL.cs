@@ -6,7 +6,7 @@ internal sealed class OrganizationMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, ImmediatelyIdentifiableTerm> termReaderByNameableIdFactory,
+    IMandatorySingleItemDatabaseReaderFactory<TermNameReaderByNameableIdRequest, string> termReaderByNameableIdFactory,
     IEntityCreatorFactory<EventuallyIdentifiableOrganization> organizationCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
@@ -289,7 +289,7 @@ internal sealed class OrganizationMigratorPPL(
     private async IAsyncEnumerable<EventuallyIdentifiableOrganization> ReadOrganizations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
-        ISingleItemDatabaseReader<TermReaderByNameableIdRequest, ImmediatelyIdentifiableTerm> termReaderByNameableId
+        IMandatorySingleItemDatabaseReader<TermNameReaderByNameableIdRequest, string> termReaderByNameableId
     )
     {
 
@@ -431,11 +431,11 @@ internal sealed class OrganizationMigratorPPL(
             async IAsyncEnumerable<string> GetTermNamesForOrganizationsTypes(IEnumerable<int> organizationTypeIds)
             {
                 foreach (var organizationTypeId in organizationTypeIds) {
-                    var res = await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
+                    var res = await termReaderByNameableId.ReadAsync(new TermNameReaderByNameableIdRequest {
                         NameableId = organizationTypeId,
                         VocabularyId = vocabularyId
                     });
-                    yield return res!.Name;
+                    yield return res;
                 }
             }
 

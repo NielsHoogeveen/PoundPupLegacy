@@ -6,8 +6,8 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
-        ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, ImmediatelyIdentifiableTerm> termReaderByNameableIdFactory,
-        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReaderByNameFactory,
+        IMandatorySingleItemDatabaseReaderFactory<TermNameReaderByNameableIdRequest, string> termReaderByNameableIdFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NameableIdReaderByTermNameRequest, int> termReaderByNameFactory,
         IEntityCreatorFactory<EventuallyIdentifiableFormalIntermediateLevelSubdivision> formalIntermediateLevelSubdivisionCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
@@ -16,8 +16,8 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator(
     private async IAsyncEnumerable<NewFormalIntermediateLevelSubdivision> ReadFormalIntermediateLevelSubdivisionCsv(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
-        ISingleItemDatabaseReader<TermReaderByNameableIdRequest, ImmediatelyIdentifiableTerm> termReaderByNameableId,
-        IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReaderByName
+        IMandatorySingleItemDatabaseReader<TermNameReaderByNameableIdRequest, string> termReaderByNameableId,
+        IMandatorySingleItemDatabaseReader<NameableIdReaderByTermNameRequest, int> termReaderByName
         )
     {
 
@@ -39,10 +39,10 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator(
                 TenantId = Constants.PPL,
                 UrlId = int.Parse(parts[7])
             });
-            var countryName = (await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
+            var countryName = (await termReaderByNameableId.ReadAsync(new TermNameReaderByNameableIdRequest {
                 VocabularyId = vocabularyIdTopics,
                 NameableId = countryId
-            }))!.Name;
+            }));
             yield return new NewFormalIntermediateLevelSubdivision {
                 Id = null,
                 CreatedDateTime = DateTime.Parse(parts[1]),
@@ -93,10 +93,10 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator(
                 Name = parts[9],
                 ISO3166_2_Code = parts[10],
                 FileIdFlag = null,
-                SubdivisionTypeId = (await termReaderByName.ReadAsync(new TermReaderByNameRequest {
+                SubdivisionTypeId = (await termReaderByName.ReadAsync(new NameableIdReaderByTermNameRequest {
                     VocabularyId = vocabularyIdSubdivisionType,
                     Name = parts[11].Trim()
-                })).NameableId,
+                })),
                 NodeTermIds = new List<int>(),
             };
         }

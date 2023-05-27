@@ -3,7 +3,7 @@
 internal sealed class TermHierarchyMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
-        ISingleItemDatabaseReaderFactory<TermReaderByNameableIdRequest, ImmediatelyIdentifiableTerm> termReaderByNameableIdFactory,
+        ISingleItemDatabaseReaderFactory<PossibleTermReaderByNameableIdRequest, PossibleTerm> possibleTermReaderByNameableIdFactory,
         IEntityCreatorFactory<TermHierarchy> termHierarchyCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
@@ -12,13 +12,13 @@ internal sealed class TermHierarchyMigrator(
     protected override async Task MigrateImpl()
     {
         await using var nodeIdReader = await nodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
-        await using var termReaderByNameableId = await termReaderByNameableIdFactory.CreateAsync(_postgresConnection);
+        await using var possibleTermReaderByNameableId = await possibleTermReaderByNameableIdFactory.CreateAsync(_postgresConnection);
         await using var termHierarchyCreator = await termHierarchyCreatorFactory.CreateAsync(_postgresConnection);
-        await termHierarchyCreator.CreateAsync(ReadTermHierarchys(nodeIdReader, termReaderByNameableId));
+        await termHierarchyCreator.CreateAsync(ReadTermHierarchys(nodeIdReader, possibleTermReaderByNameableId));
     }
     private async IAsyncEnumerable<TermHierarchy> ReadTermHierarchys(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        ISingleItemDatabaseReader<TermReaderByNameableIdRequest, ImmediatelyIdentifiableTerm> termReaderByNameableId
+        ISingleItemDatabaseReader<PossibleTermReaderByNameableIdRequest, PossibleTerm> possibleTermReaderByNameableId
     )
     {
         var vocabularyIdTopics = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
@@ -153,19 +153,18 @@ internal sealed class TermHierarchyMigrator(
                 TenantId = parentTenantId,
                 UrlId = parentUrlId
             });
-            var termIdChild = await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
+            var termChild = await possibleTermReaderByNameableId.ReadAsync(new PossibleTermReaderByNameableIdRequest {
                 VocabularyId = vocabularyIdTopics,
                 NameableId = nodeIdChild
             });
-            var termIdParent = await termReaderByNameableId.ReadAsync(new TermReaderByNameableIdRequest {
+            var termParent = await possibleTermReaderByNameableId.ReadAsync(new PossibleTermReaderByNameableIdRequest {
                 VocabularyId = vocabularyIdTopics,
                 NameableId = nodeIdParent
             });
-            if (termIdChild is not null && termIdParent is not null) {
+            if (termChild is not null && termParent is not null) {
                 return new TermHierarchy {
-
-                    TermIdChild = termIdChild.Id,
-                    TermIdPartent = termIdParent.Id,
+                    TermIdChild = termChild.TermId,
+                    TermIdPartent = termParent.TermId,
                 };
             }
             else {

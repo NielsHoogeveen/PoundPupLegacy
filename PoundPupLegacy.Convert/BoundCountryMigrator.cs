@@ -6,7 +6,7 @@ internal sealed class BoundCountryMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
-        IMandatorySingleItemDatabaseReaderFactory<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReaderByNameFactory,
+        IMandatorySingleItemDatabaseReaderFactory<NameableIdReaderByTermNameRequest, int> termReaderByNameFactory,
         IEntityCreatorFactory<EventuallyIdentifiableBoundCountry> boundCountryCreatorFactory
     ) : CountryMigrator(databaseConnections)
 {
@@ -28,7 +28,7 @@ internal sealed class BoundCountryMigrator(
     private async IAsyncEnumerable<NewBoundCountry> ReadBoundCountries(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
-        IMandatorySingleItemDatabaseReader<TermReaderByNameRequest, ImmediatelyIdentifiableTerm> termReaderByName
+        IMandatorySingleItemDatabaseReader<NameableIdReaderByTermNameRequest, int> termReaderByName
         )
     {
 
@@ -41,7 +41,7 @@ internal sealed class BoundCountryMigrator(
             UrlId = Constants.VOCABULARY_ID_TOPICS
         });
 
-        var subdivisionType = await termReaderByName.ReadAsync(new TermReaderByNameRequest {
+        var subdivisionType = await termReaderByName.ReadAsync(new NameableIdReaderByTermNameRequest {
             VocabularyId = vocabularyIdSubdivisionTypes,
             Name = "Country"
         });
@@ -146,7 +146,7 @@ internal sealed class BoundCountryMigrator(
                 IncomeRequirements = null,
                 MarriageRequirements = null,
                 OtherRequirements = null,
-                SubdivisionTypeId = subdivisionType!.NameableId,
+                SubdivisionTypeId = subdivisionType,
                 NodeTermIds = new List<int>(),
             };
 
