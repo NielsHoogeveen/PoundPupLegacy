@@ -2,20 +2,10 @@
 
 public interface Node
 {
-    string NodeTypeName { get; }
 
-    int PublisherId { get; }
+    public NodeDetails NodeDetails { get; }
 
-    int OwnerId { get; }
-
-    string Title { get; set; }
-    List<Tags> Tags { get; }
-
-    IEnumerable<TenantNode> TenantNodes { get; }
-
-    List<Tenant> Tenants { get; }
-
-    List<File> Files { get; }
+    public TenantNodeDetails TenantNodeDetails { get; }
 
 }
 
@@ -28,70 +18,33 @@ public interface ResolvedNewNode : NewNode, ResolvedNode
 }
 public interface NewNode : Node
 {
+    public TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get;  }
 }
 public interface ExistingNode : ResolvedNode
 {
-    int NodeId { get; }
-    int UrlId { get; }
-
+    NodeIdentification NodeIdentification { get; }
+    public TenantNodeDetails.ExistingTenantNodeDetails ExistingTenantNodeDetails { get; }
 }
 
-public abstract record NewNodeBase : NodeBase, NewNode
-{
-    private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
 
-    public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
-        get => tenantNodesToAdd;
-        init {
-            if (value is not null) {
-                tenantNodesToAdd = value;
-            }
-        }
-    }
-
-    public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
-
-}
-public abstract record ExistingNodeBase : NodeBase, ExistingNode
+public sealed record NodeIdentification
 {
     public required int NodeId { get; init; }
     public required int UrlId { get; init; }
-
-    private List<TenantNode.NewTenantNodeForExistingNode> tenantNodesToAdd = new();
-
-    public List<TenantNode.NewTenantNodeForExistingNode> TenantNodesToAdd {
-        get => tenantNodesToAdd;
-        init {
-            if (value is not null) {
-                tenantNodesToAdd = value;
-            }
-        }
-    }
-    private List<TenantNode.ExistingTenantNode> tenantNodesToUpdate = new();
-
-    public List<TenantNode.ExistingTenantNode> TenantNodesToUpdate {
-        get => tenantNodesToUpdate;
-        init {
-            if (value is not null) {
-                tenantNodesToUpdate = value;
-            }
-        }
-    }
-
-    public override IEnumerable<TenantNode> TenantNodes => GetTenantNodes();
-
-    private IEnumerable<TenantNode> GetTenantNodes()
-    {
-        foreach(var elem in tenantNodesToUpdate) {
-            yield return elem;
-        }
-        foreach (var elem in tenantNodesToAdd) {
-            yield return elem;
-        }
-    }
 }
-public abstract record NodeBase : Node
+
+public sealed record NodeDetails 
 {
+    public static NodeDetails EmptyInstance(string nodeTypeName, int ownerId, int publisherId) => new NodeDetails {
+        Files = new List<File>(),
+        NodeTypeName = nodeTypeName,
+        OwnerId = ownerId,
+        PublisherId = publisherId,
+        Tags = new List<Tags>(),
+        Tenants = new List<Tenant>(),
+        Title = ""
+    };
+
     public required string NodeTypeName { get; set; }
 
     public required int PublisherId { get; set; }
@@ -129,5 +82,6 @@ public abstract record NodeBase : Node
             }
         }
     }
-    public abstract IEnumerable<TenantNode> TenantNodes { get; }
 }
+
+

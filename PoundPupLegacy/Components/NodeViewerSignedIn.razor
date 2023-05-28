@@ -33,7 +33,7 @@
     {
         <div class="tab content2">
             <ArticleViewer>
-                @if (Model is ViewModel.Models.BlogPost){
+@*                 @if (Model is ViewModel.Models.BlogPost){
                     <NodeUpdater 
                         UrlId="Model.UrlId" 
                         TRead="EditModel.BlogPost"
@@ -111,7 +111,7 @@
                         TRead="EditModel.WrongfulRemovalCase" 
                         TSave="EditModel.WrongfulRemovalCase" />
                 }
-            </ArticleViewer>
+ *@            </ArticleViewer>
         </div>
     }
     <CommentsViewer Model="Model.Comments"/>

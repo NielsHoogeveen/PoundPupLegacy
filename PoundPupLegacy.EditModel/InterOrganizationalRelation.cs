@@ -12,20 +12,10 @@ public static class InterOrganizationalRelationExtentions
         return new NewInterOrganizationalExistingFromRelation {
             OrganizationFrom = organizationListItem,
             OrganizationTo = null,
-            InterOrganizationalRelationType = interOrganizationalRelationType,
-            Title = "",
-            DateFrom = null,
-            DateTo = null,
-            Description = "",
-            Files = new List<File>(),
-            NodeTypeName = "inter organizational relation",
-            OwnerId = ownerId,
-            PublisherId = publisherId,
-            GeographicalEntity = null,
-            ProofDocument = null,
-            Tags = new List<Tags>(),
-            TenantNodesToAdd = new List<TenantNode.NewTenantNodeForNewNode>(),
-            Tenants = new List<Tenant>(),
+            InterOrganizationalRelationDetails = InterOrganizationalRelationDetails.EmptyInstance(interOrganizationalRelationType),
+            NodeDetails = NodeDetails.EmptyInstance("inter organizational relation", ownerId, publisherId),
+            RelationDetails = RelationDetails.EmptyInstance,
+            NewTenantNodeDetails = TenantNodeDetails.NewTenantNodeDetails.EmptyInstance,
         };
     }
     public static NewInterOrganizationalNewFromRelation GetNewInterOrganizationalRelationFrom(this OrganizationName organizationName, InterOrganizationalRelationTypeListItem interOrganizationalRelationType, int ownerId, int publisherId)
@@ -33,20 +23,10 @@ public static class InterOrganizationalRelationExtentions
         return new NewInterOrganizationalNewFromRelation {
             OrganizationFrom = organizationName,
             OrganizationTo = null,
-            InterOrganizationalRelationType = interOrganizationalRelationType,
-            Title = "",
-            DateFrom = null,
-            DateTo = null,
-            Description = "",
-            Files = new List<File>(),
-            NodeTypeName = "inter organizational relation",
-            OwnerId = ownerId,
-            PublisherId = publisherId,
-            GeographicalEntity = null,
-            ProofDocument = null,
-            Tags = new List<Tags>(),
-            TenantNodesToAdd = new List<TenantNode.NewTenantNodeForNewNode>(),
-            Tenants = new List<Tenant>(),
+            InterOrganizationalRelationDetails = InterOrganizationalRelationDetails.EmptyInstance(interOrganizationalRelationType),
+            NodeDetails = NodeDetails.EmptyInstance("inter organizational relation", ownerId, publisherId),
+            RelationDetails = RelationDetails.EmptyInstance,
+            NewTenantNodeDetails = TenantNodeDetails.NewTenantNodeDetails.EmptyInstance,
         };
     }
     public static NewInterOrganizationalExistingToRelation GetNewInterOrganizationalRelationTo(this OrganizationListItem organizationListItem, InterOrganizationalRelationTypeListItem interOrganizationalRelationType, int ownerId, int publisherId)
@@ -54,20 +34,10 @@ public static class InterOrganizationalRelationExtentions
         return new NewInterOrganizationalExistingToRelation {
             OrganizationFrom = null,
             OrganizationTo = organizationListItem,
-            InterOrganizationalRelationType = interOrganizationalRelationType,
-            Title = "",
-            DateFrom = null,
-            DateTo = null,
-            Description = "",
-            Files = new List<File>(),
-            NodeTypeName = "inter organizational relation",
-            OwnerId = ownerId,
-            PublisherId = publisherId,
-            GeographicalEntity = null,
-            ProofDocument = null,
-            Tags = new List<Tags>(),
-            TenantNodesToAdd = new List<TenantNode.NewTenantNodeForNewNode>(),
-            Tenants = new List<Tenant>(),
+            InterOrganizationalRelationDetails = InterOrganizationalRelationDetails.EmptyInstance(interOrganizationalRelationType),
+            NodeDetails = NodeDetails.EmptyInstance("inter organizational relation", ownerId, publisherId),
+            RelationDetails = RelationDetails.EmptyInstance,
+            NewTenantNodeDetails = TenantNodeDetails.NewTenantNodeDetails.EmptyInstance,
         };
 
     }
@@ -76,34 +46,23 @@ public static class InterOrganizationalRelationExtentions
         return new NewInterOrganizationalNewToRelation {
             OrganizationFrom = null,
             OrganizationTo = organizationName,
-            InterOrganizationalRelationType = interOrganizationalRelationType,
-            Title = "",
-            DateFrom = null,
-            DateTo = null,
-            Description = "",
-            Files = new List<File>(),
-            NodeTypeName = "inter organizational relation",
-            OwnerId = ownerId,
-            PublisherId = publisherId,
-            GeographicalEntity = null,
-            ProofDocument = null,
-            Tags = new List<Tags>(),
-            TenantNodesToAdd = new List<TenantNode.NewTenantNodeForNewNode>(),
-            Tenants = new List<Tenant>(),
+            InterOrganizationalRelationDetails = InterOrganizationalRelationDetails.EmptyInstance(interOrganizationalRelationType),
+            NodeDetails = NodeDetails.EmptyInstance("inter organizational relation", ownerId, publisherId),
+            RelationDetails = RelationDetails.EmptyInstance,
+            NewTenantNodeDetails = TenantNodeDetails.NewTenantNodeDetails.EmptyInstance,
         };
     }
 }
-public abstract record InterOrganizationalRelation : RelationBase
+public abstract record InterOrganizationalRelation : Relation
 {
     private InterOrganizationalRelation()
     {
     }
     public abstract void SetName(string name);
-
-    public required InterOrganizationalRelationTypeListItem InterOrganizationalRelationType { get; set; }
-    public decimal? MoneyInvolved { get; set; }
-    public int? NumberOfChildrenInvolved { get; set; }
-    public required GeographicalEntityListItem? GeographicalEntity { get; set; }
+    public required RelationDetails RelationDetails { get; init; }
+    public required NodeDetails NodeDetails { get; init; }
+    public abstract TenantNodeDetails TenantNodeDetails { get; }
+    public required InterOrganizationalRelationDetails InterOrganizationalRelationDetails { get; init; }
     public abstract string OrganizationFromName { get; }
     public abstract string OrganizationToName { get; }
     public abstract RelationSide RelationSideThisOrganization { get; }
@@ -151,19 +110,8 @@ public abstract record InterOrganizationalRelation : RelationBase
 
                 public sealed record NewInterOrganizationalNewFromRelation : NewIncompleteInterOrganizationalRelationFrom, NewNode
                 {
-                    private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
-
-                    public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
-                        get => tenantNodesToAdd;
-                        init {
-                            if (value is not null) {
-                                tenantNodesToAdd = value;
-                            }
-                        }
-                    }
-
-                    public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
-
+                    public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
+                    public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
                     public required OrganizationName OrganizationFrom { get; set; }
 
                     public sealed override void SetName(string name)
@@ -177,23 +125,10 @@ public abstract record InterOrganizationalRelation : RelationBase
                         return new NewInterOrganizationalNewToRelation {
                             OrganizationFrom = OrganizationTo,
                             OrganizationTo = OrganizationFrom,
-                            DateFrom = DateFrom,
-                            DateTo = DateTo,
-                            Description = Description,
-                            GeographicalEntity = GeographicalEntity,
-                            InterOrganizationalRelationType = InterOrganizationalRelationType,
-                            MoneyInvolved = MoneyInvolved,
-                            NumberOfChildrenInvolved = NumberOfChildrenInvolved,
-                            ProofDocument = ProofDocument,
-                            NodeTypeName = NodeTypeName,
-                            Files = Files,
-                            HasBeenDeleted = HasBeenDeleted,
-                            OwnerId = OwnerId,
-                            PublisherId = PublisherId,
-                            Tags = Tags,
-                            TenantNodesToAdd = TenantNodesToAdd,
-                            Tenants = Tenants,
-                            Title = Title
+                            NewTenantNodeDetails = NewTenantNodeDetails,
+                            InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
+                            NodeDetails = NodeDetails,
+                            RelationDetails = RelationDetails,
                         };
                     }
                     public sealed override CompletedInterOrganizationalRelationFrom GetCompletedRelation(OrganizationListItem organizationListItemTo)
@@ -201,40 +136,18 @@ public abstract record InterOrganizationalRelation : RelationBase
                         return new CompletedNewInterOrganizationalNewFromRelation {
                             OrganizationFrom = OrganizationFrom,
                             OrganizationTo = organizationListItemTo,
-                            DateFrom = DateFrom,
-                            DateTo = DateTo,
-                            Description = Description,
-                            GeographicalEntity = GeographicalEntity,
-                            InterOrganizationalRelationType = InterOrganizationalRelationType,
-                            MoneyInvolved = MoneyInvolved,
-                            NumberOfChildrenInvolved = NumberOfChildrenInvolved,
-                            ProofDocument = ProofDocument,
-                            NodeTypeName = NodeTypeName,
-                            Files = Files,
-                            HasBeenDeleted = HasBeenDeleted,
-                            OwnerId = OwnerId,
-                            PublisherId = PublisherId,
-                            Tags = Tags,
-                            TenantNodesToAdd = TenantNodesToAdd,
-                            Tenants = Tenants,
-                            Title = Title,
+                            NewTenantNodeDetails = NewTenantNodeDetails,
+                            InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
+                            NodeDetails = NodeDetails,
+                            RelationDetails = RelationDetails,
                         };
                     }
                 }
 
                 public sealed record NewInterOrganizationalExistingFromRelation : NewIncompleteInterOrganizationalRelationFrom, NewNode
                 {
-                    private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
-
-                    public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
-                        get => tenantNodesToAdd;
-                        init {
-                            if (value is not null) {
-                                tenantNodesToAdd = value;
-                            }
-                        }
-                    }
-                    public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
+                    public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
+                    public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
 
                     public required OrganizationListItem OrganizationFrom { get; set; }
                     public sealed override void SetName(string name)
@@ -248,23 +161,10 @@ public abstract record InterOrganizationalRelation : RelationBase
                         return new NewInterOrganizationalExistingToRelation {
                             OrganizationFrom = OrganizationTo,
                             OrganizationTo = OrganizationFrom,
-                            DateFrom = DateFrom,
-                            DateTo = DateTo,
-                            Description = Description,
-                            GeographicalEntity = GeographicalEntity,
-                            InterOrganizationalRelationType = InterOrganizationalRelationType,
-                            MoneyInvolved = MoneyInvolved,
-                            NumberOfChildrenInvolved = NumberOfChildrenInvolved,
-                            ProofDocument = ProofDocument,
-                            NodeTypeName = NodeTypeName,
-                            Files = Files,
-                            HasBeenDeleted = HasBeenDeleted,
-                            OwnerId = OwnerId,
-                            PublisherId = PublisherId,
-                            Tags = Tags,
-                            TenantNodesToAdd = TenantNodesToAdd,
-                            Tenants = Tenants,
-                            Title = Title
+                            NewTenantNodeDetails = NewTenantNodeDetails,
+                            InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
+                            NodeDetails = NodeDetails,
+                            RelationDetails = RelationDetails,
                         };
                     }
 
@@ -273,23 +173,10 @@ public abstract record InterOrganizationalRelation : RelationBase
                         return new NewInterOrganizationalExistingRelationFrom {
                             OrganizationFrom = OrganizationFrom,
                             OrganizationTo = organizationListItemTo,
-                            DateFrom = DateFrom,
-                            DateTo = DateTo,
-                            Description = Description,
-                            GeographicalEntity = GeographicalEntity,
-                            InterOrganizationalRelationType = InterOrganizationalRelationType,
-                            MoneyInvolved = MoneyInvolved,
-                            NumberOfChildrenInvolved = NumberOfChildrenInvolved,
-                            ProofDocument = ProofDocument,
-                            NodeTypeName = NodeTypeName,
-                            Files = Files,
-                            HasBeenDeleted = HasBeenDeleted,
-                            OwnerId = OwnerId,
-                            PublisherId = PublisherId,
-                            Tags = Tags,
-                            TenantNodesToAdd = TenantNodesToAdd,
-                            Tenants = Tenants,
-                            Title = Title,
+                            NewTenantNodeDetails = NewTenantNodeDetails,
+                            InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
+                            NodeDetails = NodeDetails,
+                            RelationDetails = RelationDetails,
                         };
                     }
                 }
@@ -323,17 +210,8 @@ public abstract record InterOrganizationalRelation : RelationBase
 
             public sealed record CompletedNewInterOrganizationalNewFromRelation : CompletedInterOrganizationalRelationFrom, NewNode
             {
-                private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
-
-                public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
-                    get => tenantNodesToAdd;
-                    init {
-                        if (value is not null) {
-                            tenantNodesToAdd = value;
-                        }
-                    }
-                }
-                public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
+                public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
+                public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
 
                 public required OrganizationName OrganizationFrom { get; set; }
                 
@@ -349,23 +227,10 @@ public abstract record InterOrganizationalRelation : RelationBase
                     return new CompletedNewInterOrganizationalNewToRelation {
                         OrganizationFrom = OrganizationTo,
                         OrganizationTo = OrganizationFrom,
-                        DateFrom = DateFrom,
-                        DateTo = DateTo,
-                        Description = Description,
-                        GeographicalEntity = GeographicalEntity,
-                        InterOrganizationalRelationType = InterOrganizationalRelationType,
-                        MoneyInvolved = MoneyInvolved,
-                        NumberOfChildrenInvolved = NumberOfChildrenInvolved,
-                        ProofDocument = ProofDocument,
-                        NodeTypeName = NodeTypeName,
-                        Files = Files,
-                        HasBeenDeleted = HasBeenDeleted,
-                        OwnerId = OwnerId,
-                        PublisherId = PublisherId,
-                        Tags = Tags,
-                        TenantNodesToAdd = TenantNodesToAdd,
-                        Tenants = Tenants,
-                        Title = Title
+                        NewTenantNodeDetails = NewTenantNodeDetails,
+                        InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
+                        NodeDetails = NodeDetails,
+                        RelationDetails = RelationDetails,
                     };
                 }
             }
@@ -385,103 +250,37 @@ public abstract record InterOrganizationalRelation : RelationBase
 
                 public sealed record ExistingInterOrganizationalRelationFrom : ResolvedInterOrganizationalRelationFrom, ExistingNode
                 {
-                    public int NodeId { get; init; }
-                    public int UrlId { get; set; }
-                    private List<TenantNode.NewTenantNodeForExistingNode> tenantNodesToAdd = new();
-
-                    public List<TenantNode.NewTenantNodeForExistingNode> TenantNodesToAdd {
-                        get => tenantNodesToAdd;
-                        init {
-                            if (value is not null) {
-                                tenantNodesToAdd = value;
-                            }
-                        }
-                    }
-                    private List<TenantNode.ExistingTenantNode> tenantNodesToUpdate = new();
-
-                    public List<TenantNode.ExistingTenantNode> TenantNodesToUpdate {
-                        get => tenantNodesToUpdate;
-                        init {
-                            if (value is not null) {
-                                tenantNodesToUpdate = value;
-                            }
-                        }
-                    }
-
-                    public override IEnumerable<TenantNode> TenantNodes => GetTenantNodes();
-
-                    private IEnumerable<TenantNode> GetTenantNodes()
-                    {
-                        foreach (var elem in tenantNodesToUpdate) {
-                            yield return elem;
-                        }
-                        foreach (var elem in tenantNodesToAdd) {
-                            yield return elem;
-                        }
-                    }
+                    public override TenantNodeDetails TenantNodeDetails => ExistingTenantNodeDetails;
+                    public required TenantNodeDetails.ExistingTenantNodeDetails ExistingTenantNodeDetails { get; init; }
+                    public required NodeIdentification NodeIdentification { get; init; }
 
                     public sealed override ExistingInterOrganizationalRelationTo SwapFromAndTo()
                     {
                         return new ExistingInterOrganizationalRelationTo {
                             OrganizationFrom = OrganizationTo,
                             OrganizationTo = OrganizationFrom,
-                            DateFrom = DateFrom,
-                            DateTo = DateTo,
-                            Description = Description,
-                            GeographicalEntity = GeographicalEntity,
-                            InterOrganizationalRelationType = InterOrganizationalRelationType,
-                            MoneyInvolved = MoneyInvolved,
-                            NumberOfChildrenInvolved = NumberOfChildrenInvolved,
-                            ProofDocument = ProofDocument,
-                            NodeTypeName = NodeTypeName,
-                            Files = Files,
-                            HasBeenDeleted = HasBeenDeleted,
-                            OwnerId = OwnerId,
-                            PublisherId = PublisherId,
-                            Tags = Tags,
-                            TenantNodesToAdd = TenantNodesToAdd,
-                            Tenants = Tenants,
-                            Title = Title
+                            ExistingTenantNodeDetails = ExistingTenantNodeDetails,
+                            InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
+                            NodeDetails = NodeDetails,
+                            RelationDetails = RelationDetails,
+                            NodeIdentification = NodeIdentification,
                         };
                     }
                 }
 
                 public sealed record NewInterOrganizationalExistingRelationFrom : ResolvedInterOrganizationalRelationFrom, NewNode
                 {
-                    private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
-
-                    public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
-                        get => tenantNodesToAdd;
-                        init {
-                            if (value is not null) {
-                                tenantNodesToAdd = value;
-                            }
-                        }
-                    }
-                    public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
-
+                    public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
+                    public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
                     public sealed override NewInterOrganizationalExistingRelationTo SwapFromAndTo()
                     {
                         return new NewInterOrganizationalExistingRelationTo {
                             OrganizationFrom = OrganizationTo,
                             OrganizationTo = OrganizationFrom,
-                            DateFrom = DateFrom,
-                            DateTo = DateTo,
-                            Description = Description,
-                            GeographicalEntity = GeographicalEntity,
-                            InterOrganizationalRelationType = InterOrganizationalRelationType,
-                            MoneyInvolved = MoneyInvolved,
-                            NumberOfChildrenInvolved = NumberOfChildrenInvolved,
-                            ProofDocument = ProofDocument,
-                            NodeTypeName = NodeTypeName,
-                            Files = Files,
-                            HasBeenDeleted = HasBeenDeleted,
-                            OwnerId = OwnerId,
-                            PublisherId = PublisherId,
-                            Tags = Tags,
-                            TenantNodesToAdd = TenantNodesToAdd,
-                            Tenants = Tenants,
-                            Title = Title
+                            NewTenantNodeDetails = NewTenantNodeDetails,
+                            InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
+                            NodeDetails = NodeDetails,
+                            RelationDetails = RelationDetails,
                         };
                     }
                 }
@@ -532,18 +331,8 @@ public abstract record InterOrganizationalRelation : RelationBase
                 }
                 public sealed record NewInterOrganizationalExistingToRelation : NewIncompleteInterOrganizationalRelationTo, NewNode
                 {
-                    private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
-
-                    public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
-                        get => tenantNodesToAdd;
-                        init {
-                            if (value is not null) {
-                                tenantNodesToAdd = value;
-                            }
-                        }
-                    }
-                    public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
-
+                    public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
+                    public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
                     public required OrganizationListItem OrganizationTo { get; set; }
                     public sealed override void SetName(string name)
                     {
@@ -557,23 +346,10 @@ public abstract record InterOrganizationalRelation : RelationBase
                         return new NewInterOrganizationalExistingFromRelation {
                             OrganizationFrom = OrganizationTo,
                             OrganizationTo = OrganizationFrom,
-                            DateFrom = DateFrom,
-                            DateTo = DateTo,
-                            Description = Description,
-                            GeographicalEntity = GeographicalEntity,
-                            InterOrganizationalRelationType = InterOrganizationalRelationType,
-                            MoneyInvolved = MoneyInvolved,
-                            NumberOfChildrenInvolved = NumberOfChildrenInvolved,
-                            ProofDocument = ProofDocument,
-                            NodeTypeName = NodeTypeName,
-                            Files = Files,
-                            HasBeenDeleted = HasBeenDeleted,
-                            OwnerId = OwnerId,
-                            PublisherId = PublisherId,
-                            Tags = Tags,
-                            TenantNodesToAdd = TenantNodesToAdd,
-                            Tenants = Tenants,
-                            Title = Title
+                            NewTenantNodeDetails = NewTenantNodeDetails,
+                            InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
+                            NodeDetails = NodeDetails,
+                            RelationDetails = RelationDetails,
                         };
                     }
 
@@ -582,40 +358,18 @@ public abstract record InterOrganizationalRelation : RelationBase
                         return new NewInterOrganizationalExistingRelationTo {
                             OrganizationFrom = organizationListItemFrom,
                             OrganizationTo = OrganizationTo,
-                            DateFrom = DateFrom,
-                            DateTo = DateTo,
-                            Description = Description,
-                            GeographicalEntity = GeographicalEntity,
-                            InterOrganizationalRelationType = InterOrganizationalRelationType,
-                            MoneyInvolved = MoneyInvolved,
-                            NumberOfChildrenInvolved = NumberOfChildrenInvolved,
-                            ProofDocument = ProofDocument,
-                            NodeTypeName = NodeTypeName,
-                            Files = Files,
-                            HasBeenDeleted = HasBeenDeleted,
-                            OwnerId = OwnerId,
-                            PublisherId = PublisherId,
-                            Tags = Tags,
-                            TenantNodesToAdd = TenantNodesToAdd,
-                            Tenants = Tenants,
-                            Title = Title,
+                            NewTenantNodeDetails = NewTenantNodeDetails,
+                            InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
+                            NodeDetails = NodeDetails,
+                            RelationDetails = RelationDetails,
                         };
                     }
                 }
 
                 public sealed record NewInterOrganizationalNewToRelation : NewIncompleteInterOrganizationalRelationTo, NewNode
                 {
-                    private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
-
-                    public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
-                        get => tenantNodesToAdd;
-                        init {
-                            if (value is not null) {
-                                tenantNodesToAdd = value;
-                            }
-                        }
-                    }
-                    public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
+                    public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
+                    public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
 
                     public required OrganizationName OrganizationTo { get; set; }
                     public sealed override void SetName(string name)
@@ -630,23 +384,10 @@ public abstract record InterOrganizationalRelation : RelationBase
                         return new NewInterOrganizationalNewFromRelation {
                             OrganizationFrom = OrganizationTo,
                             OrganizationTo = OrganizationFrom,
-                            DateFrom = DateFrom,
-                            DateTo = DateTo,
-                            Description = Description,
-                            GeographicalEntity = GeographicalEntity,
-                            InterOrganizationalRelationType = InterOrganizationalRelationType,
-                            MoneyInvolved = MoneyInvolved,
-                            NumberOfChildrenInvolved = NumberOfChildrenInvolved,
-                            ProofDocument = ProofDocument,
-                            NodeTypeName = NodeTypeName,
-                            Files = Files,
-                            HasBeenDeleted = HasBeenDeleted,
-                            OwnerId = OwnerId,
-                            PublisherId = PublisherId,
-                            Tags = Tags,
-                            TenantNodesToAdd = TenantNodesToAdd,
-                            Tenants = Tenants,
-                            Title = Title
+                            NewTenantNodeDetails = NewTenantNodeDetails,
+                            InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
+                            NodeDetails = NodeDetails,
+                            RelationDetails = RelationDetails,
                         };
                     }
                     public sealed override CompletedInterOrganizationalRelationTo GetCompletedRelation(OrganizationListItem organizationListItemFrom)
@@ -654,23 +395,10 @@ public abstract record InterOrganizationalRelation : RelationBase
                         return new CompletedNewInterOrganizationalNewToRelation {
                             OrganizationFrom = organizationListItemFrom,
                             OrganizationTo = OrganizationTo,
-                            DateFrom = DateFrom,
-                            DateTo = DateTo,
-                            Description = Description,
-                            GeographicalEntity = GeographicalEntity,
-                            InterOrganizationalRelationType = InterOrganizationalRelationType,
-                            MoneyInvolved = MoneyInvolved,
-                            NumberOfChildrenInvolved = NumberOfChildrenInvolved,
-                            ProofDocument = ProofDocument,
-                            NodeTypeName = NodeTypeName,
-                            Files = Files,
-                            HasBeenDeleted = HasBeenDeleted,
-                            OwnerId = OwnerId,
-                            PublisherId = PublisherId,
-                            Tags = Tags,
-                            TenantNodesToAdd = TenantNodesToAdd,
-                            Tenants = Tenants,
-                            Title = Title,
+                            NewTenantNodeDetails = NewTenantNodeDetails,
+                            InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
+                            NodeDetails = NodeDetails,
+                            RelationDetails = RelationDetails,
                         };
                     }
                 }
@@ -703,18 +431,8 @@ public abstract record InterOrganizationalRelation : RelationBase
             }
             public sealed record CompletedNewInterOrganizationalNewToRelation : CompletedInterOrganizationalRelationTo, NewNode
             {
-                private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
-
-                public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
-                    get => tenantNodesToAdd;
-                    init {
-                        if (value is not null) {
-                            tenantNodesToAdd = value;
-                        }
-                    }
-                }
-
-                public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
+                public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
+                public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
 
                 public required OrganizationName OrganizationTo { get; set; }
 
@@ -730,23 +448,10 @@ public abstract record InterOrganizationalRelation : RelationBase
                     return new CompletedNewInterOrganizationalNewFromRelation {
                         OrganizationFrom = OrganizationTo,
                         OrganizationTo = OrganizationFrom,
-                        DateFrom = DateFrom,
-                        DateTo = DateTo,
-                        Description = Description,
-                        GeographicalEntity = GeographicalEntity,
-                        InterOrganizationalRelationType = InterOrganizationalRelationType,
-                        MoneyInvolved = MoneyInvolved,
-                        NumberOfChildrenInvolved = NumberOfChildrenInvolved,
-                        ProofDocument = ProofDocument,
-                        NodeTypeName = NodeTypeName,
-                        Files = Files,
-                        HasBeenDeleted = HasBeenDeleted,
-                        OwnerId = OwnerId,
-                        PublisherId = PublisherId,
-                        Tags = Tags,
-                        TenantNodesToAdd = TenantNodesToAdd,
-                        Tenants = Tenants,
-                        Title = Title
+                        NewTenantNodeDetails = NewTenantNodeDetails,
+                        InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
+                        NodeDetails = NodeDetails,
+                        RelationDetails = RelationDetails,
                     };
                 }
             }
@@ -767,109 +472,56 @@ public abstract record InterOrganizationalRelation : RelationBase
 
                 public sealed record ExistingInterOrganizationalRelationTo : ResolvedInterOrganizationalRelationTo, ExistingNode
                 {
-                    public int NodeId { get; init; }
-                    public int UrlId { get; set; }
-                    private List<TenantNode.NewTenantNodeForExistingNode> tenantNodesToAdd = new();
-
-                    public List<TenantNode.NewTenantNodeForExistingNode> TenantNodesToAdd {
-                        get => tenantNodesToAdd;
-                        init {
-                            if (value is not null) {
-                                tenantNodesToAdd = value;
-                            }
-                        }
-                    }
-                    private List<TenantNode.ExistingTenantNode> tenantNodesToUpdate = new();
-
-                    public List<TenantNode.ExistingTenantNode> TenantNodesToUpdate {
-                        get => tenantNodesToUpdate;
-                        init {
-                            if (value is not null) {
-                                tenantNodesToUpdate = value;
-                            }
-                        }
-                    }
-
-                    public override IEnumerable<TenantNode> TenantNodes => GetTenantNodes();
-
-                    private IEnumerable<TenantNode> GetTenantNodes()
-                    {
-                        foreach (var elem in tenantNodesToUpdate) {
-                            yield return elem;
-                        }
-                        foreach (var elem in tenantNodesToAdd) {
-                            yield return elem;
-                        }
-                    }
-
+                    public override TenantNodeDetails TenantNodeDetails => ExistingTenantNodeDetails;
+                    public required TenantNodeDetails.ExistingTenantNodeDetails ExistingTenantNodeDetails { get; init; }
+                    public required NodeIdentification NodeIdentification { get; init; }
                     public sealed override ExistingInterOrganizationalRelationFrom SwapFromAndTo()
                     {
                         return new ExistingInterOrganizationalRelationFrom {
                             OrganizationFrom = OrganizationTo,
                             OrganizationTo = OrganizationFrom,
-                            DateFrom = DateFrom,
-                            DateTo = DateTo,
-                            Description = Description,
-                            GeographicalEntity = GeographicalEntity,
-                            InterOrganizationalRelationType = InterOrganizationalRelationType,
-                            MoneyInvolved = MoneyInvolved,
-                            NumberOfChildrenInvolved = NumberOfChildrenInvolved,
-                            ProofDocument = ProofDocument,
-                            NodeTypeName = NodeTypeName,
-                            Files = Files,
-                            HasBeenDeleted = HasBeenDeleted,
-                            OwnerId = OwnerId,
-                            PublisherId = PublisherId,
-                            Tags = Tags,
-                            TenantNodesToAdd = TenantNodesToAdd,
-                            Tenants = Tenants,
-                            Title = Title
+                            ExistingTenantNodeDetails = ExistingTenantNodeDetails,
+                            InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
+                            NodeDetails = NodeDetails,
+                            NodeIdentification = NodeIdentification,
+                            RelationDetails = RelationDetails,
                         };
                     }
                 }
 
                 public sealed record NewInterOrganizationalExistingRelationTo : ResolvedInterOrganizationalRelationTo, NewNode
                 {
-
-                    private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
-
-                    public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
-                        get => tenantNodesToAdd;
-                        init {
-                            if (value is not null) {
-                                tenantNodesToAdd = value;
-                            }
-                        }
-                    }
-                    public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
-
+                    public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
+                    public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
                     public sealed override NewInterOrganizationalExistingRelationFrom SwapFromAndTo()
                     {
                         return new NewInterOrganizationalExistingRelationFrom {
                             OrganizationFrom = OrganizationTo,
                             OrganizationTo = OrganizationFrom,
-                            DateFrom = DateFrom,
-                            DateTo = DateTo,
-                            Description = Description,
-                            GeographicalEntity = GeographicalEntity,
-                            InterOrganizationalRelationType = InterOrganizationalRelationType,
-                            MoneyInvolved = MoneyInvolved,
-                            NumberOfChildrenInvolved = NumberOfChildrenInvolved,
-                            ProofDocument = ProofDocument,
-                            NodeTypeName = NodeTypeName,
-                            Files = Files,
-                            HasBeenDeleted = HasBeenDeleted,
-                            OwnerId = OwnerId,
-                            PublisherId = PublisherId,
-                            Tags = Tags,
-                            TenantNodesToAdd = TenantNodesToAdd,
-                            Tenants = Tenants,
-                            Title = Title
+                            NewTenantNodeDetails = NewTenantNodeDetails,
+                            InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
+                            NodeDetails = NodeDetails,
+                            RelationDetails = RelationDetails,
                         };
                     }
                 }
             }
-
         }
     }
+}
+
+public sealed record InterOrganizationalRelationDetails
+{
+    public static InterOrganizationalRelationDetails EmptyInstance(InterOrganizationalRelationTypeListItem interOrganizationalRelationType) => new InterOrganizationalRelationDetails
+    {
+        GeographicalEntity = null,
+        MoneyInvolved = null,
+        InterOrganizationalRelationType = interOrganizationalRelationType,
+        NumberOfChildrenInvolved = null
+    };
+    public required InterOrganizationalRelationTypeListItem InterOrganizationalRelationType { get; set; }
+    public decimal? MoneyInvolved { get; set; }
+    public int? NumberOfChildrenInvolved { get; set; }
+    public required GeographicalEntityListItem? GeographicalEntity { get; set; }
+
 }

@@ -1,7 +1,7 @@
 ﻿@inherits EditorBase
 @inject ITopicSearchService topicSearchService
 <label for="editor">Description</label>
-<CKEditor Id="editor" @bind-Value=@Model.Description />
+<CKEditor Id="editor" @bind-Value=@Model.NameableDetails.Description />
 
 @code {
     [Parameter]
@@ -11,8 +11,8 @@
     public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
     {
         if (Model is not null) {
-            if (await topicSearchService.DoesTopicExist(Model.Title)) {
-                validationMessageStore!.Add(() => Model.Title, "Title should be unique.");
+            if (await topicSearchService.DoesTopicExist(Model.NodeDetails.Title)) {
+                validationMessageStore!.Add(() => Model.NodeDetails.Title, "Title should be unique.");
                 invalidIds.Add("title");
             }
         }

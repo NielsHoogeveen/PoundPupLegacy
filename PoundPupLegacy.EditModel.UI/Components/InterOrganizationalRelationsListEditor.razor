@@ -18,30 +18,30 @@
             <div class="grid-header"></div>
             <div class="grid-header"></div>
             @foreach(var relation in Relations) {
-                var classString = relation.HasBeenDeleted ? "row deleted" : "row";
+                var classString = relation.RelationDetails.HasBeenDeleted ? "row deleted" : "row";
                 <div class="@classString first">
                     @relation.OrganizationFromName
                 </div>
                 <div class="@classString">
-                    @relation.InterOrganizationalRelationType.Name
+                    @relation.InterOrganizationalRelationDetails.InterOrganizationalRelationType.Name
                 </div>
                 <div class="@classString">
                     @relation.OrganizationToName
                 </div>
                 <div class="@classString">
-                    @relation.DateFrom
+                    @relation.RelationDetails.DateFrom
                 </div>
                 <div class="@classString">
-                    @relation.DateTo
+                    @relation.RelationDetails.DateTo
                 </div>
                 <div class="@classString">
-                    @if (!relation.HasBeenDeleted)
+                    @if (!relation.RelationDetails.HasBeenDeleted)
                     {
                         <button type="button" @onclick="() => Edit(relation)">edit</button>
                     }
                 </div>
                 <div class="@classString">
-                    @if (relation.HasBeenDeleted) {
+                    @if (relation.RelationDetails.HasBeenDeleted) {
                         <button type="button" @onclick="() => RestoreRelation(relation)">restore</button>
                     }
                     else {
@@ -82,13 +82,13 @@
     }
     private void RestoreRelation(InterOrganizationalRelation relation)
     {
-        relation.HasBeenDeleted = false;
+        relation.RelationDetails.HasBeenDeleted = false;
         StateHasChanged();
     }
 
     private void RemoveRelation(InterOrganizationalRelation relation)
     {
-        relation.HasBeenDeleted = true;
+        relation.RelationDetails.HasBeenDeleted = true;
         StateHasChanged();
     }
 }

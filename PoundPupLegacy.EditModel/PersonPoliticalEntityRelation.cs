@@ -5,55 +5,38 @@ public partial class ExistingPersonPoliticalEntityRelationJsonContext : JsonSeri
 
 public static class PersonPoliticalEntityRelationExtensions
 {
-    public static PersonPoliticalEntityRelation GetPersonPoliticalEntityRelation(this PersonListItem personListItem, PersonPoliticalEntityRelationTypeListItem relationType, int ownerId, int publishedId)
+    public static PersonPoliticalEntityRelation GetPersonPoliticalEntityRelation(this PersonListItem personListItem, PersonPoliticalEntityRelationTypeListItem relationType, int ownerId, int publisherId)
     {
         return new NewPersonPoliticalEntityRelationExistingPerson {
             Person = personListItem,
-            PersonPoliticalEntityRelationType = relationType,
-            Title = "",
-            DateFrom = null,
-            DateTo = null,
-            Description = "",
-            Files = new List<File>(),
-            HasBeenDeleted = false,
-            NodeTypeName = "party political entity relation",
-            OwnerId = ownerId,
-            PublisherId = publishedId,
-            PoliticalEntity = null,
-            ProofDocument = null,
-            Tags = new List<Tags>(),
-            TenantNodesToAdd = new List<TenantNode.NewTenantNodeForNewNode>(),
-            Tenants = new List<Tenant>(),
+            PersonPoliticalEntityRelationType = relationType,        
+            RelationDetails = RelationDetails.EmptyInstance,
+            NodeDetails = NodeDetails.EmptyInstance("person political entity relation", ownerId, publisherId),
+            NewTenantNodeDetails = TenantNodeDetails.NewTenantNodeDetails.EmptyInstance,
+            PoliticalEntity = null
         };
     }
-    public static PersonPoliticalEntityRelation GetPersonPoliticalEntityRelation(this PersonName personName, PersonPoliticalEntityRelationTypeListItem relationType, int ownerId, int publishedId)
+    public static PersonPoliticalEntityRelation GetPersonPoliticalEntityRelation(this PersonName personName, PersonPoliticalEntityRelationTypeListItem relationType, int ownerId, int publisherId)
     {
         return new NewPersonPoliticalEntityRelationNewPerson {
             Person = personName,
-            PersonPoliticalEntityRelationType = relationType,
-            Title = "",
-            DateFrom = null,
-            DateTo = null,
-            Description = "",
-            Files = new List<File>(),
-            HasBeenDeleted = false,
-            NodeTypeName = "party political entity relation",
-            OwnerId = ownerId,
-            PublisherId = publishedId,
-            PoliticalEntity = null,
-            ProofDocument = null,
-            Tags = new List<Tags>(),
-            TenantNodesToAdd = new List<TenantNode.NewTenantNodeForNewNode>(),
-            Tenants = new List<Tenant>(),
+            PersonPoliticalEntityRelationType = relationType,        
+            RelationDetails = RelationDetails.EmptyInstance,
+            NodeDetails = NodeDetails.EmptyInstance("person political entity relation", ownerId, publisherId),
+            NewTenantNodeDetails = TenantNodeDetails.NewTenantNodeDetails.EmptyInstance,
+            PoliticalEntity = null
         };
     }
-
 }
 
-
-public abstract record PersonPoliticalEntityRelation : RelationBase
+public abstract record PersonPoliticalEntityRelation : Relation
 {
     private PersonPoliticalEntityRelation() { }
+
+    public required RelationDetails RelationDetails { get; init; }
+    public required NodeDetails NodeDetails { get; init; }
+    public abstract TenantNodeDetails TenantNodeDetails { get; }
+    public required PersonPoliticalEntityRelationTypeListItem PersonPoliticalEntityRelationType { get; set; }
 
     [RequireNamedArgs]
     public abstract T Match<T>(
@@ -68,8 +51,6 @@ public abstract record PersonPoliticalEntityRelation : RelationBase
         Func<IncompletePersonPoliticalEntityRelation, T> incompletePersonPoliticalEntityRelation,
         Func<CompletedPersonPoliticalEntityRelation, T> completedPersonPoliticalEntityRelation
      );
-
-    public required PersonPoliticalEntityRelationTypeListItem PersonPoliticalEntityRelationType { get; set; }
 
     public abstract PersonItem? PersonItem { get; }
     public abstract PoliticalEntityListItem? PoliticalEntityItem { get; }
@@ -87,17 +68,8 @@ public abstract record PersonPoliticalEntityRelation : RelationBase
         }
         public sealed record NewPersonPoliticalEntityRelationNewPerson : IncompletePersonPoliticalEntityRelation, NewNode
         {
-            private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
-
-            public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
-                get => tenantNodesToAdd;
-                init {
-                    if (value is not null) {
-                        tenantNodesToAdd = value;
-                    }
-                }
-            }
-            public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
+            public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
+            public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
 
             public override T Match<T>(
                 Func<NewPersonPoliticalEntityRelationNewPerson, T> newPersonPoliticalEntityRelationNewPerson,
@@ -119,37 +91,17 @@ public abstract record PersonPoliticalEntityRelation : RelationBase
                 return new CompletedNewPersonPoliticalEntityRelationNewPerson {
                     Person = Person,
                     PoliticalEntity = politicalEntity,
-                    DateFrom = DateFrom,
-                    DateTo = DateTo,
+                    NewTenantNodeDetails  = NewTenantNodeDetails,
+                    NodeDetails = NodeDetails,
                     PersonPoliticalEntityRelationType = PersonPoliticalEntityRelationType,
-                    Description = Description,
-                    Files = Files,
-                    HasBeenDeleted = HasBeenDeleted,
-                    NodeTypeName = NodeTypeName,
-                    OwnerId = OwnerId,
-                    PublisherId = PublisherId,
-                    ProofDocument = ProofDocument,
-                    Tags = Tags,
-                    TenantNodesToAdd = TenantNodesToAdd,
-                    Tenants = Tenants,
-                    Title = Title
+                    RelationDetails = RelationDetails
                 };
             }
         }
         public sealed record NewPersonPoliticalEntityRelationExistingPerson : IncompletePersonPoliticalEntityRelation, NewNode
         {
-            private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
-
-            public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
-                get => tenantNodesToAdd;
-                init {
-                    if (value is not null) {
-                        tenantNodesToAdd = value;
-                    }
-                }
-            }
-
-            public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
+            public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
+            public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
 
             public override T Match<T>(
                 Func<NewPersonPoliticalEntityRelationNewPerson, T> newPersonPoliticalEntityRelationNewPerson,
@@ -171,20 +123,10 @@ public abstract record PersonPoliticalEntityRelation : RelationBase
                 return new CompletedNewPersonPoliticalEntityRelationExistingPerson {
                     Person = Person,
                     PoliticalEntity = politicalEntity,
-                    DateFrom = DateFrom,
-                    DateTo = DateTo,
+                    NewTenantNodeDetails = NewTenantNodeDetails,
+                    NodeDetails = NodeDetails,
                     PersonPoliticalEntityRelationType = PersonPoliticalEntityRelationType,
-                    Description = Description,
-                    Files = Files,
-                    HasBeenDeleted = HasBeenDeleted,
-                    NodeTypeName = NodeTypeName,
-                    OwnerId = OwnerId,
-                    PublisherId = PublisherId,
-                    ProofDocument = ProofDocument,
-                    Tags = Tags,
-                    TenantNodesToAdd = TenantNodesToAdd,
-                    Tenants = Tenants,
-                    Title = Title
+                    RelationDetails = RelationDetails
                 };
             }
         }
@@ -208,39 +150,9 @@ public abstract record PersonPoliticalEntityRelation : RelationBase
             private ResolvedPersonPoliticalEntityRelation() { }
             public sealed record ExistingPersonPoliticalEntityRelation : ResolvedPersonPoliticalEntityRelation, ExistingNode
             {
-                private List<TenantNode.NewTenantNodeForExistingNode> tenantNodesToAdd = new();
-
-                public List<TenantNode.NewTenantNodeForExistingNode> TenantNodesToAdd {
-                    get => tenantNodesToAdd;
-                    init {
-                        if (value is not null) {
-                            tenantNodesToAdd = value;
-                        }
-                    }
-                }
-                private List<TenantNode.ExistingTenantNode> tenantNodesToUpdate = new();
-
-                public List<TenantNode.ExistingTenantNode> TenantNodesToUpdate {
-                    get => tenantNodesToUpdate;
-                    init {
-                        if (value is not null) {
-                            tenantNodesToUpdate = value;
-                        }
-                    }
-                }
-
-                public override IEnumerable<TenantNode> TenantNodes => GetTenantNodes();
-
-                private IEnumerable<TenantNode> GetTenantNodes()
-                {
-                    foreach (var elem in tenantNodesToUpdate) {
-                        yield return elem;
-                    }
-                    foreach (var elem in tenantNodesToAdd) {
-                        yield return elem;
-                    }
-                }
-
+                public override TenantNodeDetails TenantNodeDetails => ExistingTenantNodeDetails;
+                public required TenantNodeDetails.ExistingTenantNodeDetails ExistingTenantNodeDetails { get; init; }
+                public required NodeIdentification NodeIdentification { get; init; }
                 public override T Match<T>(
                     Func<NewPersonPoliticalEntityRelationNewPerson, T> newPersonPoliticalEntityRelationNewPerson,
                     Func<NewPersonPoliticalEntityRelationExistingPerson, T> newPersonPoliticalEntityRelationExistingPerson,
@@ -252,7 +164,6 @@ public abstract record PersonPoliticalEntityRelation : RelationBase
                     return existingPersonPoliticalEntityRelation(this);
                 }
                 public int NodeId { get; init; }
-
                 public int UrlId { get; set; }
                 public required PersonListItem Person { get; set; }
                 public required PoliticalEntityListItem PoliticalEntity { get; set; }
@@ -263,18 +174,8 @@ public abstract record PersonPoliticalEntityRelation : RelationBase
             }
             public sealed record CompletedNewPersonPoliticalEntityRelationExistingPerson : ResolvedPersonPoliticalEntityRelation, NewNode
             {
-                private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
-
-                public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
-                    get => tenantNodesToAdd;
-                    init {
-                        if (value is not null) {
-                            tenantNodesToAdd = value;
-                        }
-                    }
-                }
-
-                public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
+                public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
+                public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
 
                 public override T Match<T>(
                     Func<NewPersonPoliticalEntityRelationNewPerson, T> newPersonPoliticalEntityRelationNewPerson,
@@ -289,7 +190,6 @@ public abstract record PersonPoliticalEntityRelation : RelationBase
 
                 public required PersonListItem Person { get; set; }
                 public required PoliticalEntityListItem PoliticalEntity { get; set; }
-
                 public override string PersonName => Person.Name;
                 public override string PoliticalEntityName => PoliticalEntity.Name;
                 public override PersonItem? PersonItem => Person;
@@ -298,18 +198,8 @@ public abstract record PersonPoliticalEntityRelation : RelationBase
         }
         public sealed record CompletedNewPersonPoliticalEntityRelationNewPerson : CompletedPersonPoliticalEntityRelation, NewNode
         {
-            private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
-
-            public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
-                get => tenantNodesToAdd;
-                init {
-                    if (value is not null) {
-                        tenantNodesToAdd = value;
-                    }
-                }
-            }
-
-            public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
+            public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
+            public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
 
             public override T Match<T>(
                 Func<NewPersonPoliticalEntityRelationNewPerson, T> newPersonPoliticalEntityRelationNewPerson,
@@ -321,17 +211,13 @@ public abstract record PersonPoliticalEntityRelation : RelationBase
             {
                 return completedNewPersonPoliticalEntityRelationNewPerson(this);
             }
-
             public required PersonName Person { get; set; }
             public required PoliticalEntityListItem PoliticalEntity { get; set; }
             public override string PersonName => Person.Name;
             public override string PoliticalEntityName => PoliticalEntity.Name;
             public override PersonItem? PersonItem => Person;
             public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
-
         }
     }
-
-
 }
 

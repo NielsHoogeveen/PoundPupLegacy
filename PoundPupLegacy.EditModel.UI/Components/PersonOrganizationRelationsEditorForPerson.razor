@@ -26,7 +26,7 @@
             <div class="grid-header"></div>
             <div class="grid-header"></div>
             @foreach(var relation in Relations) {
-                var classString = relation.HasBeenDeleted ? "row deleted" : "row";
+                var classString = relation.RelationDetails.HasBeenDeleted ? "row deleted" : "row";
                 <div class="@classString first">
                     @relation.PersonName
                 </div>
@@ -37,18 +37,18 @@
                     @relation.OrganizationName
                 </div>
                 <div class="@classString">
-                    @relation.DateFrom
+                    @relation.RelationDetails.DateFrom
                 </div>
                 <div class="@classString">
-                    @relation.DateTo
+                    @relation.RelationDetails.DateTo
                 </div>
                 <div class="@classString">
-                    @if (!relation.HasBeenDeleted) {
+                    @if (!relation.RelationDetails.HasBeenDeleted) {
                         <button type="button" @onclick="() => EditRelation(relation)">edit</button>
                     }
                 </div>
                 <div class="@classString">
-                    @if (relation.HasBeenDeleted) {
+                    @if (relation.RelationDetails.HasBeenDeleted) {
                         <button type="button" @onclick="() => RestoreRelation(relation)">restore</button>
                     }
                     else {
@@ -87,13 +87,13 @@
     }
     private void RestoreRelation(PersonOrganizationRelationForPerson relation)
     {
-        relation.HasBeenDeleted = false;
+        relation.RelationDetails.HasBeenDeleted = false;
         StateHasChanged();
     }
 
     private void RemoveRelation(PersonOrganizationRelationForPerson relation)
     {
-        relation.HasBeenDeleted = true;
+        relation.RelationDetails.HasBeenDeleted = true;
         StateHasChanged();
     }
 

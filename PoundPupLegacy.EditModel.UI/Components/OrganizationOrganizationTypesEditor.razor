@@ -1,7 +1,7 @@
 ﻿<div class="organization-organization-types-editor">
     <h4>Organization types</h4>
     <div class="organization-organization-types">
-        @foreach(var organizationOrganizationType in Model.OrganizationOrganizationTypes) 
+        @foreach(var organizationOrganizationType in Model.OrganizationDetails.OrganizationOrganizationTypes) 
         {
             <div class="organization-organization-type">
                 <span>@organizationOrganizationType.Name</span>
@@ -30,13 +30,13 @@
     public Organization Model { get; set; } = default!;
 
     private int? NodeId => Model switch {
-        ExistingNode n => n.NodeId,
+        ExistingNode n => n.NodeIdentification.NodeId,
         _ => null
     };
 
     private OrganizationType? SelectedOrganizationType;
 
-    private List<OrganizationType> OrganizationTypes => Model.OrganizationTypes.Where(x => !Model.OrganizationOrganizationTypes.Select(x => x.OrganizationTypeId).Contains(x.Id)).ToList();
+    private List<OrganizationType> OrganizationTypes => Model.OrganizationDetails.OrganizationTypes.Where(x => !Model.OrganizationDetails.OrganizationOrganizationTypes.Select(x => x.OrganizationTypeId).Contains(x.Id)).ToList();
 
     protected override void OnInitialized()
     {
@@ -57,7 +57,7 @@
     {
         if (SelectedOrganizationType != null)
         {
-            var item = Model.OrganizationOrganizationTypes.FirstOrDefault(x =>x.OrganizationTypeId == SelectedOrganizationType.Id);
+            var item = Model.OrganizationDetails.OrganizationOrganizationTypes.FirstOrDefault(x =>x.OrganizationTypeId == SelectedOrganizationType.Id);
             if (item is not null)
             {
                 Debug.Assert(item.HasBeenDeleted);
@@ -65,7 +65,7 @@
             }
             else
             {
-                Model.OrganizationOrganizationTypes.Add(new OrganizationOrganizationType()
+                Model.OrganizationDetails.OrganizationOrganizationTypes.Add(new OrganizationOrganizationType()
                     {
                         OrganizationId = NodeId,
                         OrganizationTypeId = SelectedOrganizationType.Id,
@@ -86,7 +86,7 @@
         }
         else
         {
-            Model.OrganizationOrganizationTypes.Remove(organizationOrganizationType);
+            Model.OrganizationDetails.OrganizationOrganizationTypes.Remove(organizationOrganizationType);
         }
         SelectedOrganizationType = OrganizationTypes.First();
         StateHasChanged();

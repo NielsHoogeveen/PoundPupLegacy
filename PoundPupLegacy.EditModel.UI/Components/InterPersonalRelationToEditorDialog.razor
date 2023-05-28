@@ -41,20 +41,20 @@
     }
     <SearchItemEditor T="DocumentListItem"
         IsMandatory="false"
-        @bind-Value="RelationContext.RelationToEdit.ProofDocument"
+        @bind-Value="RelationContext.RelationToEdit.RelationDetails.ProofDocument"
         EnableEdit="true"
         Label="Proof document" />
     <div class="form-group">
         <label>Description</label>
-        <CKEditor Id="relation-editor" @bind-Value="RelationContext.RelationToEdit.Description" />
+        <CKEditor Id="relation-editor" @bind-Value="RelationContext.RelationToEdit.RelationDetails.Description" />
     </div>
     <div class="form-group">
         <label>Start date</label>
-        <InputDate @bind-Value="RelationContext.RelationToEdit.DateFrom" />
+        <InputDate @bind-Value="RelationContext.RelationToEdit.RelationDetails.DateFrom" />
     </div>
     <div class="form-group">
         <label>End date</label>
-        <InputDate @bind-Value="RelationContext.RelationToEdit.DateTo" />
+        <InputDate @bind-Value="RelationContext.RelationToEdit.RelationDetails.DateTo" />
     </div>
 }
 @code {

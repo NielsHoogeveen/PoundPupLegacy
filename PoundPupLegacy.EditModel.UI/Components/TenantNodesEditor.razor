@@ -5,7 +5,7 @@
 {
     <div class="tenant-node-editor" >
         <h4>Publications</h4>
-        @if(Node.Tenants.Any()){
+        @if(Node.NodeDetails.Tenants.Any()){
             <div class="tenant-nodes">
                 <div class="grid-header"></div>
                 <div class="grid-header">
@@ -20,7 +20,7 @@
                 <div class="grid-header">
                     Subgroup
                 </div>
-                @foreach(var tenant in Node.Tenants) {
+                @foreach(var tenant in Node.NodeDetails.Tenants) {
                     @if(tenant.TenantNode is not null && !tenant.TenantNode.HasBeenDeleted)
                     {
                         if (tenant.TenantNode.CanBeUnchecked)
@@ -92,7 +92,7 @@
     public Node? Node { get; set; }
 
     private int? NodeId => Node switch {
-        ExistingNode n => n.NodeId,
+        ExistingNode n => n.NodeIdentification.NodeId,
         _ => null
     };
 
@@ -103,18 +103,18 @@
         {
             switch (Node) {
                 case NewNode n:
-                    foreach (var tenant in n.Tenants) {
-                        var tenantNode = n.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);
+                    foreach (var tenant in n.NodeDetails.Tenants) {
+                        var tenantNode = n.TenantNodeDetails.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);
                         tenant.TenantNode = tenantNode;
                     }
                     break;
                 case ExistingNode e:
-                    var t = Node.Tenants.First(x => x.Id == TenantId);
+                    var t = Node.NodeDetails.Tenants.First(x => x.Id == TenantId);
                     t.TenantNode = new TenantNode.NewTenantNodeForExistingNode {
                             TenantId = TenantId,
                             HasBeenDeleted = false,
-                            NodeId = e.NodeId,
-                            UrlId = e.NodeId,
+                            NodeId = e.NodeIdentification.NodeId,
+                            UrlId = e.NodeIdentification.NodeId,
                             PublicationStatusId = t.PublicationStatusIdDefault,
                             UrlPath = null,
                             SubgroupId = null,
@@ -130,7 +130,7 @@
     {
         if(Node is not null)
         {
-            var tenant = Node.Tenants.First(x => x.Id == tenantId);
+            var tenant = Node.NodeDetails.Tenants.First(x => x.Id == tenantId);
             if(tenant.TenantNode is null) {
                 throw new NullReferenceException("Tenant Node should not be null");
             }
@@ -147,35 +147,35 @@
     private void Check(int tenantId)
     {
         if (Node is not null) {
-            var tenant = Node.Tenants.First(x => x.Id == tenantId);
-            if (tenant.TenantNode is TenantNode.ExistingTenantNode existingTenantNode) {
-                tenant.TenantNode.HasBeenDeleted = false;
-            }
-            else if (tenant.TenantNode is TenantNode.NewTenantNodeForExistingNode newTenantNodeForExistingNode) {
-                tenant.TenantNode = new TenantNode.NewTenantNodeForExistingNode
-                {
-                    TenantId = tenantId,
-                    HasBeenDeleted = false,
-                    PublicationStatusId = tenant.PublicationStatusIdDefault,
-                    NodeId = newTenantNodeForExistingNode.NodeId,
-                    UrlId = newTenantNodeForExistingNode.NodeId,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    CanBeUnchecked = true,
-                    HasBeenStored = false
-                };
-            }
-            else {
-                tenant.TenantNode = new TenantNode.NewTenantNodeForNewNode
-                {
-                    TenantId = tenantId,
-                    HasBeenDeleted = false,
-                    PublicationStatusId = tenant.PublicationStatusIdDefault,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    CanBeUnchecked = true,
-                    HasBeenStored = false
-                };
+            var tenant = Node.NodeDetails.Tenants.First(x => x.Id == tenantId);
+            switch (tenant.TenantNode) {
+                case TenantNode.ExistingTenantNode existingTenantNode:
+                    tenant.TenantNode.HasBeenDeleted = false;
+                    break;
+                case TenantNode.NewTenantNodeForExistingNode newTenantNodeForExistingNode:
+                    tenant.TenantNode = new TenantNode.NewTenantNodeForExistingNode {
+                        TenantId = tenantId,
+                        HasBeenDeleted = false,
+                        PublicationStatusId = tenant.PublicationStatusIdDefault,
+                        NodeId = newTenantNodeForExistingNode.NodeId,
+                        UrlId = newTenantNodeForExistingNode.NodeId,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        CanBeUnchecked = true,
+                        HasBeenStored = false
+                    };
+                    break;
+                default:
+                    tenant.TenantNode = new TenantNode.NewTenantNodeForNewNode {
+                        TenantId = tenantId,
+                        HasBeenDeleted = false,
+                        PublicationStatusId = tenant.PublicationStatusIdDefault,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        CanBeUnchecked = true,
+                        HasBeenStored = false
+                    };
+                    break;
             }
             StateHasChanged();
         }
@@ -185,7 +185,7 @@
     {
         if (Node is not null)
         {
-            var tenant = Node.Tenants.First(x => x.Id == tenantId);
+            var tenant = Node.NodeDetails.Tenants.First(x => x.Id == tenantId);
             if(tenant.TenantNode is not null) {
                 tenant.TenantNode.SubgroupId = subgroupId;
                 if (subgroupId.HasValue) {
@@ -203,7 +203,7 @@
     private void SetPublicationStatus(int tenantId, int publicationStatusId)
     {
         if (Node is not null) {
-            var tenant = Node.Tenants.First(x => x.Id == tenantId);
+            var tenant = Node.NodeDetails.Tenants.First(x => x.Id == tenantId);
             if (tenant.TenantNode is not null) {
                 tenant.TenantNode.PublicationStatusId = publicationStatusId;
             }

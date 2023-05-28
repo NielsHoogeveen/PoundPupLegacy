@@ -1,20 +1,22 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-public interface Relation : Node
+[JsonSerializable(typeof(RelationDetails))]
+public partial class RelationDetailsJsonContext : JsonSerializerContext { }
+
+public interface Relation: Node
 {
-    bool HasBeenDeleted { get; set; }
-
-    DateTime? DateFrom { get; set; }
-    DateTime? DateTo { get; set; }
-
-    DateTimeRange? DateRange { get; set; }
-    DocumentListItem? ProofDocument { get; set; }
-    string Description { get; set; }
-
+    RelationDetails RelationDetails { get; }
 }
 
-public abstract record RelationBase : NodeBase, Relation
+public sealed record RelationDetails
 {
+    public static RelationDetails EmptyInstance => new RelationDetails {
+        DateFrom = null,
+        DateTo = null,
+        Description = "",
+        HasBeenDeleted = false,
+        ProofDocument = null,
+    };
     public bool HasBeenDeleted { get; set; }
 
     public required DateTime? DateFrom { get; set; }

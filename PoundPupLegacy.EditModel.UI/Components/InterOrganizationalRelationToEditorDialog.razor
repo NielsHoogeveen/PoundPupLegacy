@@ -43,33 +43,33 @@
         <SearchItemEditor 
             T="GeographicalEntityListItem"
             IsMandatory="false"
-            @bind-Value="RelationContext.RelationToEdit.GeographicalEntity"
+            @bind-Value="RelationContext.RelationToEdit.InterOrganizationalRelationDetails.GeographicalEntity"
             EnableEdit="true"
             Label="Geographical entity" />
         <SearchItemEditor T="DocumentListItem"
             IsMandatory="false"
-            @bind-Value="RelationContext.RelationToEdit.ProofDocument"
+            @bind-Value="RelationContext.RelationToEdit.RelationDetails.ProofDocument"
             EnableEdit="true"
             Label="Proof document" />
         <div class="form-group">
             <label for="money-involved">Money involved</label>
-            <InputNumber id="money-involved" @bind-Value="RelationContext.RelationToEdit.MoneyInvolved" />
+            <InputNumber id="money-involved" @bind-Value="RelationContext.RelationToEdit.InterOrganizationalRelationDetails.MoneyInvolved" />
         </div>
         <div class="form-group">
             <label for="number-of-children-involved">Number of children involved</label>
-            <InputNumber id="number-of-children-involved" @bind-Value="RelationContext.RelationToEdit.NumberOfChildrenInvolved" />
+            <InputNumber id="number-of-children-involved" @bind-Value="RelationContext.RelationToEdit.InterOrganizationalRelationDetails.NumberOfChildrenInvolved" />
         </div>
         <div class="form-group">
             <label>Description</label>
-            <CKEditor Id="relation-editor" @bind-Value="RelationContext.RelationToEdit.Description" />
+            <CKEditor Id="relation-editor" @bind-Value="RelationContext.RelationToEdit.RelationDetails.Description" />
         </div>
         <div class="form-group">
             <label>Start date</label>
-            <InputDate @bind-Value="RelationContext.RelationToEdit.DateFrom" />
+            <InputDate @bind-Value="RelationContext.RelationToEdit.RelationDetails.DateFrom" />
         </div>
         <div class="form-group">
             <label>End date</label>
-            <InputDate @bind-Value="RelationContext.RelationToEdit.DateTo" />
+            <InputDate @bind-Value="RelationContext.RelationToEdit.RelationDetails.DateTo" />
         </div>
     </div>
 }
@@ -103,7 +103,7 @@
         editContext = new EditContext(RelationContext.RelationToEdit);
         validationMessageStore = new ValidationMessageStore(editContext);
 
-        RelationType = RelationTypes.First(x => x.Id == RelationContext.RelationToEdit.InterOrganizationalRelationType.Id);
+        RelationType = RelationTypes.First(x => x.Id == RelationContext.RelationToEdit.InterOrganizationalRelationDetails.InterOrganizationalRelationType.Id);
     }
 
     private void OnChangeRelationType(ChangeEventArgs args)

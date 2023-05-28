@@ -72,7 +72,7 @@ internal abstract class NodeEditServiceBase<TViewModelEntity, TResolvedViewModel
         return await WithTransactedConnection(async (connection) => {
             await using var updater = await updaterFactory.CreateAsync(connection);
             await updater.UpdateAsync(Map(node));
-            return node.UrlId;
+            return node.NodeIdentification.UrlId;
         });
     }
 }

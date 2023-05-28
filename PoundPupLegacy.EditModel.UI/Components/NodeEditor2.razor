@@ -10,8 +10,8 @@
         <DataAnnotationsValidator />
         <div class="form-group">
             <label for="title">Title</label>
-            <InputText @bind-Value="Model.Title" id="title" class="title-editor" type="text" @oninput="OnTitleChange" />
-            <ValidationMessage For="@(() => Model.Title)" />
+            <InputText @bind-Value="Model.NodeDetails.Title" id="title" class="title-editor" type="text" @oninput="OnTitleChange" />
+            <ValidationMessage For="@(() => Model.NodeDetails.Title)" />
         </div>
         @ChildContent
         @if (Model is Nameable nameable) {
@@ -53,9 +53,9 @@
         @if (Model is WrongfulRemovalCase wrongfulRemovalCase) {
             <WrongfulRemovalCaseEditor Model="wrongfulRemovalCase" @ref=wrongfulRemovalCaseEditor/>
         }
-        <TagsEditor NodeTypesTags="Model.Tags" NodeId="NodeId" />
+        <TagsEditor NodeTypesTags="Model.NodeDetails.Tags" NodeId="NodeId" />
         <TenantNodesEditor Node="@Model" />
-        <AttachmentEditor Files="Model.Files" NodeId="NodeId" />
+        <AttachmentEditor Files="Model.NodeDetails.Files" NodeId="NodeId" />
         @if (Model is Locatable locatable) {
             <LocationsEditor Locatable="locatable" />
         }
@@ -81,7 +81,7 @@
 
     private int? NodeId => Model switch
     {
-        ExistingNode n => n.NodeId,
+        ExistingNode n => n.NodeIdentification.NodeId,
         _ => null
     };
 
@@ -139,8 +139,8 @@
     public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
     {
         await Task.CompletedTask;
-        if (Model.Title is null || Model.Title == string.Empty) {
-            validationMessageStore!.Add(editContext!.Field(nameof(Model.Title)), "Title is required.");
+        if (Model.NodeDetails.Title is null || Model.NodeDetails.Title == string.Empty) {
+            validationMessageStore!.Add(editContext!.Field(nameof(Model.NodeDetails.Title)), "Title is required.");
             invalidIds.Add("title");
         }
 

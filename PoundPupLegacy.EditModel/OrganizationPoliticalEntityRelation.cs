@@ -10,20 +10,10 @@ public static class OrganizationPoliticalEntityRelationExtension
         return new NewOrganizationPoliticalEntityRelationExistingOrganization {
             Organization = organizationListItem,
             OrganizationPoliticalEntityRelationType = relationType,
-            Title = "",
-            DateFrom = null,
-            DateTo = null,
-            Description = "",
-            Files = new List<File>(),
-            HasBeenDeleted = false,
-            NodeTypeName = "party political entity relation",
-            OwnerId = ownerId,
-            PublisherId = publishedId,
             PoliticalEntity = null,
-            ProofDocument = null,
-            Tags = new List<Tags>(),
-            TenantNodesToAdd = new List<TenantNode.NewTenantNodeForNewNode>(),
-            Tenants = new List<Tenant>(),
+            NewTenantNodeDetails = TenantNodeDetails.NewTenantNodeDetails.EmptyInstance,
+            NodeDetails = NodeDetails.EmptyInstance("organization political entity relation", ownerId, publishedId),
+            RelationDetails = RelationDetails.EmptyInstance,
         };
     }
     public static NewOrganizationPoliticalEntityRelationNewOrganization GetNewPoliticalEntityRelationOrganization(this OrganizationName organizationName, OrganizationPoliticalEntityRelationTypeListItem relationType, int ownerId, int publishedId)
@@ -31,24 +21,14 @@ public static class OrganizationPoliticalEntityRelationExtension
         return new NewOrganizationPoliticalEntityRelationNewOrganization {
             Organization = organizationName,
             OrganizationPoliticalEntityRelationType = relationType,
-            Title = "",
-            DateFrom = null,
-            DateTo = null,
-            Description = "",
-            Files = new List<File>(),
-            HasBeenDeleted = false,
-            NodeTypeName = "party political entity relation",
-            OwnerId = ownerId,
-            PublisherId = publishedId,
             PoliticalEntity = null,
-            ProofDocument = null,
-            Tags = new List<Tags>(),
-            TenantNodesToAdd = new List<TenantNode.NewTenantNodeForNewNode>(),
-            Tenants = new List<Tenant>(),
+            NewTenantNodeDetails = TenantNodeDetails.NewTenantNodeDetails.EmptyInstance,
+            NodeDetails = NodeDetails.EmptyInstance("organization political entity relation", ownerId, publishedId),
+            RelationDetails = RelationDetails.EmptyInstance,
         };
     }
 }
-    public abstract record OrganizationPoliticalEntityRelation : RelationBase
+public abstract record OrganizationPoliticalEntityRelation : Relation
 {
     private OrganizationPoliticalEntityRelation() { }
 
@@ -66,6 +46,9 @@ public static class OrganizationPoliticalEntityRelationExtension
         Func<IncompleteOrganizationPoliticalEntityRelation, T> incompleteOrganizationPoliticalEntityRelation,
         Func<CompletedOrganizationPoliticalEntityRelation, T> completedOrganizationPoliticalEntityRelation
      );
+    public required RelationDetails RelationDetails { get; init; }
+    public required NodeDetails NodeDetails { get; init; }
+    public abstract TenantNodeDetails TenantNodeDetails { get; }
     public required OrganizationPoliticalEntityRelationTypeListItem OrganizationPoliticalEntityRelationType { get; set; }
 
     public abstract OrganizationItem? OrganizationItem { get; }
@@ -85,19 +68,8 @@ public static class OrganizationPoliticalEntityRelationExtension
         public abstract CompletedOrganizationPoliticalEntityRelation GetCompletedRelation(PoliticalEntityListItem politicalEntity);
         public sealed record NewOrganizationPoliticalEntityRelationNewOrganization : IncompleteOrganizationPoliticalEntityRelation, NewNode
         {
-            private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
-
-            public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
-                get => tenantNodesToAdd;
-                init {
-                    if (value is not null) {
-                        tenantNodesToAdd = value;
-                    }
-                }
-            }
-
-            public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
-
+            public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
+            public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
 
             public override T Match<T>(
                 Func<NewOrganizationPoliticalEntityRelationNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
@@ -119,38 +91,17 @@ public static class OrganizationPoliticalEntityRelationExtension
                 return new CompletedNewOrganizationPoliticalEntityRelationNewOrganization {
                     Organization = Organization,
                     PoliticalEntity = politicalEntity,
-                    DateFrom = DateFrom,
-                    DateTo = DateTo,
+                    NewTenantNodeDetails = NewTenantNodeDetails,
+                    NodeDetails = NodeDetails,
                     OrganizationPoliticalEntityRelationType = OrganizationPoliticalEntityRelationType,
-                    Description = Description,
-                    Files = Files,
-                    HasBeenDeleted = HasBeenDeleted,
-                    NodeTypeName = NodeTypeName,
-                    OwnerId = OwnerId,
-                    PublisherId = PublisherId,
-                    ProofDocument = ProofDocument,
-                    Tags = Tags,
-                    TenantNodesToAdd = TenantNodesToAdd,
-                    Tenants = Tenants,
-                    Title = Title
+                    RelationDetails = RelationDetails
                 };
             }
         }
         public sealed record NewOrganizationPoliticalEntityRelationExistingOrganization : IncompleteOrganizationPoliticalEntityRelation, NewNode
         {
-            private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
-
-            public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
-                get => tenantNodesToAdd;
-                init {
-                    if (value is not null) {
-                        tenantNodesToAdd = value;
-                    }
-                }
-            }
-
-            public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
-
+            public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
+            public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
 
             public override T Match<T>(
                 Func<NewOrganizationPoliticalEntityRelationNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
@@ -172,20 +123,10 @@ public static class OrganizationPoliticalEntityRelationExtension
                 return new CompletedNewOrganizationPoliticalEntityRelationExistingOrganization {
                     Organization = Organization,
                     PoliticalEntity = politicalEntity,
-                    DateFrom = DateFrom,
-                    DateTo = DateTo,
+                    NewTenantNodeDetails = NewTenantNodeDetails,
+                    NodeDetails = NodeDetails,
                     OrganizationPoliticalEntityRelationType = OrganizationPoliticalEntityRelationType,
-                    Description = Description,
-                    Files = Files,
-                    HasBeenDeleted = HasBeenDeleted,
-                    NodeTypeName = NodeTypeName,
-                    OwnerId = OwnerId,
-                    PublisherId = PublisherId,
-                    ProofDocument = ProofDocument,
-                    Tags = Tags,
-                    TenantNodesToAdd = TenantNodesToAdd,
-                    Tenants = Tenants,
-                    Title = Title
+                    RelationDetails = RelationDetails
                 };
             }
         }
@@ -202,13 +143,17 @@ public static class OrganizationPoliticalEntityRelationExtension
         }
 
         public abstract string OrganizationName { get; }
-
+         
         public abstract string PoliticalEntityName { get; }
         public abstract record ResolvedOrganizationPoliticalEntityRelation : CompletedOrganizationPoliticalEntityRelation
         {
             private ResolvedOrganizationPoliticalEntityRelation() { }
             public sealed record ExistingOrganizationPoliticalEntityRelation : ResolvedOrganizationPoliticalEntityRelation, ExistingNode
             {
+                public override TenantNodeDetails TenantNodeDetails => ExistingTenantNodeDetails;
+                public required TenantNodeDetails.ExistingTenantNodeDetails ExistingTenantNodeDetails { get; init; }
+                public required NodeIdentification NodeIdentification { get; init; }
+
                 public override T Match<T>(
                     Func<NewOrganizationPoliticalEntityRelationNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
                     Func<NewOrganizationPoliticalEntityRelationExistingOrganization, T> newOrganizationPoliticalEntityRelationExistingOrganization,
@@ -219,41 +164,6 @@ public static class OrganizationPoliticalEntityRelationExtension
                 {
                     return existingOrganizationPoliticalEntityRelation(this);
                 }
-                public int NodeId { get; init; }
-
-                public int UrlId { get; set; }
-                private List<TenantNode.NewTenantNodeForExistingNode> tenantNodesToAdd = new();
-
-                public List<TenantNode.NewTenantNodeForExistingNode> TenantNodesToAdd {
-                    get => tenantNodesToAdd;
-                    init {
-                        if (value is not null) {
-                            tenantNodesToAdd = value;
-                        }
-                    }
-                }
-                private List<TenantNode.ExistingTenantNode> tenantNodesToUpdate = new();
-
-                public List<TenantNode.ExistingTenantNode> TenantNodesToUpdate {
-                    get => tenantNodesToUpdate;
-                    init {
-                        if (value is not null) {
-                            tenantNodesToUpdate = value;
-                        }
-                    }
-                }
-
-                public override IEnumerable<TenantNode> TenantNodes => GetTenantNodes();
-
-                private IEnumerable<TenantNode> GetTenantNodes()
-                {
-                    foreach (var elem in tenantNodesToUpdate) {
-                        yield return elem;
-                    }
-                    foreach (var elem in tenantNodesToAdd) {
-                        yield return elem;
-                    }
-                }
                 public required OrganizationListItem Organization { get; set; }
                 public required PoliticalEntityListItem PoliticalEntity { get; set; }
                 public override string OrganizationName => Organization.Name;
@@ -263,19 +173,8 @@ public static class OrganizationPoliticalEntityRelationExtension
             }
             public sealed record CompletedNewOrganizationPoliticalEntityRelationExistingOrganization : ResolvedOrganizationPoliticalEntityRelation, NewNode
             {
-                private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
-
-                public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
-                    get => tenantNodesToAdd;
-                    init {
-                        if (value is not null) {
-                            tenantNodesToAdd = value;
-                        }
-                    }
-                }
-
-                public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
-
+                public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
+                public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
 
                 public override T Match<T>(
                     Func<NewOrganizationPoliticalEntityRelationNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
@@ -299,19 +198,8 @@ public static class OrganizationPoliticalEntityRelationExtension
         }
         public sealed record CompletedNewOrganizationPoliticalEntityRelationNewOrganization : CompletedOrganizationPoliticalEntityRelation, NewNode
         {
-            private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
-
-            public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
-                get => tenantNodesToAdd;
-                init {
-                    if (value is not null) {
-                        tenantNodesToAdd = value;
-                    }
-                }
-            }
-
-            public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
-
+            public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
+            public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
 
             public override T Match<T>(
                 Func<NewOrganizationPoliticalEntityRelationNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
@@ -333,7 +221,5 @@ public static class OrganizationPoliticalEntityRelationExtension
 
         }
     }
-
-
 }
 

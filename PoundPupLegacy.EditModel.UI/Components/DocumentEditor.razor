@@ -3,7 +3,7 @@
 <div class="form-group">
     <label>Document type</label>
     <select @onchange="HandleChange">
-        @foreach(var documentType in Model.DocumentTypes) {
+        @foreach(var documentType in Model.DocumentDetails.DocumentTypes) {
             @if (documentType.IsSelected) {
                 <option selected value="@documentType.Id">@documentType.Name</option>
             }
@@ -15,12 +15,12 @@
 </div>
 <div class="form-group">
     <label>Source</label>
-    <InputText type="text" @bind-Value="Model.SourceUrl" />
+    <InputText type="text" @bind-Value="Model.DocumentDetails.SourceUrl" />
 </div>
 
 <div class="form-group">
     <label>Publication date</label>
-    <FuzzyDateEditor @bind-Value="Model.Published" />
+    <FuzzyDateEditor @bind-Value="Model.DocumentDetails.Published" />
 </div>
 @code {
     [Parameter]
@@ -36,11 +36,11 @@
         var documentTypeIdString = e.Value?.ToString();
         if (int.TryParse(documentTypeIdString, out int documentTypeId))
         {
-            var documentType = Model.DocumentTypes.FirstOrDefault(x => x.Id == documentTypeId);
+            var documentType = Model.DocumentDetails.DocumentTypes.FirstOrDefault(x => x.Id == documentTypeId);
             if (documentType is not null)
             {
                 documentType.IsSelected = true;
-                Model.DocumentTypeId = documentTypeId;
+                Model.DocumentDetails.DocumentTypeId = documentTypeId;
             }
         }
     }

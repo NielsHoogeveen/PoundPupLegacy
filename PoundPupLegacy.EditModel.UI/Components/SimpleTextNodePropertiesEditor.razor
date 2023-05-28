@@ -3,8 +3,8 @@
 {
     <div class="form-group">
         <label for="editor">Text</label>
-        <ValidationMessage For="@(() => Model.Text)" />
-        <CKEditor Id="editor" @bind-Value=@Model.Text />
+        <ValidationMessage For="@(() => Model.SimpleTextNodeDetails.Text)" />
+        <CKEditor Id="editor" @bind-Value=@Model.SimpleTextNodeDetails.Text />
     </div>
 }
 @code {
@@ -17,9 +17,9 @@
         await Task.CompletedTask;
         if (Model is not null)
         {
-            if(Model.Text is null || Model.Text == string.Empty)
+            if(Model.SimpleTextNodeDetails.Text is null || Model.SimpleTextNodeDetails.Text == string.Empty)
             {
-                validationMessageStore.Add(() => Model.Text, "Text is required");
+                validationMessageStore.Add(() => Model.SimpleTextNodeDetails.Text, "Text is required");
                 invalidIds.Add("editor");
             };
         }

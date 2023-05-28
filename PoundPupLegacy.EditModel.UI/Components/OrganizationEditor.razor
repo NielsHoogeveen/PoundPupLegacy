@@ -2,34 +2,34 @@
 <div class="organization-fields">
     <div class="form-group">
         <label>Website</label>
-        <InputText type="text" @bind-Value="@Model.WebSiteUrl" />
+        <InputText type="text" @bind-Value="@Model.OrganizationDetails.WebSiteUrl" />
     </div>
     <div class="form-group">
         <label>Email</label>
-        <InputText type="text" @bind-Value="@Model.EmailAddress" />
+        <InputText type="text" @bind-Value="@Model.OrganizationDetails.EmailAddress" />
     </div>
     <div class="form-group">
         <label>Established</label>
-        <FuzzyDateEditor @bind-Value=" Model.Establishment" />
+        <FuzzyDateEditor @bind-Value=" Model.OrganizationDetails.Establishment" />
     </div>
     <div class="form-group">
         <label>Terminated</label>
-        <FuzzyDateEditor @bind-Value="Model.Termination" />
+        <FuzzyDateEditor @bind-Value="Model.OrganizationDetails.Termination" />
     </div>
 </div>
 <OrganizationOrganizationTypesEditor Model="Model" />
 <InterOrganizationalRelationsEditor 
     RelationsFrom="Model.InterOrganizationalRelationsFrom.ToList()" 
     RelationsTo="Model.InterOrganizationalRelationsTo.ToList()" 
-    RelationTypes="Model.InterOrganizationalRelationTypes" 
-    OrganizationItem="Model.OrganizationItem"/>
+    RelationTypes="Model.OrganizationDetails.InterOrganizationalRelationTypes" 
+    OrganizationItem="Model.OrganizationDetails.OrganizationItem"/>
 <OrganizationPoliticalEntityRelationsEditor 
     PartyTypeName="organization"
-    Organization="Model.OrganizationItem"
+    Organization="Model.OrganizationDetails.OrganizationItem"
     Relations="Model.OrganizationPoliticalEntityRelations.ToList()"
     RelationTypes="Model.OrganizationPoliticalEntityRelationTypes" />
 <PersonOrganizationRelationsEditorForOrganization 
-    Organization="Model.OrganizationItem"
+    Organization="Model.OrganizationDetails.OrganizationItem"
     Relations="Model.PersonOrganizationRelations.ToList()"
     RelationTypes="Model.PersonOrganizationRelationTypes" />
 
@@ -39,7 +39,7 @@
     public Organization Model { get; set; } = default!;
 
     private int? NodeId => Model switch {
-        ExistingNode n => n.NodeId,
+        ExistingNode n => n.NodeIdentification.NodeId,
         _ => null
     };
 

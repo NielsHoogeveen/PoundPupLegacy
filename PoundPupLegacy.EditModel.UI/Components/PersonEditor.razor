@@ -20,7 +20,7 @@
     public Person Model { get; set; } = default!;
 
     private int? NodeId => Model switch {
-        ExistingNode n => n.NodeId,
+        ExistingNode n => n.NodeIdentification.NodeId,
         _ => null
     };
 
@@ -42,11 +42,11 @@
 
     private PersonItem? Person => Model switch {
         ExistingNode n => new PersonListItem {
-                Id = n.NodeId,
-                Name = Model.Title
+                Id = n.NodeIdentification.NodeId,
+                Name = Model.NodeDetails.Title
             },
         NewNode nn => new PersonName {
-            Name = Model.Title
+            Name = Model.NodeDetails.Title
         },
         _ => null
     };

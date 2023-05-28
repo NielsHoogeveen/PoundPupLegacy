@@ -1,67 +1,52 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-
-public interface Document : SimpleTextNode, ResolvedNode
-{
-    string? SourceUrl { get; set; }
-
-    int DocumentTypeId { get; set; }
-
-    DateTime? PublicationDateFrom { get; set; }
-
-    DateTime? PublicationDateTo { get; set; }
-
-    public FuzzyDate? Published { get; set; }
-
-    DocumentType[] DocumentTypes { get; }
-}
-
-
-[JsonSerializable(typeof(ExistingDocument))]
+[JsonSerializable(typeof(Document.ExistingDocument))]
 public partial class ExistingDocumentJsonContext : JsonSerializerContext { }
+[JsonSerializable(typeof(Document.NewDocument))]
+public partial class NewDocumentJsonContext : JsonSerializerContext { }
+[JsonSerializable(typeof(DocumentDetails))]
+public partial class DocumentDetailsJsonContext : JsonSerializerContext { }
 
-public sealed record ExistingDocument : ExistingSimpleTextNodeBase, Document 
+public abstract record Document : SimpleTextNode, ResolvedNode
 {
-    public string? SourceUrl { get; set; }
+    private Document() { }
+    public abstract T Match<T>(Func<ExistingDocument, T> existingItem, Func<NewDocument, T> newItem);
+    public abstract void Match(Action<ExistingDocument> existingItem, Action<NewDocument> newItem);
+    public required SimpleTextNodeDetails SimpleTextNodeDetails { get; init; }
+    public required NodeDetails NodeDetails { get; init; }
+    public required DocumentDetails DocumentDetails { get; init; }
+    public abstract TenantNodeDetails TenantNodeDetails { get; }
 
-    public int DocumentTypeId { get; set; }
-
-    public DateTime? PublicationDateFrom { get; set; }
-
-    public DateTime? PublicationDateTo { get; set; }
-
-    private bool _publishedSet;
-
-    private FuzzyDate? _published;
-
-    public FuzzyDate? Published {
-        get {
-            if (!_publishedSet) {
-                if (PublicationDateFrom is not null && PublicationDateTo is not null) {
-                    var dateTimeRange = new DateTimeRange(PublicationDateFrom, PublicationDateTo);
-                    if (FuzzyDate.TryFromDateTimeRange(dateTimeRange, out var result)) {
-                        _published = result;
-                    }
-                }
-                else {
-                    _published = null;
-                }
-                _publishedSet = true;
-            }
-            return _published;
+    public sealed record ExistingDocument : Document, ExistingNode
+    {
+        public override TenantNodeDetails TenantNodeDetails => ExistingTenantNodeDetails;
+        public required TenantNodeDetails.ExistingTenantNodeDetails ExistingTenantNodeDetails { get; init; }
+        public required NodeIdentification NodeIdentification { get; init; }
+        public override T Match<T>(Func<ExistingDocument, T> existingItem, Func<NewDocument, T> newItem)
+        {
+            return existingItem(this);
         }
-        set {
-            _published = value;
+        public override void Match(Action<ExistingDocument> existingItem, Action<NewDocument> newItem)
+        {
+            existingItem(this);
         }
     }
-
-    public required DocumentType[] DocumentTypes { get; init; }
-
+    public sealed record NewDocument : Document, ResolvedNewNode
+    {
+        public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
+        public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
+        public override T Match<T>(Func<ExistingDocument, T> existingItem, Func<NewDocument, T> newItem)
+        {
+            return newItem(this);
+        }
+        public override void Match(Action<ExistingDocument> existingItem, Action<NewDocument> newItem)
+        {
+            newItem(this);
+        }
+    }
 }
-[JsonSerializable(typeof(NewDocument))]
-public partial class NewDocumentJsonContext : JsonSerializerContext { }
 
-public sealed record NewDocument : NewSimpleTextNodeBase, ResolvedNewNode, Document
+public sealed record DocumentDetails
 {
     public string? SourceUrl { get; set; }
 
