@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class PartyPoliticalEntityRelationCreatorFactory(
-    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
+    IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiablePartyPoliticalEntityRelationForExistingParty> partyPoliticalEntityRelationInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiablePartyPoliticalEntityRelationForExistingParty>

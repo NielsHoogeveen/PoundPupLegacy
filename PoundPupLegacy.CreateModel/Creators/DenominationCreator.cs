@@ -2,9 +2,9 @@
 
 internal sealed class DenominationCreatorFactory(
     
-    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
+    IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
+    IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
+    IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableDenomination> denominationInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory

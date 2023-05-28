@@ -1,10 +1,10 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class UnitedStatesCongressionalMeetingCreatorFactory(
-    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableDocumentable> documentableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
+    IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
+    IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
+    IDatabaseInserterFactory<DocumentableToCreate> documentableInserterFactory,
+    IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableUnitedStatesCongressionalMeeting> unitedStatesCongressionalMeetingInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory

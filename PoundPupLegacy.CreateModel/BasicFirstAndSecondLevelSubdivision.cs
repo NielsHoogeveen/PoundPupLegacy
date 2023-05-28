@@ -9,11 +9,11 @@ public sealed record NewBasicFirstAndSecondLevelSubdivision : NewISOCodedSubdivi
 {
     public required int IntermediateLevelSubdivisionId { get; init; }
 }
-public interface ImmediatelyIdentifiableBasicFirstAndSecondLevelSubdivision : BasicFirstAndSecondLevelSubdivision, ImmediatelyIdentifiableFirstAndSecondLevelSubdivision
+public interface ImmediatelyIdentifiableBasicFirstAndSecondLevelSubdivision : BasicFirstAndSecondLevelSubdivision, FirstAndSecondLevelSubdivisionToUpdate
 {
 }
 
-public interface EventuallyIdentifiableBasicFirstAndSecondLevelSubdivision : BasicFirstAndSecondLevelSubdivision, EventuallyIdentifiableFirstAndSecondLevelSubdivision
+public interface EventuallyIdentifiableBasicFirstAndSecondLevelSubdivision : BasicFirstAndSecondLevelSubdivision, FirstAndSecondLevelSubdivisionToCreate
 {
 }
 

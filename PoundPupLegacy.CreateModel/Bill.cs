@@ -1,28 +1,18 @@
 ﻿namespace PoundPupLegacy.CreateModel;
-public interface ImmediatelyIdentifiableBill : Bill, ImmediatelyIdentifiableNameable, ImmediatelyIdentifiableDocumentable
+public interface BillToUpdate : Bill, NameableToUpdate, DocumentableToUpdate
 {
 }
-public interface EventuallyIdentifiableBill: Bill, EventuallyIdentifiableNameable, EventuallyIdentifiableDocumentable
+public interface BillToCreate: Bill, NameableToCreate, DocumentableToCreate
 {
 }
 
 public interface Bill : Nameable, Documentable
 {
-    DateTime? IntroductionDate { get; }
-
-    int? ActId { get; }
+    BillDetails BillDetails { get; }
 
 }
 
-public abstract record NewBillBase: NewNameableBase, EventuallyIdentifiableBill
-{
-    public required DateTime? IntroductionDate { get; init; }
-
-    public required int? ActId { get; init; }
-
-}
-
-public abstract record ExistingBillBase : ExistingNameableBase, ImmediatelyIdentifiableBill
+public sealed record BillDetails
 {
     public required DateTime? IntroductionDate { get; init; }
 

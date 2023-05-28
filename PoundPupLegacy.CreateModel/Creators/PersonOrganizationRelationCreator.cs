@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class PersonOrganizationRelationCreatorFactory(
-    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
+    IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants> personOrganizationRelationInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants>

@@ -15,7 +15,7 @@ internal static class DependencyInjection
         services.AddTransient<IEntityCreatorFactory<AbuseCaseTypeOfAbuser>, AbuseCaseTypeOfAbuserCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<AccessRole>, AccessRoleCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<AccessRolePrivilege>, AccessRolePrivilegeCreatorFactory>();
-        services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableAct>, ActCreatorFactory>();
+        services.AddTransient<IEntityCreatorFactory<ActToCreate>, ActCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<ActionMenuItem>, ActionMenuItemCreatorFactory>();
         services.AddTransient<IAnonimousUserCreator, AnonimousUserCreator>();
         services.AddTransient<IEntityCreatorFactory<AuthoringStatus>, AuthoringStatusCreatorFactory>();
@@ -28,7 +28,7 @@ internal static class DependencyInjection
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableBindingCountry>, BindingCountryCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableBlogPost>, BlogPostCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableBoundCountry>, BoundCountryCreatorFactory>();
-        services.AddTransient<IEntityCreatorFactory<ExistingCaseNewCaseParties>, CaseCasePartiesCreatorFactory>();
+        services.AddTransient<IEntityCreatorFactory<CaseNewCasePartiesToUpdate>, CaseCasePartiesCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableCasePartyType>, CasePartyTypeCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<CaseType>, CaseTypeCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableCasePartyType>, CasePartyTypeCreatorFactory>();
@@ -107,7 +107,7 @@ internal static class DependencyInjection
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableUnitedStatesPoliticalPartyAffliation>, UnitedStatesPoliticalPartyAffliationCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<User>, UserCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<UserGroupUserRoleUser>, UserGroupUserRoleUserCreatorFactory>();
-        services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableVocabulary>, VocabularyCreatorFactory>();
+        services.AddTransient<IEntityCreatorFactory<VocabularyToCreate>, VocabularyCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<ViewNodeTypeListAction>, ViewNodeTypeListActionCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableWrongfulMedicationCase>, WrongfulMedicationCaseCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<EventuallyIdentifiableWrongfulRemovalCase>, WrongfulRemovalCaseCreatorFactory>();

@@ -1,14 +1,14 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class InformalIntermediateLevelSubdivisionCreatorFactory(
-    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableDocumentable> documentableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableGeographicalEntity> geographicalEntityInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableSubdivision> subdivisionInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableFirstLevelSubdivision> firstLevelSubdivisionInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableIntermediateLevelSubdivision> intermediateLevelSubdivisionInserterFactory,
+    IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
+    IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
+    IDatabaseInserterFactory<DocumentableToCreate> documentableInserterFactory,
+    IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
+    IDatabaseInserterFactory<GeographicalEntityToCreate> geographicalEntityInserterFactory,
+    IDatabaseInserterFactory<SubdivisionToCreate> subdivisionInserterFactory,
+    IDatabaseInserterFactory<FirstLevelSubdivisionToCreate> firstLevelSubdivisionInserterFactory,
+    IDatabaseInserterFactory<IntermediateLevelSubdivisionToCreate> intermediateLevelSubdivisionInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableInformalIntermediateLevelSubdivision> informalIntermediateLevelSubdivisionInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory

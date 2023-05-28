@@ -1,27 +1,18 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿
+namespace PoundPupLegacy.CreateModel;
 
-public interface ImmediatelyIdentifiablePollQuestion : PollQuestion, ImmediatelyIdentifiableSimpleTextNode
+public interface PollQuestionToCreate : PollQuestion, NodeToCreate
 {
 }
-
-public interface EventuallyIdentifiablePollQuestion : PollQuestion, EventuallyIdentifiableSimpleTextNode
+public interface PollQuestionToUpdate : PollQuestion, NodeToUpdate
 {
 }
-
 public interface PollQuestion : SimpleTextNode
 {
-    string Question { get; }
-    List<PollOption> PollOptions { get; }
-    List<PollVote> PollVotes { get; }
+    PollQuestionDetails PollQuestionDetails {get;}
 }
 
-public abstract record NewPollQuestionBase: NewSimpleTextNodeBase, EventuallyIdentifiablePollQuestion
-{
-    public required string Question { get; init; }
-    public required List<PollOption> PollOptions { get; init; }
-    public required List<PollVote> PollVotes { get; init; }
-}
-public abstract record ExistingPollQuestionBase : ExistingSimpleTextNodeBase, ImmediatelyIdentifiablePollQuestion
+public sealed record PollQuestionDetails
 {
     public required string Question { get; init; }
     public required List<PollOption> PollOptions { get; init; }

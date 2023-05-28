@@ -1,29 +1,49 @@
 ﻿namespace PoundPupLegacy.CreateModel;
-public interface ImmediatelyIdentifiableCase : Case, ImmediatelyIdentifiableLocatable, ImmediatelyIdentifiableDocumentable, ImmediatelyIdentifiableNameable
+public interface CaseToUpdate : Case, LocatableToUpdate, DocumentableToUpdate, NameableToUpdate
 {
-    List<ExistingCaseExistingCaseParties> CasePartiesToUpdate { get; }
-
-    List<ExistingCaseNewCaseParties> CasePartiesToAdd { get; }
+    CaseDetails.CaseDetailsForUpdate CaseDetailsForUpdate { get; }
 }
 
-public interface EventuallyIdentifiableCase : Case, EventuallyIdentifiableLocatable, EventuallyIdentifiableDocumentable, EventuallyIdentifiableNameable 
+public interface CaseToCreate : Case, LocatableToCreate, DocumentableToCreate, NameableToCreate 
 {
-    List<NewCaseNewCaseParties> CaseParties { get; }
+    CaseDetails.CaseDetailsForCreate CaseDetailsForCreate { get; }
 }
 
-public interface Case : Locatable, Documentable, Nameable
+public interface Case: Locatable, Documentable, Nameable
 {
-    FuzzyDate? Date { get; }
+    CaseDetails CaseDetails { get; }
 }
 
-public abstract record NewCaseBase: NewLocatableBase, EventuallyIdentifiableCase
+public abstract record CaseDetails
 {
     public required FuzzyDate? Date { get; init; }
-    public required List<NewCaseNewCaseParties> CaseParties { get; init; }
+    public abstract T Match<T>(Func<CaseDetailsForCreate, T> create, Func<CaseDetailsForUpdate, T> update);
+    public abstract void Match(Action<CaseDetailsForCreate> create, Action<CaseDetailsForUpdate> update);
+
+    public sealed record CaseDetailsForCreate : CaseDetails
+    {
+        public required List<NewCaseNewCaseParties> CaseParties { get; init; }
+        public override T Match<T>(Func<CaseDetailsForCreate, T> create, Func<CaseDetailsForUpdate, T> update)
+        {
+            return create(this);
+        }
+        public override void Match(Action<CaseDetailsForCreate> create, Action<CaseDetailsForUpdate> update)
+        {
+            create(this);
+        }
+    }
+    public sealed record CaseDetailsForUpdate : CaseDetails
+    {
+        public required List<CaseExistingCasePartiesToCreate> CasePartiesToUpdate { get; init; }
+        public required List<CaseNewCasePartiesToUpdate> CasePartiesToAdd { get; init; }
+        public override T Match<T>(Func<CaseDetailsForCreate, T> create, Func<CaseDetailsForUpdate, T> update)
+        {
+            return update(this);
+        }
+        public override void Match(Action<CaseDetailsForCreate> create, Action<CaseDetailsForUpdate> update)
+        {
+            update(this);
+        }
+    }
 }
-public abstract record ExistingCaseBase : ExistingLocatableBase, ImmediatelyIdentifiableCase
-{
-    public required FuzzyDate? Date { get; init; }
-    public required List<ExistingCaseExistingCaseParties> CasePartiesToUpdate { get; init; }
-    public required List<ExistingCaseNewCaseParties> CasePartiesToAdd { get; init; }
-}
+

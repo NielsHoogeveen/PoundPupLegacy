@@ -1,16 +1,16 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class BasicSecondLevelSubdivisionCreatorFactory(
-    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableDocumentable> documentableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableGeographicalEntity> geographicalEntityInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiablePoliticalEntity> politicalEntityInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableSubdivision> subdivisionInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableISOCodedSubdivision> isoCodedSubdivisionInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableBottomLevelSubdivision> bottomLevelSubdivisionInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableSecondLevelSubdivision> secondLevelSubdivisionInserterFactory,
+    IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
+    IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
+    IDatabaseInserterFactory<DocumentableToCreate> documentableInserterFactory,
+    IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
+    IDatabaseInserterFactory<GeographicalEntityToCreate> geographicalEntityInserterFactory,
+    IDatabaseInserterFactory<PoliticalEntityToCreate> politicalEntityInserterFactory,
+    IDatabaseInserterFactory<SubdivisionToCreate> subdivisionInserterFactory,
+    IDatabaseInserterFactory<ISOCodedSubdivisionToCreate> isoCodedSubdivisionInserterFactory,
+    IDatabaseInserterFactory<BottomLevelSubdivisionToCreate> bottomLevelSubdivisionInserterFactory,
+    IDatabaseInserterFactory<SecondLevelSubdivisionToCreate> secondLevelSubdivisionInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableBasicSecondLevelSubdivision> basicSecondLevelSubdivisionInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory

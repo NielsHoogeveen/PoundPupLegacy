@@ -1,17 +1,17 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class FormalIntermediateLevelSubdivisionCreatorFactory(
-    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableDocumentable> documentableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableGeographicalEntity> geographicalEntityInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiablePoliticalEntity> politicalEntityInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableSubdivision> subdivisionInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableISOCodedSubdivision> isoCodedSubdivisionInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableFirstLevelSubdivision> firstLevelSubdivisionInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableISOCodedFirstLevelSubdivision> isoCodedFirstLevelSubdivisionInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableIntermediateLevelSubdivision> intermediateLevelSubdivisionInserterFactory,
+    IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
+    IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
+    IDatabaseInserterFactory<DocumentableToCreate> documentableInserterFactory,
+    IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
+    IDatabaseInserterFactory<GeographicalEntityToCreate> geographicalEntityInserterFactory,
+    IDatabaseInserterFactory<PoliticalEntityToCreate> politicalEntityInserterFactory,
+    IDatabaseInserterFactory<SubdivisionToCreate> subdivisionInserterFactory,
+    IDatabaseInserterFactory<ISOCodedSubdivisionToCreate> isoCodedSubdivisionInserterFactory,
+    IDatabaseInserterFactory<FirstLevelSubdivisionToCreate> firstLevelSubdivisionInserterFactory,
+    IDatabaseInserterFactory<ISOCodedFirstLevelSubdivisionToCreate> isoCodedFirstLevelSubdivisionInserterFactory,
+    IDatabaseInserterFactory<IntermediateLevelSubdivisionToCreate> intermediateLevelSubdivisionInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableFormalIntermediateLevelSubdivision> formalIntermediateLevelSubdivisionInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory

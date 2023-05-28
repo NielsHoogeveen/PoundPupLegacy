@@ -10,11 +10,11 @@ public sealed record ExistingBasicSecondLevelSubdivision : ExistingISOCodedSubdi
     public required int IntermediateLevelSubdivisionId { get; init; }
 }
 
-public interface ImmediatelyIdentifiableBasicSecondLevelSubdivision : BasicSecondLevelSubdivision, ImmediatelyIdentifiableSecondLevelSubdivision
+public interface ImmediatelyIdentifiableBasicSecondLevelSubdivision : BasicSecondLevelSubdivision, SecondLevelSubdivisionToUpdate
 {
 
 }
-public interface EventuallyIdentifiableBasicSecondLevelSubdivision : BasicSecondLevelSubdivision, EventuallyIdentifiableSecondLevelSubdivision
+public interface EventuallyIdentifiableBasicSecondLevelSubdivision : BasicSecondLevelSubdivision, SecondLevelSubdivisionToCreate
 {
 
 }

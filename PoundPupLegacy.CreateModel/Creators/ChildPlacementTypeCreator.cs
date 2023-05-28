@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class ChildPlacementTypeCreatorFactory(
-    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
+    IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
+    IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
+    IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableChildPlacementType> childPlacementTypeInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory

@@ -2,7 +2,7 @@
 
 internal sealed class SingleQuestionPollCreatorFactory(
     IEntityCreatorFactory<EventuallyIdentifiablePollQuestion> pollQuestionCreatorFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiablePoll> pollInserterFactory,
+    IDatabaseInserterFactory<PollToCreate> pollInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableSingleQuestionPoll> singleQuestionPollInserterFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableSingleQuestionPoll>
 {
@@ -16,7 +16,7 @@ internal sealed class SingleQuestionPollCreatorFactory(
 
 public class SingleQuestionPollCreator(
     IEntityCreator<EventuallyIdentifiablePollQuestion> pollQuestionCreator,
-    IDatabaseInserter<EventuallyIdentifiablePoll> pollInserter,
+    IDatabaseInserter<PollToCreate> pollInserter,
     IDatabaseInserter<EventuallyIdentifiableSingleQuestionPoll> singleQuestionPollInserter
 ) : EntityCreator<EventuallyIdentifiableSingleQuestionPoll>
 {

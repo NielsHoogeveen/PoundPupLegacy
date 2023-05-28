@@ -1,12 +1,12 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class PersonCreatorFactory(
-    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableDocumentable> documentableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableLocatable> locatableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableParty> partyInserterFactory,
+    IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
+    IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
+    IDatabaseInserterFactory<DocumentableToCreate> documentableInserterFactory,
+    IDatabaseInserterFactory<LocatableToCreate> locatableInserterFactory,
+    IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
+    IDatabaseInserterFactory<PartyToCreate> partyInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiablePerson> personInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory,

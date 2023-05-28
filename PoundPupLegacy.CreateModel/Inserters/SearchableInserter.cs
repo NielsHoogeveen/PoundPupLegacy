@@ -1,5 +1,5 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
-internal sealed class SearchableInserterFactory : SingleIdInserterFactory<EventuallyIdentifiableSearchable>
+internal sealed class SearchableInserterFactory : SingleIdInserterFactory<SearchableToCreate>
 {
     protected override string TableName => "searchable";
 

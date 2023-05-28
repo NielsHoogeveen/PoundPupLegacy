@@ -19,7 +19,7 @@ internal sealed class TypeOfAbuseMigrator(
         await using var termIdReader = await termIdReaderFactory.CreateAsync(_postgresConnection);
         await typeOfAbuseCreator.CreateAsync(ReadTypesOfAbuse(nodeIdReader,termIdReader,fileIdReaderByTenantFileId));
     }
-    private async IAsyncEnumerable<NewTypeOfAbuse> ReadTypesOfAbuse(
+    private async IAsyncEnumerable<TypeOfAbuseToCreate> ReadTypesOfAbuse(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId
@@ -134,7 +134,7 @@ internal sealed class TypeOfAbuseMigrator(
                 });
             }
 
-            yield return new NewTypeOfAbuse {
+            yield return new TypeOfAbuseToCreate {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

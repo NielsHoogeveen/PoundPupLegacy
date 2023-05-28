@@ -1,22 +1,19 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record NewAct : NewNameableBase, EventuallyIdentifiableAct
-{
-    public DateTime? EnactmentDate { get; init; }
-}
-public sealed record ExistingAct : ExistingNameableBase, ImmediatelyIdentifiableAct
-{
-    public DateTime? EnactmentDate { get; init; }
-}
-public interface ImmediatelyIdentifiableAct : Act, ImmediatelyIdentifiableNameable, ImmediatelyIdentifiableDocumentable
+public interface ActToUpdate : Act, NameableToUpdate, DocumentableToUpdate
 {
 }
 
-public interface EventuallyIdentifiableAct: Act, EventuallyIdentifiableNameable, EventuallyIdentifiableDocumentable
+public interface ActToCreate: Act, NameableToCreate, DocumentableToCreate
 {
 }
 
 public interface Act
 {
-    DateTime? EnactmentDate {get;}
+    ActDetails ActDetails { get;}
+}
+
+public sealed record ActDetails
+{
+    public required DateTime? EnactmentDate { get; init; }
 }

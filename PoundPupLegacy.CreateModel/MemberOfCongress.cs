@@ -1,19 +1,11 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public interface EventuallyIdentifiableMemberOfCongressForExistingPerson : EventuallyIdentifiableMemberOfCongress, EventuallyIdentifiableProfessionalRoleForExistingPerson
+public interface MemberOfCongressToCreate : MemberOfCongress, ProfessionalRoleToCreate
 {
 }
-public interface EventuallyIdentifiableMemberOfCongressForNewPerson : EventuallyIdentifiableMemberOfCongress, EventuallyIdentifiableProfessionalRoleForNewPerson
+public interface MemberOfCongressToUpdate : MemberOfCongress, ProfessionalRoleToUpdate
 {
 }
-public interface ImmediatelyIdentifiableMemberOfCongress : MemberOfCongress, ImmediatelyIdentifiableProfessionalRole
-{
-}
-
-public interface EventuallyIdentifiableMemberOfCongress : MemberOfCongress, EventuallyIdentifiableProfessionalRole
-{
-}
-
 public interface MemberOfCongress : ProfessionalRole
 {
 }

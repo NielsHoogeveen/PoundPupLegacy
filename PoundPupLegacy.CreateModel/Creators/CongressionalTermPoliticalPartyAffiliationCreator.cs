@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class CongressionalTermPoliticalPartyAffiliationCreatorFactory(
-    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory, 
-    IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory, 
-    IDatabaseInserterFactory<EventuallyIdentifiableDocumentable> documentableInserterFactory, 
+    IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory, 
+    IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory, 
+    IDatabaseInserterFactory<DocumentableToCreate> documentableInserterFactory, 
     IDatabaseInserterFactory<EventuallyIdentifiableCongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliationInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableCongressionalTermPoliticalPartyAffiliation>

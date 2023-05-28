@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class LocatableInserterFactory : SingleIdInserterFactory<EventuallyIdentifiableLocatable>
+internal sealed class LocatableInserterFactory : SingleIdInserterFactory<LocatableToCreate>
 {
     protected override string TableName => "locatable";
 

@@ -1,13 +1,13 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class VocabularyCreatorFactory(
-    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableVocabulary> vocabularyInserterFactory,
+    IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
+    IDatabaseInserterFactory<VocabularyToCreate> vocabularyInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory
-) : IEntityCreatorFactory<EventuallyIdentifiableVocabulary>
+) : IEntityCreatorFactory<VocabularyToCreate>
 {
-    public async Task<IEntityCreator<EventuallyIdentifiableVocabulary>> CreateAsync(IDbConnection connection)=>
-        new NodeCreator<EventuallyIdentifiableVocabulary>(
+    public async Task<IEntityCreator<VocabularyToCreate>> CreateAsync(IDbConnection connection)=>
+        new NodeCreator<VocabularyToCreate>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await vocabularyInserterFactory.CreateAsync(connection)

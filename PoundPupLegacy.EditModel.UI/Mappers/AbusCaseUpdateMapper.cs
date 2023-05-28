@@ -14,8 +14,8 @@ internal class AbusCaseUpdateMapper(
     IEnumerableMapper<Location.ExistingLocation, int> locationsToDeleteMapper,
     IEnumerableMapper<Location.ExistingLocation, EventuallyIdentifiableLocation> locationsToAddMapper,
     IEnumerableMapper<Location.ExistingLocation, ImmediatelyIdentifiableLocation> locationsToUpdateMapper,
-    IEnumerableMapper<CasePartyTypeCaseParties, ExistingCaseExistingCaseParties> casePartiesUpdateMapper,
-    IEnumerableMapper<CasePartyTypeCaseParties, ExistingCaseNewCaseParties> casePartiesAddMapper
+    IEnumerableMapper<CasePartyTypeCaseParties, CaseExistingCasePartiesToCreate> casePartiesUpdateMapper,
+    IEnumerableMapper<CasePartyTypeCaseParties, CaseNewCasePartiesToUpdate> casePartiesAddMapper
     ) : IMapper<AbuseCase.ExistingAbuseCase, ImmediatelyIdentifiableAbuseCase>
 {
     public ImmediatelyIdentifiableAbuseCase Map(AbuseCase.ExistingAbuseCase viewModel)

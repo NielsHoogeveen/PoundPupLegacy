@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record ExistingCaseNewCaseParties : IRequest
+public sealed record CaseNewCasePartiesToUpdate : IRequest
 {
     public required int CaseId { get; init; }
 
@@ -8,7 +8,7 @@ public sealed record ExistingCaseNewCaseParties : IRequest
 
     public required int CasePartyTypeId { get; init; }
 }
-public sealed record ExistingCaseExistingCaseParties : IRequest
+public sealed record CaseExistingCasePartiesToCreate : IRequest
 {
     public required int CaseId { get; init; }
 

@@ -16,7 +16,7 @@ internal sealed class PersonOrganizationRelationTypeMigrator(
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await personOrganizationRelationTypeCreator.CreateAsync(ReadPersonOrganizationRelationTypes(nodeIdReader,fileIdReaderByTenantFileId));
     }
-    private async IAsyncEnumerable<NewPersonOrganizationRelationType> ReadPersonOrganizationRelationTypes(
+    private async IAsyncEnumerable<OrganizationRelationTypeToCreate> ReadPersonOrganizationRelationTypes(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId
     )
@@ -65,7 +65,7 @@ internal sealed class PersonOrganizationRelationTypeMigrator(
                 }
             };
 
-            yield return new NewPersonOrganizationRelationType {
+            yield return new OrganizationRelationTypeToCreate {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

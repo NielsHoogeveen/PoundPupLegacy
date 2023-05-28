@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record NewTermForNewNameable: EventuallyIdentifiableTermForNewNameable
+public sealed record NewTermForNewNameable: TermToCreateForNewNameable
 {
     public int? Id { get; set; } = null;
     public required int VocabularyId { get; init; }
@@ -9,7 +9,7 @@ public sealed record NewTermForNewNameable: EventuallyIdentifiableTermForNewName
 
     public required List<int> ParentTermIds { get; init; }
 
-    public EventuallyIdentifiableTermForExistingNameable ResolveNameable(int nameableId)
+    public TermToCreateForExistingNameable ResolveNameable(int nameableId)
     {
         return new NewTermForExistingNameable {
             Name = Name,
@@ -20,7 +20,7 @@ public sealed record NewTermForNewNameable: EventuallyIdentifiableTermForNewName
         };
     }
 }
-public sealed record NewTermForExistingNameable : EventuallyIdentifiableTermForExistingNameable
+public sealed record NewTermForExistingNameable : TermToCreateForExistingNameable
 {
     public required int? Id { get; set; }
     public required int VocabularyId { get; init; }
@@ -30,7 +30,7 @@ public sealed record NewTermForExistingNameable : EventuallyIdentifiableTermForE
     public required List<int> ParentTermIds { get; init; }
 }
 
-public sealed record ExistingTerm : ImmediatelyIdentifiableTerm
+public sealed record ExistingTerm : TermToUpdate
 {
     public required int Id { get; init; }
     public required int VocabularyId { get; init; }
@@ -39,21 +39,21 @@ public sealed record ExistingTerm : ImmediatelyIdentifiableTerm
 
     public required List<int> ParentTermIds { get; init; }
 }
-public interface ImmediatelyIdentifiableTerm : Term, ImmediatelyIdentifiable
+public interface TermToUpdate : Term, ImmediatelyIdentifiable
 {
     int NameableId { get; }
 }
-public interface EventuallyIdentifiableTermForNewNameable : EventuallyIdentifiableTerm
+public interface TermToCreateForNewNameable : TermToCreate
 {
-    public EventuallyIdentifiableTermForExistingNameable ResolveNameable(int nameableId);
+    public TermToCreateForExistingNameable ResolveNameable(int nameableId);
 }
 
-public interface EventuallyIdentifiableTermForExistingNameable : EventuallyIdentifiableTerm
+public interface TermToCreateForExistingNameable : TermToCreate
 {
     int NameableId { get; }
 }
 
-public interface EventuallyIdentifiableTerm : Term, EventuallyIdentifiable
+public interface TermToCreate : Term, EventuallyIdentifiable
 {
 }
 

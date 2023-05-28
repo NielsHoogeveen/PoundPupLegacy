@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiableTopLevelCountry;
+using Request = TopLevelCountryToCreate;
 
 internal sealed class TopLevelCountryInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

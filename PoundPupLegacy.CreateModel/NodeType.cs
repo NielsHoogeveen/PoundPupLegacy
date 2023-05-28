@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public interface EventuallyIdentifiableNodeType : NodeType, EventuallyIdentifiable
+public interface NodeTypeToAdd : NodeType, EventuallyIdentifiable
 {
 }
 public interface NodeType: IRequest
@@ -9,7 +9,7 @@ public interface NodeType: IRequest
     string Description { get; }
     bool AuthorSpecific { get; }
 }
-public abstract record NewNodeType: EventuallyIdentifiableNodeType
+public abstract record NewNodeType: NodeTypeToAdd
 {
     public required int? Id { get; set; }
     public required string Name { get; init; }

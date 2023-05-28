@@ -15,7 +15,7 @@ internal sealed class HagueStatusMigrator(
         await hagueStatusCreator.CreateAsync(ReadHagueStatuses(nodeIdReader));
     }
 
-    private async IAsyncEnumerable<NewHagueStatus> ReadHagueStatuses(
+    private async IAsyncEnumerable<HagueStatusToCreate> ReadHagueStatuses(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
@@ -58,7 +58,7 @@ internal sealed class HagueStatusMigrator(
                     }
                 };
 
-            yield return new NewHagueStatus {
+            yield return new HagueStatusToCreate {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

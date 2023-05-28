@@ -2,7 +2,7 @@
 
 namespace PoundPupLegacy.CreateModel.Updaters;
 public interface IEntityUpdater<T>
-    where T : ImmediatelyIdentifiableNode
+    where T : NodeToUpdate
 {
     Task UpdateAsync(T request, IDbConnection connection);
 }
@@ -36,7 +36,7 @@ public class NodeDetailsChanger(
 ) : IAsyncDisposable
 {
 
-    public async Task Process(ImmediatelyIdentifiableNode node)
+    public async Task Process(NodeToUpdate node)
     {
         foreach (var newNodeTerms in node.NodeTermsToAdd) {
             await nodeTermInserter.InsertAsync(newNodeTerms);
@@ -80,7 +80,7 @@ public class NodeChanger<T>(
     IDatabaseUpdater<T> databaseUpdater,
     NodeDetailsChanger nodeDetailsChanger
 ) : EntityChanger<T>()
-    where T : ImmediatelyIdentifiableNode
+    where T : NodeToUpdate
 {
     protected override async Task Process(T request)
     {
@@ -98,7 +98,7 @@ public class NodeChanger<T>(
 
 public class EntityChanger<T>(
 ): IAsyncDisposable, IEntityChanger<T>
-    where T : ImmediatelyIdentifiableNode
+    where T : NodeToUpdate
 {
     protected virtual async Task Process(T request) 
     {

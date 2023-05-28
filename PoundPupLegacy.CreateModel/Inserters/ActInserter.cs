@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiableAct;
+using Request = ActToCreate;
 
 internal sealed class ActInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

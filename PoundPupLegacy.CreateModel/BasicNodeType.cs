@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record BasicNodeType : NewNodeType, EventuallyIdentifiableNodeType
+public sealed record BasicNodeType : NewNodeType, NodeTypeToAdd
 {
     public static BasicNodeType Create(int id, string name, string description, bool authorSpecific)
     {

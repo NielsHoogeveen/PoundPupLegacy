@@ -24,7 +24,7 @@ public class LocatableDetailsCreatorFactory(
     }
 }
 public class TermCreatorFactory(
-    IDatabaseInserterFactory<EventuallyIdentifiableTermForExistingNameable> termInserterFactory,
+    IDatabaseInserterFactory<TermToCreateForExistingNameable> termInserterFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory
 )
 {
@@ -43,7 +43,7 @@ public class LocatableDetailsCreator(
     IDatabaseInserter<LocationLocatable> locationLocatableInserter
 ) : IAsyncDisposable
 {
-    public async Task Process(EventuallyIdentifiableLocatable locatable)
+    public async Task Process(LocatableToCreate locatable)
     {
         foreach(var location in locatable.Locations) {
             await locationInserter.InsertAsync(location);
@@ -61,11 +61,11 @@ public class LocatableDetailsCreator(
     }
 }
 public class TermCreator(
-    List<IDatabaseInserter<EventuallyIdentifiableTermForExistingNameable>> inserters,
+    List<IDatabaseInserter<TermToCreateForExistingNameable>> inserters,
     IDatabaseInserter<TermHierarchy> termHierarchyInserter
-) : InsertingEntityCreator<EventuallyIdentifiableTermForExistingNameable>(inserters)
+) : InsertingEntityCreator<TermToCreateForExistingNameable>(inserters)
 {
-    public override async Task ProcessAsync(EventuallyIdentifiableTermForExistingNameable element)
+    public override async Task ProcessAsync(TermToCreateForExistingNameable element)
     {
         await base.ProcessAsync(element);
         foreach (var parent in element.ParentTermIds) {
@@ -86,19 +86,19 @@ public class CaseCreator<T>(
     NodeDetailsCreator nodeDetailsCreator,
     TermCreator nameableDetailsCreator,
     LocatableDetailsCreator locatableDetailsCreator,
-    IEntityCreator<ExistingCaseNewCaseParties> casePartiesCreator
+    IEntityCreator<CaseNewCasePartiesToUpdate> casePartiesCreator
 ) : LocatableCreator<T>(
     inserters,
     nodeDetailsCreator,
     nameableDetailsCreator,
     locatableDetailsCreator
 ), IAsyncDisposable
-    where T : class, EventuallyIdentifiableCase
+    where T : class, CaseToCreate
 {
     public override async Task ProcessAsync(T element, int id)
     {
         await base.ProcessAsync(element, id);
-        await casePartiesCreator.CreateAsync(element.CaseParties.Select(x => new ExistingCaseNewCaseParties 
+        await casePartiesCreator.CreateAsync(element.CaseParties.Select(x => new CaseNewCasePartiesToUpdate 
         { 
             CaseId  = id,
             CaseParties = x.CaseParties,
@@ -122,7 +122,7 @@ public class LocatableCreator<T>(
     nodeDetailsCreator,
     nameableDetailsCreator
 ), IAsyncDisposable
-    where T : class, EventuallyIdentifiableLocatable
+    where T : class, LocatableToCreate
 {
     public override async Task ProcessAsync(T element, int id)
     {
@@ -144,7 +144,7 @@ public class NameableCreator<T>(
     inserters,
     nodeDetailsCreator
 ), IAsyncDisposable
-    where T : class, EventuallyIdentifiableNameable
+    where T : class, NameableToCreate
 {
     public override async Task ProcessAsync(T element, int id)
     {
@@ -180,7 +180,7 @@ public class NodeDetailsCreator(
     IDatabaseInserter<EventuallyIdentifiableTenantNodeForExistingNode> tenantNodeInserter
 ) : IAsyncDisposable
 {
-    public async Task ProcessAsync(EventuallyIdentifiableNode element, int id)
+    public async Task ProcessAsync(NodeToCreate element, int id)
     {
         foreach (var nodeTermId in element.TermIds) {
             await nodeTermInserter.InsertAsync(new ResolvedNodeTermToAdd 
@@ -207,7 +207,7 @@ public class NodeCreator<T>(
     NodeDetailsCreator nodeDetailsCreator
 
 ) : InsertingEntityCreator<T>(inserters)
-    where T: class, EventuallyIdentifiableNode
+    where T: class, NodeToCreate
 {
     public virtual async Task ProcessAsync(T element, int id)
     {

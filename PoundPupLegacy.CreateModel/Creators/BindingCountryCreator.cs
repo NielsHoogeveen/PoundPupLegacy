@@ -1,14 +1,14 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class BindingCountryCreatorFactory(
-    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableDocumentable> documentableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableGeographicalEntity> geographicalEntityInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiablePoliticalEntity> politicalEntityInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableCountry> countryInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableTopLevelCountry> topLevelCountryInserterFactory,
+    IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
+    IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
+    IDatabaseInserterFactory<DocumentableToCreate> documentableInserterFactory,
+    IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
+    IDatabaseInserterFactory<GeographicalEntityToCreate> geographicalEntityInserterFactory,
+    IDatabaseInserterFactory<PoliticalEntityToCreate> politicalEntityInserterFactory,
+    IDatabaseInserterFactory<CountryToCreate> countryInserterFactory,
+    IDatabaseInserterFactory<TopLevelCountryToCreate> topLevelCountryInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableBindingCountry> bindingCountryInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory

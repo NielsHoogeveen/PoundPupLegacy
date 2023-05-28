@@ -2,16 +2,16 @@
 
 namespace PoundPupLegacy.EditModel.UI.Mappers;
 
-internal class CasePartyTypeCasePartiesToUpdateMapper : IEnumerableMapper<CasePartyTypeCaseParties, ExistingCaseExistingCaseParties>
+internal class CasePartyTypeCasePartiesToUpdateMapper : IEnumerableMapper<CasePartyTypeCaseParties, CaseExistingCasePartiesToCreate>
 {
-    public IEnumerable<ExistingCaseExistingCaseParties> Map(IEnumerable<CasePartyTypeCaseParties> source)
+    public IEnumerable<CaseExistingCasePartiesToCreate> Map(IEnumerable<CasePartyTypeCaseParties> source)
     {
         foreach(var parties in source) {
             if (!parties.Id.HasValue)
                 continue;
             if (!parties.CaseId.HasValue)
                 continue;
-            yield return new ExistingCaseExistingCaseParties {
+            yield return new CaseExistingCasePartiesToCreate {
                 CaseId = parties.CaseId.Value,
                 CasePartyTypeId = parties.CasePartyTypeId,
                 CaseParties = new ExistingCaseParties {

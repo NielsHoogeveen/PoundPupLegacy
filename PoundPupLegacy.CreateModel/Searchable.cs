@@ -1,10 +1,10 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public interface ImmediatelyIdentifiableSearchable : Searchable, ImmediatelyIdentifiableNode
+public interface SearchableToUpdate : Searchable, NodeToUpdate
 {
 }
 
-public interface EventuallyIdentifiableSearchable: Searchable, EventuallyIdentifiableNode
+public interface SearchableToCreate: Searchable, NodeToCreate
 {
 }
 

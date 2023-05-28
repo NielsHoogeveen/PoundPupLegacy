@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class DocumentableInserterFactory : SingleIdInserterFactory<EventuallyIdentifiableDocumentable>
+internal sealed class DocumentableInserterFactory : SingleIdInserterFactory<DocumentableToCreate>
 {
     protected override string TableName => "documentable";
 

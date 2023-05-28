@@ -29,7 +29,7 @@ internal sealed class NodeTypeMigrator(
         await editNodeActionCreator.CreateAsync(GetNodeTypes().Select(x => new EditNodeAction { Id = null, NodeTypeId = x.Id!.Value }));
     }
 
-    internal async static IAsyncEnumerable<EventuallyIdentifiableNodeType> GetNodeTypes()
+    internal async static IAsyncEnumerable<NodeTypeToAdd> GetNodeTypes()
     {
         await Task.CompletedTask;
         foreach (var nodeType in GetBasicNodeTypes()) {

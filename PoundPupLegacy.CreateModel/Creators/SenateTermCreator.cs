@@ -1,10 +1,10 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class SenateTermCreatorFactory(
-    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableDocumentable> documentableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableCongressionalTerm> congressionalTermInserterFactory,
+    IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
+    IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
+    IDatabaseInserterFactory<DocumentableToCreate> documentableInserterFactory,
+    IDatabaseInserterFactory<CongressionalTermToCreate> congressionalTermInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableSenateTerm> senateTermInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     IEntityCreatorFactory<EventuallyIdentifiableCongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliationCreatorFactory

@@ -15,7 +15,7 @@ public static class DependencyInjection
         services.AddTransient<IEntityChangerFactory<ImmediatelyIdentifiableDocument>, DocumentChangerFactory>();
         services.AddTransient<IEntityChangerFactory<ImmediatelyIdentifiableOrganization>, OrganizationChangerFactory>();
         services.AddTransient<IEntityChangerFactory<ImmediatelyIdentifiablePerson>, PersonChangerFactory>();
-        services.AddTransient<IEntityChangerFactory<ImmediatelyIdentifiableSimpleTextNode>, SimpleTextNodeChangerFactory>();
+        services.AddTransient<IEntityChangerFactory<SimpleTextNodeToUpdate>, SimpleTextNodeChangerFactory>();
         services.AddTransient<IEntityChangerFactory<ImmediatelyIdentifiableWrongfulMedicationCase>, WrongfulMedicationCaseChangerFactory>();
         services.AddTransient<IEntityChangerFactory<ImmediatelyIdentifiableWrongfulRemovalCase>, WrongfulRemovalCaseChangerFactory>();
 
@@ -34,7 +34,7 @@ public static class DependencyInjection
         services.AddTransient<IDatabaseUpdaterFactory<ImmediatelyIdentifiablePartyPoliticalEntityRelation>, PartyPoliticalEntityRelationUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<ImmediatelyIdentifiablePersonOrganizationRelation>, PersonOrganizationRelationUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<ImmediatelyIdentifiablePerson>, PersonUpdaterFactory>();
-        services.AddTransient<IDatabaseUpdaterFactory<ImmediatelyIdentifiableSimpleTextNode>, SimpleTextNodeUpdaterFactory>();
+        services.AddTransient<IDatabaseUpdaterFactory<SimpleTextNodeToUpdate>, SimpleTextNodeUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<ImmediatelyIdentifiableTenantNode>, TenantNodeUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<ImmediatelyIdentifiableWrongfulMedicationCase>, WrongfulMedicationCaseUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<ImmediatelyIdentifiableWrongfulRemovalCase>, WrongfulRemovalCaseUpdaterFactory>();

@@ -1,18 +1,46 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record ExistingBasicNameable : ExistingNameableBase, ImmediatelyIdentifiableBasicNameable
+public abstract record BasicNameable : Nameable
 {
-}
+    private BasicNameable() { }
+    public abstract NodeIdentification NodeIdentification { get; }
+    public abstract NodeDetails NodeDetails { get; }
+    public abstract NameableDetails NameableDetails { get; }
+    public abstract T Match<T>(Func<BasicNameableToCreate, T> create, Func<BasicNameableToUpdate, T> update);
+    public abstract void Match(Action<BasicNameableToCreate> create, Action<BasicNameableToUpdate> update);
 
-public sealed record NewBasicNameable : NewNameableBase, EventuallyIdentifiableBasicNameable
-{
-}
-public interface ImmediatelyIdentifiableBasicNameable : BasicNameable, ImmediatelyIdentifiableNameable
-{
-}
-public interface EventuallyIdentifiableBasicNameable : BasicNameable, EventuallyIdentifiableNameable
-{
-}
-public interface BasicNameable: Nameable
-{
+    public sealed record BasicNameableToCreate : BasicNameable, NameableToCreate
+    {
+        public override NodeIdentification NodeIdentification => NodeIdentificationForCreate;
+        public override NodeDetails NodeDetails => NodeDetailsForCreate;
+        public override NameableDetails NameableDetails => NameableDetailsForCreate;
+        public required NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+        public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+        public required NameableDetails.NameableDetailsForCreate NameableDetailsForCreate { get; init; }
+        public override T Match<T>(Func<BasicNameableToCreate, T> create, Func<BasicNameableToUpdate, T> update)
+        {
+            return create(this);
+        }
+        public override void Match(Action<BasicNameableToCreate> create, Action<BasicNameableToUpdate> update)
+        {
+            create(this);
+        }
+    }
+    public sealed record BasicNameableToUpdate : BasicNameable, NameableToUpdate
+    {
+        public required NodeIdentification.NodeIdentificationForUpdate NodeIdentificationForUpdate { get; init; }
+        public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
+        public override NameableDetails NameableDetails => NameableDetailsForUpdate;
+        public override NodeIdentification NodeIdentification => NodeIdentificationForUpdate;
+        public override NodeDetails NodeDetails => NodeDetailsForUpdate;
+        public required NameableDetails.NameableDetailsForUpdate NameableDetailsForUpdate { get; init; }
+        public override T Match<T>(Func<BasicNameableToCreate, T> create, Func<BasicNameableToUpdate, T> update)
+        {
+            return update(this);
+        }
+        public override void Match(Action<BasicNameableToCreate> create, Action<BasicNameableToUpdate> update)
+        {
+            update(this);
+        }
+    }
 }

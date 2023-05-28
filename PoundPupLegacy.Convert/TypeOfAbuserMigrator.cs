@@ -123,7 +123,7 @@ internal sealed class TypeOfAbuserMigrator(
                 });
             }
 
-            yield return new NewTypeOfAbuser {
+            yield return new TypeOfAbuserToCreate {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

@@ -1,17 +1,17 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class ChildTraffickingCaseCreatorFactory(
-    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableDocumentable> documentableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableLocatable> locatableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableCase> caseInserterFactory,
+    IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
+    IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
+    IDatabaseInserterFactory<DocumentableToCreate> documentableInserterFactory,
+    IDatabaseInserterFactory<LocatableToCreate> locatableInserterFactory,
+    IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
+    IDatabaseInserterFactory<CaseToCreate> caseInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableChildTraffickingCase> childTraffickingCaseInserterFactory,
     LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory,
-    IEntityCreatorFactory<ExistingCaseNewCaseParties> caseCaseTypeCreatorFactory
+    IEntityCreatorFactory<CaseNewCasePartiesToUpdate> caseCaseTypeCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableChildTraffickingCase>
 {
     public async Task<IEntityCreator<EventuallyIdentifiableChildTraffickingCase>> CreateAsync(IDbConnection connection) =>

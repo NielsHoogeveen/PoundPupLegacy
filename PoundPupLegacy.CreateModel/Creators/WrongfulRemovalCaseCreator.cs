@@ -1,17 +1,17 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class WrongfulRemovalCaseCreatorFactory(
-    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableDocumentable> documentableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableLocatable> locatableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableCase> caseInserterFactory,
+    IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
+    IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
+    IDatabaseInserterFactory<DocumentableToCreate> documentableInserterFactory,
+    IDatabaseInserterFactory<LocatableToCreate> locatableInserterFactory,
+    IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
+    IDatabaseInserterFactory<CaseToCreate> caseInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableWrongfulRemovalCase> wrongfulRemovalCaseInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory,
     LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
-    IEntityCreatorFactory<ExistingCaseNewCaseParties> caseCaseTypeCreatorFactory
+    IEntityCreatorFactory<CaseNewCasePartiesToUpdate> caseCaseTypeCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableWrongfulRemovalCase>
 {
     public async Task<IEntityCreator<EventuallyIdentifiableWrongfulRemovalCase>> CreateAsync(IDbConnection connection) =>

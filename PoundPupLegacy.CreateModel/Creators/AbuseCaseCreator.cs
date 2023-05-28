@@ -2,17 +2,17 @@
 
 public class AbuseCaseCreatorFactory(
 
-    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableDocumentable> documentableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableLocatable> locatableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableCase> caseInserterFactory,
+    IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
+    IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
+    IDatabaseInserterFactory<DocumentableToCreate> documentableInserterFactory,
+    IDatabaseInserterFactory<LocatableToCreate> locatableInserterFactory,
+    IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
+    IDatabaseInserterFactory<CaseToCreate> caseInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableAbuseCase> abuseCaseInserterFactory,
     LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    IEntityCreatorFactory<ExistingCaseNewCaseParties> caseCaseTypeCreatorFactory,
+    IEntityCreatorFactory<CaseNewCasePartiesToUpdate> caseCaseTypeCreatorFactory,
     IEntityCreatorFactory<AbuseCaseTypeOfAbuse> abuseCaseTypeOfAbuseCreatorFactory,
     IEntityCreatorFactory<AbuseCaseTypeOfAbuser> abuseCaseTypeOfAbuserCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableAbuseCase>
@@ -42,7 +42,7 @@ public class AbuseCaseCreator(
     NodeDetailsCreator nodeDetailsCreator,
     TermCreator nameableDetailsCreator,
     LocatableDetailsCreator locatableDetailsCreator,
-    IEntityCreator<ExistingCaseNewCaseParties> caseCaseTypeCreator,
+    IEntityCreator<CaseNewCasePartiesToUpdate> caseCaseTypeCreator,
     IEntityCreator<AbuseCaseTypeOfAbuse> abuseCaseTypeOfAbuseCreator,
     IEntityCreator<AbuseCaseTypeOfAbuser> abuseCaseTypeOfAbuserCreator
 ) : CaseCreator<EventuallyIdentifiableAbuseCase>

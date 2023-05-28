@@ -1,10 +1,10 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public interface ImmediatelyIdentifiableGeographicalEntity : GeographicalEntity, ImmediatelyIdentifiableDocumentable, ImmediatelyIdentifiableNameable
+public interface GeographicalEntityToUpdate : GeographicalEntity, DocumentableToUpdate, NameableToUpdate
 {
 }
 
-public interface EventuallyIdentifiableGeographicalEntity: GeographicalEntity, EventuallyIdentifiableDocumentable, EventuallyIdentifiableNameable
+public interface GeographicalEntityToCreate: GeographicalEntity, DocumentableToCreate, NameableToCreate
 {
 }
 

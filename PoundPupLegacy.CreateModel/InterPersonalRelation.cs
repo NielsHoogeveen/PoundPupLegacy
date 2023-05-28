@@ -1,109 +1,158 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record NewInterPersonalRelationForExistingParticipants : NewNodeBase, EventuallyIdentifiableInterPersonalRelationForExistingParticipants
+public abstract record InterPersonalRelation : Node
 {
-    public required int PersonIdFrom { get; init; }
-    public required int PersonIdTo { get; init; }
-    public required int InterPersonalRelationTypeId { get; init; }
-    public required DateTimeRange? DateRange { get; init; }
-    public required int? DocumentIdProof { get; init; }
-    public required string? Description { get; init; }
-}
-public sealed record NewInterPersonalRelationForNewPersonFrom : NewNodeBase, EventuallyIdentifiableInterPersonalRelationForNewPersonFrom
-{
-    public required int PersonIdTo { get; init; }
-    public required int InterPersonalRelationTypeId { get; init; }
-    public required DateTimeRange? DateRange { get; init; }
-    public required int? DocumentIdProof { get; init; }
-    public required string? Description { get; init; }
-}
-public sealed record NewInterPersonalRelationForNewPersonTo : NewNodeBase, EventuallyIdentifiableInterPersonalRelationForNewPersonTo
-{
-    public required int PersonIdFrom { get; init; }
-    public required int InterPersonalRelationTypeId { get; init; }
-    public required DateTimeRange? DateRange { get; init; }
-    public required int? DocumentIdProof { get; init; }
-    public required string? Description { get; init; }
-}
-public sealed record ExistingInterPersonalRelation : ExistingNodeBase, ImmediatelyIdentifiableInterPersonalRelation
-{
-    public required int InterPersonalRelationTypeId { get; init; }
-    public required int PersonIdFrom { get; init; }
-    public required int PersonIdTo { get; init; }
-    public required DateTimeRange? DateRange { get; init; }
-    public required int? DocumentIdProof { get; init; }
-    public required string? Description { get; init; }
-}
-public interface ImmediatelyIdentifiableInterPersonalRelation : InterPersonalRelation, ImmediatelyIdentifiableNode
-{
-    int PersonIdFrom { get; }
-    int PersonIdTo { get; }
-}
-public interface EventuallyIdentifiableInterPersonalRelationForExistingParticipants: EventuallyIdentifiableInterPersonalRelation
-{
-    int PersonIdFrom { get; }
-    int PersonIdTo { get; }
-}
-public interface EventuallyIdentifiableInterPersonalRelationForNewPersonFrom : EventuallyIdentifiableInterPersonalRelation
-{
-    int PersonIdTo { get; }
-    public EventuallyIdentifiableInterPersonalRelationForExistingParticipants ResolvePersonFrom(int personIdFrom)
+    private InterPersonalRelation() { }
+    public abstract NodeIdentification NodeIdentification { get; }
+    public abstract NodeDetails NodeDetails { get; }
+    public required InterPersonalRelationDetails InterPersonalRelationDetails { get; init; }
+    public abstract T Match<T>(
+        Func<InterPersonalRelationToCreateForExistingParticipants, T> create,
+        Func<InterPersonalRelationToCreateForNewPersonFrom, T> createNewFrom,
+        Func<InterPersonalRelationToCreateForNewPersonTo, T> createNewTo,
+        Func<InterPersonalRelationToUpdate, T> update
+     );
+    public abstract void Match(
+        Action<InterPersonalRelationToCreateForExistingParticipants> create,
+        Action<InterPersonalRelationToCreateForNewPersonFrom> createNewFrom,
+        Action<InterPersonalRelationToCreateForNewPersonTo> createNewTo,
+        Action<InterPersonalRelationToUpdate> update
+    );
+
+    public sealed record InterPersonalRelationToCreateForExistingParticipants : InterPersonalRelation, NodeToCreate
     {
-        return new NewInterPersonalRelationForExistingParticipants {
-            PersonIdFrom = personIdFrom,
-            PersonIdTo = PersonIdTo,
-            AuthoringStatusId = AuthoringStatusId,
-            ChangedDateTime = ChangedDateTime,
-            CreatedDateTime = CreatedDateTime,
-            Description = Description,
-            DateRange = DateRange,
-            DocumentIdProof = DocumentIdProof,
-            Id = Id,
-            InterPersonalRelationTypeId = InterPersonalRelationTypeId,
-            TermIds = TermIds,
-            NodeTypeId = NodeTypeId,
-            OwnerId = OwnerId,
-            PublisherId = PublisherId,
-            TenantNodes = TenantNodes,
-            Title = Title,
-        };
+        public required int PersonIdFrom { get; init; }
+        public required int PersonIdTo { get; init; }
+        public required NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+        public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+        public override NodeIdentification NodeIdentification => NodeIdentificationForCreate;
+        public override NodeDetails NodeDetails => NodeDetailsForCreate;
+        public override T Match<T>(
+            Func<InterPersonalRelationToCreateForExistingParticipants, T> create,
+            Func<InterPersonalRelationToCreateForNewPersonFrom, T> createNewFrom,
+            Func<InterPersonalRelationToCreateForNewPersonTo, T> createNewTo,
+            Func<InterPersonalRelationToUpdate, T> update
+         )
+        {
+            return create(this);
+        }
+        public override void Match(
+            Action<InterPersonalRelationToCreateForExistingParticipants> create,
+            Action<InterPersonalRelationToCreateForNewPersonFrom> createNewFrom,
+            Action<InterPersonalRelationToCreateForNewPersonTo> createNewTo,
+            Action<InterPersonalRelationToUpdate> update
+        )
+        {
+            create(this);
+        }
+    }
+    public sealed record InterPersonalRelationToCreateForNewPersonFrom : InterPersonalRelation, NodeToCreate
+    {
+        public required int PersonIdTo { get; init; }
+        public InterPersonalRelationToCreateForExistingParticipants ResolvePersonFrom(int PersonIdFrom)
+        {
+            return new InterPersonalRelationToCreateForExistingParticipants {
+                PersonIdFrom = PersonIdFrom,
+                PersonIdTo = PersonIdTo,
+                InterPersonalRelationDetails = InterPersonalRelationDetails,
+                NodeDetailsForCreate = NodeDetailsForCreate,
+                NodeIdentificationForCreate = NodeIdentificationForCreate,
+            };
+        }
+        public required NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+        public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+        public override NodeIdentification NodeIdentification => NodeIdentificationForCreate;
+        public override NodeDetails NodeDetails => NodeDetailsForCreate;
+        public override T Match<T>(
+            Func<InterPersonalRelationToCreateForExistingParticipants, T> create,
+            Func<InterPersonalRelationToCreateForNewPersonFrom, T> createNewFrom,
+            Func<InterPersonalRelationToCreateForNewPersonTo, T> createNewTo,
+            Func<InterPersonalRelationToUpdate, T> update
+         )
+        {
+            return createNewFrom(this);
+        }
+        public override void Match(
+            Action<InterPersonalRelationToCreateForExistingParticipants> create,
+            Action<InterPersonalRelationToCreateForNewPersonFrom> createNewFrom,
+            Action<InterPersonalRelationToCreateForNewPersonTo> createNewTo,
+            Action<InterPersonalRelationToUpdate> update
+        )
+        {
+            createNewFrom(this);
+        }
     }
 
-}
-public interface EventuallyIdentifiableInterPersonalRelationForNewPersonTo : EventuallyIdentifiableInterPersonalRelation
-{
-    int PersonIdFrom { get; }
-
-    public EventuallyIdentifiableInterPersonalRelationForExistingParticipants ResolvePersonTo(int personIdTo)
+    public sealed record InterPersonalRelationToCreateForNewPersonTo : InterPersonalRelation, NodeToCreate
     {
-        return new NewInterPersonalRelationForExistingParticipants {
-            PersonIdFrom = PersonIdFrom,
-            PersonIdTo = personIdTo,
-            AuthoringStatusId = AuthoringStatusId,
-            ChangedDateTime = ChangedDateTime,
-            CreatedDateTime = CreatedDateTime,
-            Description = Description,
-            DateRange = DateRange,
-            DocumentIdProof = DocumentIdProof,
-            Id = Id,
-            InterPersonalRelationTypeId = InterPersonalRelationTypeId,
-            TermIds = TermIds,
-            NodeTypeId = NodeTypeId,
-            OwnerId = OwnerId,
-            PublisherId = PublisherId,
-            TenantNodes = TenantNodes,
-            Title = Title,
-        };
-    } 
+        public required int PersonIdFrom { get; init; }
+        public required int InterPersonalRelationTypeId { get; init; }
+        public InterPersonalRelationToCreateForExistingParticipants ResolvePersonTo(int PersonIdTo)
+        {
+            return new InterPersonalRelationToCreateForExistingParticipants {
+                PersonIdFrom = PersonIdFrom,
+                PersonIdTo = PersonIdTo,
+                InterPersonalRelationDetails = InterPersonalRelationDetails,
+                NodeDetailsForCreate = NodeDetailsForCreate,
+                NodeIdentificationForCreate = NodeIdentificationForCreate,
+            };
+        }
+        public required NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+        public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+        public override NodeIdentification NodeIdentification => NodeIdentificationForCreate;
+        public override NodeDetails NodeDetails => NodeDetailsForCreate;
+        public override T Match<T>(
+            Func<InterPersonalRelationToCreateForExistingParticipants, T> create,
+            Func<InterPersonalRelationToCreateForNewPersonFrom, T> createNewFrom,
+            Func<InterPersonalRelationToCreateForNewPersonTo, T> createNewTo,
+            Func<InterPersonalRelationToUpdate, T> update
+         )
+        {
+            return createNewTo(this);
+        }
+        public override void Match(
+            Action<InterPersonalRelationToCreateForExistingParticipants> create,
+            Action<InterPersonalRelationToCreateForNewPersonFrom> createNewFrom,
+            Action<InterPersonalRelationToCreateForNewPersonTo> createNewTo,
+            Action<InterPersonalRelationToUpdate> update
+        )
+        {
+            createNewTo(this);
+        }
+    }
+    public sealed record InterPersonalRelationToUpdate : InterPersonalRelation, NodeToUpdate
+    {
+        public required int PersonIdFrom { get; init; }
+        public required int PersonIdTo { get; init; }
+        public override NodeIdentification NodeIdentification => NodeIdentificationForUpdate;
+        public override NodeDetails NodeDetails => NodeDetailsForUpdate;
+        public required NodeIdentification.NodeIdentificationForUpdate NodeIdentificationForUpdate { get; init; }
+        public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
+        public override T Match<T>(
+            Func<InterPersonalRelationToCreateForExistingParticipants, T> create,
+            Func<InterPersonalRelationToCreateForNewPersonFrom, T> createNewFrom,
+            Func<InterPersonalRelationToCreateForNewPersonTo, T> createNewTo,
+            Func<InterPersonalRelationToUpdate, T> update
+         )
+        {
+            return update(this);
+        }
+        public override void Match(
+            Action<InterPersonalRelationToCreateForExistingParticipants> create,
+            Action<InterPersonalRelationToCreateForNewPersonFrom> createNewFrom,
+            Action<InterPersonalRelationToCreateForNewPersonTo> createNewTo,
+            Action<InterPersonalRelationToUpdate> update
+        )
+        {
+            update(this);
+        }
+    }
 }
-public interface EventuallyIdentifiableInterPersonalRelation : InterPersonalRelation, EventuallyIdentifiableNode
+
+public sealed record InterPersonalRelationDetails
 {
-}
-public interface InterPersonalRelation : Node
-{
-   
-    int InterPersonalRelationTypeId { get; }
-    DateTimeRange? DateRange { get; }
-    int? DocumentIdProof { get; }
-    string? Description { get;}
+    public required int InterPersonalRelationTypeId { get; init; }
+    public required DateTimeRange? DateRange { get; init; }
+    public required int? DocumentIdProof { get; init; }
+    public required string? Description { get; init; }
 }

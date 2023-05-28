@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class PageCreatorFactory(
-        IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
-        IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory,
-        IDatabaseInserterFactory<EventuallyIdentifiableSimpleTextNode> simpleTextNodeInserterFactory,
+        IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
+        IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
+        IDatabaseInserterFactory<SimpleTextNodeToCreate> simpleTextNodeInserterFactory,
         IDatabaseInserterFactory<EventuallyIdentifiablePage> pageInserterFactory,
         NodeDetailsCreatorFactory nodeDetailsCreatorFactory
     ) : IEntityCreatorFactory<EventuallyIdentifiablePage>

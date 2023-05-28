@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class DiscussionCreatorFactory(
-        IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
-        IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory,
-        IDatabaseInserterFactory<EventuallyIdentifiableSimpleTextNode> simpleTextNodeInserterFactory,
+        IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
+        IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
+        IDatabaseInserterFactory<SimpleTextNodeToCreate> simpleTextNodeInserterFactory,
         IDatabaseInserterFactory<EventuallyIdentifiableDiscussion> discussionInserterFactory,
         NodeDetailsCreatorFactory nodeDetailsCreatorFactory
     ) : IEntityCreatorFactory<EventuallyIdentifiableDiscussion>

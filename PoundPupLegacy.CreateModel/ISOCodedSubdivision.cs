@@ -1,21 +1,15 @@
 ﻿namespace PoundPupLegacy.CreateModel;
-public interface ImmediatelyIdentifiableISOCodedSubdivision : ISOCodedSubdivision, ImmediatelyIdentifiableSubdivision, ImmediatelyIdentifiablePoliticalEntity
+public interface ISOCodedSubdivisionToUpdate : ISOCodedSubdivision, SubdivisionToUpdate, PoliticalEntityToUpdate
 {
 }
-public interface EventuallyIdentifiableISOCodedSubdivision: ISOCodedSubdivision, EventuallyIdentifiableSubdivision, EventuallyIdentifiablePoliticalEntity
+public interface ISOCodedSubdivisionToCreate: ISOCodedSubdivision, SubdivisionToCreate, PoliticalEntityToCreate
 {
 }
 public interface ISOCodedSubdivision : Subdivision, PoliticalEntity
 {
-    string ISO3166_2_Code { get; }
+    ISOCodedSubdivisionDetails ISOCodedSubdivisionDetails { get; }
 }
-public abstract record NewISOCodedSubdivisionBase: NewSubdivisionBase, EventuallyIdentifiableISOCodedSubdivision 
-{
-    public required string ISO3166_2_Code { get; init; }
-
-    public required int? FileIdFlag { get; init; }
-}
-public abstract record ExistingISOCodedSubdivisionBase : ExistingSubdivisionBase, ImmediatelyIdentifiableISOCodedSubdivision
+public sealed record ISOCodedSubdivisionDetails
 {
     public required string ISO3166_2_Code { get; init; }
 

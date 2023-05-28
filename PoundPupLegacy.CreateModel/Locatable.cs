@@ -1,34 +1,52 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public interface ImmediatelyIdentifiableLocatable : Locatable, ImmediatelyIdentifiableNameable, ImmediatelyIdentifiableDocumentable
+public interface LocatableToUpdate : Locatable, NameableToUpdate, DocumentableToUpdate
 {
-    List<EventuallyIdentifiableLocation> LocationsToAdd { get; }
-
-    List<int> LocationsToDelete { get; }
-
-    List<ImmediatelyIdentifiableLocation> LocationsToUpdate { get; }
+    LocatableDetails.LocatableDetailsForUpdate LocatableDetailsForUpdate { get; }
 }
 
-public interface EventuallyIdentifiableLocatable: Locatable, EventuallyIdentifiableNameable,EventuallyIdentifiableDocumentable 
+public interface LocatableToCreate: Locatable, NameableToCreate,DocumentableToCreate 
 {
-    List<EventuallyIdentifiableLocation> Locations { get; }
+    LocatableDetails.LocatableDetailsForCreate LocatableDetailsForCreate { get; }
 }
 
 public interface Locatable : Nameable, Documentable
 {
+    LocatableDetails LocatableDetails { get; }
 }
 
-public abstract record NewLocatableBase : NewNameableBase, EventuallyIdentifiableLocatable
+public abstract record LocatableDetails
 {
-    public required List<EventuallyIdentifiableLocation> Locations { get; init; }
+    private LocatableDetails() { }
+    public abstract T Match<T>(Func<LocatableDetailsForCreate, T> create, Func<LocatableDetailsForUpdate, T> update);
+    public abstract void Match(Action<LocatableDetailsForCreate> create, Action<LocatableDetailsForUpdate> update);
+
+    public sealed record LocatableDetailsForCreate : LocatableDetails
+    {
+        public required List<EventuallyIdentifiableLocation> Locations { get; init; }
+        public override T Match<T>(Func<LocatableDetailsForCreate, T> create, Func<LocatableDetailsForUpdate, T> update)
+        {
+            return create(this);
+        }
+        public override void Match(Action<LocatableDetailsForCreate> create, Action<LocatableDetailsForUpdate> update)
+        {
+            create(this);
+        }
+    }
+    public abstract record LocatableDetailsForUpdate : LocatableDetails
+    {
+        public required List<EventuallyIdentifiableLocation> LocationsToAdd { get; init; }
+
+        public required List<int> LocationsToDelete { get; init; }
+
+        public required List<ImmediatelyIdentifiableLocation> LocationsToUpdate { get; init; }
+        public override T Match<T>(Func<LocatableDetailsForCreate, T> create, Func<LocatableDetailsForUpdate, T> update)
+        {
+            return update(this);
+        }
+        public override void Match(Action<LocatableDetailsForCreate> create, Action<LocatableDetailsForUpdate> update)
+        {
+            update(this);
+        }
+    }
 }
-
-public abstract record ExistingLocatableBase : ExistingNameableBase, ImmediatelyIdentifiableLocatable
-{
-    public required List<EventuallyIdentifiableLocation> LocationsToAdd { get; init; }
-
-    public required List<int> LocationsToDelete { get; init; }
-
-    public required List<ImmediatelyIdentifiableLocation> LocationsToUpdate { get; init; }
-}
-

@@ -1,17 +1,17 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class FathersRightsViolationCaseCreatorFactory(
-    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableDocumentable> documentableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableLocatable> locatableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableCase> caseInserterFactory,
+    IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
+    IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
+    IDatabaseInserterFactory<DocumentableToCreate> documentableInserterFactory,
+    IDatabaseInserterFactory<LocatableToCreate> locatableInserterFactory,
+    IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
+    IDatabaseInserterFactory<CaseToCreate> caseInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableFathersRightsViolationCase> fathersRightsViolationCaseInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory,
     LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
-    IEntityCreatorFactory<ExistingCaseNewCaseParties> caseCaseTypeCreatorFactory
+    IEntityCreatorFactory<CaseNewCasePartiesToUpdate> caseCaseTypeCreatorFactory
 ) : IEntityCreatorFactory<EventuallyIdentifiableFathersRightsViolationCase>
 {
     public async Task<IEntityCreator<EventuallyIdentifiableFathersRightsViolationCase>> CreateAsync(IDbConnection connection) =>

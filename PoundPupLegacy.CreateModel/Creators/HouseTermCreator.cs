@@ -2,10 +2,10 @@
 
 internal sealed class HouseTermCreatorFactory(
 
-    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableDocumentable> documentableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableCongressionalTerm> congressionalTermInserterFactory,
+    IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
+    IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
+    IDatabaseInserterFactory<DocumentableToCreate> documentableInserterFactory,
+    IDatabaseInserterFactory<CongressionalTermToCreate> congressionalTermInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableHouseTerm> houseTermInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     IEntityCreatorFactory<EventuallyIdentifiableCongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliationCreatorFactory

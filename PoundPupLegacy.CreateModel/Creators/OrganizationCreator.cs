@@ -1,12 +1,12 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class OrganizationCreatorFactory(
-    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeIntererFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableDocumentable> documentableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableLocatable> locatableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableNameable> nameableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableParty> partyInserterFactory,
+    IDatabaseInserterFactory<NodeToCreate> nodeIntererFactory,
+    IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
+    IDatabaseInserterFactory<DocumentableToCreate> documentableInserterFactory,
+    IDatabaseInserterFactory<LocatableToCreate> locatableInserterFactory,
+    IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
+    IDatabaseInserterFactory<PartyToCreate> partyInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableOrganization> organizationInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory,

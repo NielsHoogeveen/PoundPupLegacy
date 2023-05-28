@@ -597,7 +597,7 @@ internal class MemberOfCongressMigrator(
 
                     var terms = memberOfCongress.terms.Select(x => (x.start, x.end, x.party)).GroupBy(x => x.party).ToList();
 
-                    var relations = new List<NewPersonOrganizationRelationForNewPerson>();
+                    var relations = new List<PersonOrganizationRelationToCreateForNewPerson>();
                     if (terms.Count == 1) {
 
                     }
@@ -923,7 +923,7 @@ internal class MemberOfCongressMigrator(
 
 
             var now = DateTime.Now;
-            yield return new NewPersonOrganizationRelationForExistingParticipants {
+            yield return new PersonOrganizationRelationToCreateForExistingParticipants {
                 Id = null,
                 PublisherId = 2,
                 CreatedDateTime = now,

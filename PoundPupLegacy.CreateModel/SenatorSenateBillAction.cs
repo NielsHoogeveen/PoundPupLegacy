@@ -1,29 +1,18 @@
 ﻿namespace PoundPupLegacy.CreateModel;
+public sealed record SenateHouseBillAction : NodeToCreate
+{
+    public required NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+    public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+    public NodeIdentification NodeIdentification => NodeIdentificationForCreate;
+    public NodeDetails NodeDetails => NodeDetailsForCreate;
+}
 
-public sealed record NewSenatorSenateBillAction : NewNodeBase, EventuallyIdentifiableSenatorSenateBillAction
+
+public abstract record SenateHouseBillActionDetails
 {
-    public required int SenatorId { get; init; }
-    public required int SenateBillId { get; init; }
+    public required int SenateId { get; init; }
+    public required int HouseBillId { get; init; }
     public required int BillActionTypeId { get; init; }
     public required DateTime Date { get; init; }
-}
-public sealed record ExistingSenatorSenateBillAction : ExistingNodeBase, ImmediatelyIdentifiableSenatorSenateBillAction
-{
-    public required int SenatorId { get; init; }
-    public required int SenateBillId { get; init; }
-    public required int BillActionTypeId { get; init; }
-    public required DateTime Date { get; init; }
-}
-public interface ImmediatelyIdentifiableSenatorSenateBillAction : SenatorSenateBillAction, ImmediatelyIdentifiableNode
-{
-}
-public interface EventuallyIdentifiableSenatorSenateBillAction : SenatorSenateBillAction, EventuallyIdentifiableNode
-{
-}
-public interface SenatorSenateBillAction : Node
-{
-    int SenatorId { get; }
-    int SenateBillId { get; }
-    int BillActionTypeId { get; }
-    DateTime Date { get; }
+
 }

@@ -1,19 +1,15 @@
 ﻿namespace PoundPupLegacy.CreateModel;
-public interface ImmediatelyIdentifiableEndoRelationType : EndoRelationType, ImmediatelyIdentifiableNameable
+public interface EndoRelationTypeToUpdate : EndoRelationType, NameableToUpdate
 {
 }
-public interface EventuallyIdentifiableEndoRelationType: EndoRelationType, EventuallyIdentifiableNameable
+public interface EndoRelationTypeToCreate: EndoRelationType, NameableToCreate
 {
 }
 public interface EndoRelationType: Nameable
 {
-    Boolean IsSymmetric { get; }
+    EndoRelationTypeDetails EndoRelationTypeDetails { get; }
 }
-public abstract record NewEndoRelationTypeBase: NewNameableBase, EventuallyIdentifiableEndoRelationType
-{
-    public required Boolean IsSymmetric { get; init; }
-}
-public abstract record ExistingEndoRelationTypeBase : ExistingNameableBase, ImmediatelyIdentifiableEndoRelationType
+public sealed record EndoRelationTypeDetails
 {
     public required Boolean IsSymmetric { get; init; }
 }

@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel;
-public interface ImmediatelyIdentifiableCountryAndFirstLevelSubdivision : CountryAndFirstLevelSubdivision, ImmediatelyIdentifiableISOCodedFirstLevelSubdivision, ImmediatelyIdentifiableTopLevelCountry
+public interface CountryAndFirstLevelSubdivisionToUpdate : CountryAndFirstLevelSubdivision, ISOCodedFirstLevelSubdivisionToUpdate, TopLevelCountryToUpdate
 {
 
 }
-public interface EventuallyIdentifiableCountryAndFirstLevelSubdivision : CountryAndFirstLevelSubdivision, EventuallyIdentifiableISOCodedFirstLevelSubdivision, EventuallyIdentifiableTopLevelCountry
+public interface CountryAndFirstLevelSubdivisionToCreate : CountryAndFirstLevelSubdivision, ISOCodedFirstLevelSubdivisionToCreate, TopLevelCountryToCreate
 {
 
 }

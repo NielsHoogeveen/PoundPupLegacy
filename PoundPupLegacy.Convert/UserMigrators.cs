@@ -263,7 +263,7 @@ internal sealed class UserMigrator(
         await tenantCreator.CreateAsync(GetTenants());
         await userCreator.CreateAsync(ReadUsers());
         await systemGroupCreator.CreateAsync(new SystemGroup {
-            VocabularyTagging = new NewVocabulary {
+            VocabularyTagging = new VocabularyToCreate {
                 Id = null,
                 Name = Constants.VOCABULARY_TOPICS,
                 PublisherId = 1,

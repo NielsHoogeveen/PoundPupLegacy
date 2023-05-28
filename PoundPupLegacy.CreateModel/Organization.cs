@@ -1,52 +1,77 @@
-﻿namespace PoundPupLegacy.CreateModel;
-public interface ImmediatelyIdentifiableOrganization : Organization, ImmediatelyIdentifiableParty
+﻿using static PoundPupLegacy.CreateModel.NodeIdentification;
+
+namespace PoundPupLegacy.CreateModel;
+
+public interface OrganizationToUpdate : Organization, PartyToUpdate
 {
-    List<int> OrganizationTypeIdsToAdd { get; }
-    List<int> OrganizationTypeIdsToRemove { get; }
-    List<ImmediatelyIdentifiablePersonOrganizationRelation> PersonOrganizationRelationsToUpdate { get; }
-    List<EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants> PersonOrganizationRelationsToAdd { get; }
-    List<ImmediatelyIdentifiableInterOrganizationalRelation> InterOrganizationalRelationsToUpdate { get; }
-    List<EventuallyIdentifiableInterOrganizationalRelationForExistingParticipants> InterOrganizationalRelationsToAdd { get; }
 }
-public interface EventuallyIdentifiableOrganization : Organization, EventuallyIdentifiableParty
+public interface OrganizationToCreate : Organization, PartyToCreate
 {
-    List<int> OrganizationTypeIds { get; }
-    List<EventuallyIdentifiablePersonOrganizationRelationForNewOrganization> PersonOrganizationRelations { get; }
-    List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationFrom> InterOrganizationalRelationsToAddFrom { get; }
-    List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationTo> InterOrganizationalRelationsToAddTo { get; }
 }
-public interface Organization : Party
+public interface Organization: Party
 {
-    string? WebsiteUrl { get; }
-    string? EmailAddress { get; }
-    FuzzyDate? Established { get; }
-    FuzzyDate? Terminated { get; }
-    
+    OrganizationDetails OrganizationDetails { get; }
 }
 
-public abstract record NewOrganizationBase: NewPartyBase, EventuallyIdentifiableOrganization
+public abstract record OrganizationDetails
 {
     public required string? WebsiteUrl { get; init; }
     public required string? EmailAddress { get; init; }
     public required FuzzyDate? Established { get; init; }
     public required FuzzyDate? Terminated { get; init; }
     public required List<int> OrganizationTypeIds { get; init; }
-    public required List<EventuallyIdentifiablePersonOrganizationRelationForNewOrganization> PersonOrganizationRelations { get; init; }
-    public required List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationFrom> InterOrganizationalRelationsToAddFrom { get; init; }
-    public required List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationTo> InterOrganizationalRelationsToAddTo { get; init; }
+    public abstract IEnumerable<InterOrganizationalRelation> InterOrganizationalRelations { get; }
+    public abstract IEnumerable<PartyPoliticalEntityRelation> PartyPoliticalEntityRelations { get; }
+    public abstract IEnumerable<PersonOrganizationRelation> PersonOrganizationRelations { get; }
+    public abstract T Match<T>(Func<OrganizationDetailsForCreate, T> create, Func<OrganizationDetailsForUpdate, T> update);
+    public abstract void Match(Action<OrganizationDetailsForCreate> create, Action<OrganizationDetailsForUpdate> update);
 
-}
-public abstract record ExistingOrganizationBase : ExistingPartyBase, ImmediatelyIdentifiableOrganization
-{
-    public required string? WebsiteUrl { get; init; }
-    public required string? EmailAddress { get; init; }
-    public required FuzzyDate? Established { get; init; }
-    public required FuzzyDate? Terminated { get; init; }
-    public required List<int> OrganizationTypeIdsToAdd { get; init; }
-    public required List<int> OrganizationTypeIdsToRemove { get; init; }
-    public required List<ImmediatelyIdentifiablePersonOrganizationRelation> PersonOrganizationRelationsToUpdate { get; init; }
-    public required List<EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants> PersonOrganizationRelationsToAdd { get; init; }
-    public required List<ImmediatelyIdentifiableInterOrganizationalRelation> InterOrganizationalRelationsToUpdate { get; init; }
-    public required List<EventuallyIdentifiableInterOrganizationalRelationForExistingParticipants> InterOrganizationalRelationsToAdd { get; init; }
+    public sealed record OrganizationDetailsForCreate: OrganizationDetails 
+    {
+        public override IEnumerable<InterOrganizationalRelation> InterOrganizationalRelations => GetInterOrganizationalRelations();
+        public override IEnumerable<PartyPoliticalEntityRelation> PartyPoliticalEntityRelations => PartyPoliticalEntityRelationsToCreate;
+        public override IEnumerable<PersonOrganizationRelation> PersonOrganizationRelations => PersonOrganizationRelationsToCreate;
+        public required List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationFrom> InterOrganizationalRelationsFrom { get; init; }
+        public required List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationFrom> InterOrganizationalRelationsTo { get; init; }
+        private IEnumerable<InterOrganizationalRelation> GetInterOrganizationalRelations()
+        {
+            foreach(var relation in InterOrganizationalRelationsFrom) {
+                yield return relation;
+            }
+            foreach(var relation in InterOrganizationalRelationsTo) {
+                yield return relation;
+            }
+        }
+        public required List<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForNewParty> PartyPoliticalEntityRelationsToCreate { get; init; }
 
+        public required List<PersonOrganizationRelation.PersonOrganizationRelationToCreateForNewOrganization> PersonOrganizationRelationsToCreate { get; init; }
+        public override T Match<T>(Func<OrganizationDetailsForCreate, T> create, Func<OrganizationDetailsForUpdate, T> update)
+        {
+            return create(this);
+        }
+        public override void Match(Action<OrganizationDetailsForCreate> create, Action<OrganizationDetailsForUpdate> update)
+        {
+            create(this);
+        }
+    }
+    public sealed record OrganizationDetailsForUpdate : OrganizationDetails
+    {
+        public override IEnumerable<InterOrganizationalRelation> InterOrganizationalRelations => InterOrganizationalRelationsToCreate;
+        public override IEnumerable<PartyPoliticalEntityRelation> PartyPoliticalEntityRelations => PartyPoliticalEntityRelationsToCreate;
+        public override IEnumerable<PersonOrganizationRelation> PersonOrganizationRelations => PersonOrganizationRelationsToCreate;
+        public required List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForExistingParticipants> InterOrganizationalRelationsToCreate { get; init; }
+        public required List<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForExistingParty> PartyPoliticalEntityRelationsToCreate { get; init; }
+        public required List<PersonOrganizationRelation.PersonOrganizationRelationToCreateForExistingParticipants> PersonOrganizationRelationsToCreate { get; init; }
+        public required List<PersonOrganizationRelation.PersonOrganizationRelationToUpdate> PersonOrganizationRelationsToUpdate { get; init; }
+        public required List<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToUpdate> PartyPoliticalEntityRelationToUpdates { get; init; }
+        public required List<PersonOrganizationRelation.PersonOrganizationRelationToUpdate> PersonOrganizationRelationToUpdates { get; init; }
+        public override T Match<T>(Func<OrganizationDetailsForCreate, T> create, Func<OrganizationDetailsForUpdate, T> update)
+        {
+            return update(this);
+        }
+        public override void Match(Action<OrganizationDetailsForCreate> create, Action<OrganizationDetailsForUpdate> update)
+        {
+            update(this);
+        }
+    }
 }

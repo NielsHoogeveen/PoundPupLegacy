@@ -1,10 +1,10 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class MultiQuestionPollCreatorFactory(
-    IDatabaseInserterFactory<EventuallyIdentifiableNode> nodeInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableSearchable> searchableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableSimpleTextNode> simpleTextNodeInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiablePoll> pollInserterFactory,
+    IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
+    IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
+    IDatabaseInserterFactory<SimpleTextNodeToCreate> simpleTextNodeInserterFactory,
+    IDatabaseInserterFactory<PollToCreate> pollInserterFactory,
     IDatabaseInserterFactory<EventuallyIdentifiableMultiQuestionPoll> multiQuestionPollInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     IEntityCreatorFactory<EventuallyIdentifiablePollQuestion> pollQuestionCreatorFactory,

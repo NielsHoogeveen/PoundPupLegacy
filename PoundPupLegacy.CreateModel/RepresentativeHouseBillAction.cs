@@ -1,29 +1,18 @@
 ﻿namespace PoundPupLegacy.CreateModel;
+public sealed record RepresentativeHouseBillAction: NodeToCreate
+{
+    public required NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+    public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+    public NodeIdentification NodeIdentification => NodeIdentificationForCreate;
+    public NodeDetails NodeDetails => NodeDetailsForCreate;
+}
 
-public sealed record NewRepresentativeHouseBillAction : NewNodeBase, EventuallyIdentifiableRepresentativeHouseBillAction
+
+public abstract record RepresentativeHouseBillActionDetails
 {
     public required int RepresentativeId { get; init; }
     public required int HouseBillId { get; init; }
     public required int BillActionTypeId { get; init; }
     public required DateTime Date { get; init; }
-}
-public sealed record ExistingRepresentativeHouseBillAction : ExistingNodeBase, ImmediatelyIdentifiableRepresentativeHouseBillAction
-{
-    public required int RepresentativeId { get; init; }
-    public required int HouseBillId { get; init; }
-    public required int BillActionTypeId { get; init; }
-    public required DateTime Date { get; init; }
-}
-public interface ImmediatelyIdentifiableRepresentativeHouseBillAction : RepresentativeHouseBillAction, ImmediatelyIdentifiableNode
-{
-}
-public interface EventuallyIdentifiableRepresentativeHouseBillAction : RepresentativeHouseBillAction, EventuallyIdentifiableNode
-{
-}
-public interface RepresentativeHouseBillAction : Node
-{
-    int RepresentativeId { get; }
-    int HouseBillId { get; }
-    int BillActionTypeId { get; }
-    DateTime Date { get; }
+
 }

@@ -1,16 +1,18 @@
 ﻿namespace PoundPupLegacy.CreateModel;
-public interface ImmediatelyIdentifiablePoll : Poll, ImmediatelyIdentifiableNode
+public interface PollToUpdate : Poll, NodeToUpdate
 {
 }
 
-public interface EventuallyIdentifiablePoll : Poll, EventuallyIdentifiableNode
+public interface PollToCreate : Poll, NodeToCreate
 {
 }
 
 public interface Poll : Node
 {
-
-    int PollStatusId { get; }
-    DateTime DateTimeClosure { get; }
-
+    PollDetails PollDetails { get; }
+}
+public sealed record PollDetails
+{
+    public required int PollStatusId { get; init; }
+    public required DateTime DateTimeClosure { get; init; }
 }

@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel;
-public interface ImmediatelyIdentifiableDocumentable : Documentable, ImmediatelyIdentifiableSearchable
+public interface DocumentableToUpdate : Documentable, SearchableToUpdate
 {
 }
 
-public interface EventuallyIdentifiableDocumentable : Documentable, EventuallyIdentifiableSearchable
+public interface DocumentableToCreate : Documentable, SearchableToCreate
 {
 }
 

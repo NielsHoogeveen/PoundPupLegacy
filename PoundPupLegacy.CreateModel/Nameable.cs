@@ -1,37 +1,49 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public interface ImmediatelyIdentifiableNameable : Nameable, ImmediatelyIdentifiableSearchable
+public interface NameableToUpdate : Nameable, SearchableToUpdate
 {
-    public List<NewTermForExistingNameable> TermsToAdd { get; }
+    NameableDetails.NameableDetailsForUpdate NameableDetailsForUpdate { get; }
 }
-public interface EventuallyIdentifiableNameable: Nameable, EventuallyIdentifiableSearchable
+public interface NameableToCreate: Nameable, SearchableToCreate
 {
-    public List<NewTermForNewNameable> Terms { get; }
+    NameableDetails.NameableDetailsForCreate NameableDetailsForCreate { get; }
 }
 
 public interface Nameable : Searchable
 {
-    string Description { get; }
-
-    int? FileIdTileImage { get; }
-
-
+    NameableDetails NameableDetails { get; }
 }
 
-public abstract record NewNameableBase: NewNodeBase, EventuallyIdentifiableNameable
+public abstract record NameableDetails
 {
+    private NameableDetails() { }
     public required string Description { get; init; }
-
     public required int? FileIdTileImage { get; init; }
-
-    public required List<NewTermForNewNameable> Terms { get; init; }
+    public abstract T Match<T>(Func<NameableDetailsForCreate, T> create, Func<NameableDetailsForUpdate, T> update);
+    public abstract void Match(Action<NameableDetailsForCreate> create, Action<NameableDetailsForUpdate> update);
+    public sealed record NameableDetailsForCreate: NameableDetails
+    {
+        public required List<NewTermForNewNameable> Terms { get; init; }
+        public override T Match<T>(Func<NameableDetailsForCreate, T> create, Func<NameableDetailsForUpdate, T> update) 
+        { 
+            return create(this); 
+        }
+        public override void Match(Action<NameableDetailsForCreate> create, Action<NameableDetailsForUpdate> update)
+        {
+            create(this);
+        }
+    }
+    public sealed record NameableDetailsForUpdate : NameableDetails
+    {
+        public required List<NewTermForExistingNameable> TermsToAdd { get; init; }
+        public override T Match<T>(Func<NameableDetailsForCreate, T> create, Func<NameableDetailsForUpdate, T> update)
+        {
+            return update(this);
+        }
+        public override void Match(Action<NameableDetailsForCreate> create, Action<NameableDetailsForUpdate> update)
+        {
+            update(this);
+        }
+    }
 }
 
-public abstract record ExistingNameableBase : ExistingNodeBase, ImmediatelyIdentifiableNameable
-{
-    public required string Description { get; init; }
-
-    public required int? FileIdTileImage { get; init; }
-
-    public required List<NewTermForExistingNameable> TermsToAdd { get; init; }
-}

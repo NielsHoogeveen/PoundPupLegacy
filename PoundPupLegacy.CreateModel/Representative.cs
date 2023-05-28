@@ -1,39 +1,36 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record NewRepresentativeAsNewPerson : NewProfessionalRoleBaseForNewPerson, EventuallyIdentifiableRepresentative, EventuallyIdentifiableMemberOfCongressForNewPerson
+public abstract record Representative : MemberOfCongress
 {
-    public override EventuallyIdentifiableProfessionalRoleForExistingPerson ResolvePerson(int personId)
+    public abstract ProfessionalRoleDetails ProfessionalRoleDetails { get; }
+    public abstract RepresentativeDetails RepresenetativeDetails { get; }
+    public sealed record RepresentativeToCreate: Representative
     {
-        return new NewRepresentativeAsExistingPerson {
-            DateTimeRange = DateTimeRange,
-            ProfessionId = ProfessionId,
-            PersonId = personId,
-            HouseTerms = HouseTerms,
-            Id = null
-        };
+        public override ProfessionalRoleDetails ProfessionalRoleDetails => ProfessionalRoleToCreate;
+        public override RepresentativeDetails RepresenetativeDetails => RepresentativeDetailsToCreate;
+        public required ProfessionalRoleDetails.ProfessionalRoleToCreateForNewPerson ProfessionalRoleToCreate { get; init; }
+        public required RepresentativeDetails.RepresentativeDetailsToCreate RepresentativeDetailsToCreate { get; init; }
     }
-
-    public required List<NewHouseTerm> HouseTerms { get; init; }
+    public sealed record RepresentativeToUpdate : Representative
+    {
+        public override ProfessionalRoleDetails ProfessionalRoleDetails => ProfessionalRoleToCreate;
+        public override RepresentativeDetails RepresenetativeDetails => RepresentativeDetailsToCreate;
+        public required ProfessionalRoleDetails.ProfessionalRoleToCreateForExistingPerson ProfessionalRoleToCreate { get; init; }
+        public required RepresentativeDetails.RepresentativeDetailsToCreate RepresentativeDetailsToCreate { get; init; }
+    }
 }
-public sealed record NewRepresentativeAsExistingPerson : NewProfessionalRoleBaseForExistingPerson, EventuallyIdentifiableRepresentative, EventuallyIdentifiableMemberOfCongressForExistingPerson
+public abstract record RepresentativeDetails
 {
-    public required List<NewHouseTerm> HouseTerms { get; init; }
-}
+    public abstract IEnumerable<HouseTerm> HouseTerms { get; }
 
-public sealed record ExistingRepresentative : ExistingProfessionalRoleBase, ImmediateIdentifiableRepresentative, ImmediatelyIdentifiableMemberOfCongress
-{
-    public required List<NewHouseTerm> HouseTerms { get; init; }
-}
-
-public interface ImmediateIdentifiableRepresentative : Representative, ImmediatelyIdentifiableMemberOfCongress
-{
-
-}
-
-public interface EventuallyIdentifiableRepresentative : Representative, EventuallyIdentifiableMemberOfCongress
-{
-
-}
-public interface Representative: MemberOfCongress
-{
+    public sealed record RepresentativeDetailsToCreate: RepresentativeDetails
+    {
+        public override IEnumerable<HouseTerm> HouseTerms => HouseTermToCreate;  
+        public required List<HouseTerm.HouseTermToCreate> HouseTermToCreate { get; init;}
+    }
+    public sealed record RepresentativeDetailsToUpdate: RepresentativeDetails
+    {
+        public override IEnumerable<HouseTerm> HouseTerms => HouseTermToUpdate;
+        public required List<HouseTerm.HouseTermToUpdate> HouseTermToUpdate { get; init; }
+    }
 }

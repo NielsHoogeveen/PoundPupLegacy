@@ -2,54 +2,91 @@
 
 namespace PoundPupLegacy.CreateModel;
 
-public interface ImmediatelyIdentifiableNode : Node, ImmediatelyIdentifiable
+public interface NodeToUpdate : Node, IRequest
 {
-    public List<NewTenantNodeForExistingNode> TenantNodesToAdd { get; }
-    public List<ExistingTenantNode> TenantNodesToUpdate { get; }
-    public List<TenantNodeToDelete> TenantNodesToRemove { get; }
-    List<NodeTermToAdd> NodeTermsToAdd { get; }
-    List<NodeTermToRemove> NodeTermsToRemove { get; }
+    NodeIdentification.NodeIdentificationForUpdate NodeIdentificationForUpdate { get; init; }
+    NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
+
 }
-public interface EventuallyIdentifiableNode : Node, EventuallyIdentifiable
+public interface NodeToCreate : Node, IRequest
 {
-    int PublisherId { get; }
-    DateTime CreatedDateTime { get; }
-    int OwnerId { get; }
-    int NodeTypeId { get; }
-    List<NewTenantNodeForNewNode> TenantNodes { get; }
-    List<int> TermIds { get; }
+    NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+    NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
 }
 public interface Node: IRequest 
 {
-    public DateTime ChangedDateTime { get; }
-    public string Title { get; }
-    public int AuthoringStatusId { get; }
-
+    NodeIdentification NodeIdentification { get; }
+    NodeDetails NodeDetails { get; }
 }
 
-public abstract record NewNodeBase: EventuallyIdentifiableNode
+public abstract record NodeIdentification
 {
-    public required int? Id { get; set; }
-    public required int PublisherId { get; init; }
-    public required DateTime CreatedDateTime { get; init; }
-    public required DateTime ChangedDateTime { get; init; }
-    public required string Title { get; init; }
-    public required int OwnerId { get; init; }
-    public required int AuthoringStatusId { get; init; }
-    public required int NodeTypeId { get; init; }
-    public required List<NewTenantNodeForNewNode> TenantNodes { get; init; }
-    public required List<int> TermIds { get; init; }
-
+    private NodeIdentification() { }
+    public abstract T Match<T>(Func<NodeIdentificationForCreate, T> create, Func<NodeIdentificationForUpdate, T> update);
+    public abstract void Match(Action<NodeIdentificationForCreate> create, Action<NodeIdentificationForUpdate> update);
+    public sealed record NodeIdentificationForCreate : NodeIdentification
+    {
+        public required int? Id { get; init; }
+        public override T Match<T>(Func<NodeIdentificationForCreate, T> create, Func<NodeIdentificationForUpdate, T> update)
+        {
+            return create(this);
+        }
+        public override void Match(Action<NodeIdentificationForCreate> create, Action<NodeIdentificationForUpdate> update)
+        {
+            create(this);
+        }
+    }
+    public sealed record NodeIdentificationForUpdate : NodeIdentification
+    { 
+        public required int Id { get; init; }
+        public override T Match<T>(Func<NodeIdentificationForCreate, T> create, Func<NodeIdentificationForUpdate, T> update)
+        {
+            return update(this);
+        }
+        public override void Match(Action<NodeIdentificationForCreate> create, Action<NodeIdentificationForUpdate> update)
+        {
+            update(this);
+        }
+    }
 }
-public abstract record ExistingNodeBase : ImmediatelyIdentifiableNode
-{
-    public required int Id { get; init; }
+public abstract record NodeDetails{
+    private NodeDetails() { }
     public required DateTime ChangedDateTime { get; init; }
     public required string Title { get; init; }
     public required int AuthoringStatusId { get; init; }
-    public required List<NewTenantNodeForExistingNode> TenantNodesToAdd { get; init; }
-    public required List<ExistingTenantNode> TenantNodesToUpdate { get; init; }
-    public required List<TenantNodeToDelete> TenantNodesToRemove { get; init; }
-    public required List<NodeTermToAdd> NodeTermsToAdd { get; init; }
-    public required List<NodeTermToRemove> NodeTermsToRemove { get; init; }
+    public abstract T Match<T>(Func<NodeDetailsForCreate, T> create, Func<NodeDetailsForUpdate, T> update);
+    public abstract void Match(Action<NodeDetailsForCreate> create, Action<NodeDetailsForUpdate> update);
+    public sealed record NodeDetailsForCreate: NodeDetails
+    {
+        public required int PublisherId { get; init; }
+        public required DateTime CreatedDateTime { get; init; }
+        public required int OwnerId { get; init; }
+        public required int NodeTypeId { get; init; }
+        public required List<NewTenantNodeForNewNode> TenantNodes { get; init; }
+        public required List<int> TermIds { get; init; }
+        public override T Match<T>(Func<NodeDetailsForCreate, T> create, Func<NodeDetailsForUpdate, T> update)
+        {
+            return create(this);
+        }
+        public override void Match(Action<NodeDetailsForCreate> create, Action<NodeDetailsForUpdate> update)
+        {
+            create(this);
+        }
+    }
+    public sealed record NodeDetailsForUpdate : NodeDetails
+    {
+        public required List<NewTenantNodeForExistingNode> TenantNodesToAdd { get; init; }
+        public required List<ExistingTenantNode> TenantNodesToUpdate { get; init; }
+        public required List<TenantNodeToDelete> TenantNodesToRemove { get; init; }
+        public required List<NodeTermToAdd> NodeTermsToAdd { get; init; }
+        public required List<NodeTermToRemove> NodeTermsToRemove { get; init; }
+        public override T Match<T>(Func<NodeDetailsForCreate, T> create, Func<NodeDetailsForUpdate, T> update)
+        {
+            return update(this);
+        }
+        public override void Match(Action<NodeDetailsForCreate> create, Action<NodeDetailsForUpdate> update)
+        {
+            update(this);
+        }
+    }
 }

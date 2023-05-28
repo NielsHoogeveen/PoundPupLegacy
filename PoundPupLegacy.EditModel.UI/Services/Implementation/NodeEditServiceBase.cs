@@ -17,8 +17,8 @@ internal abstract class NodeEditServiceBase<TViewModelEntity, TResolvedViewModel
     where TNewViewModel : class, NewNode, TViewModelEntity
     where TResolvedNewViewModel : class, ResolvedNewNode, TViewModelEntity
     where TDomainModel: class, CreateModel.Node
-    where TCreateModel : class, CreateModel.EventuallyIdentifiableNode, TDomainModel
-    where TUpdateModel: class, CreateModel.ImmediatelyIdentifiableNode, TDomainModel
+    where TCreateModel : class, CreateModel.NodeToCreate, TDomainModel
+    where TUpdateModel: class, CreateModel.NodeToUpdate, TDomainModel
 {
     protected abstract TUpdateModel Map(TExistingViewModel existingViewModel);
     protected abstract TCreateModel Map(TResolvedNewViewModel newViewModel);

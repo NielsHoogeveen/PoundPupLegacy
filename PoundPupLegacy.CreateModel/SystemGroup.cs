@@ -10,7 +10,7 @@ public sealed record SystemGroup : UserGroup, Owner
         UserGroupId = 0,
         Id = 21
     };
-    public required NewVocabulary VocabularyTagging { get; init; }
+    public required Vocabulary.VocabularyToCreate VocabularyTagging { get; init; }
 
     public int? Id { get; set; } = Constants.OWNER_SYSTEM;
 }

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = ExistingCaseNewCaseParties;
+using Request = CaseNewCasePartiesToUpdate;
 
 internal sealed class CaseCasePartiesInserterFactory : BasicDatabaseInserterFactory<Request>
 {

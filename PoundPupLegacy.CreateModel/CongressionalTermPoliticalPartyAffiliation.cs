@@ -17,12 +17,12 @@ public sealed record ExistingCongressionalTermPoliticalPartyAffiliation : Existi
     public required DateTimeRange DateTimeRange { get; init; }
 }
 
-public interface ImmediatelyIdentifiableCongressionalTermPoliticalPartyAffiliation : CongressionalTermPoliticalPartyAffiliation, ImmediatelyIdentifiableDocumentable, ImmediatelyIdentifiableSearchable
+public interface ImmediatelyIdentifiableCongressionalTermPoliticalPartyAffiliation : CongressionalTermPoliticalPartyAffiliation, DocumentableToUpdate, SearchableToUpdate
 {
     int CongressionalTermId { get; }
 
 }
-public interface EventuallyIdentifiableCongressionalTermPoliticalPartyAffiliation: CongressionalTermPoliticalPartyAffiliation, EventuallyIdentifiableDocumentable, EventuallyIdentifiableSearchable
+public interface EventuallyIdentifiableCongressionalTermPoliticalPartyAffiliation: CongressionalTermPoliticalPartyAffiliation, DocumentableToCreate, SearchableToCreate
 {
     int? CongressionalTermId { get; }
 }

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Updaters;
 
-using Request = ImmediatelyIdentifiableSimpleTextNode;
+using Request = SimpleTextNodeToUpdate;
 internal sealed class SimpleTextNodeChangerFactory(
     IDatabaseUpdaterFactory<Request> databaseUpdaterFactory,
     NodeDetailsChangerFactory nodeDetailsChangerFactory) : IEntityChangerFactory<Request>

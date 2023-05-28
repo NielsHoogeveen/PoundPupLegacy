@@ -1,22 +1,18 @@
 ﻿namespace PoundPupLegacy.CreateModel;
-public interface ImmediatelyIdentifiablePoliticalEntity : ImmediatelyIdentifiableGeographicalEntity, PoliticalEntity
+public interface PoliticalEntityToUpdate : GeographicalEntityToUpdate, PoliticalEntity
 {
 }
 
-public interface EventuallyIdentifiablePoliticalEntity: PoliticalEntity, EventuallyIdentifiableGeographicalEntity
+public interface PoliticalEntityToCreate: PoliticalEntity, GeographicalEntityToCreate
 {
 }
 
 public interface PoliticalEntity : GeographicalEntity
 {
-    int? FileIdFlag { get; }
+    PoliticalEntityDetails PoliticalEntityDetails { get; }
 }
 
-public record NewPoliticalEntityBase: NewNameableBase, EventuallyIdentifiablePoliticalEntity
-{
-    public required int? FileIdFlag { get; init; }
-}
-public record ExistingPoliticalEntityBase : ExistingNameableBase, ImmediatelyIdentifiablePoliticalEntity
+public sealed record PoliticalEntityDetails
 {
     public required int? FileIdFlag { get; init; }
 }

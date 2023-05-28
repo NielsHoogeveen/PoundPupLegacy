@@ -1,49 +1,48 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public interface EventuallyIdentifiableProfessionalRoleForNewPerson : EventuallyIdentifiableProfessionalRole
+public interface ProfessionalRoleToCreate: ProfessionalRole
 {
-    public EventuallyIdentifiableProfessionalRoleForExistingPerson ResolvePerson(int personId);
+    ProfessionalRoleDetails.ProfessionalRoleToCreateForNewPerson ProfessionalRoleToCreate { get; }
 }
-public interface EventuallyIdentifiableProfessionalRoleForExistingPerson : EventuallyIdentifiableProfessionalRole
+public interface ProfessionalRoleToUpdate : ProfessionalRole
 {
-    int PersonId { get; }
-}
-public interface EventuallyIdentifiableProfessionalRole : ProfessionalRole, EventuallyIdentifiable
-{
-}
-public interface ImmediatelyIdentifiableProfessionalRole : ProfessionalRole, ImmediatelyIdentifiable
-{
-    int PersonId { get; }
+    ProfessionalRoleDetails.ProfessionalRoleToCreateForExistingPerson ProfessionalRoleToUpdate { get; }
 }
 public interface ProfessionalRole : IRequest
 {
-    DateTimeRange? DateTimeRange { get; }
-
-    int ProfessionId { get; }
+    ProfessionalRoleDetails ProfessionalRoleDetails { get; }
 }
 
-public abstract record NewProfessionalRoleBaseForNewPerson : ProfessionalRoleBase, EventuallyIdentifiableProfessionalRoleForNewPerson
-{
-    public required int? Id { get; set; }
-
-    public abstract EventuallyIdentifiableProfessionalRoleForExistingPerson ResolvePerson(int personId);
-}
-public abstract record NewProfessionalRoleBaseForExistingPerson : ProfessionalRoleBase, EventuallyIdentifiableProfessionalRoleForExistingPerson
-{
-    public required int? Id { get; set; }
-    public required int PersonId { get; init; }
-}
-public abstract record ExistingProfessionalRoleBase : ProfessionalRoleBase, ImmediatelyIdentifiableProfessionalRole
-{
-    public required int Id { get; init; }
-
-    public required int PersonId { get; init; }
-}
-
-public abstract record ProfessionalRoleBase: ProfessionalRole
+public abstract record ProfessionalRoleDetails
 {
     public required DateTimeRange? DateTimeRange { get; init; }
 
     public required int ProfessionId { get; init; }
+
+    public sealed record ProfessionalRoleToCreateForNewPerson: ProfessionalRoleDetails
+    {
+        public required int? Id { get; set; }
+
+        public ProfessionalRoleToCreateForExistingPerson ResolvePerson(int personId)
+        {
+            return new ProfessionalRoleToCreateForExistingPerson {
+                Id = Id,
+                PersonId = personId,
+                DateTimeRange = DateTimeRange,
+                ProfessionId = ProfessionId
+            };
+        }
+    }
+    public sealed record ProfessionalRoleToCreateForExistingPerson: ProfessionalRoleDetails
+    {
+        public required int? Id { get; set; }
+        public required int PersonId { get; init; }
+    }
+    public sealed record ExistingProfessionalRoleBase: ProfessionalRoleDetails
+    {
+        public required int Id { get; init; }
+
+        public required int PersonId { get; init; }
+    }
 }
 

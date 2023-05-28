@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.CreateModel;
-public interface ImmediatelyIdentifiableFirstAndSecondLevelSubdivision : FirstAndSecondLevelSubdivision, ImmediatelyIdentifiableISOCodedSubdivision, ImmediatelyIdentifiableSecondLevelSubdivision
+public interface FirstAndSecondLevelSubdivisionToUpdate : FirstAndSecondLevelSubdivision, ISOCodedSubdivisionToUpdate, SecondLevelSubdivisionToUpdate
 {
 }
 
-public interface EventuallyIdentifiableFirstAndSecondLevelSubdivision : FirstAndSecondLevelSubdivision, EventuallyIdentifiableISOCodedSubdivision, EventuallyIdentifiableSecondLevelSubdivision 
+public interface FirstAndSecondLevelSubdivisionToCreate : FirstAndSecondLevelSubdivision, ISOCodedSubdivisionToCreate, SecondLevelSubdivisionToCreate 
 { 
 }
 

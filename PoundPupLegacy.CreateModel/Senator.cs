@@ -1,38 +1,36 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record NewSenatorAsNewPerson : NewProfessionalRoleBaseForNewPerson, EventuallyIdentifiableSenator, EventuallyIdentifiableMemberOfCongressForNewPerson
+public abstract record Senator : MemberOfCongress
 {
-    public required List<NewSenateTerm> SenateTerms { get; init; }
-    public override EventuallyIdentifiableProfessionalRoleForExistingPerson ResolvePerson(int personId)
+    public abstract ProfessionalRoleDetails ProfessionalRoleDetails { get; }
+    public abstract SenatorDetails RepresenetativeDetails { get; }
+    public sealed record SenatorToCreate : Senator
     {
-        return new NewSenatorAsExistingPerson {
-            DateTimeRange = DateTimeRange,
-            ProfessionId = ProfessionId,
-            PersonId = personId,
-            SenateTerms = SenateTerms,
-            Id = null
-        };
+        public override ProfessionalRoleDetails ProfessionalRoleDetails => ProfessionalRoleToCreate;
+        public override SenatorDetails RepresenetativeDetails => SenatorDetailsToCreate;
+        public required ProfessionalRoleDetails.ProfessionalRoleToCreateForNewPerson ProfessionalRoleToCreate { get; init; }
+        public required SenatorDetails.SenatorDetailsToCreate SenatorDetailsToCreate { get; init; }
+    }
+    public sealed record SenatorToUpdate : Senator
+    {
+        public override ProfessionalRoleDetails ProfessionalRoleDetails => ProfessionalRoleToCreate;
+        public override SenatorDetails RepresenetativeDetails => SenatorDetailsToCreate;
+        public required ProfessionalRoleDetails.ProfessionalRoleToCreateForExistingPerson ProfessionalRoleToCreate { get; init; }
+        public required SenatorDetails.SenatorDetailsToCreate SenatorDetailsToCreate { get; init; }
     }
 }
-public sealed record NewSenatorAsExistingPerson : NewProfessionalRoleBaseForExistingPerson, EventuallyIdentifiableSenator, EventuallyIdentifiableMemberOfCongressForExistingPerson
+public abstract record SenatorDetails
 {
-    public required List<NewSenateTerm> SenateTerms { get; init; }
+    public abstract IEnumerable<HouseTerm> HouseTerms { get; }
 
-}
-public sealed record ExistingSenator : ExistingProfessionalRoleBase, ImmediatelyIdentifiableSenator, ImmediatelyIdentifiableMemberOfCongress
-{
-    public required List<NewSenateTerm> SenateTerms { get; init; }
-
-}
-public interface ImmediatelyIdentifiableSenator : Senator, ImmediatelyIdentifiableMemberOfCongress
-{
-
-}
-public interface EventuallyIdentifiableSenator : Senator, EventuallyIdentifiableMemberOfCongress
-{
-
-}
-public interface Senator: MemberOfCongress
-{
-
+    public sealed record SenatorDetailsToCreate : SenatorDetails
+    {
+        public override IEnumerable<HouseTerm> HouseTerms => HouseTermToCreate;
+        public required List<HouseTerm.HouseTermToCreate> HouseTermToCreate { get; init; }
+    }
+    public sealed record SenatorDetailsToUpdate : SenatorDetails
+    {
+        public override IEnumerable<HouseTerm> HouseTerms => HouseTermToUpdate;
+        public required List<HouseTerm.HouseTermToUpdate> HouseTermToUpdate { get; init; }
+    }
 }

@@ -21,7 +21,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT(
         await partyPoliticalEntityRelationCreator.CreateAsync(ReadPartyPoliticalEntityRelations(nodeIdReader, tenantNodeReader));
     }
 
-    private async IAsyncEnumerable<NewPartyPoliticalEntityRelationForExistingParty> ReadPartyPoliticalEntityRelations(
+    private async IAsyncEnumerable<PartyPoliticalEntityRelationToCreateForExistingParty> ReadPartyPoliticalEntityRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, NewTenantNodeForExistingNode> tenantNodeReader)
     {
@@ -124,7 +124,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT(
                     UrlId = null
                 });
             }
-            yield return new NewPartyPoliticalEntityRelationForExistingParty {
+            yield return new PartyPoliticalEntityRelationToCreateForExistingParty {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

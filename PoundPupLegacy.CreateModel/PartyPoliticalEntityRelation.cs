@@ -1,75 +1,109 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record NewPartyPoliticalEntityRelationForExistingParty : NewNodeBase, EventuallyIdentifiablePartyPoliticalEntityRelationForExistingParty
+public abstract record PartyPoliticalEntityRelation: Node
 {
-    public required int PartyId { get; init; }
-    public required int PoliticalEntityId { get; init; }
-    public required int PartyPoliticalEntityRelationTypeId { get; init; }
-    public required DateTimeRange DateRange { get; init; }
-    public required int? DocumentIdProof { get; init; }
-}
-public sealed record NewPartyPoliticalEntityRelationForNewParty : NewNodeBase, EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty
-{
-    public required int? PartyId { get; init; }
-    public required int PoliticalEntityId { get; init; }
-    public required int PartyPoliticalEntityRelationTypeId { get; init; }
-    public required DateTimeRange DateRange { get; init; }
-    public required int? DocumentIdProof { get; init; }
+    private PartyPoliticalEntityRelation() { }
+    public required PartyPoliticalEntityRelationDetails PartyPoliticalEntityRelationDetails { get; init; }
+    public abstract NodeIdentification NodeIdentification { get; }
+    public abstract NodeDetails NodeDetails { get; }
+    public abstract T Match<T>(
+        Func<PartyPoliticalEntityRelationToCreateForExistingParty, T> create,
+        Func<PartyPoliticalEntityRelationToCreateForNewParty, T> createNewParty,
+        Func<PartyPoliticalEntityRelationToUpdate, T> update
+     );
+    public abstract void Match(
+        Action<PartyPoliticalEntityRelationToCreateForExistingParty> create,
+        Action<PartyPoliticalEntityRelationToCreateForNewParty> createNewParty,
+        Action<PartyPoliticalEntityRelationToUpdate> update
+    );
 
-    public EventuallyIdentifiablePartyPoliticalEntityRelationForExistingParty ResolveParty(int partyId)
+    public sealed record PartyPoliticalEntityRelationToCreateForExistingParty: PartyPoliticalEntityRelation, NodeToCreate
     {
-        return new NewPartyPoliticalEntityRelationForExistingParty {
-            PartyId = partyId,
-            AuthoringStatusId = AuthoringStatusId,
-            ChangedDateTime = ChangedDateTime,
-            CreatedDateTime = CreatedDateTime,
-            DateRange = DateRange,
-            DocumentIdProof = DocumentIdProof,
-            TermIds = TermIds,
-            NodeTypeId = NodeTypeId,
-            OwnerId = OwnerId,
-            PoliticalEntityId = PoliticalEntityId,
-            PublisherId = PublisherId,
-            TenantNodes = TenantNodes,
-            Title = Title,
-            Id = Id,
-            PartyPoliticalEntityRelationTypeId = PartyPoliticalEntityRelationTypeId
-        };
+        public required int PartyId { get; init; }
+        public required NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+        public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+        public override NodeIdentification NodeIdentification => NodeIdentificationForCreate;
+        public override NodeDetails NodeDetails => NodeDetailsForCreate;
+        public override T Match<T>(
+            Func<PartyPoliticalEntityRelationToCreateForExistingParty, T> create,
+            Func<PartyPoliticalEntityRelationToCreateForNewParty, T> createNewParty,
+            Func<PartyPoliticalEntityRelationToUpdate, T> update
+         )
+        { 
+            return create(this);
+        }
+        public override void Match(
+            Action<PartyPoliticalEntityRelationToCreateForExistingParty> create,
+            Action<PartyPoliticalEntityRelationToCreateForNewParty> createNewParty,
+            Action<PartyPoliticalEntityRelationToUpdate> update
+        )
+        { 
+            create(this);
+        }
+    }
+    public sealed record PartyPoliticalEntityRelationToCreateForNewParty: PartyPoliticalEntityRelation, NodeToCreate
+    {
+        public required NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+        public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+        public override NodeIdentification NodeIdentification => NodeIdentificationForCreate;
+        public override NodeDetails NodeDetails => NodeDetailsForCreate;
+        public override T Match<T>(
+            Func<PartyPoliticalEntityRelationToCreateForExistingParty, T> create,
+            Func<PartyPoliticalEntityRelationToCreateForNewParty, T> createNewParty,
+            Func<PartyPoliticalEntityRelationToUpdate, T> update
+         )
+        {
+            return createNewParty(this);
+        }
+        public override void Match(
+            Action<PartyPoliticalEntityRelationToCreateForExistingParty> create,
+            Action<PartyPoliticalEntityRelationToCreateForNewParty> createNewParty,
+            Action<PartyPoliticalEntityRelationToUpdate> update
+        )
+        {
+            createNewParty(this);
+        }
+
+        public PartyPoliticalEntityRelationToCreateForExistingParty ResolveParty(int partyId)
+        {
+            return new PartyPoliticalEntityRelationToCreateForExistingParty {
+                PartyId = partyId,
+                NodeDetailsForCreate = NodeDetailsForCreate,
+                NodeIdentificationForCreate = NodeIdentificationForCreate,
+                PartyPoliticalEntityRelationDetails = PartyPoliticalEntityRelationDetails
+            };
+        }
+    }
+    public sealed record PartyPoliticalEntityRelationToUpdate: PartyPoliticalEntityRelation, NodeToUpdate
+    {
+        public required int PartyId { get; init; }
+        public override NodeIdentification NodeIdentification => NodeIdentificationForUpdate;
+        public override NodeDetails NodeDetails => NodeDetailsForUpdate;
+        public required NodeIdentification.NodeIdentificationForUpdate NodeIdentificationForUpdate { get; init; }
+        public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
+        public override T Match<T>(
+    Func<PartyPoliticalEntityRelationToCreateForExistingParty, T> create,
+    Func<PartyPoliticalEntityRelationToCreateForNewParty, T> createNewParty,
+    Func<PartyPoliticalEntityRelationToUpdate, T> update
+ )
+        {
+            return update(this);
+        }
+        public override void Match(
+            Action<PartyPoliticalEntityRelationToCreateForExistingParty> create,
+            Action<PartyPoliticalEntityRelationToCreateForNewParty> createNewParty,
+            Action<PartyPoliticalEntityRelationToUpdate> update
+        )
+        {
+            update(this);
+        }
     }
 }
-public sealed record ExistingPartyPoliticalEntityRelation : ExistingNodeBase, ImmediatelyIdentifiablePartyPoliticalEntityRelation
+
+public sealed record PartyPoliticalEntityRelationDetails
 {
-    public required int PartyId { get; init; }
     public required int PoliticalEntityId { get; init; }
     public required int PartyPoliticalEntityRelationTypeId { get; init; }
     public required DateTimeRange DateRange { get; init; }
     public required int? DocumentIdProof { get; init; }
-}
-public interface ImmediatelyIdentifiablePartyPoliticalEntityRelation : PartyPoliticalEntityRelationForExitingParty, ImmediatelyIdentifiableNode
-{
-}
-public interface EventuallyIdentifiablePartyPoliticalEntityRelationForExistingParty : PartyPoliticalEntityRelationForExitingParty, EventuallyIdentifiableNode
-{
-}
-public interface EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty : PartyPoliticalEntityRelationForNewParty, EventuallyIdentifiableNode
-{
-    public EventuallyIdentifiablePartyPoliticalEntityRelationForExistingParty ResolveParty(int partyId);
-}
-
-public interface PartyPoliticalEntityRelationForExitingParty : PartyPoliticalEntityRelation
-{
-    int PartyId { get; }
-}
-public interface PartyPoliticalEntityRelationForNewParty : PartyPoliticalEntityRelation
-{
-    int? PartyId { get; }
-}
-
-
-public interface PartyPoliticalEntityRelation : Node
-{
-    int PoliticalEntityId { get; }
-    int PartyPoliticalEntityRelationTypeId { get; }
-    DateTimeRange DateRange { get; }
-    int? DocumentIdProof { get; }
 }

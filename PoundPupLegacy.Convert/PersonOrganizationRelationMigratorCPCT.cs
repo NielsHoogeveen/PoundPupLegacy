@@ -125,7 +125,7 @@ internal sealed class PersonOrganizationRelationMigratorCPCT(
                     UrlId = null
                 });
             }
-            yield return new NewPersonOrganizationRelationForExistingParticipants {
+            yield return new PersonOrganizationRelationToCreateForExistingParticipants {
                 Id = null,
                 PublisherId = reader.GetInt32("user_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

@@ -1,24 +1,20 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public interface ImmediatelyIdentifiableGlobalRegion : GlobalRegion, ImmediatelyIdentifiableGeographicalEntity
+public interface GlobalRegionToUpdate : GlobalRegion, GeographicalEntityToUpdate
 {
 
 }
-public interface EventuallyIdentifiableGlobalRegion : GlobalRegion, EventuallyIdentifiableGeographicalEntity
+public interface GlobalRegionToCreate : GlobalRegion, GeographicalEntityToCreate
 {
 
 }
 public interface GlobalRegion : GeographicalEntity
 {
-    string Name { get; }
+    GlobalRegionDetails GlobalRegionDetails { get; }
 }
 
-public abstract record NewGlobalRegionBase: NewNameableBase, EventuallyIdentifiableGlobalRegion
+public sealed record GlobalRegionDetails
 {
     public required string Name { get; init; }
 }
 
-public abstract record ExistingGlobalRegionBase : ExistingNameableBase, ImmediatelyIdentifiableGlobalRegion
-{
-    public required string Name { get; init; }
-}

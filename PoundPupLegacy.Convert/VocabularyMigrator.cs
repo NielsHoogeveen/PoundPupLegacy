@@ -3,14 +3,14 @@
 internal sealed class VocabularyMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
-    IEntityCreatorFactory<EventuallyIdentifiableVocabulary> vocabularyCreatorFactory
+    IEntityCreatorFactory<VocabularyToCreate> vocabularyCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "vocabularies";
-    private static async IAsyncEnumerable<NewVocabulary> GetVocabularies()
+    private static async IAsyncEnumerable<VocabularyToCreate> GetVocabularies()
     {
         await Task.CompletedTask;
-        yield return new NewVocabulary {
+        yield return new VocabularyToCreate {
             Id = null,
             Name = Constants.VOCABULARY_CHILD_PLACEMENT_TYPE,
             PublisherId = 1,
@@ -35,7 +35,7 @@ internal sealed class VocabularyMigrator(
             Description = "",
             TermIds = new List<int>(),
         };
-        yield return new NewVocabulary {
+        yield return new VocabularyToCreate {
             Id = null,
             Name = Constants.VOCABULARY_TYPE_OF_ABUSE,
             PublisherId = 1,
@@ -60,7 +60,7 @@ internal sealed class VocabularyMigrator(
             Description = "",
             TermIds = new List<int>(),
         };
-        yield return new NewVocabulary {
+        yield return new VocabularyToCreate {
             Id = null,
             Name = Constants.VOCABULARY_TYPE_OF_ABUSER,
             PublisherId = 1,
@@ -85,7 +85,7 @@ internal sealed class VocabularyMigrator(
             Description = "",
             TermIds = new List<int>(),
         };
-        yield return new NewVocabulary {
+        yield return new VocabularyToCreate {
             Id = null,
             Name = Constants.VOCABULARY_FAMILY_SIZE,
             PublisherId = 1,
@@ -110,7 +110,7 @@ internal sealed class VocabularyMigrator(
             Description = "",
             TermIds = new List<int>(),
         };
-        yield return new NewVocabulary {
+        yield return new VocabularyToCreate {
             Id = null,
             Name = Constants.VOCABULARY_BILL_ACTION,
             PublisherId = 1,
@@ -135,7 +135,7 @@ internal sealed class VocabularyMigrator(
             Description = "",
             TermIds = new List<int>(),
         };
-        yield return new NewVocabulary {
+        yield return new VocabularyToCreate {
             Id = null,
             Name = Constants.VOCABULARY_ORGANIZATION_ACT_RELATION_TYPE,
             PublisherId = 1,
@@ -160,7 +160,7 @@ internal sealed class VocabularyMigrator(
             Description = "",
             TermIds = new List<int>(),
         };
-        yield return new NewVocabulary {
+        yield return new VocabularyToCreate {
             Id = null,
             Name = Constants.VOCABULARY_SUBDIVISION_TYPE,
             PublisherId = 1,
@@ -185,7 +185,7 @@ internal sealed class VocabularyMigrator(
             Description = "",
             TermIds = new List<int>(),
         };
-        yield return new NewVocabulary {
+        yield return new VocabularyToCreate {
             Id = null,
             Name = Constants.VOCABULARY_UNITED_STATES_POLITICAL_PARTY_AFFILITION_TYPE,
             PublisherId = 1,
@@ -210,7 +210,7 @@ internal sealed class VocabularyMigrator(
             Description = "",
             TermIds = new List<int>(),
         };
-        yield return new NewVocabulary {
+        yield return new VocabularyToCreate {
             Id = null,
             Name = Constants.VOCABULARY_CASE_PARTY_TYPE,
             PublisherId = 1,
@@ -278,7 +278,7 @@ internal sealed class VocabularyMigrator(
         await vocabularyCreator.CreateAsync(GetVocabularies());
         await vocabularyCreator.CreateAsync(ReadVocabularies());
     }
-    private async IAsyncEnumerable<NewVocabulary> ReadVocabularies()
+    private async IAsyncEnumerable<VocabularyToCreate> ReadVocabularies()
     {
 
         var sql = $"""
@@ -309,7 +309,7 @@ internal sealed class VocabularyMigrator(
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("name");
-            yield return new NewVocabulary {
+            yield return new VocabularyToCreate {
                 Id = null,
                 PublisherId = reader.GetInt32("access_role_id"),
                 CreatedDateTime = reader.GetDateTime("created_date_time"),

@@ -8,7 +8,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
 {
     protected override string Name => "united states political party affilition";
 
-    private async IAsyncEnumerable<NewUnitedStatesPoliticalPartyAffliation> GetUnitedStatesPoliticalPartyAffliations(
+    private async IAsyncEnumerable<UnitedStatesPoliticalPartyAffiliationToCreate> GetUnitedStatesPoliticalPartyAffliations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
     )
     {
@@ -17,7 +17,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
             UrlId = Constants.VOCABULARY_ID_UNITED_STATES_POLITICAL_PARTY_AFFILITION_TYPE
 
         });
-        yield return new NewUnitedStatesPoliticalPartyAffliation {
+        yield return new UnitedStatesPoliticalPartyAffiliationToCreate {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -65,7 +65,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
             TermIds = new List<int>(),
         };
 
-        yield return new NewUnitedStatesPoliticalPartyAffliation {
+        yield return new UnitedStatesPoliticalPartyAffiliationToCreate {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -112,7 +112,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
             }),
             TermIds = new List<int>(),
         };
-        yield return new NewUnitedStatesPoliticalPartyAffliation {
+        yield return new UnitedStatesPoliticalPartyAffiliationToCreate {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -156,7 +156,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
             UnitedStatesPoliticalPartyId = null,
             TermIds = new List<int>(),
         };
-        yield return new NewUnitedStatesPoliticalPartyAffliation {
+        yield return new UnitedStatesPoliticalPartyAffiliationToCreate {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,
@@ -203,7 +203,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
             }),
             TermIds = new List<int>(),
         };
-        yield return new NewUnitedStatesPoliticalPartyAffliation {
+        yield return new UnitedStatesPoliticalPartyAffiliationToCreate {
             Id = null,
             PublisherId = 1,
             CreatedDateTime = DateTime.Now,

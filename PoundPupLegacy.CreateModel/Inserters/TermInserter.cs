@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiableTermForExistingNameable;
+using Request = TermToCreateForExistingNameable;
 
 internal sealed class TermInserterFactory : AutoGenerateIdDatabaseInserterFactory<Request>
 {

@@ -1,27 +1,20 @@
 ﻿namespace PoundPupLegacy.CreateModel;
-public interface ImmediatelyIdentifiableSimpleTextNode : SimpleTextNode, ImmediatelyIdentifiableSearchable
+public interface SimpleTextNodeToUpdate : SimpleTextNode, SearchableToUpdate
 {
 }
 
-public interface EventuallyIdentifiableSimpleTextNode : SimpleTextNode, EventuallyIdentifiableSearchable 
+public interface SimpleTextNodeToCreate : SimpleTextNode, SearchableToCreate 
 { 
 }
 
 public interface SimpleTextNode : Searchable
 {
-    string Text { get; }
-
-    string Teaser { get; }
+    SimpleTextNodeDetails SimpleTextNodeDetails { get; }
 }
 
-public abstract record NewSimpleTextNodeBase: NewNodeBase, EventuallyIdentifiableSimpleTextNode 
+public sealed record SimpleTextNodeDetails
 { 
     public required string Text { get; init; }
     public required string Teaser { get; init; }
 }
 
-public abstract record ExistingSimpleTextNodeBase : ExistingNodeBase, ImmediatelyIdentifiableSimpleTextNode
-{
-    public required string Text { get; init; }
-    public required string Teaser { get; init; }
-}

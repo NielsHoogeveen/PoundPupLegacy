@@ -1,20 +1,16 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public interface ImmediatelyIdentifiableCongressionalTerm : CongressionalTerm, ImmediatelyIdentifiableDocumentable
+public interface CongressionalTermToUpdate : CongressionalTerm, DocumentableToUpdate
 {
 }
-public interface EventuallyIdentifiableCongressionalTerm : CongressionalTerm, EventuallyIdentifiableDocumentable
+public interface CongressionalTermToCreate : CongressionalTerm, DocumentableToCreate
 {
 }
 public interface CongressionalTerm : Documentable
 {
-    List<NewCongressionalTermPoliticalPartyAffiliation> PartyAffiliations { get; }
+    CongressionalTermDetails CongressionalTermDetails { get; }
 }
-public abstract record NewCongressionalTermBase: NewNodeBase, EventuallyIdentifiableCongressionalTerm
-{
-    public required List<NewCongressionalTermPoliticalPartyAffiliation> PartyAffiliations { get; init; }
-}
-public abstract record ExistingCongressionalTermBase : ExistingNodeBase, ImmediatelyIdentifiableCongressionalTerm
+public record CongressionalTermDetails
 {
     public required List<NewCongressionalTermPoliticalPartyAffiliation> PartyAffiliations { get; init; }
 }
