@@ -4,17 +4,17 @@ public abstract record Review : SimpleTextNode
 {
     private Review() { }
     public required SimpleTextNodeDetails SimpleTextNodeDetails { get; init; }
-    public abstract NodeIdentification NodeIdentification { get; }
+    public abstract Identification Identification { get; }
     public abstract NodeDetails NodeDetails { get; }
     public abstract T Match<T>(Func<ReviewToCreate, T> create, Func<ReviewToUpdate, T> update);
     public abstract void Match(Action<ReviewToCreate> create, Action<ReviewToUpdate> update);
 
     public sealed record ReviewToCreate : Review, NodeToCreate
     {
-        public required NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
 
-        public override NodeIdentification NodeIdentification => NodeIdentificationForCreate;
+        public override Identification Identification => IdentificationForCreate;
 
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public override T Match<T>(Func<ReviewToCreate, T> create, Func<ReviewToUpdate, T> update)
@@ -28,11 +28,11 @@ public abstract record Review : SimpleTextNode
     }
     public sealed record ReviewToUpdate : Review, NodeToUpdate
     {
-        public override NodeIdentification NodeIdentification => NodeIdentificationForUpdate;
+        public override Identification Identification => IdentificationForUpdate;
 
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
 
-        public required NodeIdentification.NodeIdentificationForUpdate NodeIdentificationForUpdate { get; init; }
+        public required Identification.IdentificationForUpdate IdentificationForUpdate { get; init; }
         public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
         public override T Match<T>(Func<ReviewToCreate, T> create, Func<ReviewToUpdate, T> update)
         {

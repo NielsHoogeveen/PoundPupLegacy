@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class FormalIntermediateLevelSubdivisionInserterFactory : SingleIdInserterFactory<EventuallyIdentifiableFormalIntermediateLevelSubdivision>
+internal sealed class FormalIntermediateLevelSubdivisionInserterFactory : SingleIdInserterFactory<FormalIntermediateLevelSubdivision.FormalIntermediateLevelSubdivisionToCreate>
 {
     protected override string TableName => "formal_intermediate_level_subdivision";
 

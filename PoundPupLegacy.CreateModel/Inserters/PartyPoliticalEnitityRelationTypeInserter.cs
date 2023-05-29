@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiablePartyPoliticalEntityRelationType;
+using Request = PartyPoliticalEntityRelationType.PartyPoliticalEntityRelationTypeToCreate;
 
 internal sealed class PartyPoliticalEntityRelationTypeInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
@@ -10,7 +10,7 @@ internal sealed class PartyPoliticalEntityRelationTypeInserterFactory : Identifi
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(HasConcreteSubtype, request.HasConcreteSubtype),
+            ParameterValue.Create(HasConcreteSubtype, request.PartyPoliticalEntityRelationTypeDetails.HasConcreteSubtype),
         };
     }
 }

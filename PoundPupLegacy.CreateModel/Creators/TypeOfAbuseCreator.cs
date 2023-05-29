@@ -4,13 +4,13 @@ internal sealed class TypeOfAbuseCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
     IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
     IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableTypeOfAbuse> typeOfAbuseInserterFactory,
+    IDatabaseInserterFactory<TypeOfAbuse.TypeOfAbuseToCreate> typeOfAbuseInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory
-) : IEntityCreatorFactory<EventuallyIdentifiableTypeOfAbuse>
+) : IEntityCreatorFactory<TypeOfAbuse.TypeOfAbuseToCreate>
 {
-    public async Task<IEntityCreator<EventuallyIdentifiableTypeOfAbuse>> CreateAsync(IDbConnection connection) => 
-        new NameableCreator<EventuallyIdentifiableTypeOfAbuse>(
+    public async Task<IEntityCreator<TypeOfAbuse.TypeOfAbuseToCreate>> CreateAsync(IDbConnection connection) => 
+        new NameableCreator<TypeOfAbuse.TypeOfAbuseToCreate>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

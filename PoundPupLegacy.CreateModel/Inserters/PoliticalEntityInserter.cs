@@ -10,7 +10,7 @@ internal sealed class PoliticalEntityInserterFactory : IdentifiableDatabaseInser
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(FileIdFlag, request.FileIdFlag),
+            ParameterValue.Create(FileIdFlag, request.PoliticalEntityDetails.FileIdFlag),
         };
     }
 }

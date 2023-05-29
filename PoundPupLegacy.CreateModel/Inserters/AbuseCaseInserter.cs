@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiableAbuseCase;
+using Request = AbuseCase.AbuseCaseToCreate;
 
 internal sealed class AbuseCaseInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
@@ -14,11 +14,11 @@ internal sealed class AbuseCaseInserterFactory : IdentifiableDatabaseInserterFac
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(ChildPlacementTypeId, request.ChildPlacementTypeId),
-            ParameterValue.Create(FamilySizeId, request.FamilySizeId),
-            ParameterValue.Create(HomeSchoolingInvolved, request.HomeschoolingInvolved),
-            ParameterValue.Create(FundamentalFaithInvolved, request.FundamentalFaithInvolved),
-            ParameterValue.Create(DisabilitiesInvolved, request.DisabilitiesInvolved),
+            ParameterValue.Create(ChildPlacementTypeId, request.AbuseCaseDetails.ChildPlacementTypeId),
+            ParameterValue.Create(FamilySizeId, request.AbuseCaseDetails.FamilySizeId),
+            ParameterValue.Create(HomeSchoolingInvolved, request.AbuseCaseDetails.HomeschoolingInvolved),
+            ParameterValue.Create(FundamentalFaithInvolved, request.AbuseCaseDetails.FundamentalFaithInvolved),
+            ParameterValue.Create(DisabilitiesInvolved, request.AbuseCaseDetails.DisabilitiesInvolved),
         };
     }
 }

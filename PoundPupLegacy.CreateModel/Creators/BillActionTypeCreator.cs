@@ -4,14 +4,14 @@ internal sealed class BillActionTypeCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
     IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
     IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableBillActionType> billActionTypeInserterFactory,
+    IDatabaseInserterFactory<BillActionType.BillActionTypeToCreate> billActionTypeInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory
 
-) : IEntityCreatorFactory<EventuallyIdentifiableBillActionType>
+) : IEntityCreatorFactory<BillActionType.BillActionTypeToCreate>
 {
-    public async Task<IEntityCreator<EventuallyIdentifiableBillActionType>> CreateAsync(IDbConnection connection) =>
-        new NameableCreator<EventuallyIdentifiableBillActionType>(
+    public async Task<IEntityCreator<BillActionType.BillActionTypeToCreate>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<BillActionType.BillActionTypeToCreate>(
             new () {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

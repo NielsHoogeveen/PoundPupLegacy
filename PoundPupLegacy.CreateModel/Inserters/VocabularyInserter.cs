@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = VocabularyToCreate;
+using Request = Vocabulary.VocabularyToCreate;
 
 internal sealed class VocabularyInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
@@ -12,9 +12,9 @@ internal sealed class VocabularyInserterFactory : IdentifiableDatabaseInserterFa
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(OwnerId, request.OwnerId),
-            ParameterValue.Create(Name, request.Name),
-            ParameterValue.Create(Description, request.Description),
+            ParameterValue.Create(OwnerId, request.VocabularyDetails.OwnerId),
+            ParameterValue.Create(Name, request.VocabularyDetails.Name),
+            ParameterValue.Create(Description, request.VocabularyDetails.Description),
         };
     }
 }

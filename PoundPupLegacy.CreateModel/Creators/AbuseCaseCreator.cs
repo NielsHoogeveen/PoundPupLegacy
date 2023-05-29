@@ -8,16 +8,16 @@ public class AbuseCaseCreatorFactory(
     IDatabaseInserterFactory<LocatableToCreate> locatableInserterFactory,
     IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
     IDatabaseInserterFactory<CaseToCreate> caseInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableAbuseCase> abuseCaseInserterFactory,
+    IDatabaseInserterFactory<AbuseCase.AbuseCaseToCreate> abuseCaseInserterFactory,
     LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     IEntityCreatorFactory<CaseNewCasePartiesToUpdate> caseCaseTypeCreatorFactory,
     IEntityCreatorFactory<AbuseCaseTypeOfAbuse> abuseCaseTypeOfAbuseCreatorFactory,
     IEntityCreatorFactory<AbuseCaseTypeOfAbuser> abuseCaseTypeOfAbuserCreatorFactory
-) : IEntityCreatorFactory<EventuallyIdentifiableAbuseCase>
+) : IEntityCreatorFactory<AbuseCase.AbuseCaseToCreate>
 {
-    public async Task<IEntityCreator<EventuallyIdentifiableAbuseCase>> CreateAsync(IDbConnection connection) => 
+    public async Task<IEntityCreator<AbuseCase.AbuseCaseToCreate>> CreateAsync(IDbConnection connection) => 
         new AbuseCaseCreator(
             new () {
                 await nodeInserterFactory.CreateAsync(connection),
@@ -38,14 +38,14 @@ public class AbuseCaseCreatorFactory(
 }
 
 public class AbuseCaseCreator(
-    List<IDatabaseInserter<EventuallyIdentifiableAbuseCase>> inserters,
+    List<IDatabaseInserter<AbuseCase.AbuseCaseToCreate>> inserters,
     NodeDetailsCreator nodeDetailsCreator,
     TermCreator nameableDetailsCreator,
     LocatableDetailsCreator locatableDetailsCreator,
     IEntityCreator<CaseNewCasePartiesToUpdate> caseCaseTypeCreator,
     IEntityCreator<AbuseCaseTypeOfAbuse> abuseCaseTypeOfAbuseCreator,
     IEntityCreator<AbuseCaseTypeOfAbuser> abuseCaseTypeOfAbuserCreator
-) : CaseCreator<EventuallyIdentifiableAbuseCase>
+) : CaseCreator<AbuseCase.AbuseCaseToCreate>
 (
     inserters,
     nodeDetailsCreator,
@@ -54,10 +54,10 @@ public class AbuseCaseCreator(
     caseCaseTypeCreator
 )
 {
-    public override async Task ProcessAsync(EventuallyIdentifiableAbuseCase element, int id)
+    public override async Task ProcessAsync(AbuseCase.AbuseCaseToCreate element, int id)
     {
         await base.ProcessAsync(element, id);
-        foreach (var typeOfAbuseId in element.TypeOfAbuseIds) {
+        foreach (var typeOfAbuseId in element.AbuseCaseDetails.TypeOfAbuseIds) {
             await abuseCaseTypeOfAbuseCreator.CreateAsync(
                 new AbuseCaseTypeOfAbuse {
                     AbuseCaseId = id,
@@ -65,7 +65,7 @@ public class AbuseCaseCreator(
                 }
             );
         }
-        foreach (var typeOfAbuserId in element.TypeOfAbuserIds) {
+        foreach (var typeOfAbuserId in element.AbuseCaseDetails.TypeOfAbuserIds) {
             await abuseCaseTypeOfAbuserCreator.CreateAsync(
                 new AbuseCaseTypeOfAbuser {
                     AbuseCaseId = id,

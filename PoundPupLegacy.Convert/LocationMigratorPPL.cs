@@ -41,7 +41,7 @@ internal sealed class LocationMigratorPPL(
             TenantId = Constants.PPL,
             UrlId = 105
         });
-        yield return (new NewLocation {
+        yield return (new LocationToCreate {
             Id = 18,
             Street = "8010 S County Road 5 Suite 205",
             Additional = null,
@@ -1397,7 +1397,7 @@ internal sealed class LocationMigratorPPL(
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("node_id"),
             });
-            yield return (new NewLocation {
+            yield return (new LocationToCreate {
                 Id = id,
                 Street = GetStreet(id, reader.IsDBNull("street") ? null : reader.GetString("street")),
                 Additional = GetAdditional(id, reader.IsDBNull("additional") ? null : reader.GetString("additional")),

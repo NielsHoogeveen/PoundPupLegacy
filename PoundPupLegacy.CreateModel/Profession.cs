@@ -4,7 +4,7 @@ public abstract record Profession : Nameable
 {
     private Profession() { }
     public required ProfessionDetails ProfessionDetails { get; init; }
-    public abstract NodeIdentification NodeIdentification { get; }
+    public abstract Identification Identification { get; }
     public abstract NodeDetails NodeDetails { get; }
     public abstract NameableDetails NameableDetails { get; }
     public abstract T Match<T>(Func<ProfessionToCreate, T> create, Func<ProfessionToUpdate, T> update);
@@ -12,10 +12,10 @@ public abstract record Profession : Nameable
 
     public sealed record ProfessionToCreate : Profession, NameableToCreate
     {
-        public override NodeIdentification NodeIdentification => NodeIdentificationForCreate;
+        public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public override NameableDetails NameableDetails => NameableDetailsForCreate;
-        public required NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
         public required NameableDetails.NameableDetailsForCreate NameableDetailsForCreate { get; init; }
         public override T Match<T>(Func<ProfessionToCreate, T> create, Func<ProfessionToUpdate, T> update)
@@ -29,10 +29,10 @@ public abstract record Profession : Nameable
     }
     public sealed record ProfessionToUpdate : Profession, NameableToUpdate
     {
-        public required NodeIdentification.NodeIdentificationForUpdate NodeIdentificationForUpdate { get; init; }
+        public required Identification.IdentificationForUpdate IdentificationForUpdate { get; init; }
         public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
         public override NameableDetails NameableDetails => NameableDetailsForUpdate;
-        public override NodeIdentification NodeIdentification => NodeIdentificationForUpdate;
+        public override Identification Identification => IdentificationForUpdate;
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
         public required NameableDetails.NameableDetailsForUpdate NameableDetailsForUpdate { get; init; }
         public override T Match<T>(Func<ProfessionToCreate, T> create, Func<ProfessionToUpdate, T> update)

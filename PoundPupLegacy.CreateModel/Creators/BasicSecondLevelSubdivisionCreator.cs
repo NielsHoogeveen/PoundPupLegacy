@@ -11,14 +11,14 @@ internal sealed class BasicSecondLevelSubdivisionCreatorFactory(
     IDatabaseInserterFactory<ISOCodedSubdivisionToCreate> isoCodedSubdivisionInserterFactory,
     IDatabaseInserterFactory<BottomLevelSubdivisionToCreate> bottomLevelSubdivisionInserterFactory,
     IDatabaseInserterFactory<SecondLevelSubdivisionToCreate> secondLevelSubdivisionInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableBasicSecondLevelSubdivision> basicSecondLevelSubdivisionInserterFactory,
+    IDatabaseInserterFactory<BasicSecondLevelSubdivision.BasicSecondLevelSubdivisionToCreate> basicSecondLevelSubdivisionInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory
     
-) : IEntityCreatorFactory<EventuallyIdentifiableBasicSecondLevelSubdivision>
+) : IEntityCreatorFactory<BasicSecondLevelSubdivision.BasicSecondLevelSubdivisionToCreate>
 {
-    public async Task<IEntityCreator<EventuallyIdentifiableBasicSecondLevelSubdivision>> CreateAsync(IDbConnection connection) =>
-        new NameableCreator<EventuallyIdentifiableBasicSecondLevelSubdivision>(
+    public async Task<IEntityCreator<BasicSecondLevelSubdivision.BasicSecondLevelSubdivisionToCreate>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<BasicSecondLevelSubdivision.BasicSecondLevelSubdivisionToCreate>(
             new () {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

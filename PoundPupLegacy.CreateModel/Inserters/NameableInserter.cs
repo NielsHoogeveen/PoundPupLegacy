@@ -12,8 +12,8 @@ internal sealed class NameableInserterFactory : IdentifiableDatabaseInserterFact
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Description, request.Description),
-            ParameterValue.Create(FileIdTileImage, request.FileIdTileImage),
+            ParameterValue.Create(Description, request.NameableDetails.Description),
+            ParameterValue.Create(FileIdTileImage, request.NameableDetails.FileIdTileImage),
         };
     }
 }

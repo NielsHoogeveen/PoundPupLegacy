@@ -12,7 +12,7 @@ internal class CasePartyTypeCasePartiesToAddForExistingPartyMapper : IEnumerable
             yield return new CaseNewCasePartiesToUpdate {
                 CaseId = parties.CaseId.Value,
                 CasePartyTypeId = parties.CasePartyTypeId,
-                CaseParties = new NewCaseParties {
+                CaseParties = new CasePartiesToCreate {
                     Id = null,
                     OrganizationIds = parties.Organizations.Where(x => !x.HasBeenDeleted).Select(x => x.Organization.Id).ToList(),
                     PersonIds = parties.Persons.Where(x => x.HasBeenDeleted).Select(x => x.Person.Id).ToList(),

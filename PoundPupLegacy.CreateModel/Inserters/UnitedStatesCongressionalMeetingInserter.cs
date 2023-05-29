@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiableUnitedStatesCongressionalMeeting;
+using Request = UnitedStatesCongressionalMeeting.UnitedStatesCongressionalMeetingToCreate;
 
 internal sealed class UnitedStatesCongressionalMeetingInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
@@ -11,8 +11,8 @@ internal sealed class UnitedStatesCongressionalMeetingInserterFactory : Identifi
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(DateRange, request.DateRange),
-            ParameterValue.Create(Number, request.Number),
+            ParameterValue.Create(DateRange, request.UnitedStatesCongressionalMeetingDetails.DateRange),
+            ParameterValue.Create(Number, request.UnitedStatesCongressionalMeetingDetails.Number),
         };
     }
 }

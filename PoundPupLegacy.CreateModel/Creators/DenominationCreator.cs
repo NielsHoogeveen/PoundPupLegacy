@@ -5,13 +5,13 @@ internal sealed class DenominationCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
     IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
     IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableDenomination> denominationInserterFactory,
+    IDatabaseInserterFactory<Denomination.DenominationToCreate> denominationInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory
-) : IEntityCreatorFactory<EventuallyIdentifiableDenomination>
+) : IEntityCreatorFactory<Denomination.DenominationToCreate>
 {
-    public async Task<IEntityCreator<EventuallyIdentifiableDenomination>> CreateAsync(IDbConnection connection) =>
-        new NameableCreator<EventuallyIdentifiableDenomination>(
+    public async Task<IEntityCreator<Denomination.DenominationToCreate>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<Denomination.DenominationToCreate>(
             new ()
             {
                 await nodeInserterFactory.CreateAsync(connection),

@@ -1,10 +1,10 @@
 ﻿
 namespace PoundPupLegacy.CreateModel;
 
-public interface PollQuestionToCreate : PollQuestion, NodeToCreate
+public interface PollQuestionToCreate : PollQuestion, SimpleTextNodeToCreate
 {
 }
-public interface PollQuestionToUpdate : PollQuestion, NodeToUpdate
+public interface PollQuestionToUpdate : PollQuestion, SimpleTextNodeToUpdate
 {
 }
 public interface PollQuestion : SimpleTextNode

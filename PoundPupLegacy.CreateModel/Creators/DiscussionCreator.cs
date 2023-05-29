@@ -4,12 +4,12 @@ internal sealed class DiscussionCreatorFactory(
         IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
         IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
         IDatabaseInserterFactory<SimpleTextNodeToCreate> simpleTextNodeInserterFactory,
-        IDatabaseInserterFactory<EventuallyIdentifiableDiscussion> discussionInserterFactory,
+        IDatabaseInserterFactory<Discussion.DiscussionToCreate> discussionInserterFactory,
         NodeDetailsCreatorFactory nodeDetailsCreatorFactory
-    ) : IEntityCreatorFactory<EventuallyIdentifiableDiscussion>
+    ) : IEntityCreatorFactory<Discussion.DiscussionToCreate>
 {
-    public async Task<IEntityCreator<EventuallyIdentifiableDiscussion>> CreateAsync(IDbConnection connection) =>
-        new NodeCreator<EventuallyIdentifiableDiscussion>(
+    public async Task<IEntityCreator<Discussion.DiscussionToCreate>> CreateAsync(IDbConnection connection) =>
+        new NodeCreator<Discussion.DiscussionToCreate>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

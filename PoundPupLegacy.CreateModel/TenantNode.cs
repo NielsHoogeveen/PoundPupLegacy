@@ -1,83 +1,55 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record ExistingTenantNode : ImmediatelyIdentifiableTenantNode
+public abstract record TenantNode: IRequest
 {
-    public required int Id { get; init; }
-
     public required string? UrlPath { get; init; }
 
     public required int? SubgroupId { get; init; }
 
     public required int PublicationStatusId { get; init; }
 
-}
-
-public sealed record NewTenantNodeForNewNode : EventuallyIdentifiableTenantNodeForNewNode
-{
-    public required int? Id { get; set; }
-    public required int TenantId { get; init; }
-
-    public required int? UrlId { get; set; }
-
-    public required string? UrlPath { get; init; }
-
-    public required int? SubgroupId { get; init; }
-
-    public required int PublicationStatusId { get; init; }
-
-    public EventuallyIdentifiableTenantNodeForExistingNode ResolveNodeId(int nodeId)
+    public sealed record TenantNodeToUpdate : TenantNode, ImmediatelyIdentifiable
     {
-        return new NewTenantNodeForExistingNode {
-            Id = Id,
-            TenantId = TenantId,
-            UrlPath = UrlPath,
-            SubgroupId = SubgroupId,
-            PublicationStatusId = PublicationStatusId,
-            UrlId = UrlId ?? nodeId,
-            NodeId = nodeId
-        };
+
+        public required Identification.IdentificationForUpdate IdentificationForUpdate { get; init; }
+
+        public Identification Identification => IdentificationForUpdate;
     }
-}
 
-public sealed record NewTenantNodeForExistingNode : EventuallyIdentifiableTenantNodeForExistingNode
-{
-    public required int? Id { get; set; }
-    public required int TenantId { get; init; }
+    public sealed record TenantNodeToCreateForNewNode : TenantNode, EventuallyIdentifiable
+    {
+        public required int TenantId { get; init; }
 
-    public required int UrlId { get; set; }
+        public required int? UrlId { get; set; }
 
-    public required string? UrlPath { get; init; }
+        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
 
-    public required int NodeId { get; set; }
+        public Identification Identification => IdentificationForCreate;
 
-    public required int? SubgroupId { get; init; }
+        public TenantNodeToCreateForExistingNode ResolveNodeId(int nodeId)
+        {
+            return new TenantNodeToCreateForExistingNode {
+                TenantId = TenantId,
+                UrlPath = UrlPath,
+                SubgroupId = SubgroupId,
+                PublicationStatusId = PublicationStatusId,
+                UrlId = UrlId ?? nodeId,
+                NodeId = nodeId,
+                IdentificationForCreate = IdentificationForCreate
+            };
+        }
+    }
 
-    public required int PublicationStatusId { get; init; }
+    public sealed record TenantNodeToCreateForExistingNode : TenantNode, EventuallyIdentifiable
+    {
+        public required int TenantId { get; init; }
 
-}
-public interface ImmediatelyIdentifiableTenantNode : TenantNode, ImmediatelyIdentifiable
-{
-}
-public interface EventuallyIdentifiableTenantNodeForNewNode : TenantNode, EventuallyIdentifiable
-{
-    int TenantId { get; }
+        public required int UrlId { get; set; }
 
-    int? UrlId { get; }
-    public EventuallyIdentifiableTenantNodeForExistingNode ResolveNodeId(int nodeId);
+        public required int NodeId { get; set; }
 
-}
-public interface EventuallyIdentifiableTenantNodeForExistingNode : TenantNode, EventuallyIdentifiable
-{
-    int TenantId { get; }
-    int UrlId { get; }
-    int NodeId { get; }
-}
-public interface TenantNode
-{
-    string? UrlPath { get; }
+        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
 
-    int? SubgroupId { get; }
-
-    int PublicationStatusId { get; }
-
+        public Identification Identification => IdentificationForCreate;
+    }
 }

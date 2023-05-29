@@ -232,7 +232,7 @@ public class IdentifiableDatabaseInserter<T> : DatabaseAccessor<T>, IDatabaseIns
 
     protected sealed override IEnumerable<ParameterValue> GetParameterValues(T request)
     {
-        yield return ParameterValue.Create(IdentifiableDatabaseInserterFactory.Id, request.Id);
+        yield return ParameterValue.Create(IdentifiableDatabaseInserterFactory.Id, request.IdentificationForCreate.Id);
 
         foreach (var parameter in _parameterMapper(request)) {
             yield return parameter;
@@ -291,12 +291,12 @@ public class AutoGenerateIdDatabaseInserter<T> : DatabaseAccessor<T>, IDatabaseI
 
     public async Task InsertAsync(T item)
     {
-        if (item.Id is not null)
+        if (item.IdentificationForCreate.Id is not null)
             throw new ArgumentException($"The Id property of {item} should be null");
         foreach (var parameter in GetParameterValues(item)) {
             parameter.Set(_command);
         }
-        item.Id = await _command.ExecuteScalarAsync() switch {
+        item.IdentificationForCreate.Id = await _command.ExecuteScalarAsync() switch {
             long i => (int)i,
             _ => throw new Exception($"Insert action did not return an id.")
         };
@@ -323,7 +323,7 @@ public class ConditionalAutoGenerateIdDatabaseInserter<T> : DatabaseAccessor<T>,
 
     protected sealed override IEnumerable<ParameterValue> GetParameterValues(T request)
     {
-        yield return ParameterValue.Create(ConditionalAutoGenerateIdDatabaseInserterFactory.Id, request.Id);
+        yield return ParameterValue.Create(ConditionalAutoGenerateIdDatabaseInserterFactory.Id, request.IdentificationForCreate.Id);
         foreach (var parameter in GetNonIdParameterValues(request)) {
             yield return parameter;
         }
@@ -331,11 +331,11 @@ public class ConditionalAutoGenerateIdDatabaseInserter<T> : DatabaseAccessor<T>,
 
     public async Task InsertAsync(T request)
     {
-        if (request.Id is null) {
+        if (request.IdentificationForCreate.Id is null) {
             foreach (var parameter in GetNonIdParameterValues(request)) {
                 parameter.Set(_commandAutoGenerate);
             };
-            request.Id = await _commandAutoGenerate.ExecuteScalarAsync() switch {
+            request.IdentificationForCreate.Id = await _commandAutoGenerate.ExecuteScalarAsync() switch {
                 long i => (int)i,
                 _ => throw new Exception($"Insert action did not return an id.")
             };

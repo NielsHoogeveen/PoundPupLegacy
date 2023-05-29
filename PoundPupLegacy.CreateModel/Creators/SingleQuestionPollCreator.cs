@@ -1,10 +1,10 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class SingleQuestionPollCreatorFactory(
-    IEntityCreatorFactory<EventuallyIdentifiablePollQuestion> pollQuestionCreatorFactory,
+    IEntityCreatorFactory<PollQuestion> pollQuestionCreatorFactory,
     IDatabaseInserterFactory<PollToCreate> pollInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableSingleQuestionPoll> singleQuestionPollInserterFactory
-) : IEntityCreatorFactory<EventuallyIdentifiableSingleQuestionPoll>
+    IDatabaseInserterFactory<SingleQuestionPoll.SingleQuestionPollToCreate> singleQuestionPollInserterFactory
+) : IEntityCreatorFactory<SingleQuestionPoll.SingleQuestionPollToCreate>
 {
     public async Task<IEntityCreator<EventuallyIdentifiableSingleQuestionPoll>> CreateAsync(IDbConnection connection) =>
         new SingleQuestionPollCreator(

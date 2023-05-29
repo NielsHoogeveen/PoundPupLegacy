@@ -12,5 +12,5 @@ public interface CongressionalTerm : Documentable
 }
 public record CongressionalTermDetails
 {
-    public required List<NewCongressionalTermPoliticalPartyAffiliation> PartyAffiliations { get; init; }
+    public required List<CongressionalTermPoliticalPartyAffiliation.CongressionalTermPoliticalPartyAffiliationToCreate> PartyAffiliations { get; init; }
 }

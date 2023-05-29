@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiablePartyPoliticalEntityRelationForExistingParty;
+using Request = PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForExistingParty;
 
 internal sealed class PartyPoliticalEntityRelationInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
@@ -16,10 +16,10 @@ internal sealed class PartyPoliticalEntityRelationInserterFactory : Identifiable
     {
         return new ParameterValue[] {
             ParameterValue.Create(PartyId, request.PartyId),
-            ParameterValue.Create(PoliticalEntityId, request.PoliticalEntityId),
-            ParameterValue.Create(PartyPoliticalEntityRelationTypeId, request.PartyPoliticalEntityRelationTypeId),
-            ParameterValue.Create(DateRange, request.DateRange),
-            ParameterValue.Create(DocumentIdProof,request.DocumentIdProof),
+            ParameterValue.Create(PoliticalEntityId, request.PartyPoliticalEntityRelationDetails.PoliticalEntityId),
+            ParameterValue.Create(PartyPoliticalEntityRelationTypeId, request.PartyPoliticalEntityRelationDetails.PartyPoliticalEntityRelationTypeId),
+            ParameterValue.Create(DateRange, request.PartyPoliticalEntityRelationDetails.DateRange),
+            ParameterValue.Create(DocumentIdProof,request.PartyPoliticalEntityRelationDetails.DocumentIdProof),
         };
     }
 }

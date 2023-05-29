@@ -2,12 +2,12 @@
 
 internal sealed class PersonOrganizationRelationCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants> personOrganizationRelationInserterFactory,
+    IDatabaseInserterFactory<PersonOrganizationRelation.PersonOrganizationRelationToCreateForExistingParticipants> personOrganizationRelationInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory
-) : IEntityCreatorFactory<EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants>
+) : IEntityCreatorFactory<PersonOrganizationRelation.PersonOrganizationRelationToCreateForExistingParticipants>
 {
-    public async Task<IEntityCreator<EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants>> CreateAsync(IDbConnection connection) => 
-        new NodeCreator<EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants>(
+    public async Task<IEntityCreator<PersonOrganizationRelation.PersonOrganizationRelationToCreateForExistingParticipants>> CreateAsync(IDbConnection connection) => 
+        new NodeCreator<PersonOrganizationRelation.PersonOrganizationRelationToCreateForExistingParticipants>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await personOrganizationRelationInserterFactory.CreateAsync(connection)

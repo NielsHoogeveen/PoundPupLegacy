@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiableOrganization;
+using Request = OrganizationToCreate;
 
 internal sealed class OrganizationInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
@@ -13,10 +13,10 @@ internal sealed class OrganizationInserterFactory : IdentifiableDatabaseInserter
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(WebsiteURL, request.WebsiteUrl),
-            ParameterValue.Create(EmailAddress, request.EmailAddress),
-            ParameterValue.Create(Established, request.Established),
-            ParameterValue.Create(Terminated, request.Terminated),
+            ParameterValue.Create(WebsiteURL, request.OrganizationDetails.WebsiteUrl),
+            ParameterValue.Create(EmailAddress, request.OrganizationDetails.EmailAddress),
+            ParameterValue.Create(Established, request.OrganizationDetails.Established),
+            ParameterValue.Create(Terminated, request.OrganizationDetails.Terminated),
         };
     }
 }

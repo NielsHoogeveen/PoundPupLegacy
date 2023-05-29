@@ -1,12 +1,19 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record NewLocation : LocationBase, EventuallyIdentifiableLocation
+public sealed record LocationToCreate : LocationBase, EventuallyIdentifiableLocation
 {
     public required int? Id { get; set; }
+
+    public required Identification.IdentificationForCreate IdentificationForCreate { get; init;}
+
+    public Identification Identification => IdentificationForCreate;
 }
-public sealed record ExistingLocation : LocationBase, ImmediatelyIdentifiableLocation
+public sealed record LocationToUpdate : LocationBase, ImmediatelyIdentifiableLocation
 {
     public required int Id { get; init; }
+    public required Identification.IdentificationForUpdate IdentificationForUpdate { get; init; }
+
+    public Identification Identification => IdentificationForUpdate;
 }
 
 public abstract record LocationBase : Location

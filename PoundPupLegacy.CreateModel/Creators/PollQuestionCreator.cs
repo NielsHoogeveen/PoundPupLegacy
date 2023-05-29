@@ -4,11 +4,11 @@ internal sealed class PollQuestionCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
     IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
     IDatabaseInserterFactory<SimpleTextNodeToCreate> simpleTextNodeInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiablePollQuestion> pollQuestionInserterFactory,
+    IDatabaseInserterFactory<PollQuestion> pollQuestionInserterFactory,
     IDatabaseInserterFactory<PollOption> pollOptionInserterFactory,
     IDatabaseInserterFactory<PollVote> pollVoteInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory
-) : IEntityCreatorFactory<EventuallyIdentifiablePollQuestion>
+) : IEntityCreatorFactory<PollQuestion>
 {
     public async Task<IEntityCreator<EventuallyIdentifiablePollQuestion>> CreateAsync(IDbConnection connection) =>
         new PollQuestionCreator(

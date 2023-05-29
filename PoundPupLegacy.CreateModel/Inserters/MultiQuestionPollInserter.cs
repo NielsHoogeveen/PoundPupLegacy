@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class MultiQuestionPollInserterFactory : SingleIdInserterFactory<EventuallyIdentifiableMultiQuestionPoll>
+internal sealed class MultiQuestionPollInserterFactory : SingleIdInserterFactory<MultiQuestionPoll.MultiQuestionPollToCreate>
 {
     protected override string TableName => "multi_question_poll";
 

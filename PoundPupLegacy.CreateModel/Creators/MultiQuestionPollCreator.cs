@@ -5,13 +5,13 @@ internal sealed class MultiQuestionPollCreatorFactory(
     IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
     IDatabaseInserterFactory<SimpleTextNodeToCreate> simpleTextNodeInserterFactory,
     IDatabaseInserterFactory<PollToCreate> pollInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableMultiQuestionPoll> multiQuestionPollInserterFactory,
+    IDatabaseInserterFactory<MultiQuestionPoll.MultiQuestionPollToCreate> multiQuestionPollInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    IEntityCreatorFactory<EventuallyIdentifiablePollQuestion> pollQuestionCreatorFactory,
+    IEntityCreatorFactory<MultiQuestionPollQuestion.MultiQuestionPollQuestionToCreate> pollQuestionCreatorFactory,
     IDatabaseInserterFactory<MultiQuestionPollPollQuestion> multiQuestionPollPollQuestionInserterFactory
-) : IEntityCreatorFactory<EventuallyIdentifiableMultiQuestionPoll>
+) : IEntityCreatorFactory<MultiQuestionPoll.MultiQuestionPollToCreate>
 {
-    public async Task<IEntityCreator<EventuallyIdentifiableMultiQuestionPoll>> CreateAsync(IDbConnection connection) =>
+    public async Task<IEntityCreator<MultiQuestionPoll.MultiQuestionPollToCreate>> CreateAsync(IDbConnection connection) =>
         new MultiQuestionPollCreator(
             new (){
                 await nodeInserterFactory.CreateAsync(connection),
@@ -28,21 +28,21 @@ internal sealed class MultiQuestionPollCreatorFactory(
 }
 
 public class MultiQuestionPollCreator(
-    List<IDatabaseInserter<EventuallyIdentifiableMultiQuestionPoll>> inserters,
+    List<IDatabaseInserter<MultiQuestionPoll.MultiQuestionPollToCreate>> inserters,
     NodeDetailsCreator nodeDetailsCreator,
-    IEntityCreator<EventuallyIdentifiablePollQuestion> pollQuestionCreatorFactory,
+    IEntityCreator<MultiQuestionPollQuestion.MultiQuestionPollQuestionToCreate> pollQuestionCreatorFactory,
     IDatabaseInserter<MultiQuestionPollPollQuestion> multiQuestionPollPollQuestionInserter
-    ) : NodeCreator<EventuallyIdentifiableMultiQuestionPoll>(inserters, nodeDetailsCreator)
+    ) : NodeCreator<MultiQuestionPoll.MultiQuestionPollToCreate>(inserters, nodeDetailsCreator)
 {
 
-    public override async Task ProcessAsync(EventuallyIdentifiableMultiQuestionPoll element, int id)
+    public override async Task ProcessAsync(MultiQuestionPoll.MultiQuestionPollToCreate element, int id)
     {
         await base.ProcessAsync(element, id);
-        foreach (var (question, index) in element.PollQuestions.Select((q, i) => (q, i))) {
+        foreach (var (question, index) in element.MultiQuestionPollDetails.PollQuestions.Select((q, i) => (q, i))) {
             await pollQuestionCreatorFactory.CreateAsync(question);
             var pollQuestions = new MultiQuestionPollPollQuestion {
                 MultiQuestionPollId = id,
-                PollQuestionId = question.Id!.Value,
+                PollQuestionId = question.IdentificationForCreate.Id!.Value,
                 Delta = index
             };
             await multiQuestionPollPollQuestionInserter.InsertAsync(pollQuestions);

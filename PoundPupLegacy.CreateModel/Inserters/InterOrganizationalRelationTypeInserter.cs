@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiableInterOrganizationalRelationType;
+using Request = InterOrganizationalRelationType.InterOrganizationalRelationTypeToCreate;
 
 internal sealed class InterOrganizationalRelationTypeInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
@@ -10,7 +10,7 @@ internal sealed class InterOrganizationalRelationTypeInserterFactory : Identifia
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(IsSymmetric, request.IsSymmetric),
+            ParameterValue.Create(IsSymmetric, request.EndoRelationTypeDetails.IsSymmetric),
         };
     }
 }

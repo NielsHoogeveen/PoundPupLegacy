@@ -365,7 +365,7 @@ internal sealed class LocationMigratorCPCT(
                 TenantId = tenantId,
                 UrlId = urlId
             });
-            yield return (new NewLocation {
+            yield return (new LocationToCreate {
                 Id = renamedId,
                 Street = GetStreet(id, reader.IsDBNull("street") ? null : reader.GetString("street")),
                 Additional = GetAdditional(id, reader.IsDBNull("additional") ? null : reader.GetString("additional")),

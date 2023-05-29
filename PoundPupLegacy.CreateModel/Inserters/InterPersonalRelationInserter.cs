@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiableInterPersonalRelationForExistingParticipants;
+using Request = InterPersonalRelation.InterPersonalRelationToCreateForExistingParticipants;
 
 internal sealed class InterPersonalRelationInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
@@ -18,10 +18,10 @@ internal sealed class InterPersonalRelationInserterFactory : IdentifiableDatabas
         return new ParameterValue[] {
             ParameterValue.Create(PersonIdFrom, request.PersonIdFrom),
             ParameterValue.Create(PersonIdTo, request.PersonIdTo),
-            ParameterValue.Create(InterPersonalRelationTypeId, request.InterPersonalRelationTypeId),
-            ParameterValue.Create(DateRange, request.DateRange),
-            ParameterValue.Create(DocumentIdProof, request.DocumentIdProof),
-            ParameterValue.Create(Description, request.Description),
+            ParameterValue.Create(InterPersonalRelationTypeId, request.InterPersonalRelationDetails.InterPersonalRelationTypeId),
+            ParameterValue.Create(DateRange, request.InterPersonalRelationDetails.DateRange),
+            ParameterValue.Create(DocumentIdProof, request.InterPersonalRelationDetails.DocumentIdProof),
+            ParameterValue.Create(Description, request.InterPersonalRelationDetails.Description),
         };
     }
 }

@@ -1,12 +1,12 @@
-﻿using static PoundPupLegacy.CreateModel.NodeIdentification;
-
-namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.CreateModel;
 
 public interface OrganizationToUpdate : Organization, PartyToUpdate
 {
+    OrganizationDetails.OrganizationDetailsForUpdate OrganizationDetailsForUpdate { get; }
 }
 public interface OrganizationToCreate : Organization, PartyToCreate
 {
+    OrganizationDetails.OrganizationDetailsForCreate OrganizationDetailsForCreate { get; }
 }
 public interface Organization: Party
 {
@@ -32,7 +32,7 @@ public abstract record OrganizationDetails
         public override IEnumerable<PartyPoliticalEntityRelation> PartyPoliticalEntityRelations => PartyPoliticalEntityRelationsToCreate;
         public override IEnumerable<PersonOrganizationRelation> PersonOrganizationRelations => PersonOrganizationRelationsToCreate;
         public required List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationFrom> InterOrganizationalRelationsFrom { get; init; }
-        public required List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationFrom> InterOrganizationalRelationsTo { get; init; }
+        public required List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationTo> InterOrganizationalRelationsTo { get; init; }
         private IEnumerable<InterOrganizationalRelation> GetInterOrganizationalRelations()
         {
             foreach(var relation in InterOrganizationalRelationsFrom) {

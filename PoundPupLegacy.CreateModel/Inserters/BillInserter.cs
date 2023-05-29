@@ -11,8 +11,8 @@ internal sealed class BillInserterFactory : IdentifiableDatabaseInserterFactory<
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(IntroductionDate, request.IntroductionDate),
-            ParameterValue.Create(ActId, request.ActId)
+            ParameterValue.Create(IntroductionDate, request.BillDetails.IntroductionDate),
+            ParameterValue.Create(ActId, request.BillDetails.ActId)
         };
     }
 }

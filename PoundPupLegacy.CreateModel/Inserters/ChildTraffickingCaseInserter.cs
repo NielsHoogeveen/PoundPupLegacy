@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiableChildTraffickingCase;
+using Request = ChildTraffickingCase.ChildTraffickingCaseToCreate;
 
 internal sealed class ChildTraffickingCaseInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
@@ -12,8 +12,8 @@ internal sealed class ChildTraffickingCaseInserterFactory : IdentifiableDatabase
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(NumberOfChildrenInvolved, request.NumberOfChildrenInvolved),
-            ParameterValue.Create(CountryIdFrom, request.CountryIdFrom),
+            ParameterValue.Create(NumberOfChildrenInvolved, request.ChildTraffickingCaseDetails.NumberOfChildrenInvolved),
+            ParameterValue.Create(CountryIdFrom, request.ChildTraffickingCaseDetails.CountryIdFrom),
         };
     }
 }

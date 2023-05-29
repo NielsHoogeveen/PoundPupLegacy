@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiableHouseTerm;
+using Request = HouseTerm.HouseTermToCreate;
 
 internal sealed class HouseTermInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
@@ -14,10 +14,10 @@ internal sealed class HouseTermInserterFactory : IdentifiableDatabaseInserterFac
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(RepresentativeId, request.RepresentativeId),
-            ParameterValue.Create(SubdivisionId, request.SubdivisionId),
-            ParameterValue.Create(District, request.District),
-            ParameterValue.Create(DateRange, request.DateTimeRange),
+            ParameterValue.Create(RepresentativeId, request.HouseTermDetails.RepresentativeId),
+            ParameterValue.Create(SubdivisionId, request.HouseTermDetails.SubdivisionId),
+            ParameterValue.Create(District, request.HouseTermDetails.District),
+            ParameterValue.Create(DateRange, request.HouseTermDetails.DateTimeRange),
         };
     }
 }

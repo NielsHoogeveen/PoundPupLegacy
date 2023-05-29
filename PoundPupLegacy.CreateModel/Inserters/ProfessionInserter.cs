@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiableProfession;
+using Request = Profession.ProfessionToCreate;
 
 internal sealed class ProfessionInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
@@ -10,7 +10,7 @@ internal sealed class ProfessionInserterFactory : IdentifiableDatabaseInserterFa
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(HasConcreteSubtype, request.HasConcreteSubtype),
+            ParameterValue.Create(HasConcreteSubtype, request.ProfessionDetails.HasConcreteSubtype),
         };
     }
 }

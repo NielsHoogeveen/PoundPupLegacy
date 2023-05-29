@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiableInterOrganizationalRelationForExistingParticipants;
+using Request = InterOrganizationalRelation.InterOrganizationalRelationToCreateForExistingParticipants;
 
 internal sealed class InterOrganizationalRelationInserterForExistingParticipantsFactory : IdentifiableDatabaseInserterFactory<Request>
 {
@@ -21,13 +21,13 @@ internal sealed class InterOrganizationalRelationInserterForExistingParticipants
         return new ParameterValue[] {
             ParameterValue.Create(OrganizationIdFrom, request.OrganizationIdFrom),
             ParameterValue.Create(OrganizationIdTo, request.OrganizationIdTo),
-            ParameterValue.Create(GeographicalEntityId, request.GeographicalEntityId),
-            ParameterValue.Create(InterOrganizationalRelationTypeId, request.InterOrganizationalRelationTypeId),
-            ParameterValue.Create(DateRange, request.DateRange),
-            ParameterValue.Create(DocumentIdProof, request.DocumentIdProof),
-            ParameterValue.Create(Description, request.Description),
-            ParameterValue.Create(MoneyInvolved, request.MoneyInvolved),
-            ParameterValue.Create(NumberOfChildrenInvolved, request.NumberOfChildrenInvolved),
+            ParameterValue.Create(GeographicalEntityId, request.InterOrganizationalRelationDetails.GeographicalEntityId),
+            ParameterValue.Create(InterOrganizationalRelationTypeId, request.InterOrganizationalRelationDetails.InterOrganizationalRelationTypeId),
+            ParameterValue.Create(DateRange, request.InterOrganizationalRelationDetails.DateRange),
+            ParameterValue.Create(DocumentIdProof, request.InterOrganizationalRelationDetails.DocumentIdProof),
+            ParameterValue.Create(Description, request.InterOrganizationalRelationDetails.Description),
+            ParameterValue.Create(MoneyInvolved, request.InterOrganizationalRelationDetails.MoneyInvolved),
+            ParameterValue.Create(NumberOfChildrenInvolved, request.InterOrganizationalRelationDetails.NumberOfChildrenInvolved),
         };
     }
 }

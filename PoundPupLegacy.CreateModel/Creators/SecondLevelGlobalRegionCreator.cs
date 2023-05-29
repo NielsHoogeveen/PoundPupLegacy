@@ -7,13 +7,13 @@ internal sealed class SecondLevelGlobalRegionCreatorFactory(
     IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
     IDatabaseInserterFactory<GeographicalEntityToCreate> geographicalEntityInserterFactory,
     IDatabaseInserterFactory<GlobalRegionToCreate> globalRegionInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableSecondLevelGlobalRegion> secondLevelGlobalRegionInserterFactory,
+    IDatabaseInserterFactory<SecondLevelGlobalRegion.SecondLevelGlobalRegionToCreate> secondLevelGlobalRegionInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory
-) : IEntityCreatorFactory<EventuallyIdentifiableSecondLevelGlobalRegion>
+) : IEntityCreatorFactory<SecondLevelGlobalRegion.SecondLevelGlobalRegionToCreate>
 {
-    public async Task<IEntityCreator<EventuallyIdentifiableSecondLevelGlobalRegion>> CreateAsync(IDbConnection connection) => 
-        new NameableCreator<EventuallyIdentifiableSecondLevelGlobalRegion>(
+    public async Task<IEntityCreator<SecondLevelGlobalRegion.SecondLevelGlobalRegionToCreate>> CreateAsync(IDbConnection connection) => 
+        new NameableCreator<SecondLevelGlobalRegion.SecondLevelGlobalRegionToCreate>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

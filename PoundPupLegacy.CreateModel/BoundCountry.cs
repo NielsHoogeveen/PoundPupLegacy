@@ -3,11 +3,12 @@
 public abstract record BoundCountry : Country, ISOCodedSubdivision
 {
     private BoundCountry() { }
+    public required BoundCountryDetails BoundCountryDetails { get; init; }
     public required ISOCodedSubdivisionDetails ISOCodedSubdivisionDetails { get; init; }
     public required SubdivisionDetails SubdivisionDetails { get; init; }
     public required CountryDetails CountryDetails { get; init; }
     public required PoliticalEntityDetails PoliticalEntityDetails { get; init; }
-    public abstract NodeIdentification NodeIdentification { get; }
+    public abstract Identification Identification { get; }
     public abstract NodeDetails NodeDetails { get; }
     public abstract NameableDetails NameableDetails { get; }
     public abstract T Match<T>(Func<BoundCountryToCreate, T> create, Func<BoundCountryToUpdate, T> update);
@@ -15,10 +16,10 @@ public abstract record BoundCountry : Country, ISOCodedSubdivision
 
     public sealed record BoundCountryToCreate : BoundCountry, CountryToCreate, ISOCodedSubdivisionToCreate
     {
-        public override NodeIdentification NodeIdentification => NodeIdentificationForCreate;
+        public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public override NameableDetails NameableDetails => NameableDetailsForCreate;
-        public required NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
         public required NameableDetails.NameableDetailsForCreate NameableDetailsForCreate { get; init; }
         public override T Match<T>(Func<BoundCountryToCreate, T> create, Func<BoundCountryToUpdate, T> update)
@@ -32,10 +33,10 @@ public abstract record BoundCountry : Country, ISOCodedSubdivision
     }
     public sealed record BoundCountryToUpdate : BoundCountry, CountryToUpdate, ISOCodedSubdivisionToUpdate
     {
-        public required NodeIdentification.NodeIdentificationForUpdate NodeIdentificationForUpdate { get; init; }
+        public required Identification.IdentificationForUpdate IdentificationForUpdate { get; init; }
         public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
         public override NameableDetails NameableDetails => NameableDetailsForUpdate;
-        public override NodeIdentification NodeIdentification => NodeIdentificationForUpdate;
+        public override Identification Identification => IdentificationForUpdate;
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
         public required NameableDetails.NameableDetailsForUpdate NameableDetailsForUpdate { get; init; }
         public override T Match<T>(Func<BoundCountryToCreate, T> create, Func<BoundCountryToUpdate, T> update)
@@ -51,7 +52,7 @@ public abstract record BoundCountry : Country, ISOCodedSubdivision
 
 public sealed record BoundCountryDetails
 {
-    public required int BoundCountryId { get; init; }
+    public required int BindingCountryId { get; init; }
    
 }
 

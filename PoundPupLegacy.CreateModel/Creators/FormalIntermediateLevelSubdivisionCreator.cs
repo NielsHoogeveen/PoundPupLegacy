@@ -12,13 +12,13 @@ internal sealed class FormalIntermediateLevelSubdivisionCreatorFactory(
     IDatabaseInserterFactory<FirstLevelSubdivisionToCreate> firstLevelSubdivisionInserterFactory,
     IDatabaseInserterFactory<ISOCodedFirstLevelSubdivisionToCreate> isoCodedFirstLevelSubdivisionInserterFactory,
     IDatabaseInserterFactory<IntermediateLevelSubdivisionToCreate> intermediateLevelSubdivisionInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableFormalIntermediateLevelSubdivision> formalIntermediateLevelSubdivisionInserterFactory,
+    IDatabaseInserterFactory<FormalIntermediateLevelSubdivision.FormalIntermediateLevelSubdivisionToCreate> formalIntermediateLevelSubdivisionInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory
-) : IEntityCreatorFactory<EventuallyIdentifiableFormalIntermediateLevelSubdivision>
+) : IEntityCreatorFactory<FormalIntermediateLevelSubdivision.FormalIntermediateLevelSubdivisionToCreate>
 {
-    public async Task<IEntityCreator<EventuallyIdentifiableFormalIntermediateLevelSubdivision>> CreateAsync(IDbConnection connection) =>
-        new NameableCreator<EventuallyIdentifiableFormalIntermediateLevelSubdivision>(
+    public async Task<IEntityCreator<FormalIntermediateLevelSubdivision.FormalIntermediateLevelSubdivisionToCreate>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<FormalIntermediateLevelSubdivision.FormalIntermediateLevelSubdivisionToCreate>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

@@ -1,9 +1,10 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 public sealed record RepresentativeHouseBillAction: NodeToCreate
 {
-    public required NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+    public required RepresentativeHouseBillActionDetails RepresentativeHouseBillActionDetails { get; init; }
+    public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
     public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-    public NodeIdentification NodeIdentification => NodeIdentificationForCreate;
+    public Identification Identification => IdentificationForCreate;
     public NodeDetails NodeDetails => NodeDetailsForCreate;
 }
 

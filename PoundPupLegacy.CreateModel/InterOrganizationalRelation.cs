@@ -3,7 +3,7 @@
 public abstract record InterOrganizationalRelation: Node
 {
     private InterOrganizationalRelation() { }
-    public abstract NodeIdentification NodeIdentification { get; }
+    public abstract Identification Identification { get; }
     public abstract NodeDetails NodeDetails { get; }
     public required InterOrganizationalRelationDetails InterOrganizationalRelationDetails { get; init; }
     public abstract T Match<T>(
@@ -23,9 +23,9 @@ public abstract record InterOrganizationalRelation: Node
     {
         public required int OrganizationIdFrom { get; init; }
         public required int OrganizationIdTo { get; init; }
-        public required NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-        public override NodeIdentification NodeIdentification => NodeIdentificationForCreate;
+        public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public override T Match<T>(
             Func<InterOrganizationalRelationToCreateForExistingParticipants, T> create,
@@ -54,12 +54,12 @@ public abstract record InterOrganizationalRelation: Node
                 OrganizationIdTo = OrganizationIdTo,
                 InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
                 NodeDetailsForCreate = NodeDetailsForCreate,
-                NodeIdentificationForCreate = NodeIdentificationForCreate,
+                IdentificationForCreate = IdentificationForCreate,
             };
         }
-        public required NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-        public override NodeIdentification NodeIdentification => NodeIdentificationForCreate;
+        public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public override T Match<T>(
             Func<InterOrganizationalRelationToCreateForExistingParticipants, T> create,
@@ -90,12 +90,12 @@ public abstract record InterOrganizationalRelation: Node
                 OrganizationIdTo = organizationIdTo,
                 InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
                 NodeDetailsForCreate = NodeDetailsForCreate,
-                NodeIdentificationForCreate = NodeIdentificationForCreate,
+                IdentificationForCreate = IdentificationForCreate,
             };
         }
-        public required NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-        public override NodeIdentification NodeIdentification => NodeIdentificationForCreate;
+        public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public override T Match<T>(
             Func<InterOrganizationalRelationToCreateForExistingParticipants, T> create,
@@ -118,9 +118,9 @@ public abstract record InterOrganizationalRelation: Node
     {
         public required int OrganizationIdFrom { get; init; }
         public required int OrganizationIdTo { get; init; }
-        public override NodeIdentification NodeIdentification => NodeIdentificationForUpdate;
+        public override Identification Identification => IdentificationForUpdate;
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
-        public required NodeIdentification.NodeIdentificationForUpdate NodeIdentificationForUpdate { get; init; }
+        public required Identification.IdentificationForUpdate IdentificationForUpdate { get; init; }
         public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
         public override T Match<T>(
             Func<InterOrganizationalRelationToCreateForExistingParticipants, T> create,

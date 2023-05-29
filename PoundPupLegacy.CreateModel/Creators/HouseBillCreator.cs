@@ -6,13 +6,13 @@ internal sealed class HouseBillCreatorFactory(
     IDatabaseInserterFactory<DocumentableToCreate> documentableInserterFactory,
     IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
     IDatabaseInserterFactory<BillToCreate> billInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableHouseBill> houseBillInserterFactory,
+    IDatabaseInserterFactory<HouseBill.HouseBillToCreate> houseBillInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory
-) : IEntityCreatorFactory<EventuallyIdentifiableHouseBill>
+) : IEntityCreatorFactory<HouseBill.HouseBillToCreate>
 {
-    public async Task<IEntityCreator<EventuallyIdentifiableHouseBill>> CreateAsync(IDbConnection connection) =>
-        new NameableCreator<EventuallyIdentifiableHouseBill>(
+    public async Task<IEntityCreator<HouseBill.HouseBillToCreate>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<HouseBill.HouseBillToCreate>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiableProfessionalRoleForExistingPerson;
+using Request = ProfessionalRoleToCreate;
 
 internal sealed class ProfessionalRoleInserterFactory : AutoGenerateIdDatabaseInserterFactory<Request>
 {
@@ -12,9 +12,9 @@ internal sealed class ProfessionalRoleInserterFactory : AutoGenerateIdDatabaseIn
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(PersonId, request.PersonId),
-            ParameterValue.Create(ProfessionId, request.ProfessionId),
-            ParameterValue.Create(DateRange, request.DateTimeRange)
+            ParameterValue.Create(PersonId, request.ProfessionalRoleToCreate.PersonId),
+            ParameterValue.Create(ProfessionId, request.ProfessionalRoleToCreate.ProfessionId),
+            ParameterValue.Create(DateRange, request.ProfessionalRoleToCreate.DateTimeRange)
         };
     }
 }

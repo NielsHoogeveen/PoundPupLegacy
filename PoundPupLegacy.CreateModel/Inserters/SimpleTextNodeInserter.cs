@@ -11,8 +11,8 @@ internal sealed class SimpleTextNodeInserterFactory : IdentifiableDatabaseInsert
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Text, request.Text),
-            ParameterValue.Create(Teaser, request.Teaser),
+            ParameterValue.Create(Text, request.SimpleTextNodeDetails.Text),
+            ParameterValue.Create(Teaser, request.SimpleTextNodeDetails.Teaser),
         };
     }
 }

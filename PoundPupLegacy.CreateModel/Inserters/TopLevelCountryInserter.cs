@@ -10,8 +10,8 @@ internal sealed class TopLevelCountryInserterFactory : IdentifiableDatabaseInser
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(ISO3166_1_code, request.ISO3166_1_Code),
-            ParameterValue.Create(GlobalRegionId, request.SecondLevelRegionId),
+            ParameterValue.Create(ISO3166_1_code, request.TopLevelCountryDetails.ISO3166_1_Code),
+            ParameterValue.Create(GlobalRegionId, request.TopLevelCountryDetails.SecondLevelRegionId),
         };
     }
 }

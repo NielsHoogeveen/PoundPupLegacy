@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class HagueStatusInserterFactory : SingleIdInserterFactory<EventuallyIdentifiableHagueStatus>
+internal sealed class HagueStatusInserterFactory : SingleIdInserterFactory<HagueStatus.HagueStatusToCreate>
 {
     protected override string TableName => "hague_status";
 

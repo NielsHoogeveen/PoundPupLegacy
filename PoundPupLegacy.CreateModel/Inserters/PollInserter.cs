@@ -11,8 +11,8 @@ internal sealed class PollInserterFactory : IdentifiableDatabaseInserterFactory<
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(DateTimeClosure, request.DateTimeClosure),
-            ParameterValue.Create(PollStatusId, request.PollStatusId),
+            ParameterValue.Create(DateTimeClosure, request.PollDetails.DateTimeClosure),
+            ParameterValue.Create(PollStatusId, request.PollDetails.PollStatusId),
         };
     }
 }

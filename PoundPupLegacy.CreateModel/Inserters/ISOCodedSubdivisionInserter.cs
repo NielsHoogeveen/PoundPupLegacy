@@ -11,7 +11,7 @@ internal sealed class ISOCodedSubdivisionInserterFactory : IdentifiableDatabaseI
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(ISO31661_2_Code, request.ISO3166_2_Code),
+            ParameterValue.Create(ISO31661_2_Code, request.ISOCodedSubdivisionDetails.ISO3166_2_Code),
         };
     }
 }

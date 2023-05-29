@@ -1,16 +1,42 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public interface ProfessionalRoleToCreate: ProfessionalRole
+public sealed record ProfessionalRoleToCreate: ProfessionalRole, EventuallyIdentifiable
 {
-    ProfessionalRoleDetails.ProfessionalRoleToCreateForNewPerson ProfessionalRoleToCreate { get; }
+    public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
+
+    public Identification Identification => IdentificationForCreate;
+
+    public override ProfessionalRoleDetails ProfessionalRoleDetails => ProfessionalRoleDetailsForCreate;
+    public required ProfessionalRoleDetails.ProfessionalRoleDetailsForCreateOfNewPerson ProfessionalRoleDetailsForCreate { get; init; }
+    public ResolvedProfessionalRoleToCreate ResolvePerson(int personId)
+    {
+        return new ResolvedProfessionalRoleToCreate {
+            IdentificationForCreate = IdentificationForCreate,
+            ProfessionalRoleDetailsForCreate = ProfessionalRoleDetailsForCreate.ResolvePerson(personId)
+        };
+    }
 }
-public interface ProfessionalRoleToUpdate : ProfessionalRole
+public sealed record ResolvedProfessionalRoleToCreate : ProfessionalRole, EventuallyIdentifiable
 {
-    ProfessionalRoleDetails.ProfessionalRoleToCreateForExistingPerson ProfessionalRoleToUpdate { get; }
+    public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
+
+    public Identification Identification => IdentificationForCreate;
+
+    public override ProfessionalRoleDetails ProfessionalRoleDetails => ProfessionalRoleDetailsForCreate;
+    public required ProfessionalRoleDetails.ProfessionalRoleDetailsForCreateOfExistingPerson ProfessionalRoleDetailsForCreate { get; init; }
 }
-public interface ProfessionalRole : IRequest
+public sealed record ProfessionalRoleToUpdate : ProfessionalRole, ImmediatelyIdentifiable
 {
-    ProfessionalRoleDetails ProfessionalRoleDetails { get; }
+    public required Identification.IdentificationForUpdate IdentificationForUpdate { get; init; }
+
+    public Identification Identification => IdentificationForUpdate;
+
+    public override ProfessionalRoleDetails ProfessionalRoleDetails => ProfessionalRoleDetailsForUpdate;
+    public required ProfessionalRoleDetails.ProfessionalRoleDetailsForUpdate ProfessionalRoleDetailsForUpdate { get; init; }
+}
+public abstract record ProfessionalRole : IRequest
+{
+    public abstract ProfessionalRoleDetails ProfessionalRoleDetails { get; }
 }
 
 public abstract record ProfessionalRoleDetails
@@ -19,13 +45,13 @@ public abstract record ProfessionalRoleDetails
 
     public required int ProfessionId { get; init; }
 
-    public sealed record ProfessionalRoleToCreateForNewPerson: ProfessionalRoleDetails
+    public sealed record ProfessionalRoleDetailsForCreateOfNewPerson: ProfessionalRoleDetails
     {
         public required int? Id { get; set; }
 
-        public ProfessionalRoleToCreateForExistingPerson ResolvePerson(int personId)
+        public ProfessionalRoleDetailsForCreateOfExistingPerson ResolvePerson(int personId)
         {
-            return new ProfessionalRoleToCreateForExistingPerson {
+            return new ProfessionalRoleDetailsForCreateOfExistingPerson {
                 Id = Id,
                 PersonId = personId,
                 DateTimeRange = DateTimeRange,
@@ -33,12 +59,12 @@ public abstract record ProfessionalRoleDetails
             };
         }
     }
-    public sealed record ProfessionalRoleToCreateForExistingPerson: ProfessionalRoleDetails
+    public sealed record ProfessionalRoleDetailsForCreateOfExistingPerson: ProfessionalRoleDetails
     {
         public required int? Id { get; set; }
         public required int PersonId { get; init; }
     }
-    public sealed record ExistingProfessionalRoleBase: ProfessionalRoleDetails
+    public sealed record ProfessionalRoleDetailsForUpdate: ProfessionalRoleDetails
     {
         public required int Id { get; init; }
 

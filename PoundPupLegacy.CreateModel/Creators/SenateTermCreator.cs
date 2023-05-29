@@ -5,12 +5,12 @@ internal sealed class SenateTermCreatorFactory(
     IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
     IDatabaseInserterFactory<DocumentableToCreate> documentableInserterFactory,
     IDatabaseInserterFactory<CongressionalTermToCreate> congressionalTermInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableSenateTerm> senateTermInserterFactory,
+    IDatabaseInserterFactory<SenateTerm.SenateTermToCreate> senateTermInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    IEntityCreatorFactory<EventuallyIdentifiableCongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliationCreatorFactory
-) : IEntityCreatorFactory<EventuallyIdentifiableSenateTerm>
+    IEntityCreatorFactory<CongressionalTermPoliticalPartyAffiliation.CongressionalTermPoliticalPartyAffiliationToCreate> congressionalTermPoliticalPartyAffiliationCreatorFactory
+) : IEntityCreatorFactory<SenateTerm.SenateTermToCreate>
 {
-    public async Task<IEntityCreator<EventuallyIdentifiableSenateTerm>> CreateAsync(IDbConnection connection) =>
+    public async Task<IEntityCreator<SenateTerm.SenateTermToCreate>> CreateAsync(IDbConnection connection) =>
         new SenateTermCreator(
             new() 
             {
@@ -25,15 +25,15 @@ internal sealed class SenateTermCreatorFactory(
         );
 }
 internal class SenateTermCreator(
-    List<IDatabaseInserter<EventuallyIdentifiableSenateTerm>> inserters,
+    List<IDatabaseInserter<SenateTerm.SenateTermToCreate>> inserters,
     NodeDetailsCreator nodeDetailsCreator,
-    IEntityCreator<EventuallyIdentifiableCongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliationCreator
-) : NodeCreator<EventuallyIdentifiableSenateTerm>(inserters, nodeDetailsCreator) 
+    IEntityCreator<CongressionalTermPoliticalPartyAffiliation.CongressionalTermPoliticalPartyAffiliationToCreate> congressionalTermPoliticalPartyAffiliationCreator
+) : NodeCreator<SenateTerm.SenateTermToCreate>(inserters, nodeDetailsCreator) 
 {
-    public override async Task ProcessAsync(EventuallyIdentifiableSenateTerm element, int id)
+    public override async Task ProcessAsync(SenateTerm.SenateTermToCreate element, int id)
     {
         await base.ProcessAsync(element, id);
-        foreach (var partyAffiliation in element.PartyAffiliations) {
+        foreach (var partyAffiliation in element.SenateTermDetails.PartyAffiliations) {
             partyAffiliation.CongressionalTermId = id;
         }
         await congressionalTermPoliticalPartyAffiliationCreator.CreateAsync(element.PartyAffiliations.ToAsyncEnumerable());

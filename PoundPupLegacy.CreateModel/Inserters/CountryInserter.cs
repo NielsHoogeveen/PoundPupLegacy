@@ -18,13 +18,13 @@ internal sealed class CountryInserterFactory : IdentifiableDatabaseInserterFacto
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(HagueStatusId, request.HagueStatusId),
-            ParameterValue.Create(ResidencyRequirements, request.ResidencyRequirements),
-            ParameterValue.Create(AgeRequirements, request.AgeRequirements),
-            ParameterValue.Create(MarriageRequirements, request.MarriageRequirements),
-            ParameterValue.Create(IncomeRequirements, request.IncomeRequirements),
-            ParameterValue.Create(HealthRequirements, request.HealthRequirements),
-            ParameterValue.Create(OtherRequirements, request.OtherRequirements),
+            ParameterValue.Create(HagueStatusId, request.CountryDetails.HagueStatusId),
+            ParameterValue.Create(ResidencyRequirements, request.CountryDetails.ResidencyRequirements),
+            ParameterValue.Create(AgeRequirements, request.CountryDetails.AgeRequirements),
+            ParameterValue.Create(MarriageRequirements, request.CountryDetails.MarriageRequirements),
+            ParameterValue.Create(IncomeRequirements, request.CountryDetails.IncomeRequirements),
+            ParameterValue.Create(HealthRequirements, request.CountryDetails.HealthRequirements),
+            ParameterValue.Create(OtherRequirements, request.CountryDetails.OtherRequirements),
         };
     }
 }

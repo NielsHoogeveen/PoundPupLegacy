@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiablePollQuestion;
+using Request = PollQuestionToCreate;
 
 internal sealed class PollQuestionInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
@@ -10,7 +10,7 @@ internal sealed class PollQuestionInserterFactory : IdentifiableDatabaseInserter
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Question, request.Question),
+            ParameterValue.Create(Question, request.PollQuestionDetails.Question),
         };
     }
 }

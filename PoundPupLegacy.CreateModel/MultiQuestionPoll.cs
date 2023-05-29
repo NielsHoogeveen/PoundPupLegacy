@@ -3,20 +3,21 @@
 public abstract record MultiQuestionPoll : SimpleTextNode, Poll
 {
     private MultiQuestionPoll() { }
-    public required MultiQuestionPollDetails MultiQuestionPollDetails { get; init; }
+    
     public required PollDetails PollDetails { get; init; }
     public required SimpleTextNodeDetails SimpleTextNodeDetails { get; init; }
-    public abstract NodeIdentification NodeIdentification { get; }
+    public abstract Identification Identification { get; }
     public abstract NodeDetails NodeDetails { get; }
     public abstract T Match<T>(Func<MultiQuestionPollToCreate, T> create, Func<MultiQuestionPollToUpdate, T> update);
     public abstract void Match(Action<MultiQuestionPollToCreate> create, Action<MultiQuestionPollToUpdate> update);
 
-    public sealed record MultiQuestionPollToCreate : MultiQuestionPoll, NodeToCreate
+    public sealed record MultiQuestionPollToCreate : MultiQuestionPoll, SimpleTextNodeToCreate, PollToCreate
     {
-        public required NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+        public required MultiQuestionPollDetailsForCreate MultiQuestionPollDetails { get; init; }
+        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
 
-        public override NodeIdentification NodeIdentification => NodeIdentificationForCreate;
+        public override Identification Identification => IdentificationForCreate;
 
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public override T Match<T>(Func<MultiQuestionPollToCreate, T> create, Func<MultiQuestionPollToUpdate, T> update)
@@ -28,13 +29,13 @@ public abstract record MultiQuestionPoll : SimpleTextNode, Poll
             create(this);
         }
     }
-    public sealed record MultiQuestionPollToUpdate : MultiQuestionPoll, NodeToUpdate
+    public sealed record MultiQuestionPollToUpdate : MultiQuestionPoll, SimpleTextNodeToUpdate, PollToUpdate
     {
-        public override NodeIdentification NodeIdentification => NodeIdentificationForUpdate;
+        public override Identification Identification => IdentificationForUpdate;
 
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
 
-        public required NodeIdentification.NodeIdentificationForUpdate NodeIdentificationForUpdate { get; init; }
+        public required Identification.IdentificationForUpdate IdentificationForUpdate { get; init; }
         public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
         public override T Match<T>(Func<MultiQuestionPollToCreate, T> create, Func<MultiQuestionPollToUpdate, T> update)
         {
@@ -47,7 +48,7 @@ public abstract record MultiQuestionPoll : SimpleTextNode, Poll
     }
 }
 
-public record MultiQuestionPollDetails
+public record MultiQuestionPollDetailsForCreate
 {
-    public required List<NewBasicPollQuestion> PollQuestions { get; init; }
+    public required List<MultiQuestionPollQuestion.MultiQuestionPollQuestionToCreate> PollQuestions { get; init; }
 }

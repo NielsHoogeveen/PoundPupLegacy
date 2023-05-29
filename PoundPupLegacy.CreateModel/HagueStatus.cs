@@ -1,44 +1,44 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public abstract record HagueStatuse : Nameable
+public abstract record HagueStatus : Nameable
 {
-    private HagueStatuse() { }
-    public abstract NodeIdentification NodeIdentification { get; }
+    private HagueStatus() { }
+    public abstract Identification Identification { get; }
     public abstract NodeDetails NodeDetails { get; }
     public abstract NameableDetails NameableDetails { get; }
-    public abstract T Match<T>(Func<HagueStatuseToCreate, T> create, Func<HagueStatuseToUpdate, T> update);
-    public abstract void Match(Action<HagueStatuseToCreate> create, Action<HagueStatuseToUpdate> update);
+    public abstract T Match<T>(Func<HagueStatusToCreate, T> create, Func<HagueStatusToUpdate, T> update);
+    public abstract void Match(Action<HagueStatusToCreate> create, Action<HagueStatusToUpdate> update);
 
-    public sealed record HagueStatuseToCreate : HagueStatuse, NameableToCreate
+    public sealed record HagueStatusToCreate : HagueStatus, NameableToCreate
     {
-        public override NodeIdentification NodeIdentification => NodeIdentificationForCreate;
+        public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public override NameableDetails NameableDetails => NameableDetailsForCreate;
-        public required NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
         public required NameableDetails.NameableDetailsForCreate NameableDetailsForCreate { get; init; }
-        public override T Match<T>(Func<HagueStatuseToCreate, T> create, Func<HagueStatuseToUpdate, T> update)
+        public override T Match<T>(Func<HagueStatusToCreate, T> create, Func<HagueStatusToUpdate, T> update)
         {
             return create(this);
         }
-        public override void Match(Action<HagueStatuseToCreate> create, Action<HagueStatuseToUpdate> update)
+        public override void Match(Action<HagueStatusToCreate> create, Action<HagueStatusToUpdate> update)
         {
             create(this);
         }
     }
-    public sealed record HagueStatuseToUpdate : HagueStatuse, NameableToUpdate
+    public sealed record HagueStatusToUpdate : HagueStatus, NameableToUpdate
     {
-        public required NodeIdentification.NodeIdentificationForUpdate NodeIdentificationForUpdate { get; init; }
+        public required Identification.IdentificationForUpdate IdentificationForUpdate { get; init; }
         public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
         public override NameableDetails NameableDetails => NameableDetailsForUpdate;
-        public override NodeIdentification NodeIdentification => NodeIdentificationForUpdate;
+        public override Identification Identification => IdentificationForUpdate;
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
         public required NameableDetails.NameableDetailsForUpdate NameableDetailsForUpdate { get; init; }
-        public override T Match<T>(Func<HagueStatuseToCreate, T> create, Func<HagueStatuseToUpdate, T> update)
+        public override T Match<T>(Func<HagueStatusToCreate, T> create, Func<HagueStatusToUpdate, T> update)
         {
             return update(this);
         }
-        public override void Match(Action<HagueStatuseToCreate> create, Action<HagueStatuseToUpdate> update)
+        public override void Match(Action<HagueStatusToCreate> create, Action<HagueStatusToUpdate> update)
         {
             update(this);
         }

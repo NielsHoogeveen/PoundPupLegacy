@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiableDeportationCase;
+using Request = DeportationCase.DeportationCaseToCreate;
 
 internal sealed class DeportationCaseInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
@@ -11,8 +11,8 @@ internal sealed class DeportationCaseInserterFactory : IdentifiableDatabaseInser
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(SubdivisionIdFrom, request.SubdivisionIdFrom),
-            ParameterValue.Create(CountryIdTo, request.CountryIdTo),
+            ParameterValue.Create(SubdivisionIdFrom, request.DeportationCaseDetails.SubdivisionIdFrom),
+            ParameterValue.Create(CountryIdTo, request.DeportationCaseDetails.CountryIdTo),
         };
     }
 }

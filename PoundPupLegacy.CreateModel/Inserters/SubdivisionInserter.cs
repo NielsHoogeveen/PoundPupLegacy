@@ -12,9 +12,9 @@ internal sealed class SubdivisionInserterFactory : IdentifiableDatabaseInserterF
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Name, request.Name),
-            ParameterValue.Create(CountryId, request.CountryId),
-            ParameterValue.Create(SubdivisionTypeId, request.SubdivisionTypeId),
+            ParameterValue.Create(Name, request.SubdivisionDetails.Name),
+            ParameterValue.Create(CountryId, request.SubdivisionDetails.CountryId),
+            ParameterValue.Create(SubdivisionTypeId, request.SubdivisionDetails.SubdivisionTypeId),
         };
     }
 }

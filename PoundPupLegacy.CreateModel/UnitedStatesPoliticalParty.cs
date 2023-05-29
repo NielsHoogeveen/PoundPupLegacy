@@ -5,7 +5,7 @@ public abstract record UnitedStatesPoliticalParty : Organization
     private UnitedStatesPoliticalParty() { }
 
     public abstract LocatableDetails LocatableDetails { get; }
-    public abstract NodeIdentification NodeIdentification { get; }
+    public abstract Identification Identification { get; }
     public abstract NodeDetails NodeDetails { get; }
     public abstract NameableDetails NameableDetails { get; }
     public abstract OrganizationDetails OrganizationDetails { get; }
@@ -14,12 +14,12 @@ public abstract record UnitedStatesPoliticalParty : Organization
 
     public sealed record UnitedStatesPoliticalPartyToCreate : UnitedStatesPoliticalParty, OrganizationToCreate
     {
-        public override NodeIdentification NodeIdentification => NodeIdentificationForCreate;
+        public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public override NameableDetails NameableDetails => NameableDetailsForCreate;
         public override LocatableDetails LocatableDetails => LocatableDetailsForCreate;
         public override OrganizationDetails OrganizationDetails => OrganizationDetailsForCreate;
-        public required NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
         public required NameableDetails.NameableDetailsForCreate NameableDetailsForCreate { get; init; }
         public required LocatableDetails.LocatableDetailsForCreate LocatableDetailsForCreate { get; init; }
@@ -35,10 +35,10 @@ public abstract record UnitedStatesPoliticalParty : Organization
     }
     public sealed record UnitedStatesPoliticalPartyToUpdate : UnitedStatesPoliticalParty, OrganizationToUpdate
     {
-        public required NodeIdentification.NodeIdentificationForUpdate NodeIdentificationForUpdate { get; init; }
+        public required Identification.IdentificationForUpdate IdentificationForUpdate { get; init; }
         public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
         public override NameableDetails NameableDetails => NameableDetailsForUpdate;
-        public override NodeIdentification NodeIdentification => NodeIdentificationForUpdate;
+        public override Identification Identification => IdentificationForUpdate;
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
         public override LocatableDetails LocatableDetails => LocatableDetailsForUpdate;
         public override OrganizationDetails OrganizationDetails => OrganizationDetailsForUpdate;

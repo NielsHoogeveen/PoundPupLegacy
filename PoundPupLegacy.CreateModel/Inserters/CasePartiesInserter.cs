@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = NewCaseParties;
+using Request = CaseParties.CasePartiesToCreate;
 
 internal sealed class CasePartiesInserterFactory : AutoGenerateIdDatabaseInserterFactory<Request>
 {

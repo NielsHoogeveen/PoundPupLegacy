@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants;
+using Request = PersonOrganizationRelation.PersonOrganizationRelationToCreateForExistingParticipants;
 
 internal sealed class PersonOrganizationRelationInserterFactory : ConditionalAutoGenerateIdDatabaseInserterFactory<Request>
 {
@@ -18,11 +18,11 @@ internal sealed class PersonOrganizationRelationInserterFactory : ConditionalAut
         return new ParameterValue[] {
             ParameterValue.Create(PersonId, request.PersonId),
             ParameterValue.Create(OrganizationId, request.OrganizationId),
-            ParameterValue.Create(GeographicalEntityId, request.GeographicalEntityId),
-            ParameterValue.Create(DateRange, request.DateRange),
-            ParameterValue.Create(PersonOrganizationRelationTypeId, request.PersonOrganizationRelationTypeId),
-            ParameterValue.Create(DocumentIdProof, request.DocumentIdProof),
-            ParameterValue.Create(Description, request.Description)
+            ParameterValue.Create(GeographicalEntityId, request.PersonOrganizationRelationDetails.GeographicalEntityId),
+            ParameterValue.Create(DateRange, request.PersonOrganizationRelationDetails.DateRange),
+            ParameterValue.Create(PersonOrganizationRelationTypeId, request.PersonOrganizationRelationDetails.PersonOrganizationRelationTypeId),
+            ParameterValue.Create(DocumentIdProof, request.PersonOrganizationRelationDetails.DocumentIdProof),
+            ParameterValue.Create(Description, request.PersonOrganizationRelationDetails.Description)
         };
     }
 }

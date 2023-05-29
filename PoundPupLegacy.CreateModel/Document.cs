@@ -5,17 +5,17 @@ public abstract record Document : SimpleTextNode
     private Document() { }
     public required DocumentDetails DocumentDetails { get; init; }
     public required SimpleTextNodeDetails SimpleTextNodeDetails { get; init; }
-    public abstract NodeIdentification NodeIdentification { get; }
+    public abstract Identification Identification { get; }
     public abstract NodeDetails NodeDetails { get; }
     public abstract T Match<T>(Func<DocumentToCreate, T> create, Func<DocumentToUpdate, T> update);
     public abstract void Match(Action<DocumentToCreate> create, Action<DocumentToUpdate> update);
 
-    public sealed record DocumentToCreate : Document, NodeToCreate
+    public sealed record DocumentToCreate : Document, SimpleTextNodeToCreate
     {
-        public required NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
 
-        public override NodeIdentification NodeIdentification => NodeIdentificationForCreate;
+        public override Identification Identification => IdentificationForCreate;
 
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public override T Match<T>(Func<DocumentToCreate, T> create, Func<DocumentToUpdate, T> update)
@@ -27,13 +27,13 @@ public abstract record Document : SimpleTextNode
             create(this);
         }
     }
-    public sealed record DocumentToUpdate : Document, NodeToUpdate
+    public sealed record DocumentToUpdate : Document, SimpleTextNodeToUpdate
     {
-        public override NodeIdentification NodeIdentification => NodeIdentificationForUpdate;
+        public override Identification Identification => IdentificationForUpdate;
 
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
 
-        public required NodeIdentification.NodeIdentificationForUpdate NodeIdentificationForUpdate { get; init; }
+        public required Identification.IdentificationForUpdate IdentificationForUpdate { get; init; }
         public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
         public override T Match<T>(Func<DocumentToCreate, T> create, Func<DocumentToUpdate, T> update)
         {

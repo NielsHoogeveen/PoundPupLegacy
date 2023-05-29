@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiableSenateTerm;
+using Request = SenateTerm.SenateTermToCreate;
 
 internal sealed class SenateTermInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
@@ -12,9 +12,9 @@ internal sealed class SenateTermInserterFactory : IdentifiableDatabaseInserterFa
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(SenatorId, request.SenatorId),
-            ParameterValue.Create(SubdivisionId, request.SubdivisionId),
-            ParameterValue.Create(DateRange, request.DateTimeRange),
+            ParameterValue.Create(SenatorId, request.SenateTermDetails.SenatorId),
+            ParameterValue.Create(SubdivisionId, request.SenateTermDetails.SubdivisionId),
+            ParameterValue.Create(DateRange, request.SenateTermDetails.DateTimeRange),
         };
     }
 }

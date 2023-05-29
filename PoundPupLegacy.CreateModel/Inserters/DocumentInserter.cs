@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiableDocument;
+using Request = Document.DocumentToCreate;
 
 internal sealed class DocumentInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
@@ -13,9 +13,9 @@ internal sealed class DocumentInserterFactory : IdentifiableDatabaseInserterFact
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Published, request.Published),
-            ParameterValue.Create(SourceUrl, request.SourceUrl),
-            ParameterValue.Create(DocumentTypeId, request.DocumentTypeId),
+            ParameterValue.Create(Published, request.DocumentDetails.Published),
+            ParameterValue.Create(SourceUrl, request.DocumentDetails.SourceUrl),
+            ParameterValue.Create(DocumentTypeId, request.DocumentDetails.DocumentTypeId),
         };
     }
 }

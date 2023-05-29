@@ -45,11 +45,11 @@ public class LocatableDetailsCreator(
 {
     public async Task Process(LocatableToCreate locatable)
     {
-        foreach(var location in locatable.Locations) {
+        foreach(var location in locatable.LocatableDetailsForCreate.Locations) {
             await locationInserter.InsertAsync(location);
             await locationLocatableInserter.InsertAsync(new LocationLocatable {
-                LocatableId = locatable.Id!.Value,
-                LocationId = location.Id!.Value,
+                LocatableId = locatable.IdentificationForCreate.Id!.Value,
+                LocationId = location.IdentificationForCreate.Id!.Value,
             });
         }
     }
@@ -72,7 +72,7 @@ public class TermCreator(
             await termHierarchyInserter.InsertAsync(new TermHierarchy 
             { 
                 TermIdPartent = parent, 
-                TermIdChild = element.Id!.Value 
+                TermIdChild = element.IdentificationForCreate.Id!.Value 
             });
         }
     }
@@ -86,7 +86,7 @@ public class CaseCreator<T>(
     NodeDetailsCreator nodeDetailsCreator,
     TermCreator nameableDetailsCreator,
     LocatableDetailsCreator locatableDetailsCreator,
-    IEntityCreator<CaseNewCasePartiesToUpdate> casePartiesCreator
+    IEntityCreator<CaseExistingCasePartiesToCreate> casePartiesCreator
 ) : LocatableCreator<T>(
     inserters,
     nodeDetailsCreator,
@@ -98,8 +98,7 @@ public class CaseCreator<T>(
     public override async Task ProcessAsync(T element, int id)
     {
         await base.ProcessAsync(element, id);
-        await casePartiesCreator.CreateAsync(element.CaseParties.Select(x => new CaseNewCasePartiesToUpdate 
-        { 
+        await casePartiesCreator.CreateAsync(element.CaseDetailsForCreate.CaseParties.Select(x => new CaseExistingCasePartiesToCreate { 
             CaseId  = id,
             CaseParties = x.CaseParties,
             CasePartyTypeId = x.CasePartyTypeId
@@ -150,7 +149,7 @@ public class NameableCreator<T>(
     {
         await base.ProcessAsync(element, id);
         await termCreator
-            .CreateAsync(element.Terms
+            .CreateAsync(element.NameableDetailsForCreate.Terms
                 .Select(x => x.ResolveNameable(id))
                 .ToAsyncEnumerable());
     }
@@ -163,7 +162,7 @@ public class NameableCreator<T>(
 }
 public class NodeDetailsCreatorFactory(
     IDatabaseInserterFactory<ResolvedNodeTermToAdd> nodeTermInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableTenantNodeForExistingNode> tenantNodeInserterFactory
+    IDatabaseInserterFactory<TenantNode.TenantNodeToCreateForExistingNode> tenantNodeInserterFactory
 )
 { 
     public async Task<NodeDetailsCreator> CreateAsync(IDbConnection connection)
@@ -177,19 +176,19 @@ public class NodeDetailsCreatorFactory(
 
 public class NodeDetailsCreator(
     IDatabaseInserter<ResolvedNodeTermToAdd> nodeTermInserter,
-    IDatabaseInserter<EventuallyIdentifiableTenantNodeForExistingNode> tenantNodeInserter
+    IDatabaseInserter<TenantNode.TenantNodeToCreateForExistingNode> tenantNodeInserter
 ) : IAsyncDisposable
 {
     public async Task ProcessAsync(NodeToCreate element, int id)
     {
-        foreach (var nodeTermId in element.TermIds) {
+        foreach (var nodeTermId in element.NodeDetailsForCreate.TermIds) {
             await nodeTermInserter.InsertAsync(new ResolvedNodeTermToAdd 
             { 
                 NodeId = id, 
                 TermId = nodeTermId 
             });
         }
-        foreach(var tenantNode in element.TenantNodes)
+        foreach(var tenantNode in element.NodeDetailsForCreate.TenantNodes)
         { 
             await tenantNodeInserter.InsertAsync(tenantNode.ResolveNodeId(id));
         }
@@ -217,7 +216,7 @@ public class NodeCreator<T>(
     public sealed override async Task ProcessAsync(T element)
     {
         await base.ProcessAsync(element);
-        await ProcessAsync(element, element.Id!.Value);
+        await ProcessAsync(element, element.IdentificationForCreate.Id!.Value);
     }
 
     public override async ValueTask DisposeAsync()

@@ -4,13 +4,13 @@ internal sealed class ChildPlacementTypeCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
     IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
     IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableChildPlacementType> childPlacementTypeInserterFactory,
+    IDatabaseInserterFactory<ChildPlacementType.ChildPlacementTypeToCreate> childPlacementTypeInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory
-) : IEntityCreatorFactory<EventuallyIdentifiableChildPlacementType>
+) : IEntityCreatorFactory<ChildPlacementType.ChildPlacementTypeToCreate>
 {
-    public async Task<IEntityCreator<EventuallyIdentifiableChildPlacementType>> CreateAsync(IDbConnection connection) =>
-        new NameableCreator<EventuallyIdentifiableChildPlacementType>(
+    public async Task<IEntityCreator<ChildPlacementType.ChildPlacementTypeToCreate>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<ChildPlacementType.ChildPlacementTypeToCreate>(
             new () {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

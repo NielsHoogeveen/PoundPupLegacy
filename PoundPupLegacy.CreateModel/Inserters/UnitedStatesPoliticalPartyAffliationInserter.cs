@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiableUnitedStatesPoliticalPartyAffliation;
+using Request = UnitedStatesPoliticalPartyAffiliation.UnitedStatesPoliticalPartyAffiliationToCreate;
 
 internal sealed class UnitedStatesPoliticalPartyAffliationInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
@@ -10,7 +10,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationInserterFactory : Iden
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(UnitedStatsPoliticalPartyId, request.UnitedStatesPoliticalPartyId),
+            ParameterValue.Create(UnitedStatsPoliticalPartyId, request.UnitedStatesPoliticalPartyAffliationDetails.UnitedStatesPoliticalPartyId),
         };
     }
 }

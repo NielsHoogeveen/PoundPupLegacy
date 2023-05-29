@@ -6,7 +6,7 @@ public abstract record PersonOrganizationRelation: Node
 {
     private PersonOrganizationRelation() { }
     public required PersonOrganizationRelationDetails PersonOrganizationRelationDetails { get; init; }
-    public abstract NodeIdentification NodeIdentification { get; }
+    public abstract Identification Identification { get; }
     public abstract NodeDetails NodeDetails { get; }
     public abstract T Match<T>(
         Func<PersonOrganizationRelationToCreateForExistingParticipants, T> create,
@@ -26,9 +26,9 @@ public abstract record PersonOrganizationRelation: Node
         public required int? PersonId { get; set; }
         public required int OrganizationId { get; init; }
 
-        public required NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-        public override NodeIdentification NodeIdentification => NodeIdentificationForCreate;
+        public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public PersonOrganizationRelationToCreateForExistingParticipants ResolvePerson(int personId)
         {
@@ -36,7 +36,7 @@ public abstract record PersonOrganizationRelation: Node
                 PersonId = personId,
                 OrganizationId = OrganizationId,
                 NodeDetailsForCreate = NodeDetailsForCreate,
-                NodeIdentificationForCreate = NodeIdentificationForCreate,
+                IdentificationForCreate = IdentificationForCreate,
                 PersonOrganizationRelationDetails = PersonOrganizationRelationDetails,
             };
         }
@@ -63,9 +63,9 @@ public abstract record PersonOrganizationRelation: Node
     {
         public required int PersonId { get; set; }
         public required int? OrganizationId { get; set; }
-        public required NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-        public override NodeIdentification NodeIdentification => NodeIdentificationForCreate;
+        public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public PersonOrganizationRelationToCreateForExistingParticipants ResolveOrganization(int organizationId)
         {
@@ -73,7 +73,7 @@ public abstract record PersonOrganizationRelation: Node
                 PersonId = PersonId,
                 OrganizationId = organizationId,
                 NodeDetailsForCreate = NodeDetailsForCreate,
-                NodeIdentificationForCreate = NodeIdentificationForCreate,
+                IdentificationForCreate = IdentificationForCreate,
                 PersonOrganizationRelationDetails = PersonOrganizationRelationDetails,
             };
         }
@@ -101,9 +101,9 @@ public abstract record PersonOrganizationRelation: Node
     {
         public required int PersonId { get; set; }
         public required int OrganizationId { get; init; }
-        public required NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-        public override NodeIdentification NodeIdentification => NodeIdentificationForCreate;
+        public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public override T Match<T>(
             Func<PersonOrganizationRelationToCreateForExistingParticipants, T> create,
@@ -129,9 +129,9 @@ public abstract record PersonOrganizationRelation: Node
     {
         public required int PersonId { get; set; }
         public required int OrganizationId { get; init; }
-        public override NodeIdentification NodeIdentification => NodeIdentificationForUpdate;
+        public override Identification Identification => IdentificationForUpdate;
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
-        public required NodeIdentification.NodeIdentificationForUpdate NodeIdentificationForUpdate { get; init; }
+        public required Identification.IdentificationForUpdate IdentificationForUpdate { get; init; }
         public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
         public override T Match<T>(
             Func<PersonOrganizationRelationToCreateForExistingParticipants, T> create,

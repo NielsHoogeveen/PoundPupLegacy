@@ -11,7 +11,7 @@ internal sealed class ActInserterFactory : IdentifiableDatabaseInserterFactory<R
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(EnactmentDate, request.EnactmentDate)
+            ParameterValue.Create(EnactmentDate, request.ActDetails.EnactmentDate)
         };
     }
 }

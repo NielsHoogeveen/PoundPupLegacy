@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiableOrganizationType;
+using Request = OrganizationType.OrganizationTypeToCreate;
 
 internal sealed class OrganizationTypeInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
@@ -10,7 +10,7 @@ internal sealed class OrganizationTypeInserterFactory : IdentifiableDatabaseInse
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(HasConcreteSubtype, request.HasConcreteSubtype),
+            ParameterValue.Create(HasConcreteSubtype, request.OrganizationTypeDetails.HasConcreteSubtype),
         };
     }
 }

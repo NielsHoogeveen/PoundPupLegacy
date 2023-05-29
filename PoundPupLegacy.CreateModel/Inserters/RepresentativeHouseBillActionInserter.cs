@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiableRepresentativeHouseBillAction;
+using Request = RepresentativeHouseBillAction;
 
 internal sealed class RepresentativeHouseBillActionInserterFactory : ConditionalAutoGenerateIdDatabaseInserterFactory<Request>
 {
@@ -14,10 +14,10 @@ internal sealed class RepresentativeHouseBillActionInserterFactory : Conditional
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(RepresentativeId, request.RepresentativeId),
-            ParameterValue.Create(HouseBillId, request.HouseBillId),
-            ParameterValue.Create(Date, request.Date),
-            ParameterValue.Create(BillActionTypeId, request.BillActionTypeId)
+            ParameterValue.Create(RepresentativeId, request.RepresentativeHouseBillActionDetails.RepresentativeId),
+            ParameterValue.Create(HouseBillId, request.RepresentativeHouseBillActionDetails.HouseBillId),
+            ParameterValue.Create(Date, request.RepresentativeHouseBillActionDetails.Date),
+            ParameterValue.Create(BillActionTypeId, request.RepresentativeHouseBillActionDetails.BillActionTypeId)
         };
     }
 }

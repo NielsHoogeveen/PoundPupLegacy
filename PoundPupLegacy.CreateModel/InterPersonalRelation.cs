@@ -3,7 +3,7 @@
 public abstract record InterPersonalRelation : Node
 {
     private InterPersonalRelation() { }
-    public abstract NodeIdentification NodeIdentification { get; }
+    public abstract Identification Identification { get; }
     public abstract NodeDetails NodeDetails { get; }
     public required InterPersonalRelationDetails InterPersonalRelationDetails { get; init; }
     public abstract T Match<T>(
@@ -23,9 +23,9 @@ public abstract record InterPersonalRelation : Node
     {
         public required int PersonIdFrom { get; init; }
         public required int PersonIdTo { get; init; }
-        public required NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-        public override NodeIdentification NodeIdentification => NodeIdentificationForCreate;
+        public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public override T Match<T>(
             Func<InterPersonalRelationToCreateForExistingParticipants, T> create,
@@ -56,12 +56,12 @@ public abstract record InterPersonalRelation : Node
                 PersonIdTo = PersonIdTo,
                 InterPersonalRelationDetails = InterPersonalRelationDetails,
                 NodeDetailsForCreate = NodeDetailsForCreate,
-                NodeIdentificationForCreate = NodeIdentificationForCreate,
+                IdentificationForCreate = IdentificationForCreate,
             };
         }
-        public required NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-        public override NodeIdentification NodeIdentification => NodeIdentificationForCreate;
+        public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public override T Match<T>(
             Func<InterPersonalRelationToCreateForExistingParticipants, T> create,
@@ -94,12 +94,12 @@ public abstract record InterPersonalRelation : Node
                 PersonIdTo = PersonIdTo,
                 InterPersonalRelationDetails = InterPersonalRelationDetails,
                 NodeDetailsForCreate = NodeDetailsForCreate,
-                NodeIdentificationForCreate = NodeIdentificationForCreate,
+                IdentificationForCreate = IdentificationForCreate,
             };
         }
-        public required NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-        public override NodeIdentification NodeIdentification => NodeIdentificationForCreate;
+        public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public override T Match<T>(
             Func<InterPersonalRelationToCreateForExistingParticipants, T> create,
@@ -124,9 +124,9 @@ public abstract record InterPersonalRelation : Node
     {
         public required int PersonIdFrom { get; init; }
         public required int PersonIdTo { get; init; }
-        public override NodeIdentification NodeIdentification => NodeIdentificationForUpdate;
+        public override Identification Identification => IdentificationForUpdate;
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
-        public required NodeIdentification.NodeIdentificationForUpdate NodeIdentificationForUpdate { get; init; }
+        public required Identification.IdentificationForUpdate IdentificationForUpdate { get; init; }
         public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
         public override T Match<T>(
             Func<InterPersonalRelationToCreateForExistingParticipants, T> create,

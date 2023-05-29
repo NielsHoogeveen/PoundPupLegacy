@@ -1,29 +1,29 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public abstract record Person : Locatable
+public abstract record Person : Party
 {
     private Person() { }
 
     public abstract LocatableDetails LocatableDetails { get; }
-    public abstract NodeIdentification NodeIdentification { get; }
+    public abstract Identification Identification { get; }
     public abstract NodeDetails NodeDetails { get; }
     public abstract NameableDetails NameableDetails { get; }
-    public abstract OrganizationDetails PersonDetails { get; }
+    public abstract PersonDetails PersonDetails { get; }
     public abstract T Match<T>(Func<PersonToCreate, T> create, Func<PersonToUpdate, T> update);
     public abstract void Match(Action<PersonToCreate> create, Action<PersonToUpdate> update);
 
-    public sealed record PersonToCreate : Person, LocatableToCreate
+    public sealed record PersonToCreate : Person, PartyToCreate
     {
-        public override NodeIdentification NodeIdentification => NodeIdentificationForCreate;
+        public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public override NameableDetails NameableDetails => NameableDetailsForCreate;
         public override LocatableDetails LocatableDetails => LocatableDetailsForCreate;
-        public override OrganizationDetails PersonDetails => OrganizationDetailsForCreate;
-        public required NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+        public override PersonDetails PersonDetails => PersonDetailsForCreate;
+        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
         public required NameableDetails.NameableDetailsForCreate NameableDetailsForCreate { get; init; }
         public required LocatableDetails.LocatableDetailsForCreate LocatableDetailsForCreate { get; init; }
-        public required OrganizationDetails.OrganizationDetailsForCreate OrganizationDetailsForCreate { get; init; }
+        public required PersonDetails.PersonDetailsForCreate PersonDetailsForCreate { get; init; }
         public override T Match<T>(Func<PersonToCreate, T> create, Func<PersonToUpdate, T> update)
         {
             return create(this);
@@ -33,18 +33,18 @@ public abstract record Person : Locatable
             create(this);
         }
     }
-    public sealed record PersonToUpdate : Person, LocatableToUpdate
+    public sealed record PersonToUpdate : Person, PartyToUpdate
     {
-        public required NodeIdentification.NodeIdentificationForUpdate NodeIdentificationForUpdate { get; init; }
+        public required Identification.IdentificationForUpdate IdentificationForUpdate { get; init; }
         public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
         public override NameableDetails NameableDetails => NameableDetailsForUpdate;
-        public override NodeIdentification NodeIdentification => NodeIdentificationForUpdate;
+        public override Identification Identification => IdentificationForUpdate;
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
         public override LocatableDetails LocatableDetails => LocatableDetailsForUpdate;
-        public override OrganizationDetails PersonDetails => OrganizationDetailsForUpdate;
+        public override PersonDetails PersonDetails => PersonDetailsForUpdate;
         public required NameableDetails.NameableDetailsForUpdate NameableDetailsForUpdate { get; init; }
         public required LocatableDetails.LocatableDetailsForUpdate LocatableDetailsForUpdate { get; init; }
-        public required OrganizationDetails.OrganizationDetailsForUpdate OrganizationDetailsForUpdate { get; init; }
+        public required PersonDetails.PersonDetailsForUpdate PersonDetailsForUpdate { get; init; }
         public override T Match<T>(Func<PersonToCreate, T> create, Func<PersonToUpdate, T> update)
         {
             return update(this);
@@ -95,6 +95,8 @@ public abstract record PersonDetails
         }
         public required List<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForNewParty> PartyPoliticalEntityRelationsToCreate { get; init; }
         public required List<PersonOrganizationRelation.PersonOrganizationRelationToCreateForNewPerson> PersonOrganizationRelationToCreate { get; init; }
+
+        public required List<ProfessionalRoleToCreate> ProfessionalRolesToCreate { get; init; }
         public override T Match<T>(Func<PersonDetailsForCreate, T> create, Func<PersonDetailsForUpdate, T> update)
         {
             return create(this);
@@ -115,6 +117,7 @@ public abstract record PersonDetails
         public required List<InterPersonalRelation.InterPersonalRelationToUpdate> InterPersonalRelationToUpdates { get; init; }
         public required List<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToUpdate> PartyPoliticalEntityRelationToUpdates { get; init; }
         public required List<PersonOrganizationRelation.PersonOrganizationRelationToUpdate> PersonOrganizationRelationToUpdates { get; init; }
+        public required List<ProfessionalRoleToCreate> ProfessionalRolesToCreate { get; init; }
         public override T Match<T>(Func<PersonDetailsForCreate, T> create, Func<PersonDetailsForUpdate, T> update)
         {
             return update(this);

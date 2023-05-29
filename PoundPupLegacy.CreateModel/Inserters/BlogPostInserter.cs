@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class BlogPostInserterFactory : SingleIdInserterFactory<EventuallyIdentifiableBlogPost>
+internal sealed class BlogPostInserterFactory : SingleIdInserterFactory<BlogPost.BlogPostToCreate>
 {
     protected override string TableName => "blog_post";
 

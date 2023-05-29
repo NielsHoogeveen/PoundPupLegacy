@@ -4,13 +4,13 @@ internal sealed class CasePartyTypeCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
     IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
     IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableCasePartyType> casePartyTypeInserterFactory,
+    IDatabaseInserterFactory<CasePartyType.CasePartyTypeToCreate> casePartyTypeInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory
-) : IEntityCreatorFactory<EventuallyIdentifiableCasePartyType>
+) : IEntityCreatorFactory<CasePartyType.CasePartyTypeToCreate>
 {
-    public async Task<IEntityCreator<EventuallyIdentifiableCasePartyType>> CreateAsync(IDbConnection connection) =>
-        new NameableCreator<EventuallyIdentifiableCasePartyType>(
+    public async Task<IEntityCreator<CasePartyType.CasePartyTypeToCreate>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<CasePartyType.CasePartyTypeToCreate>(
             new () {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

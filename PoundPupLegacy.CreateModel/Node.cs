@@ -2,53 +2,20 @@
 
 namespace PoundPupLegacy.CreateModel;
 
-public interface NodeToUpdate : Node, IRequest
+public interface NodeToUpdate : Node, ImmediatelyIdentifiable
 {
-    NodeIdentification.NodeIdentificationForUpdate NodeIdentificationForUpdate { get; init; }
     NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
 
 }
-public interface NodeToCreate : Node, IRequest
+public interface NodeToCreate : Node, EventuallyIdentifiable
 {
-    NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
     NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
 }
-public interface Node: IRequest 
+public interface Node: Identifiable 
 {
-    NodeIdentification NodeIdentification { get; }
     NodeDetails NodeDetails { get; }
 }
 
-public abstract record NodeIdentification
-{
-    private NodeIdentification() { }
-    public abstract T Match<T>(Func<NodeIdentificationForCreate, T> create, Func<NodeIdentificationForUpdate, T> update);
-    public abstract void Match(Action<NodeIdentificationForCreate> create, Action<NodeIdentificationForUpdate> update);
-    public sealed record NodeIdentificationForCreate : NodeIdentification
-    {
-        public required int? Id { get; init; }
-        public override T Match<T>(Func<NodeIdentificationForCreate, T> create, Func<NodeIdentificationForUpdate, T> update)
-        {
-            return create(this);
-        }
-        public override void Match(Action<NodeIdentificationForCreate> create, Action<NodeIdentificationForUpdate> update)
-        {
-            create(this);
-        }
-    }
-    public sealed record NodeIdentificationForUpdate : NodeIdentification
-    { 
-        public required int Id { get; init; }
-        public override T Match<T>(Func<NodeIdentificationForCreate, T> create, Func<NodeIdentificationForUpdate, T> update)
-        {
-            return update(this);
-        }
-        public override void Match(Action<NodeIdentificationForCreate> create, Action<NodeIdentificationForUpdate> update)
-        {
-            update(this);
-        }
-    }
-}
 public abstract record NodeDetails{
     private NodeDetails() { }
     public required DateTime ChangedDateTime { get; init; }

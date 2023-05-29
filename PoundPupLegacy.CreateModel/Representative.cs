@@ -8,14 +8,14 @@ public abstract record Representative : MemberOfCongress
     {
         public override ProfessionalRoleDetails ProfessionalRoleDetails => ProfessionalRoleToCreate;
         public override RepresentativeDetails RepresenetativeDetails => RepresentativeDetailsToCreate;
-        public required ProfessionalRoleDetails.ProfessionalRoleToCreateForNewPerson ProfessionalRoleToCreate { get; init; }
+        public required ProfessionalRoleDetails.ProfessionalRoleDetailsForCreateOfNewPerson ProfessionalRoleToCreate { get; init; }
         public required RepresentativeDetails.RepresentativeDetailsToCreate RepresentativeDetailsToCreate { get; init; }
     }
     public sealed record RepresentativeToUpdate : Representative
     {
         public override ProfessionalRoleDetails ProfessionalRoleDetails => ProfessionalRoleToCreate;
         public override RepresentativeDetails RepresenetativeDetails => RepresentativeDetailsToCreate;
-        public required ProfessionalRoleDetails.ProfessionalRoleToCreateForExistingPerson ProfessionalRoleToCreate { get; init; }
+        public required ProfessionalRoleDetails.ProfessionalRoleDetailsForCreateOfExistingPerson ProfessionalRoleToCreate { get; init; }
         public required RepresentativeDetails.RepresentativeDetailsToCreate RepresentativeDetailsToCreate { get; init; }
     }
 }

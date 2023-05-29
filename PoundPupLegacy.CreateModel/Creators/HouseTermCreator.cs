@@ -6,12 +6,12 @@ internal sealed class HouseTermCreatorFactory(
     IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
     IDatabaseInserterFactory<DocumentableToCreate> documentableInserterFactory,
     IDatabaseInserterFactory<CongressionalTermToCreate> congressionalTermInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableHouseTerm> houseTermInserterFactory,
+    IDatabaseInserterFactory<HouseTerm.HouseTermToCreate> houseTermInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    IEntityCreatorFactory<EventuallyIdentifiableCongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliationCreatorFactory
-) : IEntityCreatorFactory<EventuallyIdentifiableHouseTerm>
+    IEntityCreatorFactory<CongressionalTermPoliticalPartyAffiliation.CongressionalTermPoliticalPartyAffiliationToCreate> congressionalTermPoliticalPartyAffiliationCreatorFactory
+) : IEntityCreatorFactory<HouseTerm.HouseTermToCreate>
 {
-    public async Task<IEntityCreator<EventuallyIdentifiableHouseTerm>> CreateAsync(IDbConnection connection) =>
+    public async Task<IEntityCreator<HouseTerm.HouseTermToCreate>> CreateAsync(IDbConnection connection) =>
         new HouseTermCreator(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
@@ -27,18 +27,18 @@ internal sealed class HouseTermCreatorFactory(
 }
 
 public class HouseTermCreator(
-    List<IDatabaseInserter<EventuallyIdentifiableHouseTerm>> inserters,
+    List<IDatabaseInserter<HouseTerm.HouseTermToCreate>> inserters,
     NodeDetailsCreator nodeDetailsCreator,
-    IEntityCreator<EventuallyIdentifiableCongressionalTermPoliticalPartyAffiliation> congressionalTermPoliticalPartyAffiliationCreator
-) : NodeCreator<EventuallyIdentifiableHouseTerm>(inserters, nodeDetailsCreator)
+    IEntityCreator<CongressionalTermPoliticalPartyAffiliation.CongressionalTermPoliticalPartyAffiliationToCreate> congressionalTermPoliticalPartyAffiliationCreator
+) : NodeCreator<HouseTerm.HouseTermToCreate>(inserters, nodeDetailsCreator)
 {
-    public override async Task ProcessAsync(EventuallyIdentifiableHouseTerm element, int id)
+    public override async Task ProcessAsync(HouseTerm.HouseTermToCreate element, int id)
     {
         await base.ProcessAsync(element, id);
-        foreach (var partyAffiliation in element.PartyAffiliations) {
-            partyAffiliation.CongressionalTermId = id;
+        foreach (var partyAffiliation in element.CongressionalTermDetails.PartyAffiliations) {
+            partyAffiliation.CongressionalTermPoliticalPartyAffiliationDetails.CongressionalTermId = id;
         }
-        await congressionalTermPoliticalPartyAffiliationCreator.CreateAsync(element.PartyAffiliations.ToAsyncEnumerable());
+        await congressionalTermPoliticalPartyAffiliationCreator.CreateAsync(element.CongressionalTermDetails.PartyAffiliations.ToAsyncEnumerable());
 
     }
     public override async ValueTask DisposeAsync()

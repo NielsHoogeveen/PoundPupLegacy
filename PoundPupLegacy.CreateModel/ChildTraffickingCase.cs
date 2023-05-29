@@ -1,55 +1,55 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public abstract record ChildTraffickingCaseCase : Case
+public abstract record ChildTraffickingCase : Case
 {
-    private ChildTraffickingCaseCase() { }
+    private ChildTraffickingCase() { }
     public required ChildTraffickingCaseDetails ChildTraffickingCaseDetails { get; init; }
     public abstract CaseDetails CaseDetails { get; }
     public abstract LocatableDetails LocatableDetails { get; }
-    public abstract NodeIdentification NodeIdentification { get; }
+    public abstract Identification Identification { get; }
     public abstract NodeDetails NodeDetails { get; }
     public abstract NameableDetails NameableDetails { get; }
-    public abstract T Match<T>(Func<ChildTraffickingCaseCaseToCreate, T> create, Func<ChildTraffickingCaseCaseToUpdate, T> update);
-    public abstract void Match(Action<ChildTraffickingCaseCaseToCreate> create, Action<ChildTraffickingCaseCaseToUpdate> update);
+    public abstract T Match<T>(Func<ChildTraffickingCaseToCreate, T> create, Func<ChildTraffickingCaseToUpdate, T> update);
+    public abstract void Match(Action<ChildTraffickingCaseToCreate> create, Action<ChildTraffickingCaseToUpdate> update);
 
-    public sealed record ChildTraffickingCaseCaseToCreate : ChildTraffickingCaseCase, CaseToCreate
+    public sealed record ChildTraffickingCaseToCreate : ChildTraffickingCase, CaseToCreate
     {
-        public override NodeIdentification NodeIdentification => NodeIdentificationForCreate;
+        public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public override NameableDetails NameableDetails => NameableDetailsForCreate;
         public override CaseDetails CaseDetails => CaseDetailsForCreate;
         public override LocatableDetails LocatableDetails => LocatableDetailsForCreate;
-        public required NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
         public required NameableDetails.NameableDetailsForCreate NameableDetailsForCreate { get; init; }
         public required CaseDetails.CaseDetailsForCreate CaseDetailsForCreate { get; init; }
         public required LocatableDetails.LocatableDetailsForCreate LocatableDetailsForCreate { get; init; }
-        public override T Match<T>(Func<ChildTraffickingCaseCaseToCreate, T> create, Func<ChildTraffickingCaseCaseToUpdate, T> update)
+        public override T Match<T>(Func<ChildTraffickingCaseToCreate, T> create, Func<ChildTraffickingCaseToUpdate, T> update)
         {
             return create(this);
         }
-        public override void Match(Action<ChildTraffickingCaseCaseToCreate> create, Action<ChildTraffickingCaseCaseToUpdate> update)
+        public override void Match(Action<ChildTraffickingCaseToCreate> create, Action<ChildTraffickingCaseToUpdate> update)
         {
             create(this);
         }
     }
-    public sealed record ChildTraffickingCaseCaseToUpdate : ChildTraffickingCaseCase, CaseToUpdate
+    public sealed record ChildTraffickingCaseToUpdate : ChildTraffickingCase, CaseToUpdate
     {
-        public required NodeIdentification.NodeIdentificationForUpdate NodeIdentificationForUpdate { get; init; }
+        public required Identification.IdentificationForUpdate IdentificationForUpdate { get; init; }
         public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
         public override NameableDetails NameableDetails => NameableDetailsForUpdate;
-        public override NodeIdentification NodeIdentification => NodeIdentificationForUpdate;
+        public override Identification Identification => IdentificationForUpdate;
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
         public override CaseDetails CaseDetails => CaseDetailsForUpdate;
         public override LocatableDetails LocatableDetails => LocatableDetailsForUpdate;
         public required NameableDetails.NameableDetailsForUpdate NameableDetailsForUpdate { get; init; }
         public required CaseDetails.CaseDetailsForUpdate CaseDetailsForUpdate { get; init; }
         public required LocatableDetails.LocatableDetailsForUpdate LocatableDetailsForUpdate { get; init; }
-        public override T Match<T>(Func<ChildTraffickingCaseCaseToCreate, T> create, Func<ChildTraffickingCaseCaseToUpdate, T> update)
+        public override T Match<T>(Func<ChildTraffickingCaseToCreate, T> create, Func<ChildTraffickingCaseToUpdate, T> update)
         {
             return update(this);
         }
-        public override void Match(Action<ChildTraffickingCaseCaseToCreate> create, Action<ChildTraffickingCaseCaseToUpdate> update)
+        public override void Match(Action<ChildTraffickingCaseToCreate> create, Action<ChildTraffickingCaseToUpdate> update)
         {
             update(this);
         }

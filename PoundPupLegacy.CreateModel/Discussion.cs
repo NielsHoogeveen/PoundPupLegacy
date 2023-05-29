@@ -4,17 +4,17 @@ public abstract record Discussion : SimpleTextNode
 {
     private Discussion() { }
     public required SimpleTextNodeDetails SimpleTextNodeDetails { get; init; }
-    public abstract NodeIdentification NodeIdentification { get; }
+    public abstract Identification Identification { get; }
     public abstract NodeDetails NodeDetails { get; }
     public abstract T Match<T>(Func<DiscussionToCreate, T> create, Func<DiscussionToUpdate, T> update);
     public abstract void Match(Action<DiscussionToCreate> create, Action<DiscussionToUpdate> update);
 
-    public sealed record DiscussionToCreate : Discussion, NodeToCreate
+    public sealed record DiscussionToCreate : Discussion, SimpleTextNodeToCreate
     {
-        public required NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
 
-        public override NodeIdentification NodeIdentification => NodeIdentificationForCreate;
+        public override Identification Identification => IdentificationForCreate;
 
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public override T Match<T>(Func<DiscussionToCreate, T> create, Func<DiscussionToUpdate, T> update)
@@ -26,13 +26,13 @@ public abstract record Discussion : SimpleTextNode
             create(this);
         }
     }
-    public sealed record DiscussionToUpdate : Discussion, NodeToUpdate
+    public sealed record DiscussionToUpdate : Discussion, SimpleTextNodeToUpdate
     {
-        public override NodeIdentification NodeIdentification => NodeIdentificationForUpdate;
+        public override Identification Identification => IdentificationForUpdate;
 
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
 
-        public required NodeIdentification.NodeIdentificationForUpdate NodeIdentificationForUpdate { get; init; }
+        public required Identification.IdentificationForUpdate IdentificationForUpdate { get; init; }
         public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
         public override T Match<T>(Func<DiscussionToCreate, T> create, Func<DiscussionToUpdate, T> update)
         {

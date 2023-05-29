@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class DisruptedPlacementCaseInserterFactory : SingleIdInserterFactory<EventuallyIdentifiableDisruptedPlacementCase>
+internal sealed class DisruptedPlacementCaseInserterFactory : SingleIdInserterFactory<DisruptedPlacementCase.DisruptedPlacementCaseToCreate>
 {
     protected override string TableName => "disrupted_placement_case";
 

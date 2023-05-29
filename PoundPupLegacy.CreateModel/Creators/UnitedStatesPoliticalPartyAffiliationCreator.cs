@@ -4,13 +4,13 @@ internal sealed class UnitedStatesPoliticalPartyAffliationCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
     IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
     IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableUnitedStatesPoliticalPartyAffliation> unitedStatesPoliticalPartyAffliationInserterFactory,
+    IDatabaseInserterFactory<UnitedStatesPoliticalPartyAffiliation.UnitedStatesPoliticalPartyAffiliationToCreate> unitedStatesPoliticalPartyAffliationInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory
-) : IEntityCreatorFactory<EventuallyIdentifiableUnitedStatesPoliticalPartyAffliation>
+) : IEntityCreatorFactory<UnitedStatesPoliticalPartyAffiliation.UnitedStatesPoliticalPartyAffiliationToCreate>
 {
-    public async Task<IEntityCreator<EventuallyIdentifiableUnitedStatesPoliticalPartyAffliation>> CreateAsync(IDbConnection connection) =>
-        new NameableCreator<EventuallyIdentifiableUnitedStatesPoliticalPartyAffliation>(
+    public async Task<IEntityCreator<UnitedStatesPoliticalPartyAffiliation.UnitedStatesPoliticalPartyAffiliationToCreate>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<UnitedStatesPoliticalPartyAffiliation.UnitedStatesPoliticalPartyAffiliationToCreate>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

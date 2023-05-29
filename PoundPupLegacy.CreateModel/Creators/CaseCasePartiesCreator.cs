@@ -1,13 +1,13 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class CaseCasePartiesCreatorFactory(
-    IDatabaseInserterFactory<NewCaseParties> casePartiesInserterFactory,
-    IDatabaseInserterFactory<CaseNewCasePartiesToUpdate> caseCasePartiesInserterFactory,
+    IDatabaseInserterFactory<CaseParties.CasePartiesToCreate> casePartiesInserterFactory,
+    IDatabaseInserterFactory<CaseExistingCasePartiesToCreate> caseCasePartiesInserterFactory,
     IDatabaseInserterFactory<CasePartiesOrganization> casePartiesOrganizationInserterFactory,
     IDatabaseInserterFactory<CasePartiesPerson> casePartiesPersonInserterFactory
-) : IEntityCreatorFactory<CaseNewCasePartiesToUpdate>
+) : IEntityCreatorFactory<CaseExistingCasePartiesToCreate>
 {
-    public async Task<IEntityCreator<CaseNewCasePartiesToUpdate>> CreateAsync(IDbConnection connection) =>
+    public async Task<IEntityCreator<CaseExistingCasePartiesToCreate>> CreateAsync(IDbConnection connection) =>
         new CaseCasePartiesCreator(
             await casePartiesInserterFactory.CreateAsync(connection),
             await caseCasePartiesInserterFactory.CreateAsync(connection),
@@ -17,26 +17,26 @@ internal sealed class CaseCasePartiesCreatorFactory(
 }
 
 public class CaseCasePartiesCreator(
-    IDatabaseInserter<NewCaseParties> casePartiesInserter,
-    IDatabaseInserter<CaseNewCasePartiesToUpdate> caseCasePartiesInserter,
+    IDatabaseInserter<CaseParties.CasePartiesToCreate> casePartiesInserter,
+    IDatabaseInserter<CaseExistingCasePartiesToCreate> caseCasePartiesInserter,
     IDatabaseInserter<CasePartiesOrganization> casePartiesOrganizationInserter,
     IDatabaseInserter<CasePartiesPerson> casePartiesPersonInserter
-) : EntityCreator<CaseNewCasePartiesToUpdate>()
+) : EntityCreator<CaseExistingCasePartiesToCreate>()
 {
-    public override async Task ProcessAsync(CaseNewCasePartiesToUpdate element)
+    public override async Task ProcessAsync(CaseExistingCasePartiesToCreate element)
     {
         await base.ProcessAsync(element);
         await casePartiesInserter.InsertAsync(element.CaseParties);
         await caseCasePartiesInserter.InsertAsync(element);
         foreach (var organizationId in element.CaseParties.OrganizationIds) {
             await casePartiesOrganizationInserter.InsertAsync(new CasePartiesOrganization {
-                CasePartiesId = element.CaseParties.Id!.Value,
+                CasePartiesId = element.CaseParties.IdentificationForCreate.Id!.Value,
                 OrganizationId = organizationId
             });
         }
         foreach (var personId in element.CaseParties.PersonIds) {
             await casePartiesPersonInserter.InsertAsync(new CasePartiesPerson {
-                CasePartiesId = element.CaseParties.Id!.Value,
+                CasePartiesId = element.CaseParties.IdentificationForCreate.Id!.Value,
                 PersonId = personId
             });
         }

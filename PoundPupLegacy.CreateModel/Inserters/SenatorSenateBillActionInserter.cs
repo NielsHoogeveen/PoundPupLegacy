@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiableSenatorSenateBillAction;
+using Request = SenatorSenateBillAction;
 
 internal sealed class SenatorSenateBillActionInserterFactory : ConditionalAutoGenerateIdDatabaseInserterFactory<Request>
 {
@@ -13,10 +13,10 @@ internal sealed class SenatorSenateBillActionInserterFactory : ConditionalAutoGe
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(SenatorId, request.SenatorId),
-            ParameterValue.Create(SenateBillId, request.SenateBillId),
-            ParameterValue.Create(Date, request.Date),
-            ParameterValue.Create(BillActionTypeId, request.BillActionTypeId)
+            ParameterValue.Create(SenatorId, request.SenatorSenateBillActionDetails.SenatorId),
+            ParameterValue.Create(SenateBillId, request.SenatorSenateBillActionDetails.SenateBillId),
+            ParameterValue.Create(Date, request.SenatorSenateBillActionDetails.Date),
+            ParameterValue.Create(BillActionTypeId, request.SenatorSenateBillActionDetails.BillActionTypeId)
         };
     }
 }

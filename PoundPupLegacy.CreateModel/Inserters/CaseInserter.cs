@@ -11,7 +11,7 @@ internal sealed class CaseInserterFactory : IdentifiableDatabaseInserterFactory<
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(FuzzyDate, request.Date),
+            ParameterValue.Create(FuzzyDate, request.CaseDetails.Date),
         };
     }
 }

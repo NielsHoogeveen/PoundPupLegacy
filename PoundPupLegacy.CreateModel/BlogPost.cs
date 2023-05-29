@@ -4,17 +4,17 @@ public abstract record BlogPost : SimpleTextNode
 {
     private BlogPost() { }
     public required SimpleTextNodeDetails SimpleTextNodeDetails { get; init; }
-    public abstract NodeIdentification NodeIdentification { get; }
+    public abstract Identification Identification { get; }
     public abstract NodeDetails NodeDetails { get; }
     public abstract T Match<T>(Func<BlogPostToCreate, T> create, Func<BlogPostToUpdate, T> update);
     public abstract void Match(Action<BlogPostToCreate> create, Action<BlogPostToUpdate> update);
 
-    public sealed record BlogPostToCreate : BlogPost, NodeToCreate
+    public sealed record BlogPostToCreate : BlogPost, SimpleTextNodeToCreate
     {
-        public required NodeIdentification.NodeIdentificationForCreate NodeIdentificationForCreate { get; init; }
+        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
 
-        public override NodeIdentification NodeIdentification => NodeIdentificationForCreate;
+        public override Identification Identification => IdentificationForCreate;
 
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public override T Match<T>(Func<BlogPostToCreate, T> create, Func<BlogPostToUpdate, T> update)
@@ -26,13 +26,13 @@ public abstract record BlogPost : SimpleTextNode
             create(this);
         }
     }
-    public sealed record BlogPostToUpdate : BlogPost, NodeToUpdate
+    public sealed record BlogPostToUpdate : BlogPost, SimpleTextNodeToUpdate
     {
-        public override NodeIdentification NodeIdentification => NodeIdentificationForUpdate;
+        public override Identification Identification => IdentificationForUpdate;
 
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
 
-        public required NodeIdentification.NodeIdentificationForUpdate NodeIdentificationForUpdate { get; init; }
+        public required Identification.IdentificationForUpdate IdentificationForUpdate { get; init; }
         public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
         public override T Match<T>(Func<BlogPostToCreate, T> create, Func<BlogPostToUpdate, T> update)
         {

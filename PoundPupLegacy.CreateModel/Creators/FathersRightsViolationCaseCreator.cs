@@ -7,15 +7,15 @@ internal sealed class FathersRightsViolationCaseCreatorFactory(
     IDatabaseInserterFactory<LocatableToCreate> locatableInserterFactory,
     IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
     IDatabaseInserterFactory<CaseToCreate> caseInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableFathersRightsViolationCase> fathersRightsViolationCaseInserterFactory,
+    IDatabaseInserterFactory<FathersRightsViolationCase.FathersRightsViolationCaseToCreate> fathersRightsViolationCaseInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory,
     LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
-    IEntityCreatorFactory<CaseNewCasePartiesToUpdate> caseCaseTypeCreatorFactory
-) : IEntityCreatorFactory<EventuallyIdentifiableFathersRightsViolationCase>
+    IEntityCreatorFactory<CaseExistingCasePartiesToCreate> caseCaseTypeCreatorFactory
+) : IEntityCreatorFactory<FathersRightsViolationCase.FathersRightsViolationCaseToCreate>
 {
-    public async Task<IEntityCreator<EventuallyIdentifiableFathersRightsViolationCase>> CreateAsync(IDbConnection connection) =>
-        new CaseCreator<EventuallyIdentifiableFathersRightsViolationCase>(
+    public async Task<IEntityCreator<FathersRightsViolationCase.FathersRightsViolationCaseToCreate>> CreateAsync(IDbConnection connection) =>
+        new CaseCreator<FathersRightsViolationCase.FathersRightsViolationCaseToCreate>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

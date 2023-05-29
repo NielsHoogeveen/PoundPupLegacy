@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiableInterCountryRelationType;
+using Request = InterCountryRelationType.InterCountryRelationTypeToCreate;
 
 internal sealed class InterCountryRelationTypeInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
@@ -10,7 +10,7 @@ internal sealed class InterCountryRelationTypeInserterFactory : IdentifiableData
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(IsSymmetric, request.IsSymmetric),
+            ParameterValue.Create(IsSymmetric, request.EndoRelationTypeDetails.IsSymmetric),
         };
     }
 }

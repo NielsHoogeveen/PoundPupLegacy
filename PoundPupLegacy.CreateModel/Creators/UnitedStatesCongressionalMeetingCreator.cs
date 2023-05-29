@@ -5,13 +5,13 @@ internal sealed class UnitedStatesCongressionalMeetingCreatorFactory(
     IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
     IDatabaseInserterFactory<DocumentableToCreate> documentableInserterFactory,
     IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableUnitedStatesCongressionalMeeting> unitedStatesCongressionalMeetingInserterFactory,
+    IDatabaseInserterFactory<UnitedStatesCongressionalMeeting.UnitedStatesCongressionalMeetingToCreate> unitedStatesCongressionalMeetingInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory
-) : IEntityCreatorFactory<EventuallyIdentifiableUnitedStatesCongressionalMeeting>
+) : IEntityCreatorFactory<UnitedStatesCongressionalMeeting.UnitedStatesCongressionalMeetingToCreate>
 {
-    public async Task<IEntityCreator<EventuallyIdentifiableUnitedStatesCongressionalMeeting>> CreateAsync(IDbConnection connection) =>
-        new NameableCreator<EventuallyIdentifiableUnitedStatesCongressionalMeeting>(
+    public async Task<IEntityCreator<UnitedStatesCongressionalMeeting.UnitedStatesCongressionalMeetingToCreate>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<UnitedStatesCongressionalMeeting.UnitedStatesCongressionalMeetingToCreate>(
             new() 
             {
                 await nodeInserterFactory.CreateAsync(connection),

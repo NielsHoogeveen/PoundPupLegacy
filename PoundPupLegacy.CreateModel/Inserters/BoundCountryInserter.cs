@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiableBoundCountry;
+using Request = BoundCountry.BoundCountryToCreate;
 
 internal sealed class BoundCountryInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
@@ -11,7 +11,7 @@ internal sealed class BoundCountryInserterFactory : IdentifiableDatabaseInserter
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(BindingCountryId, request.BindingCountryId)
+            ParameterValue.Create(BindingCountryId, request.BoundCountryDetails.BindingCountryId)
         };
     }
 }

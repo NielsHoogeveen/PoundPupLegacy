@@ -2,12 +2,12 @@
 
 internal sealed class RepresentativeHouseBillActionCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableRepresentativeHouseBillAction> representativeHouseBillActionInserterFactory,
+    IDatabaseInserterFactory<RepresentativeHouseBillAction> representativeHouseBillActionInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory
-) : IEntityCreatorFactory<EventuallyIdentifiableRepresentativeHouseBillAction>
+) : IEntityCreatorFactory<RepresentativeHouseBillAction>
 {
-    public async Task<IEntityCreator<EventuallyIdentifiableRepresentativeHouseBillAction>> CreateAsync(IDbConnection connection) => 
-        new NodeCreator<EventuallyIdentifiableRepresentativeHouseBillAction>(
+    public async Task<IEntityCreator<RepresentativeHouseBillAction>> CreateAsync(IDbConnection connection) => 
+        new NodeCreator<RepresentativeHouseBillAction>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await representativeHouseBillActionInserterFactory.CreateAsync(connection)

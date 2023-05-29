@@ -9,7 +9,7 @@ internal class LocationsToUpdateMapper : IEnumerableMapper<Location.ExistingLoca
         foreach(var location in source) {
             if(location.HasBeenDeleted)
                 continue;
-            yield return new CreateModel.ExistingLocation { 
+            yield return new CreateModel.LocationToUpdate { 
                 Id = location.Id,
                 Additional = location.Addition,
                 City = location.City,

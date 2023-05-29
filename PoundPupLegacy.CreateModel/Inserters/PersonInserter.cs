@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiablePerson;
+using Request = Person.PersonToCreate;
 
 internal sealed class PersonInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
@@ -19,16 +19,16 @@ internal sealed class PersonInserterFactory : IdentifiableDatabaseInserterFactor
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(DateOfBirth, request.DateOfBirth),
-            ParameterValue.Create(DateOfDeath, request.DateOfDeath),
-            ParameterValue.Create(FileIdPortrait, request.FileIdPortrait),
-            ParameterValue.Create(GovtrackId, request.GovtrackId),
-            ParameterValue.Create(FirstName, request.FirstName),
-            ParameterValue.Create(MiddleName, request.MiddleName),
-            ParameterValue.Create(LastName, request.LastName),
-            ParameterValue.Create(Suffix, request.Suffix),
-            ParameterValue.Create(FullName, request.FullName),
-            ParameterValue.Create(Bioguide, request.Bioguide),
+            ParameterValue.Create(DateOfBirth, request.PersonDetails.DateOfBirth),
+            ParameterValue.Create(DateOfDeath, request.PersonDetails.DateOfDeath),
+            ParameterValue.Create(FileIdPortrait, request.PersonDetails.FileIdPortrait),
+            ParameterValue.Create(GovtrackId, request.PersonDetails.GovtrackId),
+            ParameterValue.Create(FirstName, request.PersonDetails.FirstName),
+            ParameterValue.Create(MiddleName, request.PersonDetails.MiddleName),
+            ParameterValue.Create(LastName, request.PersonDetails.LastName),
+            ParameterValue.Create(Suffix, request.PersonDetails.Suffix),
+            ParameterValue.Create(FullName, request.PersonDetails.FullName),
+            ParameterValue.Create(Bioguide, request.PersonDetails.Bioguide),
         };
     }
 }

@@ -4,13 +4,13 @@ internal sealed class OrganizationTypeCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
     IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
     IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
-    IDatabaseInserterFactory<EventuallyIdentifiableOrganizationType> organizationTypeInserterFactory,
+    IDatabaseInserterFactory<OrganizationType.OrganizationTypeToCreate> organizationTypeInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory
-) : IEntityCreatorFactory<EventuallyIdentifiableOrganizationType>
+) : IEntityCreatorFactory<OrganizationType.OrganizationTypeToCreate>
 {
-    public async Task<IEntityCreator<EventuallyIdentifiableOrganizationType>> CreateAsync(IDbConnection connection) =>
-        new NameableCreator<EventuallyIdentifiableOrganizationType>(
+    public async Task<IEntityCreator<OrganizationType.OrganizationTypeToCreate>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<OrganizationType.OrganizationTypeToCreate>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

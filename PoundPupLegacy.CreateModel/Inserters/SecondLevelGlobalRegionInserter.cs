@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiableSecondLevelGlobalRegion;
+using Request = SecondLevelGlobalRegion.SecondLevelGlobalRegionToCreate;
 
 public class SecondLevelGlobalRegionInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
@@ -10,7 +10,7 @@ public class SecondLevelGlobalRegionInserterFactory : IdentifiableDatabaseInsert
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(FirstLevelGlobalRegionId, request.FirstLevelGlobalRegionId),
+            ParameterValue.Create(FirstLevelGlobalRegionId, request.SecondLevelGlobalRegionDetails.FirstLevelGlobalRegionId),
         };
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiableInterPersonalRelationType;
+using Request = InterPersonalRelationType.InterPersonalRelationTypeToCreate;
 
 internal sealed class InterPersonalRelationTypeInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
@@ -11,7 +11,7 @@ internal sealed class InterPersonalRelationTypeInserterFactory : IdentifiableDat
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(IsSymmetric, request.IsSymmetric),
+            ParameterValue.Create(IsSymmetric, request.EndoRelationTypeDetails.IsSymmetric),
         };
     }
 }

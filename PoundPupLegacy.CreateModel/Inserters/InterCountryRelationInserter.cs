@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = EventuallyIdentifiableInterCountryRelation;
+using Request = InterCountryRelation.InterCountryRelationToCreate;
 
 internal sealed class InterCountryRelationInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
@@ -17,13 +17,13 @@ internal sealed class InterCountryRelationInserterFactory : IdentifiableDatabase
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(CountryIdFrom, request.CountryIdFrom),
-            ParameterValue.Create(CountryIdTo, request.CountryIdTo),
-            ParameterValue.Create(DateRange, request.DateTimeRange),
-            ParameterValue.Create(InterCountryRelationTypeId, request.InterCountryRelationTypeId),
-            ParameterValue.Create(NumberOfChildrenInvolved, request.NumberOfChildrenInvolved),
-            ParameterValue.Create(MoneyInvolved, request.MoneyInvolved),
-            ParameterValue.Create(DocumentIdProof, request.DocumentIdProof),
+            ParameterValue.Create(CountryIdFrom, request.InterCountryRelationDetails.CountryIdFrom),
+            ParameterValue.Create(CountryIdTo, request.InterCountryRelationDetails.CountryIdTo),
+            ParameterValue.Create(DateRange, request.InterCountryRelationDetails.DateTimeRange),
+            ParameterValue.Create(InterCountryRelationTypeId, request.InterCountryRelationDetails.InterCountryRelationTypeId),
+            ParameterValue.Create(NumberOfChildrenInvolved, request.InterCountryRelationDetails.NumberOfChildrenInvolved),
+            ParameterValue.Create(MoneyInvolved, request.InterCountryRelationDetails.MoneyInvolved),
+            ParameterValue.Create(DocumentIdProof, request.InterCountryRelationDetails.DocumentIdProof),
         };
     }
 }
