@@ -6,9 +6,9 @@ internal class AbusCaseCreateMapper(
     IMapper<EditModel.LocatableDetails.NewLocatableDetails, CreateModel.LocatableDetails.LocatableDetailsForCreate> locatableMapper,
     IMapper<EditModel.CaseDetails, CreateModel.CaseDetails.CaseDetailsForCreate> caseDetailMapper,
     IMapper<EditModel.AbuseCaseDetails, CreateModel.AbuseCaseDetails> abuseCaseDetailsMapper
-) : IMapper<AbuseCase.NewAbuseCase, CreateModel.AbuseCase.ToCreate>
+) : IMapper<AbuseCase.ToCreate, CreateModel.AbuseCase.ToCreate>
 {
-    public CreateModel.AbuseCase.ToCreate Map(AbuseCase.NewAbuseCase viewModel)
+    public CreateModel.AbuseCase.ToCreate Map(AbuseCase.ToCreate viewModel)
     {
         var now = DateTime.Now;
         return new CreateModel.AbuseCase.ToCreate {

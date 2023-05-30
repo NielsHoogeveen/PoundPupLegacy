@@ -1,8 +1,8 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(Document.ExistingDocument))]
+[JsonSerializable(typeof(Document.ToUpdate), TypeInfoPropertyName = "DocumentToUpdate")]
 public partial class ExistingDocumentJsonContext : JsonSerializerContext { }
-[JsonSerializable(typeof(Document.NewDocument))]
+[JsonSerializable(typeof(Document.ToCreate))]
 public partial class NewDocumentJsonContext : JsonSerializerContext { }
 [JsonSerializable(typeof(DocumentDetails))]
 public partial class DocumentDetailsJsonContext : JsonSerializerContext { }
@@ -10,35 +10,35 @@ public partial class DocumentDetailsJsonContext : JsonSerializerContext { }
 public abstract record Document : SimpleTextNode, ResolvedNode
 {
     private Document() { }
-    public abstract T Match<T>(Func<ExistingDocument, T> existingItem, Func<NewDocument, T> newItem);
-    public abstract void Match(Action<ExistingDocument> existingItem, Action<NewDocument> newItem);
+    public abstract T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem);
+    public abstract void Match(Action<ToUpdate> existingItem, Action<ToCreate> newItem);
     public required SimpleTextNodeDetails SimpleTextNodeDetails { get; init; }
     public required DocumentDetails DocumentDetails { get; init; }
     public abstract NodeDetails NodeDetails { get; }
 
-    public sealed record ExistingDocument : Document, ExistingNode
+    public sealed record ToUpdate : Document, ExistingNode
     {
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
         public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
         public required NodeIdentification NodeIdentification { get; init; }
-        public override T Match<T>(Func<ExistingDocument, T> existingItem, Func<NewDocument, T> newItem)
+        public override T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem)
         {
             return existingItem(this);
         }
-        public override void Match(Action<ExistingDocument> existingItem, Action<NewDocument> newItem)
+        public override void Match(Action<ToUpdate> existingItem, Action<ToCreate> newItem)
         {
             existingItem(this);
         }
     }
-    public sealed record NewDocument : Document, ResolvedNewNode
+    public sealed record ToCreate : Document, ResolvedNewNode
     {
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-        public override T Match<T>(Func<ExistingDocument, T> existingItem, Func<NewDocument, T> newItem)
+        public override T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem)
         {
             return newItem(this);
         }
-        public override void Match(Action<ExistingDocument> existingItem, Action<NewDocument> newItem)
+        public override void Match(Action<ToUpdate> existingItem, Action<ToCreate> newItem)
         {
             newItem(this);
         }

@@ -116,7 +116,7 @@
         }
     }
 
-    public CompletedInterOrganizationalRelationTo? GetValidRelation()
+    public InterOrganizationalRelation.To.Complete? GetValidRelation()
     {
         validationMessageStore?.Clear();
         bool hasErrors = false;
@@ -127,7 +127,7 @@
         }
         if (hasErrors)
             return null;
-        return RelationContext.RelationToEdit.Match<CompletedInterOrganizationalRelationTo>(
+        return RelationContext.RelationToEdit.Match<InterOrganizationalRelation.To.Complete>(
             incompleteInterOrganizationalRelationTo: x => x.GetCompletedRelation(RelationContext.RelationToEdit.OrganizationItemFrom!),
             completedInterOrganizationalRelationTo: x => x with { OrganizationFrom = RelationContext.RelationToEdit.OrganizationItemFrom! }
         );

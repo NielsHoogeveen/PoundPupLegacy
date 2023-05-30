@@ -2,9 +2,9 @@
 
 internal class InterOrganizationalRelationsFromUpdateMapper(
     IMapper<EditModel.NodeDetails.NodeDetailsForUpdate, CreateModel.NodeDetails.ForUpdate> nodeDetailMapper
-) : IEnumerableMapper<ExistingInterOrganizationalRelationTo, CreateModel.InterOrganizationalRelation.ToCreate.ForNewOrganizationTo.ToUpdate>
+) : IEnumerableMapper<InterOrganizationalRelation.To.Complete.Resolved.ToUpdate, CreateModel.InterOrganizationalRelation.ToCreate.ForNewOrganizationTo.ToUpdate>
 {
-    public IEnumerable<CreateModel.InterOrganizationalRelation.ToCreate.ForNewOrganizationTo.ToUpdate> Map(IEnumerable<ExistingInterOrganizationalRelationTo> source)
+    public IEnumerable<CreateModel.InterOrganizationalRelation.ToCreate.ForNewOrganizationTo.ToUpdate> Map(IEnumerable<InterOrganizationalRelation.To.Complete.Resolved.ToUpdate> source)
     {
         foreach (var relation in source) {
             if (relation.RelationDetails.HasBeenDeleted)

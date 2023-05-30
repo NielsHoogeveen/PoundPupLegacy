@@ -1,22 +1,22 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(FathersRightsViolationCase.ExistingFathersRightsViolationCase))]
+[JsonSerializable(typeof(FathersRightsViolationCase.ToUpdate), TypeInfoPropertyName = "FathersRightsViolationCaseToUpdate")]
 public partial class ExistingFathersRightsViolationCaseJsonContext : JsonSerializerContext { }
 
-[JsonSerializable(typeof(FathersRightsViolationCase.NewFathersRightsViolationCase))]
+[JsonSerializable(typeof(FathersRightsViolationCase.ToCreate))]
 public partial class NewFathersRightsViolationCaseJsonContext : JsonSerializerContext { }
 
 public abstract record FathersRightsViolationCase : Case, ResolvedNode
 {
     private FathersRightsViolationCase() { }
-    public abstract T Match<T>(Func<ExistingFathersRightsViolationCase, T> existingItem, Func<NewFathersRightsViolationCase, T> newItem);
-    public abstract void Match(Action<ExistingFathersRightsViolationCase> existingItem, Action<NewFathersRightsViolationCase> newItem);
+    public abstract T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem);
+    public abstract void Match(Action<ToUpdate> existingItem, Action<ToCreate> newItem);
     public required CaseDetails CaseDetails { get; init; }
     public required NameableDetails NameableDetails { get; init; }
     public abstract LocatableDetails LocatableDetails { get; }
     public abstract NodeDetails NodeDetails { get; }
 
-    public sealed record ExistingFathersRightsViolationCase : FathersRightsViolationCase, ExistingNode
+    public sealed record ToUpdate : FathersRightsViolationCase, ExistingNode
     {
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
         public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
@@ -24,17 +24,17 @@ public abstract record FathersRightsViolationCase : Case, ResolvedNode
         public override LocatableDetails LocatableDetails => ExistingLocatableDetails;
         public required LocatableDetails.ExistingLocatableDetails ExistingLocatableDetails { get; init; }
         public required NodeIdentification NodeIdentification { get; init; }
-        public override T Match<T>(Func<ExistingFathersRightsViolationCase, T> existingItem, Func<NewFathersRightsViolationCase, T> newItem)
+        public override T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem)
         {
             return existingItem(this);
         }
-        public override void Match(Action<ExistingFathersRightsViolationCase> existingItem, Action<NewFathersRightsViolationCase> newItem)
+        public override void Match(Action<ToUpdate> existingItem, Action<ToCreate> newItem)
         {
             existingItem(this);
         }
 
     }
-    public sealed record NewFathersRightsViolationCase : FathersRightsViolationCase, ResolvedNewNode
+    public sealed record ToCreate : FathersRightsViolationCase, ResolvedNewNode
     {
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
@@ -42,11 +42,11 @@ public abstract record FathersRightsViolationCase : Case, ResolvedNode
         public override LocatableDetails LocatableDetails => NewLocatableDetails;
         public required LocatableDetails.NewLocatableDetails NewLocatableDetails { get; init; }
 
-        public override T Match<T>(Func<ExistingFathersRightsViolationCase, T> existingItem, Func<NewFathersRightsViolationCase, T> newItem)
+        public override T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem)
         {
             return newItem(this);
         }
-        public override void Match(Action<ExistingFathersRightsViolationCase> existingItem, Action<NewFathersRightsViolationCase> newItem)
+        public override void Match(Action<ToUpdate> existingItem, Action<ToCreate> newItem)
         {
             newItem(this);
         }

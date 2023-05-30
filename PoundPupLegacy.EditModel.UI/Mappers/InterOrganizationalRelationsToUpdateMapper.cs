@@ -1,13 +1,10 @@
-﻿using PoundPupLegacy.CreateModel;
-using PoundPupLegacy.CreateModel.Deleters;
-
-namespace PoundPupLegacy.EditModel.UI.Mappers;
+﻿namespace PoundPupLegacy.EditModel.UI.Mappers;
 
 internal class InterOrganizationalRelationsToUpdateMapper(
     IMapper<EditModel.NodeDetails.NodeDetailsForUpdate, CreateModel.NodeDetails.ForUpdate> nodeDetailsMapper
-    ) : IEnumerableMapper<ExistingInterOrganizationalRelationTo, CreateModel.InterOrganizationalRelation.ToUpdate>
+    ) : IEnumerableMapper<InterOrganizationalRelation.To.Complete.Resolved.ToUpdate, CreateModel.InterOrganizationalRelation.ToUpdate>
 {
-    public IEnumerable<CreateModel.InterOrganizationalRelation.ToUpdate> Map(IEnumerable<ExistingInterOrganizationalRelationTo> source)
+    public IEnumerable<CreateModel.InterOrganizationalRelation.ToUpdate> Map(IEnumerable<InterOrganizationalRelation.To.Complete.Resolved.ToUpdate> source)
     {
         foreach(var relation in source) {
             if(relation.RelationDetails.HasBeenDeleted)

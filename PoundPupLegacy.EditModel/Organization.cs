@@ -1,30 +1,49 @@
-﻿using static PoundPupLegacy.EditModel.InterOrganizationalRelation.InterOrganizationalRelationFrom;
-using static PoundPupLegacy.EditModel.InterOrganizationalRelation.InterOrganizationalRelationTo;
+﻿namespace PoundPupLegacy.EditModel;
 
-namespace PoundPupLegacy.EditModel;
-
-[JsonSerializable(typeof(Organization.ExistingOrganization))]
+[JsonSerializable(typeof(Organization.ToUpdate), TypeInfoPropertyName ="OrganizationToUpdate")]
+[JsonSerializable(typeof(InterOrganizationalRelation.From.Complete), TypeInfoPropertyName = "InterOrganizationalRelationFromComplete")]
+[JsonSerializable(typeof(IEnumerable<InterOrganizationalRelation.From.Complete>), TypeInfoPropertyName = "InterOrganizationalRelationIterableFromComplete")]
+[JsonSerializable(typeof(List<InterOrganizationalRelation.From.Complete>), TypeInfoPropertyName = "InterOrganizationalRelationListFromComplete")]
+[JsonSerializable(typeof(InterOrganizationalRelation.To.Complete), TypeInfoPropertyName = "InterOrganizationalRelationToComplete")]
+[JsonSerializable(typeof(IEnumerable<InterOrganizationalRelation.To.Complete>), TypeInfoPropertyName = "InterOrganizationalRelationEnumerableToComplete")]
+[JsonSerializable(typeof(List<InterOrganizationalRelation.To.Complete>), TypeInfoPropertyName = "InterOrganizationalRelationListToComplete")]
+[JsonSerializable(typeof(InterOrganizationalRelation.From.Complete.Resolved.ToUpdate), TypeInfoPropertyName = "InterOrganizationalRelationFromCompleteResolvedToUpdate")]
+[JsonSerializable(typeof(List<InterOrganizationalRelation.From.Complete.Resolved.ToUpdate>), TypeInfoPropertyName = "InterOrganizationalRelationListFromCompleteResolvedToUpdate")]
+[JsonSerializable(typeof(InterOrganizationalRelation.To.Complete.Resolved.ToUpdate), TypeInfoPropertyName = "InterOrganizationalRelationToCompleteResolvedToUpdate")]
+[JsonSerializable(typeof(List<InterOrganizationalRelation.To.Complete.Resolved.ToUpdate>), TypeInfoPropertyName = "InterOrganizationalRelationListToCompleteResolvedToUpdate")]
 public partial class ExistingOrganizationJsonContext : JsonSerializerContext { }
 
-[JsonSerializable(typeof(Organization.NewOrganization))]
+[JsonSerializable(typeof(Organization.ToCreate), TypeInfoPropertyName = "OrganizationToCreate")]
+[JsonSerializable(typeof(InterOrganizationalRelation.From.Complete), TypeInfoPropertyName = "InterOrganizationalRelationFromComplete")]
+[JsonSerializable(typeof(IEnumerable<InterOrganizationalRelation.From.Complete>), TypeInfoPropertyName = "InterOrganizationalRelationIterableFromComplete")]
+[JsonSerializable(typeof(List<InterOrganizationalRelation.From.Complete>), TypeInfoPropertyName = "InterOrganizationalRelationListFromComplete")]
+[JsonSerializable(typeof(InterOrganizationalRelation.To.Complete), TypeInfoPropertyName = "InterOrganizationalRelationToComplete")]
+[JsonSerializable(typeof(IEnumerable<InterOrganizationalRelation.To.Complete>), TypeInfoPropertyName = "InterOrganizationalRelationEnumerableToComplete")]
+[JsonSerializable(typeof(List<InterOrganizationalRelation.To.Complete>), TypeInfoPropertyName = "InterOrganizationalRelationListToComplete")]
 public partial class NewOrganizationJsonContext : JsonSerializerContext { }
 
 public abstract record Organization : Locatable, ResolvedNode
 {
     private Organization() { }
-    public abstract T Match<T>(Func<ExistingOrganization, T> existingItem, Func<NewOrganization, T> newItem);
-    public abstract void Match(Action<ExistingOrganization> existingItem, Action<NewOrganization> newItem);
+    public abstract T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem);
+    public abstract void Match(Action<ToUpdate> existingItem, Action<ToCreate> newItem);
     public required NameableDetails NameableDetails { get; init; }
     public required OrganizationDetails OrganizationDetails { get; init; }
     public abstract LocatableDetails LocatableDetails { get; }
     public abstract NodeDetails NodeDetails { get; }
+    [JsonIgnore]
     public abstract IEnumerable<CompletedPersonOrganizationRelationForOrganization> PersonOrganizationRelations { get; }
     public required List<PersonOrganizationRelationTypeListItem> PersonOrganizationRelationTypes { get; init; }
+    [JsonIgnore]
     public abstract IEnumerable<CompletedOrganizationPoliticalEntityRelation> OrganizationPoliticalEntityRelations { get; }
     public required List<OrganizationPoliticalEntityRelationTypeListItem> OrganizationPoliticalEntityRelationTypes { get; init; }
-    public abstract IEnumerable<CompletedInterOrganizationalRelationFrom> InterOrganizationalRelationsFrom { get; }
-    public abstract IEnumerable<CompletedInterOrganizationalRelationTo> InterOrganizationalRelationsTo { get; }
-    public sealed record ExistingOrganization : Organization, ExistingLocatable
+
+    [JsonIgnore] 
+    public abstract IEnumerable<InterOrganizationalRelation.From.Complete> InterOrganizationalRelationsFrom { get; }
+
+    [JsonIgnore] 
+    public abstract IEnumerable<InterOrganizationalRelation.To.Complete> InterOrganizationalRelationsTo { get; }
+    public sealed record ToUpdate : Organization, ExistingLocatable
     {
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
         public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
@@ -40,6 +59,7 @@ public abstract record Organization : Locatable, ResolvedNode
                 }
             }
         }
+        [JsonIgnore]
         public override IEnumerable<CompletedOrganizationPoliticalEntityRelation> OrganizationPoliticalEntityRelations => GetOrganizationPoliticalEntityRelations();
         private IEnumerable<CompletedOrganizationPoliticalEntityRelation> GetOrganizationPoliticalEntityRelations()
         {
@@ -50,8 +70,8 @@ public abstract record Organization : Locatable, ResolvedNode
                 yield return elem;
             }
         }
-        private List<ExistingInterOrganizationalRelationFrom> existingInterOrganizationalRelationsFrom = new();
-        public List<ExistingInterOrganizationalRelationFrom> ExistingInterOrganizationalRelationsFrom {
+        private List<InterOrganizationalRelation.From.Complete.Resolved.ToUpdate> existingInterOrganizationalRelationsFrom = new();
+        public List<InterOrganizationalRelation.From.Complete.Resolved.ToUpdate> ExistingInterOrganizationalRelationsFrom {
             get => existingInterOrganizationalRelationsFrom;
             init {
                 if (value is not null) {
@@ -59,8 +79,8 @@ public abstract record Organization : Locatable, ResolvedNode
                 }
             }
         }
-        private List<ExistingInterOrganizationalRelationTo> existingInterOrganizationalRelationsTo = new();
-        public List<ExistingInterOrganizationalRelationTo> ExistingInterOrganizationalRelationsTo {
+        private List<InterOrganizationalRelation.To.Complete.Resolved.ToUpdate> existingInterOrganizationalRelationsTo = new();
+        public List<InterOrganizationalRelation.To.Complete.Resolved.ToUpdate> ExistingInterOrganizationalRelationsTo {
             get => existingInterOrganizationalRelationsTo;
             init {
                 if (value is not null) {
@@ -68,8 +88,9 @@ public abstract record Organization : Locatable, ResolvedNode
                 }
             }
         }
-        public override IEnumerable<CompletedInterOrganizationalRelationFrom> InterOrganizationalRelationsFrom => GetInterOrganizationalRelationsFrom();
-        private IEnumerable<CompletedInterOrganizationalRelationFrom> GetInterOrganizationalRelationsFrom()
+        [JsonIgnore]
+        public override IEnumerable<InterOrganizationalRelation.From.Complete> InterOrganizationalRelationsFrom => GetInterOrganizationalRelationsFrom();
+        private IEnumerable<InterOrganizationalRelation.From.Complete> GetInterOrganizationalRelationsFrom()
         {
             foreach (var elem in ExistingInterOrganizationalRelationsFrom) {
                 yield return elem;
@@ -78,8 +99,9 @@ public abstract record Organization : Locatable, ResolvedNode
                 yield return elem;
             }
         }
-        public override IEnumerable<CompletedInterOrganizationalRelationTo> InterOrganizationalRelationsTo => GetInterOrganizationalRelationsTo();
-        private IEnumerable<CompletedInterOrganizationalRelationTo> GetInterOrganizationalRelationsTo()
+        [JsonIgnore]
+        public override IEnumerable<InterOrganizationalRelation.To.Complete> InterOrganizationalRelationsTo => GetInterOrganizationalRelationsTo();
+        private IEnumerable<InterOrganizationalRelation.To.Complete> GetInterOrganizationalRelationsTo()
         {
             foreach (var elem in ExistingInterOrganizationalRelationsTo) {
                 yield return elem;
@@ -97,6 +119,7 @@ public abstract record Organization : Locatable, ResolvedNode
                 }
             }
         }
+        [JsonIgnore]
         public override IEnumerable<CompletedPersonOrganizationRelationForOrganization> PersonOrganizationRelations => GetPersonOrganizationRelations();
         private IEnumerable<CompletedPersonOrganizationRelationForOrganization> GetPersonOrganizationRelations()
         {
@@ -107,38 +130,49 @@ public abstract record Organization : Locatable, ResolvedNode
                 yield return elem;
             }
         }
+        [JsonIgnore]
         public List<CompletedOrganizationPoliticalEntityRelation> NewOrganizationPoliticalEntityRelations { get; } = new();
-        public List<CompletedInterOrganizationalRelationFrom> NewInterOrganizationalRelationsFrom { get; } = new();
-        public List<CompletedInterOrganizationalRelationTo> NewInterOrganizationalRelationsTo { get; } = new();
+        [JsonIgnore]
+        public List<InterOrganizationalRelation.From.Complete> NewInterOrganizationalRelationsFrom { get; } = new();
+        [JsonIgnore]
+        public List<InterOrganizationalRelation.To.Complete> NewInterOrganizationalRelationsTo { get; } = new();
+        [JsonIgnore]
         public List<CompletedNewPersonOrganizationRelationForOrganization> NewPersonOrganizationRelations { get; } = new();
-        public override T Match<T>(Func<ExistingOrganization, T> existingItem, Func<NewOrganization, T> newItem)
+        public override T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem)
         {
             return existingItem(this);
         }
-        public override void Match(Action<ExistingOrganization> existingItem, Action<NewOrganization> newItem)
+        public override void Match(Action<ToUpdate> existingItem, Action<ToCreate> newItem)
         {
             existingItem(this);
         }
     }
-    public sealed record NewOrganization : Organization, NewLocatable, ResolvedNewNode
+    public sealed record ToCreate : Organization, NewLocatable, ResolvedNewNode
     {
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
         public override LocatableDetails LocatableDetails => NewLocatableDetails;
         public required LocatableDetails.NewLocatableDetails NewLocatableDetails { get; init; }
+        [JsonIgnore]
         public override IEnumerable<CompletedOrganizationPoliticalEntityRelation> OrganizationPoliticalEntityRelations => NewOrganizationPoliticalEntityRelations;
-        public override IEnumerable<CompletedInterOrganizationalRelationFrom> InterOrganizationalRelationsFrom => NewInterOrganizationalRelationsFrom;
-        public override IEnumerable<CompletedInterOrganizationalRelationTo> InterOrganizationalRelationsTo => NewInterOrganizationalRelationsTo;
+        [JsonIgnore]
+        public override IEnumerable<InterOrganizationalRelation.From.Complete> InterOrganizationalRelationsFrom => NewInterOrganizationalRelationsFrom;
+        [JsonIgnore]
+        public override IEnumerable<InterOrganizationalRelation.To.Complete> InterOrganizationalRelationsTo => NewInterOrganizationalRelationsTo;
+        [JsonIgnore]
         public override IEnumerable<CompletedPersonOrganizationRelationForOrganization> PersonOrganizationRelations => NewPersonOrganizationRelations;
         public List<CompletedOrganizationPoliticalEntityRelation> NewOrganizationPoliticalEntityRelations { get; } = new();
-        public List<CompletedInterOrganizationalRelationFrom> NewInterOrganizationalRelationsFrom { get; } = new();
-        public List<CompletedInterOrganizationalRelationTo> NewInterOrganizationalRelationsTo { get; } = new();
+        [JsonIgnore]
+        public List<InterOrganizationalRelation.From.Complete> NewInterOrganizationalRelationsFrom { get; } = new();
+        [JsonIgnore] 
+        public List<InterOrganizationalRelation.To.Complete> NewInterOrganizationalRelationsTo { get; } = new();
+        [JsonIgnore] 
         public List<CompletedNewPersonOrganizationRelationForOrganization> NewPersonOrganizationRelations { get; } = new();
-        public override T Match<T>(Func<ExistingOrganization, T> existingItem, Func<NewOrganization, T> newItem)
+        public override T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem)
         {
             return newItem(this);
         }
-        public override void Match(Action<ExistingOrganization> existingItem, Action<NewOrganization> newItem)
+        public override void Match(Action<ToUpdate> existingItem, Action<ToCreate> newItem)
         {
             newItem(this);
         }

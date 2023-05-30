@@ -152,7 +152,7 @@ public sealed class Program
             EditModel.ExistingInterPersonalRelationToJsonContext.Default,
             EditModel.LocationJsonContext.Default,
             EditModel.ExistingOrganizationJsonContext.Default,
-            EditModel.NewOrganizationJsonContext.Default,
+            //EditModel.NewOrganizationJsonContext.Default,
             EditModel.OrganizationListItemJsonContext.Default,
             EditModel.OrganizationTypeJsonContext.Default,
             EditModel.PersonListItemJsonContext.Default,

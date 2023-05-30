@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(DisruptedPlacementCase.ExistingDisruptedPlacementCase))]
+[JsonSerializable(typeof(DisruptedPlacementCase.ToUpdate), TypeInfoPropertyName = "DisruptedPlacementCaseToUpdate")]
 public partial class ExistingDisruptedPlacementCaseJsonContext : JsonSerializerContext { }
 
-[JsonSerializable(typeof(DisruptedPlacementCase.NewDisruptedPlacementCase))]
+[JsonSerializable(typeof(DisruptedPlacementCase.ToCreate))]
 public partial class NewDisruptedPlacementCaseJsonContext : JsonSerializerContext { }
 
 public abstract record DisruptedPlacementCase : Case, ResolvedNode
@@ -12,7 +12,7 @@ public abstract record DisruptedPlacementCase : Case, ResolvedNode
     public required NameableDetails NameableDetails { get; init; }
     public abstract LocatableDetails LocatableDetails { get; }
     public abstract NodeDetails NodeDetails { get; }
-    public sealed record ExistingDisruptedPlacementCase : DisruptedPlacementCase, ExistingNode
+    public sealed record ToUpdate : DisruptedPlacementCase, ExistingNode
     {
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
         public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
@@ -21,7 +21,7 @@ public abstract record DisruptedPlacementCase : Case, ResolvedNode
         public required NodeIdentification NodeIdentification { get; init; }
 
     }
-    public sealed record NewDisruptedPlacementCase : DisruptedPlacementCase, ResolvedNewNode
+    public sealed record ToCreate : DisruptedPlacementCase, ResolvedNewNode
     {
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }

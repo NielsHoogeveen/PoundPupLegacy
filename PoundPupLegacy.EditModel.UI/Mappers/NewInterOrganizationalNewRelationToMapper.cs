@@ -1,12 +1,10 @@
-﻿using PoundPupLegacy.CreateModel;
-
-namespace PoundPupLegacy.EditModel.UI.Mappers;
+﻿namespace PoundPupLegacy.EditModel.UI.Mappers;
 
 internal class NewInterOrganizationalNewRelationToMapper(
     IMapper<EditModel.NodeDetails.NodeDetailsForCreate, CreateModel.NodeDetails.ForCreate> nodeDetailMapper
- ) : IEnumerableMapper<NewInterOrganizationalExistingRelationTo, CreateModel.InterOrganizationalRelation.ToCreate.ForNewOrganizationTo>
+ ) : IEnumerableMapper<EditModel.InterOrganizationalRelation.To.Complete.ToCreateForNewOrganization, CreateModel.InterOrganizationalRelation.ToCreate.ForNewOrganizationTo>
 {
-    public IEnumerable<CreateModel.InterOrganizationalRelation.ToCreate.ForNewOrganizationTo> Map(IEnumerable<NewInterOrganizationalExistingRelationTo> source)
+    public IEnumerable<CreateModel.InterOrganizationalRelation.ToCreate.ForNewOrganizationTo> Map(IEnumerable<EditModel.InterOrganizationalRelation.To.Complete.ToCreateForNewOrganization> source)
     {
         foreach (var relation in source) {
             var now = DateTime.Now;

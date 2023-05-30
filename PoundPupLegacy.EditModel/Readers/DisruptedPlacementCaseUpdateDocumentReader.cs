@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.EditModel.Readers;
 
-internal sealed class DisruptedPlacementCaseUpdateDocumentReaderFactory : NodeUpdateDocumentReaderFactory<DisruptedPlacementCase.ExistingDisruptedPlacementCase>
+internal sealed class DisruptedPlacementCaseUpdateDocumentReaderFactory : NodeUpdateDocumentReaderFactory<DisruptedPlacementCase.ToUpdate>
 {
     public override string Sql => SQL;
 

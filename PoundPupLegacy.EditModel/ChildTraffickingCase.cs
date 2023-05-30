@@ -1,9 +1,9 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(ChildTraffickingCase.ExistingChildTraffickingCase))]
+[JsonSerializable(typeof(ChildTraffickingCase.ToUpdate), TypeInfoPropertyName = "ChildTraffickingCaseToUpdate")]
 public partial class ExistingChildTraffickingCaseJsonContext : JsonSerializerContext { }
 
-[JsonSerializable(typeof(ChildTraffickingCase.NewChildTraffickingCase))]
+[JsonSerializable(typeof(ChildTraffickingCase.ToCreate.Unresolved))]
 public partial class NewChildTraffickingCaseJsonContext : JsonSerializerContext { }
 
 [JsonSerializable(typeof(ChildTraffickingCaseDetails.ResolvedChildTraffickingCaseDetails))]
@@ -16,14 +16,14 @@ public abstract record ChildTraffickingCase : Case
 {
     private ChildTraffickingCase() { }
     public abstract T Match<T>(
-        Func<ExistingChildTraffickingCase, T> existingItem, 
-        Func<NewChildTraffickingCase, T> newItem,
-        Func<ResolvedNewChildTraffickingCase, T> resolvedNewItem
+        Func<ToUpdate, T> existingItem, 
+        Func<ToCreate.Unresolved, T> newItem,
+        Func<ToCreate.Resolved, T> resolvedNewItem
     );
     public abstract void Match(
-        Action<ExistingChildTraffickingCase> existingItem, 
-        Action<NewChildTraffickingCase> newItem,
-        Action<ResolvedNewChildTraffickingCase> resolvedNewItem
+        Action<ToUpdate> existingItem, 
+        Action<ToCreate.Unresolved> newItem,
+        Action<ToCreate.Resolved> resolvedNewItem
     );
 
     public required CaseDetails CaseDetails { get; init; }
@@ -31,7 +31,7 @@ public abstract record ChildTraffickingCase : Case
     public abstract LocatableDetails LocatableDetails { get; }
     public abstract NodeDetails NodeDetails { get; }
     public abstract ChildTraffickingCaseDetails ChildTraffickingCaseDetails { get; }
-    public sealed record ExistingChildTraffickingCase : ChildTraffickingCase, ExistingLocatable
+    public sealed record ToUpdate : ChildTraffickingCase, ExistingLocatable
     {
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
         public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
@@ -41,84 +41,83 @@ public abstract record ChildTraffickingCase : Case
         public override ChildTraffickingCaseDetails ChildTraffickingCaseDetails => ResolvedChildTraffickingCaseDetails;
         public required ChildTraffickingCaseDetails.ResolvedChildTraffickingCaseDetails ResolvedChildTraffickingCaseDetails { get; init; }
         public override T Match<T>(
-            Func<ExistingChildTraffickingCase, T> existingItem,
-            Func<NewChildTraffickingCase, T> newItem,
-            Func<ResolvedNewChildTraffickingCase, T> resolvedNewItem
+            Func<ToUpdate, T> existingItem,
+            Func<ToCreate.Unresolved, T> newItem,
+            Func<ToCreate.Resolved, T> resolvedNewItem
         )
         {
             return existingItem(this);
         }
         public override void Match(
-            Action<ExistingChildTraffickingCase> existingItem,
-            Action<NewChildTraffickingCase> newItem,
-            Action<ResolvedNewChildTraffickingCase> resolvedNewItem
+            Action<ToUpdate> existingItem,
+            Action<ToCreate.Unresolved> newItem,
+            Action<ToCreate.Resolved> resolvedNewItem
         )
         {
             existingItem(this);
         }
     }
-    public sealed record ResolvedNewChildTraffickingCase : ChildTraffickingCase, ResolvedNewNode, NewLocatable
+    public abstract record ToCreate : ChildTraffickingCase, NewLocatable
     {
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
         public override LocatableDetails LocatableDetails => NewLocatableDetails;
         public required LocatableDetails.NewLocatableDetails NewLocatableDetails { get; init; }
-        public override ChildTraffickingCaseDetails ChildTraffickingCaseDetails => ResolvedChildTraffickingCaseDetails;
-        public required ChildTraffickingCaseDetails.ResolvedChildTraffickingCaseDetails ResolvedChildTraffickingCaseDetails { get; init; }
-        public override T Match<T>(
-            Func<ExistingChildTraffickingCase, T> existingItem,
-            Func<NewChildTraffickingCase, T> newItem,
-            Func<ResolvedNewChildTraffickingCase, T> resolvedNewItem
-        )
+
+        public sealed record Resolved : ToCreate, ResolvedNewNode
         {
-            return resolvedNewItem(this);
+            public override ChildTraffickingCaseDetails ChildTraffickingCaseDetails => ResolvedChildTraffickingCaseDetails;
+            public required ChildTraffickingCaseDetails.ResolvedChildTraffickingCaseDetails ResolvedChildTraffickingCaseDetails { get; init; }
+            public override T Match<T>(
+                Func<ToUpdate, T> existingItem,
+                Func<Unresolved, T> newItem,
+                Func<Resolved, T> resolvedNewItem
+            )
+            {
+                return resolvedNewItem(this);
+            }
+            public override void Match(
+                Action<ToUpdate> existingItem,
+                Action<Unresolved> newItem,
+                Action<Resolved> resolvedNewItem
+            )
+            {
+                resolvedNewItem(this);
+            }
         }
-        public override void Match(
-            Action<ExistingChildTraffickingCase> existingItem,
-            Action<NewChildTraffickingCase> newItem,
-            Action<ResolvedNewChildTraffickingCase> resolvedNewItem
-        )
+        public sealed record Unresolved : ToCreate, NewNode
         {
-            resolvedNewItem(this);
-        }
-    }
-    public sealed record NewChildTraffickingCase : ChildTraffickingCase, NewNode, NewLocatable
-    {
-        public override NodeDetails NodeDetails => NodeDetailsForCreate;
-        public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-        public override LocatableDetails LocatableDetails => NewLocatableDetails;
-        public required LocatableDetails.NewLocatableDetails NewLocatableDetails { get; init; }
-        public override ChildTraffickingCaseDetails ChildTraffickingCaseDetails => NewChildTraffickingCaseDetails;
-        public required ChildTraffickingCaseDetails.NewChildTraffickingCaseDetails NewChildTraffickingCaseDetails { get; init; }
-        public ResolvedNewChildTraffickingCase Resolve(CountryListItem countryFrom)
-        {
-            return new ResolvedNewChildTraffickingCase {
-                CaseDetails = CaseDetails,
-                ResolvedChildTraffickingCaseDetails = new ChildTraffickingCaseDetails.ResolvedChildTraffickingCaseDetails 
-                { 
-                    CountryFrom = countryFrom,
-                    NumberOfChildrenInvolved = ChildTraffickingCaseDetails.NumberOfChildrenInvolved
-                },
-                NameableDetails = NameableDetails,
-                NodeDetailsForCreate = NodeDetailsForCreate,
-                NewLocatableDetails = NewLocatableDetails,
-            };
-        }
-        public override T Match<T>(
-            Func<ExistingChildTraffickingCase, T> existingItem,
-            Func<NewChildTraffickingCase, T> newItem,
-            Func<ResolvedNewChildTraffickingCase, T> resolvedNewItem
-        )
-        {
-            return newItem(this);
-        }
-        public override void Match(
-            Action<ExistingChildTraffickingCase> existingItem,
-            Action<NewChildTraffickingCase> newItem,
-            Action<ResolvedNewChildTraffickingCase> resolvedNewItem
-        )
-        {
-            newItem(this);
+            public override ChildTraffickingCaseDetails ChildTraffickingCaseDetails => NewChildTraffickingCaseDetails;
+            public required ChildTraffickingCaseDetails.NewChildTraffickingCaseDetails NewChildTraffickingCaseDetails { get; init; }
+            public Resolved Resolve(CountryListItem countryFrom)
+            {
+                return new Resolved {
+                    CaseDetails = CaseDetails,
+                    ResolvedChildTraffickingCaseDetails = new ChildTraffickingCaseDetails.ResolvedChildTraffickingCaseDetails {
+                        CountryFrom = countryFrom,
+                        NumberOfChildrenInvolved = ChildTraffickingCaseDetails.NumberOfChildrenInvolved
+                    },
+                    NameableDetails = NameableDetails,
+                    NodeDetailsForCreate = NodeDetailsForCreate,
+                    NewLocatableDetails = NewLocatableDetails,
+                };
+            }
+            public override T Match<T>(
+                Func<ToUpdate, T> existingItem,
+                Func<Unresolved, T> newItem,
+                Func<Resolved, T> resolvedNewItem
+            )
+            {
+                return newItem(this);
+            }
+            public override void Match(
+                Action<ToUpdate> existingItem,
+                Action<Unresolved> newItem,
+                Action<Resolved> resolvedNewItem
+            )
+            {
+                newItem(this);
+            }
         }
     }
 }

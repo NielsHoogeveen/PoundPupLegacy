@@ -27,14 +27,14 @@
 }
 
 <InterOrganizationalRelationsListEditor 
-    TRelation="CompletedInterOrganizationalRelationFrom"
+    TRelation="InterOrganizationalRelation.From.Complete"
     Relations="RelationsFrom"
     Edit="EditRelationFrom"
     Add="AddRelationFrom"
     @ref=interOrganizationalRelationsFromEditor />
 
 <InterOrganizationalRelationsListEditor 
-    TRelation="CompletedInterOrganizationalRelationTo"
+    TRelation="InterOrganizationalRelation.To.Complete"
     Relations="RelationsTo"
     Edit="EditRelationTo"
     Add="AddRelationTo"
@@ -43,10 +43,10 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public List<CompletedInterOrganizationalRelationFrom> RelationsFrom { get; set; } = default!;
+    public List<InterOrganizationalRelation.From.Complete> RelationsFrom { get; set; } = default!;
     [Parameter]
     [EditorRequired]
-    public List<CompletedInterOrganizationalRelationTo> RelationsTo { get; set; } = default!;
+    public List<InterOrganizationalRelation.To.Complete> RelationsTo { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
@@ -58,9 +58,9 @@
 
     private RelationContext? relationContext = null;
 
-    private InterOrganizationalRelationsListEditor<CompletedInterOrganizationalRelationFrom>? interOrganizationalRelationsFromEditor;
+    private InterOrganizationalRelationsListEditor<InterOrganizationalRelation.From.Complete>? interOrganizationalRelationsFromEditor;
 
-    private InterOrganizationalRelationsListEditor<CompletedInterOrganizationalRelationTo>? interOrganizationalRelationsToEditor;
+    private InterOrganizationalRelationsListEditor<InterOrganizationalRelation.To.Complete>? interOrganizationalRelationsToEditor;
 
     private ModalDialog? dialog;
     private InterOrganizationalRelationFromEditorDialog? fromDialog;
@@ -81,7 +81,7 @@
         public abstract record RelationContextFrom: RelationContext
         {
             private RelationContextFrom() { }
-            public required InterOrganizationalRelationFrom RelationToEdit { get; init; }
+            public required InterOrganizationalRelation.From RelationToEdit { get; init; }
 
             public abstract override RelationContextTo Swap();
 
@@ -120,7 +120,7 @@
 
             public sealed record RelationContextFromEditTo: RelationContextFrom
             {
-                public required CompletedInterOrganizationalRelationTo CompletedRelationToRemove { get; init; }
+                public required InterOrganizationalRelation.To.Complete CompletedRelationToRemove { get; init; }
 
                 public sealed override RelationContextTo Swap()
                 {
@@ -141,7 +141,7 @@
             }
             public sealed record RelationContextFromEditFrom : RelationContextFrom
             {
-                public required CompletedInterOrganizationalRelationFrom CompletedRelationToRemove { get; init; }
+                public required InterOrganizationalRelation.From.Complete CompletedRelationToRemove { get; init; }
                 public sealed override RelationContextTo Swap()
                 {
                     return new RelationContextTo.RelationContextToEditFrom {
@@ -162,7 +162,7 @@
         public abstract record RelationContextTo : RelationContext
         {
             private RelationContextTo() { }
-            public required InterOrganizationalRelationTo RelationToEdit { get; init; }
+            public required InterOrganizationalRelation.To RelationToEdit { get; init; }
 
             public abstract override RelationContextFrom Swap();
 
@@ -199,7 +199,7 @@
 
             public sealed record RelationContextToEditTo : RelationContextTo
             {
-                public required CompletedInterOrganizationalRelationTo CompletedRelationToRemove { get; init; }
+                public required InterOrganizationalRelation.To.Complete CompletedRelationToRemove { get; init; }
                 public sealed override RelationContextFrom Swap()
                 {
                     return new RelationContextFrom.RelationContextFromEditTo {
@@ -218,7 +218,7 @@
             }
             public sealed record RelationContextToEditFrom : RelationContextTo
             {
-                public required CompletedInterOrganizationalRelationFrom CompletedRelationToRemove { get; init; }
+                public required InterOrganizationalRelation.From.Complete CompletedRelationToRemove { get; init; }
                 public sealed override RelationContextFrom Swap()
                 {
                     return new RelationContextFrom.RelationContextFromEditFrom {
@@ -248,9 +248,9 @@
     }
     private void AddRelationFrom()
     {
-        var relationToEdit = OrganizationItem.Match<IncompleteInterOrganizationalRelationFrom>(
-            organizationListItem: li => li.GetNewInterOrganizationalRelationFrom(RelationTypes.First(), TenantId, UserId),
-            organizationName: nm => nm.GetNewInterOrganizationalRelationFrom(RelationTypes.First(), TenantId, UserId)
+        var relationToEdit = OrganizationItem.Match<InterOrganizationalRelation.From.Incomplete>(
+            organizationListItem: li => li.GetNewInterOrganizationalRelationFrom(RelationTypes.First<InterOrganizationalRelationTypeListItem>(), TenantId, UserId),
+            organizationName: nm => nm.GetNewInterOrganizationalRelationFrom(RelationTypes.First<InterOrganizationalRelationTypeListItem>(), TenantId, UserId)
         );
         relationContext = new RelationContext.RelationContextFrom.RelationContextFromNew {
             RelationToEdit = relationToEdit
@@ -259,9 +259,9 @@
     }
     private void AddRelationTo()
     {
-        var relationToEdit = OrganizationItem.Match<IncompleteInterOrganizationalRelationTo>(
-            organizationListItem: li => li.GetNewInterOrganizationalRelationTo(RelationTypes.First(), TenantId, UserId),
-            organizationName: nm => nm.GetNewInterOrganizationalRelationTo(RelationTypes.First(), TenantId, UserId)
+        var relationToEdit = OrganizationItem.Match<InterOrganizationalRelation.To.Incomplete>(
+            organizationListItem: li => li.GetNewInterOrganizationalRelationTo(RelationTypes.First<InterOrganizationalRelationTypeListItem>(), TenantId, UserId),
+            organizationName: nm => nm.GetNewInterOrganizationalRelationTo(RelationTypes.First<InterOrganizationalRelationTypeListItem>(), TenantId, UserId)
         );
 
         relationContext = new RelationContext.RelationContextTo.RelationContextToNew {
@@ -270,7 +270,7 @@
         StateHasChanged();
     }
 
-    private void EditRelationFrom(CompletedInterOrganizationalRelationFrom relation)
+    private void EditRelationFrom(InterOrganizationalRelation.From.Complete relation)
     {
         relationContext = new RelationContext.RelationContextFrom.RelationContextFromEditFrom
         {
@@ -279,7 +279,7 @@
         };
         StateHasChanged();
     }
-    private void EditRelationTo(CompletedInterOrganizationalRelationTo relation)
+    private void EditRelationTo(InterOrganizationalRelation.To.Complete relation)
     {
         relationContext = new RelationContext.RelationContextTo.RelationContextToEditTo {
             RelationToEdit = relation,
