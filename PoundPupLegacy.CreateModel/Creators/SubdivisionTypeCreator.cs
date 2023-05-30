@@ -4,13 +4,13 @@ internal sealed class SubdivisionTypeCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
     IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
     IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
-    IDatabaseInserterFactory<SubdivisionType.SubdivisionTypeToCreate> subdivisionTypeInserterFactory,
+    IDatabaseInserterFactory<SubdivisionType.ToCreate> subdivisionTypeInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory
-) : IEntityCreatorFactory<SubdivisionType.SubdivisionTypeToCreate>
+) : IEntityCreatorFactory<SubdivisionType.ToCreate>
 {
-    public async Task<IEntityCreator<SubdivisionType.SubdivisionTypeToCreate>> CreateAsync(IDbConnection connection) => 
-        new NameableCreator<SubdivisionType.SubdivisionTypeToCreate>(
+    public async Task<IEntityCreator<SubdivisionType.ToCreate>> CreateAsync(IDbConnection connection) => 
+        new NameableCreator<SubdivisionType.ToCreate>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

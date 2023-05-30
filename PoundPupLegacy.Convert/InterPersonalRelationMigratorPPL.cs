@@ -3,7 +3,7 @@
 internal sealed class InterPersonalRelationMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    IEntityCreatorFactory<InterPersonalRelation.InterPersonalRelationToCreateForExistingParticipants> interPersonalRelationCreatorFactory
+    IEntityCreatorFactory<InterPersonalRelation.ToCreateForExistingParticipants> interPersonalRelationCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "inter personal relation";
@@ -15,7 +15,7 @@ internal sealed class InterPersonalRelationMigratorPPL(
         await interPersonalRelationCreator.CreateAsync(ReadInterPersonalRelations(nodeIdReader));
     }
 
-    private async IAsyncEnumerable<InterPersonalRelation.InterPersonalRelationToCreateForExistingParticipants> ReadInterPersonalRelations(
+    private async IAsyncEnumerable<InterPersonalRelation.ToCreateForExistingParticipants> ReadInterPersonalRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -101,8 +101,8 @@ internal sealed class InterPersonalRelationMigratorPPL(
                 UrlId = reader.GetInt32("nameable_id")
 
             });
-            yield return new InterPersonalRelation.InterPersonalRelationToCreateForExistingParticipants {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new InterPersonalRelation.ToCreateForExistingParticipants {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -112,11 +112,11 @@ internal sealed class InterPersonalRelationMigratorPPL(
                     Title = reader.GetString("title"),
                     OwnerId = Constants.PPL,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -125,9 +125,9 @@ internal sealed class InterPersonalRelationMigratorPPL(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,

@@ -2,11 +2,9 @@
 public interface SimpleTextNodeToUpdate : SimpleTextNode, SearchableToUpdate
 {
 }
-
 public interface SimpleTextNodeToCreate : SimpleTextNode, SearchableToCreate 
 { 
 }
-
 public interface SimpleTextNode : Searchable
 {
     SimpleTextNodeDetails SimpleTextNodeDetails { get; }

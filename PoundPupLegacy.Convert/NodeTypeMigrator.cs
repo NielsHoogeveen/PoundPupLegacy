@@ -25,19 +25,19 @@ internal sealed class NodeTypeMigrator(
         await using var deleteNodeActionCreator = await deleteNodeActionCreatorFactory.CreateAsync(_postgresConnection);
         await using var editNodeActionCreator = await editNodeActionCreatorFactory.CreateAsync(_postgresConnection);
         await createNodeActionCreator.CreateAsync(GetNodeTypes().Select(x => new CreateNodeAction {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             NodeTypeId = x.IdentificationForCreate.Id!.Value 
         }));
         await deleteNodeActionCreator.CreateAsync(GetNodeTypes().Select(x => new DeleteNodeAction {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             NodeTypeId = x.IdentificationForCreate.Id!.Value 
         }));
         await editNodeActionCreator.CreateAsync(GetNodeTypes().Select(x => new EditNodeAction {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             NodeTypeId = x.IdentificationForCreate.Id!.Value 

@@ -4,7 +4,7 @@ internal sealed class PartyPoliticalEntityRelationTypeMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreatorFactory<PartyPoliticalEntityRelationType.PartyPoliticalEntityRelationTypeToCreate> partyPoliticalEntityRelationTypeCreatorFactory
+    IEntityCreatorFactory<PartyPoliticalEntityRelationType.ToCreate> partyPoliticalEntityRelationTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "political entity relation types";
@@ -16,7 +16,7 @@ internal sealed class PartyPoliticalEntityRelationTypeMigrator(
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await partyPoliticalEntityRelationTypeCreator.CreateAsync(ReadPoliticalEntityRelationTypes(nodeIdReader, fileIdReaderByTenantFileId));
     }
-    private async IAsyncEnumerable<PartyPoliticalEntityRelationType.PartyPoliticalEntityRelationTypeToCreate> ReadPoliticalEntityRelationTypes(
+    private async IAsyncEnumerable<PartyPoliticalEntityRelationType.ToCreate> ReadPoliticalEntityRelationTypes(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId
     )
@@ -61,7 +61,7 @@ internal sealed class PartyPoliticalEntityRelationTypeMigrator(
             {
                 new NewTermForNewNameable
                 {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -70,8 +70,8 @@ internal sealed class PartyPoliticalEntityRelationTypeMigrator(
                 }
             };
 
-            yield return new PartyPoliticalEntityRelationType.PartyPoliticalEntityRelationTypeToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new PartyPoliticalEntityRelationType.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -81,11 +81,11 @@ internal sealed class PartyPoliticalEntityRelationTypeMigrator(
                     Title = name,
                     OwnerId = Constants.OWNER_PARTIES,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -94,9 +94,9 @@ internal sealed class PartyPoliticalEntityRelationTypeMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,

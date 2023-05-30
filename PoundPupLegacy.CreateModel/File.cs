@@ -1,8 +1,8 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record File : EventuallyIdentifiable
+public sealed record File : PossiblyIdentifiable
 {
-    public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
+    public required Identification.Possible IdentificationForCreate { get; init; }
     public Identification Identification => IdentificationForCreate;
     public required string Path { get; init; }
     public required string Name { get; init; }

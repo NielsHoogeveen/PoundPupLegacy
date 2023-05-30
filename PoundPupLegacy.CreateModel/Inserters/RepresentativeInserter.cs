@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class RepresentativeInserterFactory : SingleIdInserterFactory<Representative.RepresentativeToCreateForExistingPerson>
+internal sealed class RepresentativeInserterFactory : SingleIdInserterFactory<Representative.ToCreateForExistingPerson>
 {
     protected override string TableName => "representative";
 

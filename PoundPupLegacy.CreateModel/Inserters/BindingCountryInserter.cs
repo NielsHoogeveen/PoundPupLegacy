@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class BindingCountryInserterFactory : SingleIdInserterFactory<BindingCountry.BindingCountryToCreate>
+internal sealed class BindingCountryInserterFactory : SingleIdInserterFactory<BindingCountry.ToCreate>
 {
     protected override string TableName => "binding_country";
 

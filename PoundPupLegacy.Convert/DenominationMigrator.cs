@@ -4,7 +4,7 @@ internal sealed class DenominationMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreatorFactory<Denomination.DenominationToCreate> denominationCreatorFactory
+    IEntityCreatorFactory<Denomination.ToCreate> denominationCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "denominations";
@@ -16,7 +16,7 @@ internal sealed class DenominationMigrator(
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await denominationCreator.CreateAsync(ReadDenominations(nodeIdReader, fileIdReaderByTenantFileId));
     }
-    private async IAsyncEnumerable<Denomination.DenominationToCreate> ReadDenominations(
+    private async IAsyncEnumerable<Denomination.ToCreate> ReadDenominations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)
     {
@@ -84,7 +84,7 @@ internal sealed class DenominationMigrator(
             {
                 new NewTermForNewNameable
                 {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId =vocabularyIdDenomination,
@@ -94,7 +94,7 @@ internal sealed class DenominationMigrator(
             };
             if (topicName != null) {
                 vocabularyNames.Add(new NewTermForNewNameable {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyIdTopics,
@@ -103,8 +103,8 @@ internal sealed class DenominationMigrator(
                 });
             }
 
-            yield return new Denomination.DenominationToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new Denomination.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -114,11 +114,11 @@ internal sealed class DenominationMigrator(
                     Title = name,
                     OwnerId = Constants.OWNER_PARTIES,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -127,9 +127,9 @@ internal sealed class DenominationMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,

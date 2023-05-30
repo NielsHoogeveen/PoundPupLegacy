@@ -3,7 +3,7 @@
 internal sealed class HagueStatusMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    IEntityCreatorFactory<HagueStatus.HagueStatusToCreate> hagueStatusCreatorFactory
+    IEntityCreatorFactory<HagueStatus.ToCreate> hagueStatusCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "Hague statuses";
@@ -15,7 +15,7 @@ internal sealed class HagueStatusMigrator(
         await hagueStatusCreator.CreateAsync(ReadHagueStatuses(nodeIdReader));
     }
 
-    private async IAsyncEnumerable<HagueStatus.HagueStatusToCreate> ReadHagueStatuses(
+    private async IAsyncEnumerable<HagueStatus.ToCreate> ReadHagueStatuses(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
@@ -52,7 +52,7 @@ internal sealed class HagueStatusMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -61,8 +61,8 @@ internal sealed class HagueStatusMigrator(
                     }
                 };
 
-            yield return new HagueStatus.HagueStatusToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new HagueStatus.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -72,11 +72,11 @@ internal sealed class HagueStatusMigrator(
                     Title = name,
                     OwnerId = Constants.OWNER_PARTIES,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -85,9 +85,9 @@ internal sealed class HagueStatusMigrator(
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,

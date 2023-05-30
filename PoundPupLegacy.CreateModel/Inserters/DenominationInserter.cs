@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class DenominationInserterFactory : SingleIdInserterFactory<Denomination.DenominationToCreate>
+internal sealed class DenominationInserterFactory : SingleIdInserterFactory<Denomination.ToCreate>
 {
     protected override string TableName => "denomination";
 

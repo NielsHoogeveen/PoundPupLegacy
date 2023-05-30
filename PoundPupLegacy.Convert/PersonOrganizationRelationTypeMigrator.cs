@@ -4,7 +4,7 @@ internal sealed class PersonOrganizationRelationTypeMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreatorFactory<PersonOrganizationRelationType.PersonOrganizationRelationTypeToCreate> personOrganizationRelationTypeCreatorFactory
+    IEntityCreatorFactory<PersonOrganizationRelationType.ToCreate> personOrganizationRelationTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "person organization relation types";
@@ -16,7 +16,7 @@ internal sealed class PersonOrganizationRelationTypeMigrator(
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await personOrganizationRelationTypeCreator.CreateAsync(ReadPersonOrganizationRelationTypes(nodeIdReader,fileIdReaderByTenantFileId));
     }
-    private async IAsyncEnumerable<PersonOrganizationRelationType.PersonOrganizationRelationTypeToCreate> ReadPersonOrganizationRelationTypes(
+    private async IAsyncEnumerable<PersonOrganizationRelationType.ToCreate> ReadPersonOrganizationRelationTypes(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId
     )
@@ -59,7 +59,7 @@ internal sealed class PersonOrganizationRelationTypeMigrator(
             {
                 new NewTermForNewNameable
                 {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -68,8 +68,8 @@ internal sealed class PersonOrganizationRelationTypeMigrator(
                 }
             };
 
-            yield return new PersonOrganizationRelationType.PersonOrganizationRelationTypeToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new PersonOrganizationRelationType.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -79,11 +79,11 @@ internal sealed class PersonOrganizationRelationTypeMigrator(
                     Title = name,
                     OwnerId = Constants.OWNER_PARTIES,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -92,9 +92,9 @@ internal sealed class PersonOrganizationRelationTypeMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,

@@ -3,7 +3,7 @@
 internal sealed class CasePartyTypeMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    IEntityCreatorFactory<CasePartyType.CasePartyTypeToCreate> casePartyTypeCreatorFactory
+    IEntityCreatorFactory<CasePartyType.ToCreate> casePartyTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "case relation types";
@@ -14,7 +14,7 @@ internal sealed class CasePartyTypeMigrator(
         await casePartyTypeCreator.CreateAsync(GetCaseRelationTypes(nodeIdReader));
     }
 
-    internal static async IAsyncEnumerable<CasePartyType.CasePartyTypeToCreate> GetCaseRelationTypes(
+    internal static async IAsyncEnumerable<CasePartyType.ToCreate> GetCaseRelationTypes(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
@@ -24,8 +24,8 @@ internal sealed class CasePartyTypeMigrator(
 
         await Task.CompletedTask;
         var now = DateTime.Now;
-        yield return new CasePartyType.CasePartyTypeToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new CasePartyType.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -35,11 +35,11 @@ internal sealed class CasePartyTypeMigrator(
                 Title = Constants.HOMESTUDY_CASE_TYPE_NAME,
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -48,9 +48,9 @@ internal sealed class CasePartyTypeMigrator(
                         SubgroupId = null,
                         UrlId = Constants.HOMESTUDY_CASE_TYPE
                     },
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -70,7 +70,7 @@ internal sealed class CasePartyTypeMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -81,8 +81,8 @@ internal sealed class CasePartyTypeMigrator(
             },
             
         };
-        yield return new CasePartyType.CasePartyTypeToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new CasePartyType.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -92,11 +92,11 @@ internal sealed class CasePartyTypeMigrator(
                 Title = Constants.PLACEMENT_CASE_TYPE_NAME,
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -105,9 +105,9 @@ internal sealed class CasePartyTypeMigrator(
                         SubgroupId = null,
                         UrlId = Constants.PLACEMENT_CASE_TYPE
                     },
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -127,7 +127,7 @@ internal sealed class CasePartyTypeMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -137,8 +137,8 @@ internal sealed class CasePartyTypeMigrator(
                 },
             },
         };
-        yield return new CasePartyType.CasePartyTypeToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new CasePartyType.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -148,11 +148,11 @@ internal sealed class CasePartyTypeMigrator(
                 Title = Constants.POSTPLACEMENT_CASE_TYPE_NAME,
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -161,9 +161,9 @@ internal sealed class CasePartyTypeMigrator(
                         SubgroupId = null,
                         UrlId = Constants.POSTPLACEMENT_CASE_TYPE
                     },
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -183,7 +183,7 @@ internal sealed class CasePartyTypeMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -193,8 +193,8 @@ internal sealed class CasePartyTypeMigrator(
                 },
             },
         };
-        yield return new CasePartyType.CasePartyTypeToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new CasePartyType.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -204,11 +204,11 @@ internal sealed class CasePartyTypeMigrator(
                 Title = Constants.FACILITATION_CASE_TYPE_NAME,
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -217,9 +217,9 @@ internal sealed class CasePartyTypeMigrator(
                         SubgroupId = null,
                         UrlId = Constants.FACILITATION_CASE_TYPE
                     },
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -239,7 +239,7 @@ internal sealed class CasePartyTypeMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -249,8 +249,8 @@ internal sealed class CasePartyTypeMigrator(
                 },
             },
         };
-        yield return new CasePartyType.CasePartyTypeToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new CasePartyType.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -260,11 +260,11 @@ internal sealed class CasePartyTypeMigrator(
                 Title = Constants.INSTITUTION_CASE_TYPE_NAME,
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -273,9 +273,9 @@ internal sealed class CasePartyTypeMigrator(
                         SubgroupId = null,
                         UrlId = Constants.INSTITUTION_CASE_TYPE
                     },
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -295,7 +295,7 @@ internal sealed class CasePartyTypeMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -305,8 +305,8 @@ internal sealed class CasePartyTypeMigrator(
                 },
             },
         };
-        yield return new CasePartyType.CasePartyTypeToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new CasePartyType.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -316,11 +316,11 @@ internal sealed class CasePartyTypeMigrator(
                 Title = Constants.THERAPY_CASE_TYPE_NAME,
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -329,9 +329,9 @@ internal sealed class CasePartyTypeMigrator(
                         SubgroupId = null,
                         UrlId = Constants.THERAPY_CASE_TYPE
                     },
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -351,7 +351,7 @@ internal sealed class CasePartyTypeMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -361,8 +361,8 @@ internal sealed class CasePartyTypeMigrator(
                 },
             },
         };
-        yield return new CasePartyType.CasePartyTypeToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new CasePartyType.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -372,11 +372,11 @@ internal sealed class CasePartyTypeMigrator(
                 Title = Constants.AUTHORITIES_CASE_TYPE_NAME,
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -385,9 +385,9 @@ internal sealed class CasePartyTypeMigrator(
                         SubgroupId = null,
                         UrlId = Constants.AUTHORITIES_CASE_TYPE
                     },
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -407,7 +407,7 @@ internal sealed class CasePartyTypeMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,

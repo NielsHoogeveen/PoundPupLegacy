@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public interface MenuItem : EventuallyIdentifiable
+public interface MenuItem : PossiblyIdentifiable
 {
     public double Weight { get; }
 }

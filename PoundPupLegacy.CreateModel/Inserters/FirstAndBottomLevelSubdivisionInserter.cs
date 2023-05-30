@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class FirstAndBottomLevelSubdivisionInserterFactory : SingleIdInserterFactory<FirstAndBottomLevelSubdivision.FirstAndBottomLevelSubdivisionToCreate>
+internal sealed class FirstAndBottomLevelSubdivisionInserterFactory : SingleIdInserterFactory<FirstAndBottomLevelSubdivision.ToCreate>
 {
     protected override string TableName => "first_and_bottom_level_subdivision";
 

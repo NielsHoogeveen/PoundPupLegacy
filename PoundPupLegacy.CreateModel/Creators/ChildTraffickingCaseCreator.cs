@@ -7,15 +7,15 @@ internal sealed class ChildTraffickingCaseCreatorFactory(
     IDatabaseInserterFactory<LocatableToCreate> locatableInserterFactory,
     IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
     IDatabaseInserterFactory<CaseToCreate> caseInserterFactory,
-    IDatabaseInserterFactory<ChildTraffickingCase.ChildTraffickingCaseToCreate> childTraffickingCaseInserterFactory,
+    IDatabaseInserterFactory<ChildTraffickingCase.ToCreate> childTraffickingCaseInserterFactory,
     LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory,
     IEntityCreatorFactory<CaseExistingCasePartiesToCreate> caseCaseTypeCreatorFactory
-) : IEntityCreatorFactory<ChildTraffickingCase.ChildTraffickingCaseToCreate>
+) : IEntityCreatorFactory<ChildTraffickingCase.ToCreate>
 {
-    public async Task<IEntityCreator<ChildTraffickingCase.ChildTraffickingCaseToCreate>> CreateAsync(IDbConnection connection) =>
-        new CaseCreator<ChildTraffickingCase.ChildTraffickingCaseToCreate>(
+    public async Task<IEntityCreator<ChildTraffickingCase.ToCreate>> CreateAsync(IDbConnection connection) =>
+        new CaseCreator<ChildTraffickingCase.ToCreate>(
             new () {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

@@ -3,12 +3,12 @@
 internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
-        IEntityCreatorFactory<UnitedStatesPoliticalPartyAffiliation.UnitedStatesPoliticalPartyAffiliationToCreate> unitedStatesPoliticalPartyAffliationCreatorFactory
+        IEntityCreatorFactory<UnitedStatesPoliticalPartyAffiliation.ToCreate> unitedStatesPoliticalPartyAffliationCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "united states political party affilition";
 
-    private async IAsyncEnumerable<UnitedStatesPoliticalPartyAffiliation.UnitedStatesPoliticalPartyAffiliationToCreate> GetUnitedStatesPoliticalPartyAffliations(
+    private async IAsyncEnumerable<UnitedStatesPoliticalPartyAffiliation.ToCreate> GetUnitedStatesPoliticalPartyAffliations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
     )
     {
@@ -17,8 +17,8 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
             UrlId = Constants.VOCABULARY_ID_UNITED_STATES_POLITICAL_PARTY_AFFILITION_TYPE
 
         });
-        yield return new UnitedStatesPoliticalPartyAffiliation.UnitedStatesPoliticalPartyAffiliationToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new UnitedStatesPoliticalPartyAffiliation.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -28,11 +28,11 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 Title = Constants.DEMOCRAT_NAME,
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -41,9 +41,9 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                         SubgroupId = null,
                         UrlId = Constants.DEMOCRAT
                     },
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -63,7 +63,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id= null
                         },
                         VocabularyId = vocabularyId,
@@ -80,8 +80,8 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
             },
         };
 
-        yield return new UnitedStatesPoliticalPartyAffiliation.UnitedStatesPoliticalPartyAffiliationToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new UnitedStatesPoliticalPartyAffiliation.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -91,11 +91,11 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 Title = Constants.REPUBLICAN_NAME,
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -104,9 +104,9 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                         SubgroupId = null,
                         UrlId = Constants.REPUBLICAN
                     },
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -126,7 +126,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id= null
                         },
                         VocabularyId = vocabularyId,
@@ -142,8 +142,8 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 }),
             }
         };
-        yield return new UnitedStatesPoliticalPartyAffiliation.UnitedStatesPoliticalPartyAffiliationToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new UnitedStatesPoliticalPartyAffiliation.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -153,11 +153,11 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 Title = Constants.INDEPENDENT_NAME,
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -166,9 +166,9 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                         SubgroupId = null,
                         UrlId = Constants.INDEPENDENT
                     },
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -188,7 +188,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id= null
                         },
                         VocabularyId = vocabularyId,
@@ -201,8 +201,8 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 UnitedStatesPoliticalPartyId = null,
             },
         };
-        yield return new UnitedStatesPoliticalPartyAffiliation.UnitedStatesPoliticalPartyAffiliationToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new UnitedStatesPoliticalPartyAffiliation.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -212,11 +212,11 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 Title = Constants.POPULAR_DEMOCRAT_NAME,
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -225,9 +225,9 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                         SubgroupId = null,
                         UrlId = Constants.POPULAR_DEMOCRAT
                     },
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -247,7 +247,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id= null
                         },
                         VocabularyId = vocabularyId,
@@ -263,8 +263,8 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 }),
             }
         };
-        yield return new UnitedStatesPoliticalPartyAffiliation.UnitedStatesPoliticalPartyAffiliationToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new UnitedStatesPoliticalPartyAffiliation.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -274,11 +274,11 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 Title = Constants.LIBERTARIAN_NAME,
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -287,9 +287,9 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                         SubgroupId = null,
                         UrlId = Constants.LIBERTARIAN
                     },
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -309,7 +309,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,

@@ -5,7 +5,7 @@ internal sealed class TypeOfAbuserMigrator(
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreatorFactory<TypeOfAbuser.TypeOfAbuserToCreate> typeOfAbuserCreatorFactory
+    IEntityCreatorFactory<TypeOfAbuser.ToCreate> typeOfAbuserCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "types of abuser";
@@ -18,7 +18,7 @@ internal sealed class TypeOfAbuserMigrator(
         await using var termIdReader = await termIdReaderFactory.CreateAsync(_postgresConnection);
         await typeOfAbuserCreator.CreateAsync(ReadTypesOfAbusers(nodeIdReader, termIdReader, fileIdReaderByTenantFileId));
     }
-    private async IAsyncEnumerable<TypeOfAbuser.TypeOfAbuserToCreate> ReadTypesOfAbusers(
+    private async IAsyncEnumerable<TypeOfAbuser.ToCreate> ReadTypesOfAbusers(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId
@@ -102,7 +102,7 @@ internal sealed class TypeOfAbuserMigrator(
             {
                 new NewTermForNewNameable
                 {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyIdTypeOfAbuser,
@@ -120,7 +120,7 @@ internal sealed class TypeOfAbuserMigrator(
                 }
 
                 vocabularyNames.Add(new NewTermForNewNameable {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyIdTopics,
@@ -129,8 +129,8 @@ internal sealed class TypeOfAbuserMigrator(
                 });
             }
 
-            yield return new TypeOfAbuser.TypeOfAbuserToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new TypeOfAbuser.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -140,11 +140,11 @@ internal sealed class TypeOfAbuserMigrator(
                     Title = name,
                     OwnerId = Constants.OWNER_CASES,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -153,9 +153,9 @@ internal sealed class TypeOfAbuserMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,

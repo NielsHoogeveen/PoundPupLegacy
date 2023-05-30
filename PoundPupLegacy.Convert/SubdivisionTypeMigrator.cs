@@ -3,12 +3,12 @@
 internal sealed class SubdivisionTypeMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    IEntityCreatorFactory<SubdivisionType.SubdivisionTypeToCreate> subdivisionTypeCreatorFactory
+    IEntityCreatorFactory<SubdivisionType.ToCreate> subdivisionTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "subdivision types";
 
-    private static async IAsyncEnumerable<SubdivisionType.SubdivisionTypeToCreate> GetSubdivisionTypes(
+    private static async IAsyncEnumerable<SubdivisionType.ToCreate> GetSubdivisionTypes(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
     )
     {
@@ -102,8 +102,8 @@ internal sealed class SubdivisionTypeMigrator(
         });
 
         foreach (var name in names) {
-            yield return new SubdivisionType.SubdivisionTypeToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new SubdivisionType.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -113,11 +113,11 @@ internal sealed class SubdivisionTypeMigrator(
                     Title = name,
                     OwnerId = Constants.OWNER_GEOGRAPHY,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -126,9 +126,9 @@ internal sealed class SubdivisionTypeMigrator(
                             SubgroupId = null,
                             UrlId = null
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,
@@ -148,7 +148,7 @@ internal sealed class SubdivisionTypeMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,

@@ -9,13 +9,13 @@ internal sealed class BasicCountryCreatorFactory(
     IDatabaseInserterFactory<PoliticalEntityToCreate> politicalEntityInserterFactory,
     IDatabaseInserterFactory<CountryToCreate> countryInserterFactory,
     IDatabaseInserterFactory<TopLevelCountryToCreate> topLevelCountryInserterFactory,
-    IDatabaseInserterFactory<BasicCountry.BasicCountryToCreate> basicCountryInserterFactory,
+    IDatabaseInserterFactory<BasicCountry.ToCreate> basicCountryInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory
-) : IEntityCreatorFactory<BasicCountry.BasicCountryToCreate>
+) : IEntityCreatorFactory<BasicCountry.ToCreate>
 {
-    public async Task<IEntityCreator<BasicCountry.BasicCountryToCreate>> CreateAsync(IDbConnection connection) =>
-        new NameableCreator<BasicCountry.BasicCountryToCreate>(
+    public async Task<IEntityCreator<BasicCountry.ToCreate>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<BasicCountry.ToCreate>(
             new () {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

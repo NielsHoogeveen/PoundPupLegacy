@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = Vocabulary.VocabularyToCreate;
+using Request = Vocabulary.ToCreate;
 
 internal sealed class VocabularyInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

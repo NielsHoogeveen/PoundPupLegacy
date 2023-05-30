@@ -7,41 +7,22 @@ public abstract record FirstLevelGlobalRegion : GlobalRegion
     public abstract Identification Identification { get; }
     public abstract NodeDetails NodeDetails { get; }
     public abstract NameableDetails NameableDetails { get; }
-    public abstract T Match<T>(Func<FirstLevelGlobalRegionToCreate, T> create, Func<FirstLevelGlobalRegionToUpdate, T> update);
-    public abstract void Match(Action<FirstLevelGlobalRegionToCreate> create, Action<FirstLevelGlobalRegionToUpdate> update);
-
-    public sealed record FirstLevelGlobalRegionToCreate : FirstLevelGlobalRegion, GlobalRegionToCreate
+    public sealed record ToCreate : FirstLevelGlobalRegion, GlobalRegionToCreate
     {
         public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public override NameableDetails NameableDetails => NameableDetailsForCreate;
-        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
+        public required Identification.Possible IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
         public required NameableDetails.NameableDetailsForCreate NameableDetailsForCreate { get; init; }
-        public override T Match<T>(Func<FirstLevelGlobalRegionToCreate, T> create, Func<FirstLevelGlobalRegionToUpdate, T> update)
-        {
-            return create(this);
-        }
-        public override void Match(Action<FirstLevelGlobalRegionToCreate> create, Action<FirstLevelGlobalRegionToUpdate> update)
-        {
-            create(this);
-        }
     }
-    public sealed record FirstLevelGlobalRegionToUpdate : FirstLevelGlobalRegion, GlobalRegionToUpdate
+    public sealed record ToUpdate : FirstLevelGlobalRegion, GlobalRegionToUpdate
     {
-        public required Identification.IdentificationForUpdate IdentificationForUpdate { get; init; }
-        public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
+        public required Identification.Certain IdentificationCertain { get; init; }
+        public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
         public override NameableDetails NameableDetails => NameableDetailsForUpdate;
-        public override Identification Identification => IdentificationForUpdate;
+        public override Identification Identification => IdentificationCertain;
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
         public required NameableDetails.NameableDetailsForUpdate NameableDetailsForUpdate { get; init; }
-        public override T Match<T>(Func<FirstLevelGlobalRegionToCreate, T> create, Func<FirstLevelGlobalRegionToUpdate, T> update)
-        {
-            return update(this);
-        }
-        public override void Match(Action<FirstLevelGlobalRegionToCreate> create, Action<FirstLevelGlobalRegionToUpdate> update)
-        {
-            update(this);
-        }
     }
 }

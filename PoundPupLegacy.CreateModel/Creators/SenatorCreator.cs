@@ -3,11 +3,11 @@
 internal sealed class SenatorCreatorFactory(
     IDatabaseInserterFactory<ProfessionalRoleToCreateForExistingPerson> professionalRoleInserterFactory,
     IDatabaseInserterFactory<MemberOfCongressToCreateForExistingPerson> memberOfCongressInserterFactory,
-    IDatabaseInserterFactory<Senator.SenatorToCreateForExistingPerson> senatorInserterFactory
-) : IEntityCreatorFactory<Senator.SenatorToCreateForExistingPerson>
+    IDatabaseInserterFactory<Senator.ToCreateForExistingPerson> senatorInserterFactory
+) : IEntityCreatorFactory<Senator.ToCreateForExistingPerson>
 {
-    public async Task<IEntityCreator<Senator.SenatorToCreateForExistingPerson>> CreateAsync(IDbConnection connection) =>
-        new InsertingEntityCreator<Senator.SenatorToCreateForExistingPerson>( 
+    public async Task<IEntityCreator<Senator.ToCreateForExistingPerson>> CreateAsync(IDbConnection connection) =>
+        new InsertingEntityCreator<Senator.ToCreateForExistingPerson>( 
             new ()
             {
                 await professionalRoleInserterFactory.CreateAsync(connection),

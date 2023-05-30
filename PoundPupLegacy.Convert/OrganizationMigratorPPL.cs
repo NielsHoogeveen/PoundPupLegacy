@@ -23,8 +23,8 @@ internal sealed class OrganizationMigratorPPL(
             UrlId = Constants.VOCABULARY_ID_TOPICS
         });
 
-        yield return new BasicOrganization.BasicOrganizationToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new BasicOrganization.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -34,11 +34,11 @@ internal sealed class OrganizationMigratorPPL(
                 Title = "Colorado Adoption Center",
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -47,9 +47,9 @@ internal sealed class OrganizationMigratorPPL(
                         SubgroupId = null,
                         UrlId = Constants.COLORADO_ADOPTION_CENTER
                     },
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -67,7 +67,7 @@ internal sealed class OrganizationMigratorPPL(
                 FileIdTileImage = null,
                 Terms = new List<NewTermForNewNameable> {
                     new NewTermForNewNameable {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -97,14 +97,14 @@ internal sealed class OrganizationMigratorPPL(
                         UrlId = 12625
                     })
                 },
-                InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationFrom>(),
-                InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationTo>(),
-                PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForNewParty>(),
-                PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.PersonOrganizationRelationToCreateForNewOrganization>(),
+                InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.ToCreateForNewOrganizationFrom>(),
+                InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.ToCreateForNewOrganizationTo>(),
+                PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.ToCreateForNewParty>(),
+                PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.ToCreateForNewOrganization>(),
             }
         };
-        yield return new UnitedStatesPoliticalParty.UnitedStatesPoliticalPartyToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new UnitedStatesPoliticalParty.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -114,11 +114,11 @@ internal sealed class OrganizationMigratorPPL(
                 Title = "Popular Democratic Party",
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -127,9 +127,9 @@ internal sealed class OrganizationMigratorPPL(
                         SubgroupId = null,
                         UrlId = Constants.POPULAR_DEMOCRAT_PARTY
                     },
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -147,7 +147,7 @@ internal sealed class OrganizationMigratorPPL(
                 FileIdTileImage = null,
                 Terms = new List<NewTermForNewNameable> {
                     new NewTermForNewNameable {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -177,14 +177,14 @@ internal sealed class OrganizationMigratorPPL(
                         UrlId = Constants.POLITICAL_PARTY
                     })
                 },
-                InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationFrom>(),
-                InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationTo>(),
-                PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForNewParty>(),
-                PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.PersonOrganizationRelationToCreateForNewOrganization>(),
+                InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.ToCreateForNewOrganizationFrom>(),
+                InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.ToCreateForNewOrganizationTo>(),
+                PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.ToCreateForNewParty>(),
+                PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.ToCreateForNewOrganization>(),
             },
         };
-        yield return new UnitedStatesPoliticalParty.UnitedStatesPoliticalPartyToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new UnitedStatesPoliticalParty.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -194,11 +194,11 @@ internal sealed class OrganizationMigratorPPL(
                 Title = "Libertarian Party",
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                         TenantId = Constants.PPL,
@@ -207,9 +207,9 @@ internal sealed class OrganizationMigratorPPL(
                         SubgroupId = null,
                         UrlId = Constants.LIBERTARIAN_PARTY
                     },
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                         TenantId = Constants.CPCT,
@@ -227,7 +227,7 @@ internal sealed class OrganizationMigratorPPL(
                 FileIdTileImage = null,
                 Terms = new List<NewTermForNewNameable> {
                     new NewTermForNewNameable {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -257,14 +257,14 @@ internal sealed class OrganizationMigratorPPL(
                         UrlId = Constants.POLITICAL_PARTY
                     })
                 },
-                InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationFrom>(),
-                InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationTo>(),
-                PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForNewParty>(),
-                PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.PersonOrganizationRelationToCreateForNewOrganization>(),
+                InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.ToCreateForNewOrganizationFrom>(),
+                InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.ToCreateForNewOrganizationTo>(),
+                PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.ToCreateForNewParty>(),
+                PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.ToCreateForNewOrganization>(),
             },
         };
-        yield return new BasicOrganization.BasicOrganizationToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new BasicOrganization.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -274,11 +274,11 @@ internal sealed class OrganizationMigratorPPL(
                 Title = "Government of Italy",
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -287,9 +287,9 @@ internal sealed class OrganizationMigratorPPL(
                         SubgroupId = null,
                         UrlId = 17036
                     },
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -307,7 +307,7 @@ internal sealed class OrganizationMigratorPPL(
                 FileIdTileImage = null,
                 Terms = new List<NewTermForNewNameable> {
                     new NewTermForNewNameable {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -337,10 +337,10 @@ internal sealed class OrganizationMigratorPPL(
                         UrlId = 12630
                     })
                 },
-                InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationFrom>(),
-                InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationTo>(),
-                PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForNewParty>(),
-                PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.PersonOrganizationRelationToCreateForNewOrganization>(),
+                InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.ToCreateForNewOrganizationFrom>(),
+                InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.ToCreateForNewOrganizationTo>(),
+                PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.ToCreateForNewParty>(),
+                PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.ToCreateForNewOrganization>(),
             },
         };
     }
@@ -557,7 +557,7 @@ internal sealed class OrganizationMigratorPPL(
                 }));
             }
             vocabularyNames.Add(new NewTermForNewNameable {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null,
                 },
                 VocabularyId = vocabularyId,
@@ -566,8 +566,8 @@ internal sealed class OrganizationMigratorPPL(
             });
 
             if (id == Constants.DEMOCRATIC_PARTY || id == Constants.REPUBLICAN_PARTY) {
-                yield return new UnitedStatesPoliticalParty.UnitedStatesPoliticalPartyToCreate {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                yield return new UnitedStatesPoliticalParty.ToCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null
                     },
                     NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -577,9 +577,9 @@ internal sealed class OrganizationMigratorPPL(
                         Title = reader.GetString("title"),
                         OwnerId = Constants.OWNER_PARTIES,
                         AuthoringStatusId = 1,
-                        TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode> {
-                            new TenantNode.TenantNodeToCreateForNewNode {
-                                IdentificationForCreate = new Identification.IdentificationForCreate {
+                        TenantNodes = new List<TenantNode.ToCreateForNewNode> {
+                            new TenantNode.ToCreateForNewNode {
+                                IdentificationForCreate = new Identification.Possible {
                                     Id = null
                                 },
                                 TenantId = Constants.PPL,
@@ -588,8 +588,8 @@ internal sealed class OrganizationMigratorPPL(
                                 SubgroupId = null,
                                 UrlId = id
                             },
-                            new TenantNode.TenantNodeToCreateForNewNode {
-                                IdentificationForCreate = new Identification.IdentificationForCreate {
+                            new TenantNode.ToCreateForNewNode {
+                                IdentificationForCreate = new Identification.Possible {
                                     Id = null
                                 },
                                 TenantId = Constants.CPCT,
@@ -623,16 +623,16 @@ internal sealed class OrganizationMigratorPPL(
                                 UrlId = Constants.POLITICAL_PARTY
                             })
                         },
-                        InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationFrom>(),
-                        InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationTo>(),
-                        PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForNewParty>(),
-                        PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.PersonOrganizationRelationToCreateForNewOrganization>(),
+                        InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.ToCreateForNewOrganizationFrom>(),
+                        InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.ToCreateForNewOrganizationTo>(),
+                        PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.ToCreateForNewParty>(),
+                        PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.ToCreateForNewOrganization>(),
                     }
                 };
             }
             else {
-                yield return new BasicOrganization.BasicOrganizationToCreate {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                yield return new BasicOrganization.ToCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null
                     },
                     NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -642,11 +642,11 @@ internal sealed class OrganizationMigratorPPL(
                         Title = name,
                         OwnerId = Constants.OWNER_PARTIES,
                         AuthoringStatusId = 1,
-                        TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                        TenantNodes = new List<TenantNode.ToCreateForNewNode>
                         {
-                            new TenantNode.TenantNodeToCreateForNewNode
+                            new TenantNode.ToCreateForNewNode
                             {
-                                IdentificationForCreate = new Identification.IdentificationForCreate {
+                                IdentificationForCreate = new Identification.Possible {
                                     Id = null
                                 },
                                 TenantId = Constants.PPL,
@@ -655,9 +655,9 @@ internal sealed class OrganizationMigratorPPL(
                                 SubgroupId = null,
                                 UrlId = id
                             },
-                            new TenantNode.TenantNodeToCreateForNewNode
+                            new TenantNode.ToCreateForNewNode
                             {
-                                IdentificationForCreate = new Identification.IdentificationForCreate {
+                                IdentificationForCreate = new Identification.Possible {
                                     Id = null
                                 },
                                 TenantId = Constants.CPCT,
@@ -684,10 +684,10 @@ internal sealed class OrganizationMigratorPPL(
                         EmailAddress = reader.IsDBNull("email_address") ? null : reader.GetString("email_address"),
                         Established = reader.IsDBNull("established") ? null : (new DateTimeRange(reader.GetDateTime("established").Date, reader.GetDateTime("established").Date.AddDays(1).AddMilliseconds(-1))).ToFuzzyDate(),
                         Terminated = reader.IsDBNull("terminated") ? null : (new DateTimeRange(reader.GetDateTime("terminated").Date, reader.GetDateTime("terminated").Date.AddDays(1).AddMilliseconds(-1))).ToFuzzyDate(),
-                        InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationFrom>(),
-                        InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationTo>(),
-                        PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForNewParty>(),
-                        PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.PersonOrganizationRelationToCreateForNewOrganization>(),
+                        InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.ToCreateForNewOrganizationFrom>(),
+                        InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.ToCreateForNewOrganizationTo>(),
+                        PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.ToCreateForNewParty>(),
+                        PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.ToCreateForNewOrganization>(),
                     },
                 };
             }

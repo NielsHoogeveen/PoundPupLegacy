@@ -3,32 +3,22 @@
 public abstract record TenantNode: IRequest
 {
     public required string? UrlPath { get; init; }
-
     public required int? SubgroupId { get; init; }
-
     public required int PublicationStatusId { get; init; }
-
-    public sealed record TenantNodeToUpdate : TenantNode, ImmediatelyIdentifiable
+    public sealed record ToUpdate : TenantNode, CertainlyIdentifiable
     {
-
-        public required Identification.IdentificationForUpdate IdentificationForUpdate { get; init; }
-
-        public Identification Identification => IdentificationForUpdate;
+        public required Identification.Certain IdentificationCertain { get; init; }
+        public Identification Identification => IdentificationCertain;
     }
-
-    public sealed record TenantNodeToCreateForNewNode : TenantNode, EventuallyIdentifiable
+    public sealed record ToCreateForNewNode : TenantNode, PossiblyIdentifiable
     {
         public required int TenantId { get; init; }
-
         public required int? UrlId { get; set; }
-
-        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
-
+        public required Identification.Possible IdentificationForCreate { get; init; }
         public Identification Identification => IdentificationForCreate;
-
-        public TenantNodeToCreateForExistingNode ResolveNodeId(int nodeId)
+        public ToCreateForExistingNode ResolveNodeId(int nodeId)
         {
-            return new TenantNodeToCreateForExistingNode {
+            return new ToCreateForExistingNode {
                 TenantId = TenantId,
                 UrlPath = UrlPath,
                 SubgroupId = SubgroupId,
@@ -39,17 +29,12 @@ public abstract record TenantNode: IRequest
             };
         }
     }
-
-    public sealed record TenantNodeToCreateForExistingNode : TenantNode, EventuallyIdentifiable
+    public sealed record ToCreateForExistingNode : TenantNode, PossiblyIdentifiable
     {
         public required int TenantId { get; init; }
-
         public required int UrlId { get; set; }
-
         public required int NodeId { get; set; }
-
-        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
-
+        public required Identification.Possible IdentificationForCreate { get; init; }
         public Identification Identification => IdentificationForCreate;
     }
 }

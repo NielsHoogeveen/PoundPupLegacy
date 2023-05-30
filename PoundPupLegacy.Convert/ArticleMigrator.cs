@@ -2,7 +2,7 @@
 
 internal sealed class ArticleMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreatorFactory<Document.DocumentToCreate> documentCreatorFactory
+    IEntityCreatorFactory<Document.ToCreate> documentCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "documents (articles)";
@@ -12,7 +12,7 @@ internal sealed class ArticleMigrator(
         await using var documentCreator = await documentCreatorFactory.CreateAsync(_postgresConnection);
         await documentCreator.CreateAsync(ReadArticles());
     }
-    private async IAsyncEnumerable<Document.DocumentToCreate> ReadArticles()
+    private async IAsyncEnumerable<Document.ToCreate> ReadArticles()
     {
 
         var sql = $"""
@@ -37,8 +37,8 @@ internal sealed class ArticleMigrator(
         var reader = await readCommand.ExecuteReaderAsync();
 
         while (await reader.ReadAsync()) {
-            yield return new Document.DocumentToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new Document.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -48,11 +48,11 @@ internal sealed class ArticleMigrator(
                     Title = reader.GetString("title"),
                     OwnerId = Constants.PPL,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = 1,

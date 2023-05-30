@@ -5,7 +5,7 @@ internal static class SingleIdInserterFactory
     internal static NullCheckingIntegerDatabaseParameter Id = new() { Name = "id" };
 }
 internal abstract class SingleIdInserterFactory<T> : IDatabaseInserterFactory<T>
-    where T : EventuallyIdentifiable
+    where T : PossiblyIdentifiable
 {
     protected abstract string TableName { get; }
 
@@ -83,7 +83,7 @@ internal abstract class SingleIdInserterFactory<T> : IDatabaseInserterFactory<T>
 
 }
 internal sealed class SingleIdInserter<T> : DatabaseAccessor<T>, IDatabaseInserter<T> 
-    where T : EventuallyIdentifiable
+    where T : PossiblyIdentifiable
 {
 
     private readonly bool _autoGenerateIdentity;

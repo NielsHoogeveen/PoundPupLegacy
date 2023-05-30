@@ -7,7 +7,7 @@ internal sealed class OrganizationTypeMigrator(
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreatorFactory<OrganizationType.OrganizationTypeToCreate> organizationTypeCreatorFactory
+    IEntityCreatorFactory<OrganizationType.ToCreate> organizationTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "organization types";
@@ -20,7 +20,7 @@ internal sealed class OrganizationTypeMigrator(
         await using var termIdReader = await termIdReaderFactory.CreateAsync(_postgresConnection);
         await organizationTypeCreator.CreateAsync(ReadOrganizationTypes(nodeIdReader, termIdReader, fileIdReaderByTenantFileId));
     }
-    private async IAsyncEnumerable<OrganizationType.OrganizationTypeToCreate> ReadOrganizationTypes(
+    private async IAsyncEnumerable<OrganizationType.ToCreate> ReadOrganizationTypes(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId
@@ -145,7 +145,7 @@ internal sealed class OrganizationTypeMigrator(
             {
                 new NewTermForNewNameable
                 {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyIdOrganizationType,
@@ -153,7 +153,7 @@ internal sealed class OrganizationTypeMigrator(
                     ParentTermIds = new List<int>()
                 },
                 new NewTermForNewNameable {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyIdTopics,
@@ -162,8 +162,8 @@ internal sealed class OrganizationTypeMigrator(
                 }
             };
 
-            yield return new OrganizationType.OrganizationTypeToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new OrganizationType.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -173,11 +173,11 @@ internal sealed class OrganizationTypeMigrator(
                     Title = name,
                     OwnerId = Constants.OWNER_PARTIES,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -186,9 +186,9 @@ internal sealed class OrganizationTypeMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,
@@ -219,8 +219,8 @@ internal sealed class OrganizationTypeMigrator(
         reader.Close();
 
         var now = DateTime.Now;
-        yield return new OrganizationType.OrganizationTypeToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new OrganizationType.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -230,11 +230,11 @@ internal sealed class OrganizationTypeMigrator(
                 Title = Constants.POLITICAL_PARTY_NAME,
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -243,9 +243,9 @@ internal sealed class OrganizationTypeMigrator(
                         SubgroupId = null,
                         UrlId = Constants.POLITICAL_PARTY
                     },
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -265,7 +265,7 @@ internal sealed class OrganizationTypeMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyIdOrganizationType,
@@ -273,7 +273,7 @@ internal sealed class OrganizationTypeMigrator(
                         ParentTermIds = new List<int>(),
                     },
                     new NewTermForNewNameable {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyIdTopics,

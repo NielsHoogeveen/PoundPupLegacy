@@ -2,7 +2,7 @@
 
 internal sealed class WrongfulRemovalCaseMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreatorFactory<WrongfulRemovalCase.WrongfulRemovalCaseToCreate> wrongfulRemovalCaseCreatorFactory,
+    IEntityCreatorFactory<WrongfulRemovalCase.ToCreate> wrongfulRemovalCaseCreatorFactory,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory
 ) : MigratorPPL(databaseConnections)
@@ -16,7 +16,7 @@ internal sealed class WrongfulRemovalCaseMigrator(
         await using var termIdReader = await termIdReaderFactory.CreateAsync(_postgresConnection);
         await wrongfulRemovalCaseCreator.CreateAsync(ReadWrongfulRemovalCases(nodeIdReader, termIdReader));
     }
-    private async IAsyncEnumerable<WrongfulRemovalCase.WrongfulRemovalCaseToCreate> ReadWrongfulRemovalCases(
+    private async IAsyncEnumerable<WrongfulRemovalCase.ToCreate> ReadWrongfulRemovalCases(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader
     )
@@ -60,7 +60,7 @@ internal sealed class WrongfulRemovalCaseMigrator(
             var title = reader.GetString("title");
             var vocabularyNames = new List<NewTermForNewNameable> {
                 new NewTermForNewNameable {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = id,
                     },
                     VocabularyId = vocabularyId,
@@ -69,8 +69,8 @@ internal sealed class WrongfulRemovalCaseMigrator(
                 }
             };
 
-            var country = new WrongfulRemovalCase.WrongfulRemovalCaseToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            var country = new WrongfulRemovalCase.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -80,11 +80,11 @@ internal sealed class WrongfulRemovalCaseMigrator(
                     Title = reader.GetString("title"),
                     OwnerId = Constants.OWNER_CASES,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -93,9 +93,9 @@ internal sealed class WrongfulRemovalCaseMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,

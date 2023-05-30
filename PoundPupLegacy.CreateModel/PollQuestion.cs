@@ -11,7 +11,6 @@ public interface PollQuestion : SimpleTextNode
 {
     PollQuestionDetails PollQuestionDetails {get;}
 }
-
 public sealed record PollQuestionDetails
 {
     public required string Question { get; init; }

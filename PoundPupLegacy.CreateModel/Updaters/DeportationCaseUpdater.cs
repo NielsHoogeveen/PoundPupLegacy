@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Updaters;
 
-using Request = DeportationCase.DeportationCaseToUpdate;
+using Request = DeportationCase.ToUpdate;
 internal sealed class DeportationCaseChangerFactory(
     IDatabaseUpdaterFactory<Request> databaseUpdaterFactory,
     NodeDetailsChangerFactory nodeDetailsChangerFactory) : IEntityChangerFactory<Request>
@@ -46,7 +46,7 @@ internal sealed class DeportationCaseUpdaterFactory : DatabaseUpdaterFactory<Req
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new List<ParameterValue> {
-            ParameterValue.Create(NodeId, request.IdentificationForUpdate.Id),
+            ParameterValue.Create(NodeId, request.IdentificationCertain.Id),
             ParameterValue.Create(Title, request.NodeDetails.Title),
             ParameterValue.Create(Description, request.NameableDetails.Description),
             ParameterValue.Create(FuzzyDate, request.CaseDetails.Date),

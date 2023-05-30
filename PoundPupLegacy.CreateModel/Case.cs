@@ -3,23 +3,19 @@ public interface CaseToUpdate : Case, LocatableToUpdate, DocumentableToUpdate, N
 {
     CaseDetails.CaseDetailsForUpdate CaseDetailsForUpdate { get; }
 }
-
 public interface CaseToCreate : Case, LocatableToCreate, DocumentableToCreate, NameableToCreate 
 {
     CaseDetails.CaseDetailsForCreate CaseDetailsForCreate { get; }
 }
-
 public interface Case: Locatable, Documentable, Nameable
 {
     CaseDetails CaseDetails { get; }
 }
-
 public abstract record CaseDetails
 {
     public required FuzzyDate? Date { get; init; }
     public abstract T Match<T>(Func<CaseDetailsForCreate, T> create, Func<CaseDetailsForUpdate, T> update);
     public abstract void Match(Action<CaseDetailsForCreate> create, Action<CaseDetailsForUpdate> update);
-
     public sealed record CaseDetailsForCreate : CaseDetails
     {
         public required List<NewCaseNewCaseParties> CaseParties { get; init; }

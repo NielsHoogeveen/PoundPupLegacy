@@ -3,7 +3,7 @@
 internal sealed class DocumentTypeMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    IEntityCreatorFactory<DocumentType.DocumentTypeToCreate> documentTypeCreatorFactory
+    IEntityCreatorFactory<DocumentType.ToCreate> documentTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "document types";
@@ -14,7 +14,7 @@ internal sealed class DocumentTypeMigrator(
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await documentTypeCreator.CreateAsync(ReadSelectionOptions(nodeIdReader));
     }
-    private async IAsyncEnumerable<DocumentType.DocumentTypeToCreate> ReadSelectionOptions(
+    private async IAsyncEnumerable<DocumentType.ToCreate> ReadSelectionOptions(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
@@ -48,8 +48,8 @@ internal sealed class DocumentTypeMigrator(
         while (await reader.ReadAsync()) {
             var name = reader.GetString("title");
             var id = reader.GetInt32("id");
-            yield return new DocumentType.DocumentTypeToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new DocumentType.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -59,11 +59,11 @@ internal sealed class DocumentTypeMigrator(
                     Title = name,
                     OwnerId = Constants.OWNER_DOCUMENTATION,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -72,9 +72,9 @@ internal sealed class DocumentTypeMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,
@@ -94,7 +94,7 @@ internal sealed class DocumentTypeMigrator(
                     {
                         new NewTermForNewNameable
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null,
                             },
                             VocabularyId = vocabularyId,

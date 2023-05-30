@@ -6,67 +6,23 @@ public abstract record PartyPoliticalEntityRelation: Node
     public required PartyPoliticalEntityRelationDetails PartyPoliticalEntityRelationDetails { get; init; }
     public abstract Identification Identification { get; }
     public abstract NodeDetails NodeDetails { get; }
-    public abstract T Match<T>(
-        Func<PartyPoliticalEntityRelationToCreateForExistingParty, T> create,
-        Func<PartyPoliticalEntityRelationToCreateForNewParty, T> createNewParty,
-        Func<PartyPoliticalEntityRelationToUpdate, T> update
-     );
-    public abstract void Match(
-        Action<PartyPoliticalEntityRelationToCreateForExistingParty> create,
-        Action<PartyPoliticalEntityRelationToCreateForNewParty> createNewParty,
-        Action<PartyPoliticalEntityRelationToUpdate> update
-    );
-
-    public sealed record PartyPoliticalEntityRelationToCreateForExistingParty: PartyPoliticalEntityRelation, NodeToCreate
+    public sealed record ToCreateForExistingParty: PartyPoliticalEntityRelation, NodeToCreate
     {
         public required int PartyId { get; init; }
-        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
+        public required Identification.Possible IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
         public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
-        public override T Match<T>(
-            Func<PartyPoliticalEntityRelationToCreateForExistingParty, T> create,
-            Func<PartyPoliticalEntityRelationToCreateForNewParty, T> createNewParty,
-            Func<PartyPoliticalEntityRelationToUpdate, T> update
-         )
-        { 
-            return create(this);
-        }
-        public override void Match(
-            Action<PartyPoliticalEntityRelationToCreateForExistingParty> create,
-            Action<PartyPoliticalEntityRelationToCreateForNewParty> createNewParty,
-            Action<PartyPoliticalEntityRelationToUpdate> update
-        )
-        { 
-            create(this);
-        }
     }
-    public sealed record PartyPoliticalEntityRelationToCreateForNewParty: PartyPoliticalEntityRelation, NodeToCreate
+    public sealed record ToCreateForNewParty: PartyPoliticalEntityRelation, NodeToCreate
     {
-        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
+        public required Identification.Possible IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
         public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
-        public override T Match<T>(
-            Func<PartyPoliticalEntityRelationToCreateForExistingParty, T> create,
-            Func<PartyPoliticalEntityRelationToCreateForNewParty, T> createNewParty,
-            Func<PartyPoliticalEntityRelationToUpdate, T> update
-         )
+        public ToCreateForExistingParty ResolveParty(int partyId)
         {
-            return createNewParty(this);
-        }
-        public override void Match(
-            Action<PartyPoliticalEntityRelationToCreateForExistingParty> create,
-            Action<PartyPoliticalEntityRelationToCreateForNewParty> createNewParty,
-            Action<PartyPoliticalEntityRelationToUpdate> update
-        )
-        {
-            createNewParty(this);
-        }
-
-        public PartyPoliticalEntityRelationToCreateForExistingParty ResolveParty(int partyId)
-        {
-            return new PartyPoliticalEntityRelationToCreateForExistingParty {
+            return new ToCreateForExistingParty {
                 PartyId = partyId,
                 NodeDetailsForCreate = NodeDetailsForCreate,
                 IdentificationForCreate = IdentificationForCreate,
@@ -74,29 +30,13 @@ public abstract record PartyPoliticalEntityRelation: Node
             };
         }
     }
-    public sealed record PartyPoliticalEntityRelationToUpdate: PartyPoliticalEntityRelation, NodeToUpdate
+    public sealed record ToUpdate: PartyPoliticalEntityRelation, NodeToUpdate
     {
         public required int PartyId { get; init; }
-        public override Identification Identification => IdentificationForUpdate;
+        public override Identification Identification => IdentificationCertain;
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
-        public required Identification.IdentificationForUpdate IdentificationForUpdate { get; init; }
-        public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
-        public override T Match<T>(
-    Func<PartyPoliticalEntityRelationToCreateForExistingParty, T> create,
-    Func<PartyPoliticalEntityRelationToCreateForNewParty, T> createNewParty,
-    Func<PartyPoliticalEntityRelationToUpdate, T> update
- )
-        {
-            return update(this);
-        }
-        public override void Match(
-            Action<PartyPoliticalEntityRelationToCreateForExistingParty> create,
-            Action<PartyPoliticalEntityRelationToCreateForNewParty> createNewParty,
-            Action<PartyPoliticalEntityRelationToUpdate> update
-        )
-        {
-            update(this);
-        }
+        public required Identification.Certain IdentificationCertain { get; init; }
+        public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
     }
 }
 

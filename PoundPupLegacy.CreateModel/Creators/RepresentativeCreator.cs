@@ -4,11 +4,11 @@ using PoundPupLegacy.CreateModel;
 internal sealed class RepresentativeCreatorFactory(
     IDatabaseInserterFactory<ProfessionalRoleToCreateForExistingPerson> professionalRoleInserterFactory,
     IDatabaseInserterFactory<MemberOfCongressToCreateForExistingPerson> memberOfCongressInserterFactory,
-    IDatabaseInserterFactory<Representative.RepresentativeToCreateForExistingPerson> representativeInserterFactory
-) : IEntityCreatorFactory<Representative.RepresentativeToCreateForExistingPerson>
+    IDatabaseInserterFactory<Representative.ToCreateForExistingPerson> representativeInserterFactory
+) : IEntityCreatorFactory<Representative.ToCreateForExistingPerson>
 {
-    public async Task<IEntityCreator<Representative.RepresentativeToCreateForExistingPerson>> CreateAsync(IDbConnection connection) =>
-        new InsertingEntityCreator<Representative.RepresentativeToCreateForExistingPerson>(
+    public async Task<IEntityCreator<Representative.ToCreateForExistingPerson>> CreateAsync(IDbConnection connection) =>
+        new InsertingEntityCreator<Representative.ToCreateForExistingPerson>(
             new()
             {
                 await professionalRoleInserterFactory.CreateAsync(connection),

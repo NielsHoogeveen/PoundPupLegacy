@@ -4,7 +4,7 @@ internal sealed class InterOrganizationalRelationTypeMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreatorFactory<InterOrganizationalRelationType.InterOrganizationalRelationTypeToCreate> interOrganizationalRelationTypeCreatorFactory
+    IEntityCreatorFactory<InterOrganizationalRelationType.ToCreate> interOrganizationalRelationTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "inter-organization relation types";
@@ -16,7 +16,7 @@ internal sealed class InterOrganizationalRelationTypeMigrator(
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await interOrganizationalRelationTypeCreator.CreateAsync(ReadInterOrganizationalRelationTypes(nodeIdReader, fileIdReaderByTenantFileId));
     }
-    private async IAsyncEnumerable<InterOrganizationalRelationType.InterOrganizationalRelationTypeToCreate> ReadInterOrganizationalRelationTypes(
+    private async IAsyncEnumerable<InterOrganizationalRelationType.ToCreate> ReadInterOrganizationalRelationTypes(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)
     {
@@ -62,7 +62,7 @@ internal sealed class InterOrganizationalRelationTypeMigrator(
             {
                 new NewTermForNewNameable
                 {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -70,8 +70,8 @@ internal sealed class InterOrganizationalRelationTypeMigrator(
                     ParentTermIds = new List<int>(),
                 }
             };
-            yield return new InterOrganizationalRelationType.InterOrganizationalRelationTypeToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new InterOrganizationalRelationType.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -81,11 +81,11 @@ internal sealed class InterOrganizationalRelationTypeMigrator(
                     Title = name,
                     OwnerId = Constants.OWNER_PARTIES,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -94,9 +94,9 @@ internal sealed class InterOrganizationalRelationTypeMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,

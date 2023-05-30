@@ -2,7 +2,7 @@
 
 internal sealed class ActMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreatorFactory<Act.ActToCreate> actCreatorFactory,
+    IEntityCreatorFactory<Act.ToCreate> actCreatorFactory,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory
 ) : MigratorPPL(databaseConnections)
@@ -26,7 +26,7 @@ internal sealed class ActMigrator(
             _ => null
         };
     }
-    private async IAsyncEnumerable<Act.ActToCreate> ReadArticles(
+    private async IAsyncEnumerable<Act.ToCreate> ReadArticles(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader
     )
@@ -135,7 +135,7 @@ internal sealed class ActMigrator(
                     }));
                 }
                 vocabularyNames.Add(new NewTermForNewNameable {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -145,7 +145,7 @@ internal sealed class ActMigrator(
             }
             else {
                 vocabularyNames.Add(new NewTermForNewNameable {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -160,8 +160,8 @@ internal sealed class ActMigrator(
             }
 
 
-            yield return new Act.ActToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new Act.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -171,11 +171,11 @@ internal sealed class ActMigrator(
                     Title = title,
                     OwnerId = Constants.PPL,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = 1,

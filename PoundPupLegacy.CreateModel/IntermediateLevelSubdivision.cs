@@ -5,7 +5,6 @@ public interface IntermediateLevelSubdivisionToUpdate : IntermediateLevelSubdivi
 }
 public interface IntermediateLevelSubdivisionToCreate : IntermediateLevelSubdivision, FirstLevelSubdivisionToCreate
 {
-
 }
 public interface IntermediateLevelSubdivision : FirstLevelSubdivision
 {

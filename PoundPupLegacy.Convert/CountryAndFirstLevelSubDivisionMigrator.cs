@@ -7,7 +7,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<NameableIdReaderByTermNameRequest, int> termReaderByNameFactory,
-    IEntityCreatorFactory<CountryAndFirstAndBottomLevelSubdivision.CountryAndFirstAndBottomLevelSubdivisionToCreate> countryAndFirstAndBottomLevelSubdivisionCreatorFactory
+    IEntityCreatorFactory<CountryAndFirstAndBottomLevelSubdivision.ToCreate> countryAndFirstAndBottomLevelSubdivisionCreatorFactory
 ) : CountryMigrator(databaseConnections)
 {
     protected override string Name => "countries that are first level subdivisions";
@@ -29,7 +29,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
         ));
     }
 
-    private async IAsyncEnumerable<CountryAndFirstAndBottomLevelSubdivision.CountryAndFirstAndBottomLevelSubdivisionToCreate> GetCountryAndFirstAndBottomLevelSubdivisions(
+    private async IAsyncEnumerable<CountryAndFirstAndBottomLevelSubdivision.ToCreate> GetCountryAndFirstAndBottomLevelSubdivisions(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
         IMandatorySingleItemDatabaseReader<NameableIdReaderByTermNameRequest, int> termReader
@@ -45,19 +45,19 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
             UrlId = Constants.VOCABULARY_ID_TOPICS
         });
 
-        yield return new CountryAndFirstAndBottomLevelSubdivision.CountryAndFirstAndBottomLevelSubdivisionToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new CountryAndFirstAndBottomLevelSubdivision.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
                 Title = "Åland",
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -66,9 +66,9 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                         SubgroupId = null,
                         UrlId = Constants.ALAND
                     },
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -90,7 +90,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyIdTopics,
@@ -143,19 +143,19 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                 ISO3166_2_Code = "FI-01",
             },
         };
-        yield return new CountryAndFirstAndBottomLevelSubdivision.CountryAndFirstAndBottomLevelSubdivisionToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new CountryAndFirstAndBottomLevelSubdivision.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
                 Title = "Curaçao",
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -164,9 +164,9 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                         SubgroupId = null,
                         UrlId = Constants.CURACAO
                     },
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -188,7 +188,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyIdTopics,
@@ -241,19 +241,19 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                 ISO3166_2_Code = "NL-CW",
             },
         };
-        yield return new CountryAndFirstAndBottomLevelSubdivision.CountryAndFirstAndBottomLevelSubdivisionToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new CountryAndFirstAndBottomLevelSubdivision.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
                 Title = "Sint Maarten",
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -262,9 +262,9 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                         SubgroupId = null,
                         UrlId = Constants.SINT_MAARTEN
                     },
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -286,7 +286,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyIdTopics,
@@ -339,19 +339,19 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                 ISO3166_2_Code = "NL-SX",
             },
         };
-        yield return new CountryAndFirstAndBottomLevelSubdivision.CountryAndFirstAndBottomLevelSubdivisionToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new CountryAndFirstAndBottomLevelSubdivision.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
                 Title = "United States Minor Outlying Islands",
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                         TenantId = Constants.PPL,
@@ -360,9 +360,9 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                         SubgroupId = null,
                         UrlId = Constants.UNITED_STATES_MINOR_OUTLYING_ISLANDS
                     },
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                         TenantId = Constants.CPCT,
@@ -384,7 +384,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyIdTopics,
@@ -439,7 +439,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
         };
     }
 
-    private async IAsyncEnumerable<CountryAndFirstAndBottomLevelSubdivision.CountryAndFirstAndBottomLevelSubdivisionToCreate> ReadCountryAndFirstAndIntermediateLevelSubdivisions(
+    private async IAsyncEnumerable<CountryAndFirstAndBottomLevelSubdivision.ToCreate> ReadCountryAndFirstAndIntermediateLevelSubdivisions(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
         IMandatorySingleItemDatabaseReader<NameableIdReaderByTermNameRequest, int> termReader
@@ -514,7 +514,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
             {
                 new NewTermForNewNameable
                 {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyIdTopics,
@@ -527,8 +527,8 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                     },
                 },
             };
-            yield return new CountryAndFirstAndBottomLevelSubdivision.CountryAndFirstAndBottomLevelSubdivisionToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new CountryAndFirstAndBottomLevelSubdivision.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -538,11 +538,11 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                     Title = name,
                     OwnerId = Constants.OWNER_GEOGRAPHY,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -551,9 +551,9 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,

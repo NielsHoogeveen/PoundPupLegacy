@@ -15,15 +15,15 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionCreatorFactory(
     IDatabaseInserterFactory<ISOCodedFirstLevelSubdivisionToCreate> isoCodedFirstLevelSubdivisionInserterFactory,
     IDatabaseInserterFactory<CountryAndFirstLevelSubdivisionToCreate> countryAndFirstLevelSubdivisionInserterFactory,
     IDatabaseInserterFactory<SecondLevelSubdivisionToCreate> secondLevelSubdivisionInserterFactory,
-    IDatabaseInserterFactory<CountryAndFirstAndSecondLevelSubdivision.CountryAndFirstAndSecondLevelSubdivisionToCreate> countryAndFirstAndSecondLevelSubdivisionInserterFactory,
+    IDatabaseInserterFactory<CountryAndFirstAndSecondLevelSubdivision.ToCreate> countryAndFirstAndSecondLevelSubdivisionInserterFactory,
     IDatabaseInserterFactory<BottomLevelSubdivisionToCreate> bottomLevelSubdivisionInserterFactory,
     IDatabaseInserterFactory<FirstAndSecondLevelSubdivisionToCreate> firstAndSecondLevelSubdivisionInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory
-) : IEntityCreatorFactory<CountryAndFirstAndSecondLevelSubdivision.CountryAndFirstAndSecondLevelSubdivisionToCreate>
+) : IEntityCreatorFactory<CountryAndFirstAndSecondLevelSubdivision.ToCreate>
 {
-    public async Task<IEntityCreator<CountryAndFirstAndSecondLevelSubdivision.CountryAndFirstAndSecondLevelSubdivisionToCreate>> CreateAsync(IDbConnection connection) =>
-        new NameableCreator<CountryAndFirstAndSecondLevelSubdivision.CountryAndFirstAndSecondLevelSubdivisionToCreate>(
+    public async Task<IEntityCreator<CountryAndFirstAndSecondLevelSubdivision.ToCreate>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<CountryAndFirstAndSecondLevelSubdivision.ToCreate>(
             new () {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

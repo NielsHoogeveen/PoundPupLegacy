@@ -3,7 +3,7 @@
 internal sealed class OrganizationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.TenantNodeToCreateForExistingNode> tenantNodeReaderByUrlIdFactory,
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreateForExistingNode> tenantNodeReaderByUrlIdFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameableIdRequest, int> termIdReaderByNameableIdFactory,
     IEntityCreatorFactory<Organization> organizationCreatorFactory
 ) : MigratorCPCT(
@@ -22,7 +22,7 @@ internal sealed class OrganizationMigratorCPCT(
         await organizationCreator.CreateAsync(ReadOrganizations(nodeIdReader, termIdReaderByNameableId));
     }
 
-    private async IAsyncEnumerable<BasicOrganization.BasicOrganizationToCreate> ReadOrganizations(
+    private async IAsyncEnumerable<BasicOrganization.ToCreate> ReadOrganizations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameableIdRequest, int> termIdReaderByNameableId
     )
@@ -219,7 +219,7 @@ internal sealed class OrganizationMigratorCPCT(
             }
             var vocabularyNames = new List<NewTermForNewNameable> {
                 new NewTermForNewNameable {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -231,11 +231,11 @@ internal sealed class OrganizationMigratorCPCT(
             var id = reader.GetInt32("id");
 
 
-            var tenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+            var tenantNodes = new List<TenantNode.ToCreateForNewNode>
             {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -249,8 +249,8 @@ internal sealed class OrganizationMigratorCPCT(
             var toSkipForPPL = new List<int> { 34447, 42413, 46479, 48178, 39305, 45402, 46671, 33634, 48051 };
 
             if (!organizationOrganizationTypeIds.Contains(miscellaneous) && !toSkipForPPL.Contains(id)) {
-                tenantNodes.Add(new TenantNode.TenantNodeToCreateForNewNode {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                tenantNodes.Add(new TenantNode.ToCreateForNewNode {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null
                     },
                     TenantId = Constants.PPL,
@@ -261,8 +261,8 @@ internal sealed class OrganizationMigratorCPCT(
                 });
             }
 
-            yield return new BasicOrganization.BasicOrganizationToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new BasicOrganization.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -290,10 +290,10 @@ internal sealed class OrganizationMigratorCPCT(
                     Established = reader.IsDBNull("established") ? null : (new DateTimeRange(reader.GetDateTime("established").Date, reader.GetDateTime("established").Date.AddDays(1).AddMilliseconds(-1))).ToFuzzyDate(),
                     Terminated = reader.IsDBNull("terminated") ? null : (new DateTimeRange(reader.GetDateTime("terminated").Date, reader.GetDateTime("terminated").Date.AddDays(1).AddMilliseconds(-1))).ToFuzzyDate(),
                     OrganizationTypeIds = organizationOrganizationTypeIds,
-                    InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationFrom>(),
-                    InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationTo>(),
-                    PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForNewParty>(),
-                    PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.PersonOrganizationRelationToCreateForNewOrganization>()
+                    InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.ToCreateForNewOrganizationFrom>(),
+                    InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.ToCreateForNewOrganizationTo>(),
+                    PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.ToCreateForNewParty>(),
+                    PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.ToCreateForNewOrganization>()
                 },
             };
         }

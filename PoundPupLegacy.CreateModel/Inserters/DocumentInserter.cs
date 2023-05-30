@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = Document.DocumentToCreate;
+using Request = Document.ToCreate;
 
 internal sealed class DocumentInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

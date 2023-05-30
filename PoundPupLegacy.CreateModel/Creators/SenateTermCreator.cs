@@ -5,12 +5,12 @@ internal sealed class SenateTermCreatorFactory(
     IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
     IDatabaseInserterFactory<DocumentableToCreate> documentableInserterFactory,
     IDatabaseInserterFactory<CongressionalTermToCreate> congressionalTermInserterFactory,
-    IDatabaseInserterFactory<SenateTerm.SenateTermToCreate> senateTermInserterFactory,
+    IDatabaseInserterFactory<SenateTerm.ToCreate> senateTermInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    IEntityCreatorFactory<CongressionalTermPoliticalPartyAffiliation.CongressionalTermPoliticalPartyAffiliationToCreateForExistingTerm> congressionalTermPoliticalPartyAffiliationCreatorFactory
-) : IEntityCreatorFactory<SenateTerm.SenateTermToCreate>
+    IEntityCreatorFactory<CongressionalTermPoliticalPartyAffiliation.ToCreateForExistingTerm> congressionalTermPoliticalPartyAffiliationCreatorFactory
+) : IEntityCreatorFactory<SenateTerm.ToCreate>
 {
-    public async Task<IEntityCreator<SenateTerm.SenateTermToCreate>> CreateAsync(IDbConnection connection) =>
+    public async Task<IEntityCreator<SenateTerm.ToCreate>> CreateAsync(IDbConnection connection) =>
         new SenateTermCreator(
             new() 
             {
@@ -25,12 +25,12 @@ internal sealed class SenateTermCreatorFactory(
         );
 }
 internal class SenateTermCreator(
-    List<IDatabaseInserter<SenateTerm.SenateTermToCreate>> inserters,
+    List<IDatabaseInserter<SenateTerm.ToCreate>> inserters,
     NodeDetailsCreator nodeDetailsCreator,
-    IEntityCreator<CongressionalTermPoliticalPartyAffiliation.CongressionalTermPoliticalPartyAffiliationToCreateForExistingTerm> congressionalTermPoliticalPartyAffiliationCreator
-) : NodeCreator<SenateTerm.SenateTermToCreate>(inserters, nodeDetailsCreator) 
+    IEntityCreator<CongressionalTermPoliticalPartyAffiliation.ToCreateForExistingTerm> congressionalTermPoliticalPartyAffiliationCreator
+) : NodeCreator<SenateTerm.ToCreate>(inserters, nodeDetailsCreator) 
 {
-    public override async Task ProcessAsync(SenateTerm.SenateTermToCreate element, int id)
+    public override async Task ProcessAsync(SenateTerm.ToCreate element, int id)
     {
         await base.ProcessAsync(element, id);
         await congressionalTermPoliticalPartyAffiliationCreator

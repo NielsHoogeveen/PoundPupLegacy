@@ -4,12 +4,12 @@ internal sealed class DocumentCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
     IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
     IDatabaseInserterFactory<SimpleTextNodeToCreate> simpleTextNodeInserterFactory,
-    IDatabaseInserterFactory<Document.DocumentToCreate> documentInserterFactory,
+    IDatabaseInserterFactory<Document.ToCreate> documentInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory
-) : IEntityCreatorFactory<Document.DocumentToCreate>
+) : IEntityCreatorFactory<Document.ToCreate>
 {
-    public async Task<IEntityCreator<Document.DocumentToCreate>> CreateAsync(IDbConnection connection) =>
-        new NodeCreator<Document.DocumentToCreate>(
+    public async Task<IEntityCreator<Document.ToCreate>> CreateAsync(IDbConnection connection) =>
+        new NodeCreator<Document.ToCreate>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

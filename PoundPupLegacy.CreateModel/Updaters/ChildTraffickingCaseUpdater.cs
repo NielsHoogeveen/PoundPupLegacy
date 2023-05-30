@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Updaters;
 
-using Request = ChildTraffickingCase.ChildTraffickingCaseToUpdate;
+using Request = ChildTraffickingCase.ToUpdate;
 internal sealed class ChildTraffickingCaseChangerFactory(
     IDatabaseUpdaterFactory<Request> databaseUpdaterFactory,
     NodeDetailsChangerFactory nodeDetailsChangerFactory) : IEntityChangerFactory<Request>
@@ -45,7 +45,7 @@ internal sealed class ChildTraffickingCaseUpdaterFactory : DatabaseUpdaterFactor
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new List<ParameterValue> {
-            ParameterValue.Create(NodeId, request.IdentificationForUpdate.Id),
+            ParameterValue.Create(NodeId, request.IdentificationCertain.Id),
             ParameterValue.Create(Title, request.NodeDetails.Title),
             ParameterValue.Create(Description, request.NameableDetails.Description),
             ParameterValue.Create(FuzzyDate, request.CaseDetails.Date),

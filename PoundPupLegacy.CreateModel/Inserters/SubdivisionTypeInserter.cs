@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class SubdivisionTypeInserterFactory : SingleIdInserterFactory<SubdivisionType.SubdivisionTypeToCreate>
+internal sealed class SubdivisionTypeInserterFactory : SingleIdInserterFactory<SubdivisionType.ToCreate>
 {
     protected override string TableName => "subdivision_type";
 

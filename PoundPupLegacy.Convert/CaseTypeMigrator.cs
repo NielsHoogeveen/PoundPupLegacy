@@ -25,19 +25,19 @@ internal sealed class CaseTypeMigrator(
         await caseTypeCreator.CreateAsync(GetCaseTypes(nodeIdReader));
         await viewNodeTypeListActionCreator.CreateAsync(GetViewNodeTypeListActions(actionIdReader));
         await createNodeActionCreator.CreateAsync(GetCaseTypes(nodeIdReader).Select(x => new CreateNodeAction { 
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             NodeTypeId = x.IdentificationForCreate.Id!.Value 
         }));
         await deleteNodeActionCreator.CreateAsync(GetCaseTypes(nodeIdReader).Select(x => new DeleteNodeAction { 
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             NodeTypeId = x.IdentificationForCreate.Id!.Value 
         }));
         await editNodeActionCreator.CreateAsync(GetCaseTypes(nodeIdReader).Select(x => new EditNodeAction { 
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             NodeTypeId = x.IdentificationForCreate.Id!.Value }
@@ -48,7 +48,7 @@ internal sealed class CaseTypeMigrator(
     {
 
         yield return new CaseType {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = Constants.ABUSE_CASE,
             },
             AuthorSpecific = false,
@@ -91,7 +91,7 @@ internal sealed class CaseTypeMigrator(
             }
         };
         yield return new CaseType {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = Constants.CHILD_TRAFFICKING_CASE,
             },
             AuthorSpecific = false,
@@ -119,7 +119,7 @@ internal sealed class CaseTypeMigrator(
             }
         };
         yield return new CaseType {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = Constants.COERCED_ADOPTION_CASE,
             },
             AuthorSpecific = false,
@@ -137,7 +137,7 @@ internal sealed class CaseTypeMigrator(
             }
         };
         yield return new CaseType {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = Constants.DEPORTATION_CASE,
             },
             AuthorSpecific = false,
@@ -148,7 +148,7 @@ internal sealed class CaseTypeMigrator(
             CaseRelationTypeIds = new List<int>()
         };
         yield return new CaseType {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = Constants.FATHERS_RIGHTS_VIOLATION_CASE,
             },
             AuthorSpecific = false,
@@ -166,7 +166,7 @@ internal sealed class CaseTypeMigrator(
             }
         };
         yield return new CaseType {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = Constants.WRONGFUL_MEDICATION_CASE,
             },
             AuthorSpecific = false,
@@ -184,7 +184,7 @@ internal sealed class CaseTypeMigrator(
             }
         };
         yield return new CaseType {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = Constants.WRONGFUL_REMOVAL_CASE,
             },
             AuthorSpecific = false,
@@ -202,7 +202,7 @@ internal sealed class CaseTypeMigrator(
             }
         };
         yield return new CaseType {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = Constants.DISRUPTED_PLACEMENT_CASE,
             },
             AuthorSpecific = false,

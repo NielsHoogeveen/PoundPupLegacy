@@ -7,8 +7,8 @@ internal sealed class DocumentMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameableIdRequest, int> termReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.TenantNodeToCreateForExistingNode> tenantNodeReaderByUrlIdFactory,
-    IEntityCreatorFactory<Document.DocumentToCreate> documentCreatorFactory
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreateForExistingNode> tenantNodeReaderByUrlIdFactory,
+    IEntityCreatorFactory<Document.ToCreate> documentCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
     nodeIdReaderFactory, 
@@ -29,17 +29,17 @@ internal sealed class DocumentMigratorCPCT(
     private async IAsyncEnumerable<(int, int)> GetDocumentablesWithStatus(
         IEnumerable<int> documentableIds,
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode.TenantNodeToCreateForExistingNode> tenantNodeReader)
+        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreateForExistingNode> tenantNodeReader)
     {
         foreach (var urlId in documentableIds) {
             yield return await GetNodeId(urlId, nodeIdReader, tenantNodeReader);
         }
     }
 
-    private async IAsyncEnumerable<Document.DocumentToCreate> ReadDocuments(
+    private async IAsyncEnumerable<Document.ToCreate> ReadDocuments(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameableIdRequest, int> termReader,
-        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode.TenantNodeToCreateForExistingNode> tenantNodeReader)
+        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreateForExistingNode> tenantNodeReader)
     {
 
 
@@ -123,11 +123,11 @@ internal sealed class DocumentMigratorCPCT(
 
             var documentable = await GetDocumentablesWithStatus(documentableIds, nodeIdReader, tenantNodeReader).ToListAsync();
 
-            var tenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+            var tenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -139,8 +139,8 @@ internal sealed class DocumentMigratorCPCT(
                 };
 
             if (documentable.All(x => x.Item2 == 1) && !text.ToLower().Contains("arun dohle") && !text.ToLower().Contains("roelie post") && !text.ToLower().Contains("againstchildtrafficking.org")) {
-                tenantNodes.Add(new TenantNode.TenantNodeToCreateForNewNode {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                tenantNodes.Add(new TenantNode.ToCreateForNewNode {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null
                     },
                     TenantId = Constants.PPL,
@@ -158,8 +158,8 @@ internal sealed class DocumentMigratorCPCT(
                 });
                 termIds.Add(termId);
             }
-            yield return new Document.DocumentToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new Document.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {

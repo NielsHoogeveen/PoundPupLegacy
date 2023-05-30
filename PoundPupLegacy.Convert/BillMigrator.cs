@@ -4,8 +4,8 @@ internal sealed class BillMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
-        IEntityCreatorFactory<HouseBill.HouseBillToCreate> houseBillCreatorFactory,
-        IEntityCreatorFactory<SenateBill.SenateBillToCreate> senateBillCreatorFactory
+        IEntityCreatorFactory<HouseBill.ToCreate> houseBillCreatorFactory,
+        IEntityCreatorFactory<SenateBill.ToCreate> senateBillCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "bills";
@@ -20,7 +20,7 @@ internal sealed class BillMigrator(
         await senateBillCreator.CreateAsync(ReadSenateBills(nodeIdReader,termIdReader));
     }
 
-    private async IAsyncEnumerable<HouseBill.HouseBillToCreate> ReadHouseBills(
+    private async IAsyncEnumerable<HouseBill.ToCreate> ReadHouseBills(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader)
     {
@@ -160,7 +160,7 @@ internal sealed class BillMigrator(
                 }
 
                 vocabularyNames.Add(new NewTermForNewNameable {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -170,7 +170,7 @@ internal sealed class BillMigrator(
             }
             else {
                 vocabularyNames.Add(new NewTermForNewNameable {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -184,8 +184,8 @@ internal sealed class BillMigrator(
                 });
             }
 
-            yield return new HouseBill.HouseBillToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new HouseBill.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -195,11 +195,11 @@ internal sealed class BillMigrator(
                     Title = title,
                     OwnerId = Constants.PPL,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = 1,
@@ -228,7 +228,7 @@ internal sealed class BillMigrator(
         }
         await reader.CloseAsync();
     }
-    private async IAsyncEnumerable<SenateBill.SenateBillToCreate> ReadSenateBills(
+    private async IAsyncEnumerable<SenateBill.ToCreate> ReadSenateBills(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader)
     {
@@ -367,7 +367,7 @@ internal sealed class BillMigrator(
                     }));
                 }
                 vocabularyNames.Add(new NewTermForNewNameable {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -377,7 +377,7 @@ internal sealed class BillMigrator(
             }
             else {
                 vocabularyNames.Add(new NewTermForNewNameable {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -391,8 +391,8 @@ internal sealed class BillMigrator(
                 });
             }
 
-            yield return new SenateBill.SenateBillToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new SenateBill.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -402,11 +402,11 @@ internal sealed class BillMigrator(
                     Title = title,
                     OwnerId = Constants.PPL,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = 1,

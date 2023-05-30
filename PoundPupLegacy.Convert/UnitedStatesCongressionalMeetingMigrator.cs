@@ -4,12 +4,12 @@ internal sealed class UnitedStatesCongressionalMeetingMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
-        IEntityCreatorFactory<UnitedStatesCongressionalMeeting.UnitedStatesCongressionalMeetingToCreate> unitedStatesCongressionalMeetingCreatorFactory
+        IEntityCreatorFactory<UnitedStatesCongressionalMeeting.ToCreate> unitedStatesCongressionalMeetingCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "united states congressional meetings";
 
-    private async IAsyncEnumerable<UnitedStatesCongressionalMeeting.UnitedStatesCongressionalMeetingToCreate> ReadUnitedStatesCongressionalMeetingCsv(
+    private async IAsyncEnumerable<UnitedStatesCongressionalMeeting.ToCreate> ReadUnitedStatesCongressionalMeetingCsv(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader
     )
@@ -33,8 +33,8 @@ internal sealed class UnitedStatesCongressionalMeetingMigrator(
             var startDate = DateTime.Parse(parts[1]).AddHours(12);
             var endDate = DateTime.Parse(parts[2]).AddHours(12).AddMicroseconds(-1);
             var number = int.Parse(parts[3]);
-            yield return new UnitedStatesCongressionalMeeting.UnitedStatesCongressionalMeetingToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new UnitedStatesCongressionalMeeting.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -43,11 +43,11 @@ internal sealed class UnitedStatesCongressionalMeetingMigrator(
                     NodeTypeId = 52,
                     OwnerId = Constants.OWNER_GEOGRAPHY,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = 1,
@@ -66,7 +66,7 @@ internal sealed class UnitedStatesCongressionalMeetingMigrator(
                     {
                         new NewTermForNewNameable
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id= null
                             },
                             VocabularyId = vocabularyId,

@@ -2,7 +2,7 @@
 
 internal sealed class ReviewMigrator(
         IDatabaseConnections databaseConnections,
-        IEntityCreatorFactory<BlogPost.BlogPostToCreate> blogPostCreatorFactory
+        IEntityCreatorFactory<BlogPost.ToCreate> blogPostCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "reviews";
@@ -12,7 +12,7 @@ internal sealed class ReviewMigrator(
         await using var blogPostCreator = await blogPostCreatorFactory.CreateAsync(_postgresConnection);
         await blogPostCreator.CreateAsync(ReadReviews());
     }
-    private async IAsyncEnumerable<BlogPost.BlogPostToCreate> ReadReviews()
+    private async IAsyncEnumerable<BlogPost.ToCreate> ReadReviews()
     {
 
         var sql = $"""
@@ -39,8 +39,8 @@ internal sealed class ReviewMigrator(
 
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
-            yield return new BlogPost.BlogPostToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new BlogPost.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -50,11 +50,11 @@ internal sealed class ReviewMigrator(
                     Title = reader.GetString("title"),
                     OwnerId = Constants.PPL,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = 1,

@@ -3,7 +3,7 @@
 internal sealed class LocationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.TenantNodeToCreateForExistingNode> tenantNodeReaderByUrlIdFactory,
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreateForExistingNode> tenantNodeReaderByUrlIdFactory,
     IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166CodeFactory,
     IEntityCreatorFactory<EventuallyIdentifiableLocation> locationCreatorFactory,
     IDatabaseInserterFactory<LocationLocatable> locationLocatableInserterFactory
@@ -366,7 +366,7 @@ internal sealed class LocationMigratorCPCT(
                 UrlId = urlId
             });
             yield return (new LocationToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = renamedId
                 },
                 Street = GetStreet(id, reader.IsDBNull("street") ? null : reader.GetString("street")),

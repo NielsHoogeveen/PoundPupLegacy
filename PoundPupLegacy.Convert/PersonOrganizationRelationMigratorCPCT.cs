@@ -3,8 +3,8 @@
 internal sealed class PersonOrganizationRelationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.TenantNodeToCreateForExistingNode> tenantNodeReaderByUrlIdFactory,
-    IEntityCreatorFactory<PersonOrganizationRelation.PersonOrganizationRelationToCreateForExistingParticipants> personOrganizationRelationCreatorFactory
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreateForExistingNode> tenantNodeReaderByUrlIdFactory,
+    IEntityCreatorFactory<PersonOrganizationRelation.ToCreateForExistingParticipants> personOrganizationRelationCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
     nodeIdReaderFactory, 
@@ -21,9 +21,9 @@ internal sealed class PersonOrganizationRelationMigratorCPCT(
         await personOrganizationRelationCreator.CreateAsync(ReadPersonOrganizationRelations(nodeIdReader, tenantNodeReaderByUrlId));
     }
 
-    private async IAsyncEnumerable<PersonOrganizationRelation.PersonOrganizationRelationToCreateForExistingParticipants> ReadPersonOrganizationRelations(
+    private async IAsyncEnumerable<PersonOrganizationRelation.ToCreateForExistingParticipants> ReadPersonOrganizationRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode.TenantNodeToCreateForExistingNode> tenantNodeReaderByUrlId
+        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreateForExistingNode> tenantNodeReaderByUrlId
     )
     {
 
@@ -103,11 +103,11 @@ internal sealed class PersonOrganizationRelationMigratorCPCT(
                 TenantId = Constants.PPL
             });
 
-            var tenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+            var tenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -118,8 +118,8 @@ internal sealed class PersonOrganizationRelationMigratorCPCT(
                     }
                 };
             if (personPublicationStatusId == 1 && organizationPublicationStatusId == 1) {
-                tenantNodes.Add(new TenantNode.TenantNodeToCreateForNewNode {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                tenantNodes.Add(new TenantNode.ToCreateForNewNode {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null
                     },
                     TenantId = Constants.PPL,
@@ -129,8 +129,8 @@ internal sealed class PersonOrganizationRelationMigratorCPCT(
                     UrlId = null
                 });
             }
-            yield return new PersonOrganizationRelation.PersonOrganizationRelationToCreateForExistingParticipants {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new PersonOrganizationRelation.ToCreateForExistingParticipants {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {

@@ -4,12 +4,12 @@ internal sealed class BlogPostCreatorFactory(
         IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
         IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
         IDatabaseInserterFactory<SimpleTextNodeToCreate> simpleTextNodeInserterFactory,
-        IDatabaseInserterFactory<BlogPost.BlogPostToCreate> blogPostInserterFactory,
+        IDatabaseInserterFactory<BlogPost.ToCreate> blogPostInserterFactory,
         NodeDetailsCreatorFactory nodeDetailsCreatorFactory
-    ) : IEntityCreatorFactory<BlogPost.BlogPostToCreate>
+    ) : IEntityCreatorFactory<BlogPost.ToCreate>
 {
-    public async Task<IEntityCreator<BlogPost.BlogPostToCreate>> CreateAsync(IDbConnection connection) =>
-        new NodeCreator<BlogPost.BlogPostToCreate>(
+    public async Task<IEntityCreator<BlogPost.ToCreate>> CreateAsync(IDbConnection connection) =>
+        new NodeCreator<BlogPost.ToCreate>(
             new () {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

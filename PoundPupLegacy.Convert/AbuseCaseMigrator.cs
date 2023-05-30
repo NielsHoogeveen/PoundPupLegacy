@@ -4,7 +4,7 @@ namespace PoundPupLegacy.Convert;
 
 internal sealed class AbuseCaseMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreatorFactory<AbuseCase.AbuseCaseToCreate> abuseCaseCreatorFactory,
+    IEntityCreatorFactory<AbuseCase.ToCreate> abuseCaseCreatorFactory,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory
 ) : MigratorPPL(databaseConnections)
@@ -19,7 +19,7 @@ internal sealed class AbuseCaseMigrator(
         await using var abuseCaseCreator = await abuseCaseCreatorFactory.CreateAsync(_postgresConnection);
         await abuseCaseCreator.CreateAsync(ReadAbuseCases(nodeIdReader, termIdReader));
     }
-    private async IAsyncEnumerable<AbuseCase.AbuseCaseToCreate> ReadAbuseCases(
+    private async IAsyncEnumerable<AbuseCase.ToCreate> ReadAbuseCases(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader
         )
@@ -152,7 +152,7 @@ internal sealed class AbuseCaseMigrator(
             }
             
             vocabularyNames.Add(new NewTermForNewNameable {
-                IdentificationForCreate = new Identification.IdentificationForCreate { 
+                IdentificationForCreate = new Identification.Possible { 
                     Id = null,
                 },
                 VocabularyId = vocabularyId,
@@ -160,8 +160,8 @@ internal sealed class AbuseCaseMigrator(
                 ParentTermIds = topicParentIds,
             });
 
-            var country = new AbuseCase.AbuseCaseToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            var country = new AbuseCase.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate{
@@ -173,11 +173,11 @@ internal sealed class AbuseCaseMigrator(
                     AuthoringStatusId = 1,
                     NodeTypeId = reader.GetInt32("node_type_id"),
                     TermIds = new List<int>(),
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -186,9 +186,9 @@ internal sealed class AbuseCaseMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,

@@ -2,7 +2,7 @@
 
 internal class NodeDetailsForCreateMapper(
     IEnumerableMapper<Tags, int> termIdsToAddMapper,
-    IEnumerableMapper<EditModel.TenantNode.NewTenantNodeForNewNode, CreateModel.TenantNode.TenantNodeToCreateForNewNode> tenantNodeMapper
+    IEnumerableMapper<EditModel.TenantNode.NewTenantNodeForNewNode, CreateModel.TenantNode.ToCreateForNewNode> tenantNodeMapper
     ) : IMapper<EditModel.NodeDetails.NodeDetailsForCreate, CreateModel.NodeDetails.NodeDetailsForCreate>
 {
     public CreateModel.NodeDetails.NodeDetailsForCreate Map(EditModel.NodeDetails.NodeDetailsForCreate source)

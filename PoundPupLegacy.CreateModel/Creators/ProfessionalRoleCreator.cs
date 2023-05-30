@@ -2,10 +2,10 @@
 
 internal sealed class ProfessionalRoleCreatorFactory(
     IDatabaseInserterFactory<ProfessionalRoleToCreateForExistingPerson> professionalRoleInserterFactory
-) : IEntityCreatorFactory<BasicProfessionalRole.BasicProfessionalRoleToCreateForExistingPerson>
+) : IEntityCreatorFactory<BasicProfessionalRole.ToCreateForExistingPerson>
 {
-    public async Task<IEntityCreator<BasicProfessionalRole.BasicProfessionalRoleToCreateForExistingPerson>> CreateAsync(IDbConnection connection) =>
-        new InsertingEntityCreator<BasicProfessionalRole.BasicProfessionalRoleToCreateForExistingPerson>( 
+    public async Task<IEntityCreator<BasicProfessionalRole.ToCreateForExistingPerson>> CreateAsync(IDbConnection connection) =>
+        new InsertingEntityCreator<BasicProfessionalRole.ToCreateForExistingPerson>( 
             new ()
             {
                 await professionalRoleInserterFactory.CreateAsync(connection),

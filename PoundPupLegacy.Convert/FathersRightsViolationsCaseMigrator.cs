@@ -4,7 +4,7 @@ internal sealed class FathersRightsViolationsCaseMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
-    IEntityCreatorFactory<FathersRightsViolationCase.FathersRightsViolationCaseToCreate> fathersRightsViolationCaseCreatorFactory
+    IEntityCreatorFactory<FathersRightsViolationCase.ToCreate> fathersRightsViolationCaseCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "father's rights violation cases";
@@ -16,7 +16,7 @@ internal sealed class FathersRightsViolationsCaseMigrator(
         await using var termIdReader = await termIdReaderFactory.CreateAsync(_postgresConnection);
         await fathersRightsViolationCaseCreator.CreateAsync(ReadFathersRightsViolationCases(nodeIdReader,termIdReader));
     }
-    private async IAsyncEnumerable<FathersRightsViolationCase.FathersRightsViolationCaseToCreate> ReadFathersRightsViolationCases(
+    private async IAsyncEnumerable<FathersRightsViolationCase.ToCreate> ReadFathersRightsViolationCases(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader)
     {
@@ -60,7 +60,7 @@ internal sealed class FathersRightsViolationsCaseMigrator(
             var name = reader.GetString("title");
             var vocabularyNames = new List<NewTermForNewNameable> {
                 new NewTermForNewNameable {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -69,8 +69,8 @@ internal sealed class FathersRightsViolationsCaseMigrator(
                 }
             };
 
-            var country = new FathersRightsViolationCase.FathersRightsViolationCaseToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            var country = new FathersRightsViolationCase.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -80,11 +80,11 @@ internal sealed class FathersRightsViolationsCaseMigrator(
                     Title = reader.GetString("title"),
                     OwnerId = Constants.OWNER_CASES,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -93,9 +93,9 @@ internal sealed class FathersRightsViolationsCaseMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,

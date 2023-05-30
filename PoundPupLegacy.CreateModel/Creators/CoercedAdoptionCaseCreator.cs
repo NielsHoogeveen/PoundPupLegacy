@@ -7,15 +7,15 @@ internal sealed class CoercedAdoptionCaseCreatorFactory(
     IDatabaseInserterFactory<LocatableToCreate> locatableInserterFactory,
     IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
     IDatabaseInserterFactory<CaseToCreate> caseInserterFactory,
-    IDatabaseInserterFactory<CoercedAdoptionCase.CoercedAdoptionCaseToCreate> coercedAdoptionCaseInserterFactory,
+    IDatabaseInserterFactory<CoercedAdoptionCase.ToCreate> coercedAdoptionCaseInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory,
     LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
     IEntityCreatorFactory<CaseExistingCasePartiesToCreate> caseCaseTypeCreatorFactory
-) : IEntityCreatorFactory<CoercedAdoptionCase.CoercedAdoptionCaseToCreate>
+) : IEntityCreatorFactory<CoercedAdoptionCase.ToCreate>
 {
-    public async Task<IEntityCreator<CoercedAdoptionCase.CoercedAdoptionCaseToCreate>> CreateAsync(IDbConnection connection) =>
-        new CaseCreator<CoercedAdoptionCase.CoercedAdoptionCaseToCreate>(
+    public async Task<IEntityCreator<CoercedAdoptionCase.ToCreate>> CreateAsync(IDbConnection connection) =>
+        new CaseCreator<CoercedAdoptionCase.ToCreate>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

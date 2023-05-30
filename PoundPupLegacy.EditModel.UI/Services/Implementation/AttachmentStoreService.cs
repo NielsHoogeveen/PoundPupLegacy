@@ -32,7 +32,7 @@ internal sealed class AttachmentStoreService(
                 await using FileStream fs = new(fullName, FileMode.Create);
                 await file.CopyToAsync(fs);
                 var fm = new CreateModel.File {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     MimeType = file.ContentType,

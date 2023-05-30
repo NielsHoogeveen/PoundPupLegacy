@@ -2,11 +2,9 @@
 
 public interface GlobalRegionToUpdate : GlobalRegion, GeographicalEntityToUpdate
 {
-
 }
 public interface GlobalRegionToCreate : GlobalRegion, GeographicalEntityToCreate
 {
-
 }
 public interface GlobalRegion : GeographicalEntity
 {

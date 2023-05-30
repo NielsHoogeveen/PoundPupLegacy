@@ -4,13 +4,13 @@ internal sealed class HagueStatusCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
     IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
     IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
-    IDatabaseInserterFactory<HagueStatus.HagueStatusToCreate> hagueStatusInserterFactory,
+    IDatabaseInserterFactory<HagueStatus.ToCreate> hagueStatusInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory
-) : IEntityCreatorFactory<HagueStatus.HagueStatusToCreate>
+) : IEntityCreatorFactory<HagueStatus.ToCreate>
 {
-    public async Task<IEntityCreator<HagueStatus.HagueStatusToCreate>> CreateAsync(IDbConnection connection) =>
-        new NameableCreator<HagueStatus.HagueStatusToCreate>(
+    public async Task<IEntityCreator<HagueStatus.ToCreate>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<HagueStatus.ToCreate>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

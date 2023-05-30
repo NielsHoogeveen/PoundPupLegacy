@@ -14,7 +14,5 @@ public interface TopLevelCountry : Country
 public record TopLevelCountryDetails
 {
     public required string ISO3166_1_Code { get; init; }
-
     public required int SecondLevelRegionId { get; init; }
-
 }

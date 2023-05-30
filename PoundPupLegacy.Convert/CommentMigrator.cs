@@ -73,7 +73,7 @@ internal sealed class CommentMigrator(
 
         while (await reader.ReadAsync()) {
             var discussion = new Comment {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = reader.GetInt32("id"),
                 },
                 NodeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {

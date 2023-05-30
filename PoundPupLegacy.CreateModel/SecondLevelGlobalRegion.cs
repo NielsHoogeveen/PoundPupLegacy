@@ -8,42 +8,23 @@ public abstract record SecondLevelGlobalRegion : GlobalRegion
     public abstract Identification Identification { get; }
     public abstract NodeDetails NodeDetails { get; }
     public abstract NameableDetails NameableDetails { get; }
-    public abstract T Match<T>(Func<SecondLevelGlobalRegionToCreate, T> create, Func<SecondLevelGlobalRegionToUpdate, T> update);
-    public abstract void Match(Action<SecondLevelGlobalRegionToCreate> create, Action<SecondLevelGlobalRegionToUpdate> update);
-
-    public sealed record SecondLevelGlobalRegionToCreate : SecondLevelGlobalRegion, GlobalRegionToCreate
+    public sealed record ToCreate : SecondLevelGlobalRegion, GlobalRegionToCreate
     {
         public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public override NameableDetails NameableDetails => NameableDetailsForCreate;
-        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
+        public required Identification.Possible IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
         public required NameableDetails.NameableDetailsForCreate NameableDetailsForCreate { get; init; }
-        public override T Match<T>(Func<SecondLevelGlobalRegionToCreate, T> create, Func<SecondLevelGlobalRegionToUpdate, T> update)
-        {
-            return create(this);
-        }
-        public override void Match(Action<SecondLevelGlobalRegionToCreate> create, Action<SecondLevelGlobalRegionToUpdate> update)
-        {
-            create(this);
-        }
     }
-    public sealed record SecondLevelGlobalRegionToUpdate : SecondLevelGlobalRegion, GlobalRegionToUpdate
+    public sealed record ToUpdate : SecondLevelGlobalRegion, GlobalRegionToUpdate
     {
-        public required Identification.IdentificationForUpdate IdentificationForUpdate { get; init; }
-        public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
+        public required Identification.Certain IdentificationCertain { get; init; }
+        public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
         public override NameableDetails NameableDetails => NameableDetailsForUpdate;
-        public override Identification Identification => IdentificationForUpdate;
+        public override Identification Identification => IdentificationCertain;
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
         public required NameableDetails.NameableDetailsForUpdate NameableDetailsForUpdate { get; init; }
-        public override T Match<T>(Func<SecondLevelGlobalRegionToCreate, T> create, Func<SecondLevelGlobalRegionToUpdate, T> update)
-        {
-            return update(this);
-        }
-        public override void Match(Action<SecondLevelGlobalRegionToCreate> create, Action<SecondLevelGlobalRegionToUpdate> update)
-        {
-            update(this);
-        }
     }
 }
 

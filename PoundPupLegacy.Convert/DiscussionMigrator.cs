@@ -2,7 +2,7 @@
 
 internal sealed class DiscussionMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreatorFactory<Discussion.DiscussionToCreate> discussionCreatorFactory
+    IEntityCreatorFactory<Discussion.ToCreate> discussionCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "discussions";
@@ -12,7 +12,7 @@ internal sealed class DiscussionMigrator(
         await using var discussionCreator = await discussionCreatorFactory.CreateAsync(_postgresConnection);
         await discussionCreator.CreateAsync(ReadDiscussions());
     }
-    private async IAsyncEnumerable<Discussion.DiscussionToCreate> ReadDiscussions()
+    private async IAsyncEnumerable<Discussion.ToCreate> ReadDiscussions()
     {
 
         var sql = $"""
@@ -37,8 +37,8 @@ internal sealed class DiscussionMigrator(
 
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
-            var discussion = new Discussion.DiscussionToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            var discussion = new Discussion.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -48,11 +48,11 @@ internal sealed class DiscussionMigrator(
                     Title = reader.GetString("title"),
                     OwnerId = Constants.PPL,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = 1,

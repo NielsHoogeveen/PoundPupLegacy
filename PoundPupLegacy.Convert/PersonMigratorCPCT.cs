@@ -3,8 +3,8 @@
 internal sealed class PersonMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.TenantNodeToCreateForExistingNode> tenantNodeReaderByUrlIdFactory,
-    IEntityCreatorFactory<Person.PersonToCreate> personCreatorFactory
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreateForExistingNode> tenantNodeReaderByUrlIdFactory,
+    IEntityCreatorFactory<Person.ToCreate> personCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
     nodeIdReaderFactory, 
@@ -19,7 +19,7 @@ internal sealed class PersonMigratorCPCT(
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await personCreator.CreateAsync(ReadPersons(nodeIdReader));
     }
-    private async IAsyncEnumerable<Person.PersonToCreate> ReadPersons(
+    private async IAsyncEnumerable<Person.ToCreate> ReadPersons(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
     )
     {
@@ -92,7 +92,7 @@ internal sealed class PersonMigratorCPCT(
 
             var vocabularyNames = new List<NewTermForNewNameable> {
                 new NewTermForNewNameable {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -101,8 +101,8 @@ internal sealed class PersonMigratorCPCT(
                 }
             };
 
-            yield return new Person.PersonToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new Person.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -112,11 +112,11 @@ internal sealed class PersonMigratorCPCT(
                     Title = title,
                     OwnerId = Constants.OWNER_PARTIES,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -125,9 +125,9 @@ internal sealed class PersonMigratorCPCT(
                             SubgroupId = null,
                             UrlId = null
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,
@@ -159,10 +159,10 @@ internal sealed class PersonMigratorCPCT(
                     GovtrackId = null,
                     Bioguide = null,
                     Suffix = null,
-                    InterPersonalRelationsToCreateFrom = new List<InterPersonalRelation.InterPersonalRelationToCreateForNewPersonFrom>(),
-                    InterPersonalRelationsToCreateTo = new List<InterPersonalRelation.InterPersonalRelationToCreateForNewPersonTo>(),
-                    PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForNewParty>(),
-                    PersonOrganizationRelationToCreate = new List<PersonOrganizationRelation.PersonOrganizationRelationToCreateForNewPerson>(),
+                    InterPersonalRelationsToCreateFrom = new List<InterPersonalRelation.ToCreateForNewPersonFrom>(),
+                    InterPersonalRelationsToCreateTo = new List<InterPersonalRelation.ToCreateForNewPersonTo>(),
+                    PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.ToCreateForNewParty>(),
+                    PersonOrganizationRelationToCreate = new List<PersonOrganizationRelation.ToCreateForNewPerson>(),
                     ProfessionalRolesToCreate = new List<ProfessionalRoleToCreateForNewPerson>(),
                 },
             };

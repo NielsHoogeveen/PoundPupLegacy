@@ -7,15 +7,15 @@ internal sealed class WrongfulRemovalCaseCreatorFactory(
     IDatabaseInserterFactory<LocatableToCreate> locatableInserterFactory,
     IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
     IDatabaseInserterFactory<CaseToCreate> caseInserterFactory,
-    IDatabaseInserterFactory<WrongfulRemovalCase.WrongfulRemovalCaseToCreate> wrongfulRemovalCaseInserterFactory,
+    IDatabaseInserterFactory<WrongfulRemovalCase.ToCreate> wrongfulRemovalCaseInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory,
     LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
     IEntityCreatorFactory<CaseExistingCasePartiesToCreate> caseCaseTypeCreatorFactory
-) : IEntityCreatorFactory<WrongfulRemovalCase.WrongfulRemovalCaseToCreate>
+) : IEntityCreatorFactory<WrongfulRemovalCase.ToCreate>
 {
-    public async Task<IEntityCreator<WrongfulRemovalCase.WrongfulRemovalCaseToCreate>> CreateAsync(IDbConnection connection) =>
-        new CaseCreator<WrongfulRemovalCase.WrongfulRemovalCaseToCreate>(
+    public async Task<IEntityCreator<WrongfulRemovalCase.ToCreate>> CreateAsync(IDbConnection connection) =>
+        new CaseCreator<WrongfulRemovalCase.ToCreate>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

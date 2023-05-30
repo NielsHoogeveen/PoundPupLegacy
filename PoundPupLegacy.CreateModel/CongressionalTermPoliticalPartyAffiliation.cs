@@ -7,26 +7,26 @@ public abstract record CongressionalTermPoliticalPartyAffiliation : Documentable
     public abstract Identification Identification { get; }
     public abstract NodeDetails NodeDetails { get; }
 
-    public sealed record CongressionalTermPoliticalPartyAffiliationToCreateForExistingTerm : CongressionalTermPoliticalPartyAffiliation, DocumentableToCreate, SearchableToCreate
+    public sealed record ToCreateForExistingTerm : CongressionalTermPoliticalPartyAffiliation, DocumentableToCreate, SearchableToCreate
     {
         public required CongressionalTermPoliticalPartyAffiliationDetails.CongressionalTermPoliticalPartyAffiliationDetailsResolved CongressionalTermPoliticalPartyAffiliationDetailsResolved { get; init; }
         public override CongressionalTermPoliticalPartyAffiliationDetails CongressionalTermPoliticalPartyAffiliationDetails => CongressionalTermPoliticalPartyAffiliationDetailsResolved;
-        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
+        public required Identification.Possible IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
 
         public override Identification Identification => IdentificationForCreate;
 
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
     }
-    public sealed record CongressionalTermPoliticalPartyAffiliationToCreateForNewTerm : CongressionalTermPoliticalPartyAffiliation, DocumentableToCreate, SearchableToCreate
+    public sealed record ToCreateForNewTerm : CongressionalTermPoliticalPartyAffiliation, DocumentableToCreate, SearchableToCreate
     {
         public required CongressionalTermPoliticalPartyAffiliationDetails.CongressionalTermPoliticalPartyAffiliationDetailsUnresolved CongressionalTermPoliticalPartyAffiliationDetailsUnresolved { get; init; }
         public override CongressionalTermPoliticalPartyAffiliationDetails CongressionalTermPoliticalPartyAffiliationDetails => CongressionalTermPoliticalPartyAffiliationDetailsUnresolved;
-        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
+        public required Identification.Possible IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
         public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
-        public CongressionalTermPoliticalPartyAffiliationToCreateForExistingTerm ResolveCongressionalTerm(int congressionalTermId)
+        public ToCreateForExistingTerm ResolveCongressionalTerm(int congressionalTermId)
         {
             return new() {
                 CongressionalTermPoliticalPartyAffiliationDetailsResolved = CongressionalTermPoliticalPartyAffiliationDetailsUnresolved.ResolveCongressionalTerm(congressionalTermId),
@@ -35,14 +35,14 @@ public abstract record CongressionalTermPoliticalPartyAffiliation : Documentable
             };
         }
     }
-    public sealed record CongressionalTermPoliticalPartyAffiliationToUpdate : CongressionalTermPoliticalPartyAffiliation, DocumentableToUpdate, SearchableToUpdate
+    public sealed record ToUpdate : CongressionalTermPoliticalPartyAffiliation, DocumentableToUpdate, SearchableToUpdate
     {
         public required CongressionalTermPoliticalPartyAffiliationDetails.CongressionalTermPoliticalPartyAffiliationDetailsResolved CongressionalTermPoliticalPartyAffiliationDetailsResolved { get; init; }
         public override CongressionalTermPoliticalPartyAffiliationDetails CongressionalTermPoliticalPartyAffiliationDetails => CongressionalTermPoliticalPartyAffiliationDetailsResolved;
-        public override Identification Identification => IdentificationForUpdate;
+        public override Identification Identification => IdentificationCertain;
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
-        public required Identification.IdentificationForUpdate IdentificationForUpdate { get; init; }
-        public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
+        public required Identification.Certain IdentificationCertain { get; init; }
+        public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
     }
 }
 

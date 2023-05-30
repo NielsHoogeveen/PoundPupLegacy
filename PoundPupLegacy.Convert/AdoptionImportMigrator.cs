@@ -4,7 +4,7 @@ internal sealed class AdoptionImportMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<NodeReaderByUrlIdRequest, NodeTitle> nodeReaderFactory,
-    IEntityCreatorFactory<InterCountryRelation.InterCountryRelationToCreate> interCountryRelationCreatorFactory
+    IEntityCreatorFactory<InterCountryRelation.ToCreate> interCountryRelationCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
 
@@ -109,7 +109,7 @@ internal sealed class AdoptionImportMigrator(
         await cmd.ExecuteNonQueryAsync();
     }
 
-    private async Task<InterCountryRelation.InterCountryRelationToCreate> GetInterCountryRelation(
+    private async Task<InterCountryRelation.ToCreate> GetInterCountryRelation(
         int countryIdFrom,
         int countryIdTo,
         int year, int numberOfChildren,
@@ -128,11 +128,11 @@ internal sealed class AdoptionImportMigrator(
 
         var title = $"Adoption exports from {nodeFrom.Title} to {nodeTo.Title} in {year}";
 
-        return new InterCountryRelation.InterCountryRelationToCreate {
+        return new InterCountryRelation.ToCreate {
             //The relation is about imports so the relation from is the receiving party
             //and relation to is the sending party
             //even though the children go from the sending party to the receiving party
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -143,10 +143,10 @@ internal sealed class AdoptionImportMigrator(
                 ChangedDateTime = DateTime.Now,
                 CreatedDateTime = DateTime.Now,
                 NodeTypeId = 50,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>{
-                    new TenantNode.TenantNodeToCreateForNewNode
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>{
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = 1,
@@ -172,7 +172,7 @@ internal sealed class AdoptionImportMigrator(
             }
         };
     }
-    private async IAsyncEnumerable<InterCountryRelation.InterCountryRelationToCreate> ReadAdoptionExportYears(
+    private async IAsyncEnumerable<InterCountryRelation.ToCreate> ReadAdoptionExportYears(
         IMandatorySingleItemDatabaseReader<NodeReaderByUrlIdRequest, NodeTitle> nodeReader,
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {

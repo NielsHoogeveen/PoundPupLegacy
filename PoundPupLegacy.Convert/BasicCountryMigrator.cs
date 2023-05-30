@@ -4,7 +4,7 @@ internal sealed class BasicCountryMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
-    IEntityCreatorFactory<BasicCountry.BasicCountryToCreate> basicCountryCreatorFactory
+    IEntityCreatorFactory<BasicCountry.ToCreate> basicCountryCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "basic countries";
@@ -124,7 +124,7 @@ internal sealed class BasicCountryMigrator(
         };
     }
 
-    private async IAsyncEnumerable<BasicCountry.BasicCountryToCreate> GetBasicCountries(
+    private async IAsyncEnumerable<BasicCountry.ToCreate> GetBasicCountries(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader)
     {
@@ -133,8 +133,8 @@ internal sealed class BasicCountryMigrator(
             UrlId = Constants.VOCABULARY_ID_TOPICS
         });
 
-        yield return new BasicCountry.BasicCountryToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new BasicCountry.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -144,11 +144,11 @@ internal sealed class BasicCountryMigrator(
                 Title = "Antigua and Barbuda",
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = 1,
@@ -167,7 +167,7 @@ internal sealed class BasicCountryMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -206,8 +206,8 @@ internal sealed class BasicCountryMigrator(
                 ISO3166_1_Code = "AG",
             },
         };
-        yield return new BasicCountry.BasicCountryToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new BasicCountry.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -217,11 +217,11 @@ internal sealed class BasicCountryMigrator(
                 Title = "Palestine",
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                         TenantId = 1,
@@ -240,7 +240,7 @@ internal sealed class BasicCountryMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -279,8 +279,8 @@ internal sealed class BasicCountryMigrator(
                 ISO3166_1_Code = "PS",
             },
         };
-        yield return new BasicCountry.BasicCountryToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new BasicCountry.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -290,11 +290,11 @@ internal sealed class BasicCountryMigrator(
                 Title = "Saint Helena, Ascension and Tristan da Cunha",
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = 1,
@@ -313,7 +313,7 @@ internal sealed class BasicCountryMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -352,8 +352,8 @@ internal sealed class BasicCountryMigrator(
                 ISO3166_1_Code = "SH",
             },
         };
-        yield return new BasicCountry.BasicCountryToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new BasicCountry.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -363,11 +363,11 @@ internal sealed class BasicCountryMigrator(
                 Title = "South Sudan",
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = 1,
@@ -386,7 +386,7 @@ internal sealed class BasicCountryMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -436,7 +436,7 @@ internal sealed class BasicCountryMigrator(
         await basicCountryCreator.CreateAsync(ReadBasicCountries(nodeIdReader,termIdReader));
     }
 
-    private async IAsyncEnumerable<BasicCountry.BasicCountryToCreate> ReadBasicCountries(
+    private async IAsyncEnumerable<BasicCountry.ToCreate> ReadBasicCountries(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader)
     {
@@ -555,7 +555,7 @@ internal sealed class BasicCountryMigrator(
             {
                 new NewTermForNewNameable
                 {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -568,8 +568,8 @@ internal sealed class BasicCountryMigrator(
                     },
                 },
             };
-            var country = new BasicCountry.BasicCountryToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            var country = new BasicCountry.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -579,11 +579,11 @@ internal sealed class BasicCountryMigrator(
                     Title = name,
                     OwnerId = Constants.OWNER_GEOGRAPHY,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -592,9 +592,9 @@ internal sealed class BasicCountryMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,

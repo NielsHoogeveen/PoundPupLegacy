@@ -2,12 +2,12 @@
 
 internal sealed class VocabularyCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
-    IDatabaseInserterFactory<Vocabulary.VocabularyToCreate> vocabularyInserterFactory,
+    IDatabaseInserterFactory<Vocabulary.ToCreate> vocabularyInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory
-) : IEntityCreatorFactory<Vocabulary.VocabularyToCreate>
+) : IEntityCreatorFactory<Vocabulary.ToCreate>
 {
-    public async Task<IEntityCreator<Vocabulary.VocabularyToCreate>> CreateAsync(IDbConnection connection)=>
-        new NodeCreator<Vocabulary.VocabularyToCreate>(
+    public async Task<IEntityCreator<Vocabulary.ToCreate>> CreateAsync(IDbConnection connection)=>
+        new NodeCreator<Vocabulary.ToCreate>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await vocabularyInserterFactory.CreateAsync(connection)

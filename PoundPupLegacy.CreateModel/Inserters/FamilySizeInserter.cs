@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class FamilySizeInserterFactory : SingleIdInserterFactory<FamilySize.FamilySizeToCreate>
+internal sealed class FamilySizeInserterFactory : SingleIdInserterFactory<FamilySize.ToCreate>
 {
     protected override string TableName => "family_size";
 

@@ -2,7 +2,7 @@
 
 public sealed record ActionMenuItem : MenuItem
 {
-    public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
+    public required Identification.Possible IdentificationForCreate { get; init; }
     public Identification Identification => IdentificationForCreate;
     public required int ActionId { get; init; }
     public required string Name { get; init; }

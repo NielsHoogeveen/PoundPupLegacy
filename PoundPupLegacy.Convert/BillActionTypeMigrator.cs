@@ -4,7 +4,7 @@ internal sealed class BillActionTypeMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreatorFactory<BillActionType.BillActionTypeToCreate> billActionTypeCreatorFactory
+    IEntityCreatorFactory<BillActionType.ToCreate> billActionTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "person organization relation types";
@@ -15,7 +15,7 @@ internal sealed class BillActionTypeMigrator(
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await billActionTypeCreator.CreateAsync(ReadBillActionTypes(nodeIdReader,fileIdReaderByTenantFileId));
     }
-    private async IAsyncEnumerable<BillActionType.BillActionTypeToCreate> ReadBillActionTypes(
+    private async IAsyncEnumerable<BillActionType.ToCreate> ReadBillActionTypes(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)
     {
@@ -57,7 +57,7 @@ internal sealed class BillActionTypeMigrator(
             {
                 new NewTermForNewNameable
                 {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -66,8 +66,8 @@ internal sealed class BillActionTypeMigrator(
                 }
             };
 
-            yield return new BillActionType.BillActionTypeToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new BillActionType.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -77,11 +77,11 @@ internal sealed class BillActionTypeMigrator(
                     Title = name,
                     OwnerId = Constants.OWNER_PARTIES,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -90,9 +90,9 @@ internal sealed class BillActionTypeMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,

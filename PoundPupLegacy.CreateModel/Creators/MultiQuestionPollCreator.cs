@@ -5,13 +5,13 @@ internal sealed class MultiQuestionPollCreatorFactory(
     IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
     IDatabaseInserterFactory<SimpleTextNodeToCreate> simpleTextNodeInserterFactory,
     IDatabaseInserterFactory<PollToCreate> pollInserterFactory,
-    IDatabaseInserterFactory<MultiQuestionPoll.MultiQuestionPollToCreate> multiQuestionPollInserterFactory,
+    IDatabaseInserterFactory<MultiQuestionPoll.ToCreate> multiQuestionPollInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     IEntityCreatorFactory<PollQuestionToCreate> pollQuestionCreatorFactory,
     IDatabaseInserterFactory<MultiQuestionPollPollQuestion> multiQuestionPollPollQuestionInserterFactory
-) : IEntityCreatorFactory<MultiQuestionPoll.MultiQuestionPollToCreate>
+) : IEntityCreatorFactory<MultiQuestionPoll.ToCreate>
 {
-    public async Task<IEntityCreator<MultiQuestionPoll.MultiQuestionPollToCreate>> CreateAsync(IDbConnection connection) =>
+    public async Task<IEntityCreator<MultiQuestionPoll.ToCreate>> CreateAsync(IDbConnection connection) =>
         new MultiQuestionPollCreator(
             new (){
                 await nodeInserterFactory.CreateAsync(connection),
@@ -28,14 +28,14 @@ internal sealed class MultiQuestionPollCreatorFactory(
 }
 
 public class MultiQuestionPollCreator(
-    List<IDatabaseInserter<MultiQuestionPoll.MultiQuestionPollToCreate>> inserters,
+    List<IDatabaseInserter<MultiQuestionPoll.ToCreate>> inserters,
     NodeDetailsCreator nodeDetailsCreator,
     IEntityCreator<PollQuestionToCreate> pollQuestionCreatorFactory,
     IDatabaseInserter<MultiQuestionPollPollQuestion> multiQuestionPollPollQuestionInserter
-    ) : NodeCreator<MultiQuestionPoll.MultiQuestionPollToCreate>(inserters, nodeDetailsCreator)
+    ) : NodeCreator<MultiQuestionPoll.ToCreate>(inserters, nodeDetailsCreator)
 {
 
-    public override async Task ProcessAsync(MultiQuestionPoll.MultiQuestionPollToCreate element, int id)
+    public override async Task ProcessAsync(MultiQuestionPoll.ToCreate element, int id)
     {
         await base.ProcessAsync(element, id);
         foreach (var (question, index) in element.MultiQuestionPollDetails.PollQuestions.Select((q, i) => (q, i))) {

@@ -6,12 +6,12 @@ internal sealed class HouseTermCreatorFactory(
     IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
     IDatabaseInserterFactory<DocumentableToCreate> documentableInserterFactory,
     IDatabaseInserterFactory<CongressionalTermToCreate> congressionalTermInserterFactory,
-    IDatabaseInserterFactory<HouseTerm.HouseTermToCreate> houseTermInserterFactory,
+    IDatabaseInserterFactory<HouseTerm.ToCreate> houseTermInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    IEntityCreatorFactory<CongressionalTermPoliticalPartyAffiliation.CongressionalTermPoliticalPartyAffiliationToCreateForExistingTerm> congressionalTermPoliticalPartyAffiliationCreatorFactory
-) : IEntityCreatorFactory<HouseTerm.HouseTermToCreate>
+    IEntityCreatorFactory<CongressionalTermPoliticalPartyAffiliation.ToCreateForExistingTerm> congressionalTermPoliticalPartyAffiliationCreatorFactory
+) : IEntityCreatorFactory<HouseTerm.ToCreate>
 {
-    public async Task<IEntityCreator<HouseTerm.HouseTermToCreate>> CreateAsync(IDbConnection connection) =>
+    public async Task<IEntityCreator<HouseTerm.ToCreate>> CreateAsync(IDbConnection connection) =>
         new HouseTermCreator(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
@@ -27,12 +27,12 @@ internal sealed class HouseTermCreatorFactory(
 }
 
 public class HouseTermCreator(
-    List<IDatabaseInserter<HouseTerm.HouseTermToCreate>> inserters,
+    List<IDatabaseInserter<HouseTerm.ToCreate>> inserters,
     NodeDetailsCreator nodeDetailsCreator,
-    IEntityCreator<CongressionalTermPoliticalPartyAffiliation.CongressionalTermPoliticalPartyAffiliationToCreateForExistingTerm> congressionalTermPoliticalPartyAffiliationCreator
-) : NodeCreator<HouseTerm.HouseTermToCreate>(inserters, nodeDetailsCreator)
+    IEntityCreator<CongressionalTermPoliticalPartyAffiliation.ToCreateForExistingTerm> congressionalTermPoliticalPartyAffiliationCreator
+) : NodeCreator<HouseTerm.ToCreate>(inserters, nodeDetailsCreator)
 {
-    public override async Task ProcessAsync(HouseTerm.HouseTermToCreate element, int id)
+    public override async Task ProcessAsync(HouseTerm.ToCreate element, int id)
     {
         await base.ProcessAsync(element, id);
         await congressionalTermPoliticalPartyAffiliationCreator

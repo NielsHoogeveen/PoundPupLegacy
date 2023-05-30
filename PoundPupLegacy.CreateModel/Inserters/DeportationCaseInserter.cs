@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = DeportationCase.DeportationCaseToCreate;
+using Request = DeportationCase.ToCreate;
 
 internal sealed class DeportationCaseInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

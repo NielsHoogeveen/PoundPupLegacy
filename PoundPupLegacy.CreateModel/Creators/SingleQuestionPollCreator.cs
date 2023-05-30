@@ -3,10 +3,10 @@
 internal sealed class SingleQuestionPollCreatorFactory(
     IEntityCreatorFactory<PollQuestionToCreate> pollQuestionCreatorFactory,
     IDatabaseInserterFactory<PollToCreate> pollInserterFactory,
-    IDatabaseInserterFactory<SingleQuestionPoll.SingleQuestionPollToCreate> singleQuestionPollInserterFactory
-) : IEntityCreatorFactory<SingleQuestionPoll.SingleQuestionPollToCreate>
+    IDatabaseInserterFactory<SingleQuestionPoll.ToCreate> singleQuestionPollInserterFactory
+) : IEntityCreatorFactory<SingleQuestionPoll.ToCreate>
 {
-    public async Task<IEntityCreator<SingleQuestionPoll.SingleQuestionPollToCreate>> CreateAsync(IDbConnection connection) =>
+    public async Task<IEntityCreator<SingleQuestionPoll.ToCreate>> CreateAsync(IDbConnection connection) =>
         new SingleQuestionPollCreator(
             await pollQuestionCreatorFactory.CreateAsync(connection),
             await pollInserterFactory.CreateAsync(connection),
@@ -17,10 +17,10 @@ internal sealed class SingleQuestionPollCreatorFactory(
 public class SingleQuestionPollCreator(
     IEntityCreator<PollQuestionToCreate> pollQuestionCreator,
     IDatabaseInserter<PollToCreate> pollInserter,
-    IDatabaseInserter<SingleQuestionPoll.SingleQuestionPollToCreate> singleQuestionPollInserter
-) : EntityCreator<SingleQuestionPoll.SingleQuestionPollToCreate>
+    IDatabaseInserter<SingleQuestionPoll.ToCreate> singleQuestionPollInserter
+) : EntityCreator<SingleQuestionPoll.ToCreate>
 {
-    public override async Task ProcessAsync(SingleQuestionPoll.SingleQuestionPollToCreate element)
+    public override async Task ProcessAsync(SingleQuestionPoll.ToCreate element)
     {
         await base.ProcessAsync(element);
         await pollQuestionCreator.CreateAsync(element);

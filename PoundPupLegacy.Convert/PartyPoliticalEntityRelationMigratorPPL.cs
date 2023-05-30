@@ -3,7 +3,7 @@
 internal sealed class PartyPoliticalEntityRelationMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
-    IEntityCreatorFactory<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForExistingParty> partyPoliticalEntityRelationCreatorFactory
+    IEntityCreatorFactory<PartyPoliticalEntityRelation.ToCreateForExistingParty> partyPoliticalEntityRelationCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "party political enitity relation";
@@ -15,7 +15,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorPPL(
         await partyPoliticalEntityRelationCreator.CreateAsync(ReadPartyPoliticalEntityRelations(nodeIdReader));
     }
 
-    private async IAsyncEnumerable<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForExistingParty> ReadPartyPoliticalEntityRelations(
+    private async IAsyncEnumerable<PartyPoliticalEntityRelation.ToCreateForExistingParty> ReadPartyPoliticalEntityRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
     )
     {
@@ -108,8 +108,8 @@ internal sealed class PartyPoliticalEntityRelationMigratorPPL(
                 UrlId = reader.GetInt32("nameable_id")
             });
 
-            yield return new PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForExistingParty {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new PartyPoliticalEntityRelation.ToCreateForExistingParty {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -119,11 +119,11 @@ internal sealed class PartyPoliticalEntityRelationMigratorPPL(
                     Title = reader.GetString("title"),
                     OwnerId = Constants.PPL,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -132,9 +132,9 @@ internal sealed class PartyPoliticalEntityRelationMigratorPPL(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class BasicNameableInserterFactory : SingleIdInserterFactory<BasicNameable.BasicNameableToCreate>
+internal sealed class BasicNameableInserterFactory : SingleIdInserterFactory<BasicNameable.ToCreate>
 {
     protected override string TableName => "basic_nameable";
 

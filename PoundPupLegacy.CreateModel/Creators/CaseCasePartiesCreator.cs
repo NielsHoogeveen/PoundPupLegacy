@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class CaseCasePartiesCreatorFactory(
-    IDatabaseInserterFactory<CaseParties.CasePartiesToCreate> casePartiesInserterFactory,
+    IDatabaseInserterFactory<CaseParties.ToCreate> casePartiesInserterFactory,
     IDatabaseInserterFactory<CaseExistingCasePartiesToCreate> caseCasePartiesInserterFactory,
     IDatabaseInserterFactory<CasePartiesOrganization> casePartiesOrganizationInserterFactory,
     IDatabaseInserterFactory<CasePartiesPerson> casePartiesPersonInserterFactory
@@ -17,7 +17,7 @@ internal sealed class CaseCasePartiesCreatorFactory(
 }
 
 public class CaseCasePartiesCreator(
-    IDatabaseInserter<CaseParties.CasePartiesToCreate> casePartiesInserter,
+    IDatabaseInserter<CaseParties.ToCreate> casePartiesInserter,
     IDatabaseInserter<CaseExistingCasePartiesToCreate> caseCasePartiesInserter,
     IDatabaseInserter<CasePartiesOrganization> casePartiesOrganizationInserter,
     IDatabaseInserter<CasePartiesPerson> casePartiesPersonInserter

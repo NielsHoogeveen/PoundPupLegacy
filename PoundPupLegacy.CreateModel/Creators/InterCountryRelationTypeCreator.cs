@@ -4,13 +4,13 @@ internal sealed class InterCountryRelationTypeCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
     IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
     IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
-    IDatabaseInserterFactory<InterCountryRelationType.InterCountryRelationTypeToCreate> interCountryRelationTypeInserterFactory,
+    IDatabaseInserterFactory<InterCountryRelationType.ToCreate> interCountryRelationTypeInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory
-) : IEntityCreatorFactory<InterCountryRelationType.InterCountryRelationTypeToCreate>
+) : IEntityCreatorFactory<InterCountryRelationType.ToCreate>
 {
-    public async Task<IEntityCreator<InterCountryRelationType.InterCountryRelationTypeToCreate>> CreateAsync(IDbConnection connection) =>
-        new NameableCreator<InterCountryRelationType.InterCountryRelationTypeToCreate>(
+    public async Task<IEntityCreator<InterCountryRelationType.ToCreate>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<InterCountryRelationType.ToCreate>(
             new()
             {
                 await nodeInserterFactory.CreateAsync(connection),

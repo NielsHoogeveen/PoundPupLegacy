@@ -2,15 +2,15 @@
 
 public sealed record LocationToCreate : LocationBase, EventuallyIdentifiableLocation
 {
-    public required Identification.IdentificationForCreate IdentificationForCreate { get; init;}
+    public required Identification.Possible IdentificationForCreate { get; init;}
 
     public Identification Identification => IdentificationForCreate;
 }
 public sealed record LocationToUpdate : LocationBase, ImmediatelyIdentifiableLocation
 {
-    public required Identification.IdentificationForUpdate IdentificationForUpdate { get; init; }
+    public required Identification.Certain IdentificationCertain { get; init; }
 
-    public Identification Identification => IdentificationForUpdate;
+    public Identification Identification => IdentificationCertain;
 }
 
 public abstract record LocationBase : Location
@@ -24,13 +24,11 @@ public abstract record LocationBase : Location
     public required int CountryId { get; init; }
     public required int? SubdivisionId { get; init; }
 }
-public interface ImmediatelyIdentifiableLocation : Location, ImmediatelyIdentifiable
+public interface ImmediatelyIdentifiableLocation : Location, CertainlyIdentifiable
 {
-
 }
-public interface EventuallyIdentifiableLocation : Location, EventuallyIdentifiable
+public interface EventuallyIdentifiableLocation : Location, PossiblyIdentifiable
 {
-
 }
 
 public interface Location

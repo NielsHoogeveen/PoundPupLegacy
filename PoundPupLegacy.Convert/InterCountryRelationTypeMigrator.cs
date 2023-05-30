@@ -4,7 +4,7 @@ internal sealed class InterCountryRelationTypeMigrator(
 IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreatorFactory<InterCountryRelationType.InterCountryRelationTypeToCreate> interCountryRelationTypeCreatorFactory
+    IEntityCreatorFactory<InterCountryRelationType.ToCreate> interCountryRelationTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "inter-country relation types";
@@ -16,7 +16,7 @@ IDatabaseConnections databaseConnections,
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await interCountryRelationTypeCreator.CreateAsync(ReadInterCountryRelationTypes(nodeIdReader,fileIdReaderByTenantFileId));
     }
-    private async IAsyncEnumerable<InterCountryRelationType.InterCountryRelationTypeToCreate> ReadInterCountryRelationTypes(
+    private async IAsyncEnumerable<InterCountryRelationType.ToCreate> ReadInterCountryRelationTypes(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)
     {
@@ -59,7 +59,7 @@ IDatabaseConnections databaseConnections,
             {
                 new NewTermForNewNameable
                 {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -67,8 +67,8 @@ IDatabaseConnections databaseConnections,
                     ParentTermIds = new List<int>(),
                 }
             };
-            yield return new InterCountryRelationType.InterCountryRelationTypeToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new InterCountryRelationType.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -78,11 +78,11 @@ IDatabaseConnections databaseConnections,
                     Title = name,
                     OwnerId = Constants.OWNER_PARTIES,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -91,9 +91,9 @@ IDatabaseConnections databaseConnections,
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,

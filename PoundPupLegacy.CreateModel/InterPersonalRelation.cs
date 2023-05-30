@@ -6,52 +6,21 @@ public abstract record InterPersonalRelation : Node
     public abstract Identification Identification { get; }
     public abstract NodeDetails NodeDetails { get; }
     public required InterPersonalRelationDetails InterPersonalRelationDetails { get; init; }
-    public abstract T Match<T>(
-        Func<InterPersonalRelationToCreateForExistingParticipants, T> create,
-        Func<InterPersonalRelationToCreateForNewPersonFrom, T> createNewFrom,
-        Func<InterPersonalRelationToCreateForNewPersonTo, T> createNewTo,
-        Func<InterPersonalRelationToUpdate, T> update
-     );
-    public abstract void Match(
-        Action<InterPersonalRelationToCreateForExistingParticipants> create,
-        Action<InterPersonalRelationToCreateForNewPersonFrom> createNewFrom,
-        Action<InterPersonalRelationToCreateForNewPersonTo> createNewTo,
-        Action<InterPersonalRelationToUpdate> update
-    );
-
-    public sealed record InterPersonalRelationToCreateForExistingParticipants : InterPersonalRelation, NodeToCreate
+    public sealed record ToCreateForExistingParticipants : InterPersonalRelation, NodeToCreate
     {
         public required int PersonIdFrom { get; init; }
         public required int PersonIdTo { get; init; }
-        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
+        public required Identification.Possible IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
         public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
-        public override T Match<T>(
-            Func<InterPersonalRelationToCreateForExistingParticipants, T> create,
-            Func<InterPersonalRelationToCreateForNewPersonFrom, T> createNewFrom,
-            Func<InterPersonalRelationToCreateForNewPersonTo, T> createNewTo,
-            Func<InterPersonalRelationToUpdate, T> update
-         )
-        {
-            return create(this);
-        }
-        public override void Match(
-            Action<InterPersonalRelationToCreateForExistingParticipants> create,
-            Action<InterPersonalRelationToCreateForNewPersonFrom> createNewFrom,
-            Action<InterPersonalRelationToCreateForNewPersonTo> createNewTo,
-            Action<InterPersonalRelationToUpdate> update
-        )
-        {
-            create(this);
-        }
     }
-    public sealed record InterPersonalRelationToCreateForNewPersonFrom : InterPersonalRelation, NodeToCreate
+    public sealed record ToCreateForNewPersonFrom : InterPersonalRelation, NodeToCreate
     {
         public required int PersonIdTo { get; init; }
-        public InterPersonalRelationToCreateForExistingParticipants ResolvePersonFrom(int PersonIdFrom)
+        public ToCreateForExistingParticipants ResolvePersonFrom(int PersonIdFrom)
         {
-            return new InterPersonalRelationToCreateForExistingParticipants {
+            return new ToCreateForExistingParticipants {
                 PersonIdFrom = PersonIdFrom,
                 PersonIdTo = PersonIdTo,
                 InterPersonalRelationDetails = InterPersonalRelationDetails,
@@ -59,37 +28,19 @@ public abstract record InterPersonalRelation : Node
                 IdentificationForCreate = IdentificationForCreate,
             };
         }
-        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
+        public required Identification.Possible IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
         public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
-        public override T Match<T>(
-            Func<InterPersonalRelationToCreateForExistingParticipants, T> create,
-            Func<InterPersonalRelationToCreateForNewPersonFrom, T> createNewFrom,
-            Func<InterPersonalRelationToCreateForNewPersonTo, T> createNewTo,
-            Func<InterPersonalRelationToUpdate, T> update
-         )
-        {
-            return createNewFrom(this);
-        }
-        public override void Match(
-            Action<InterPersonalRelationToCreateForExistingParticipants> create,
-            Action<InterPersonalRelationToCreateForNewPersonFrom> createNewFrom,
-            Action<InterPersonalRelationToCreateForNewPersonTo> createNewTo,
-            Action<InterPersonalRelationToUpdate> update
-        )
-        {
-            createNewFrom(this);
-        }
     }
 
-    public sealed record InterPersonalRelationToCreateForNewPersonTo : InterPersonalRelation, NodeToCreate
+    public sealed record ToCreateForNewPersonTo : InterPersonalRelation, NodeToCreate
     {
         public required int PersonIdFrom { get; init; }
         public required int InterPersonalRelationTypeId { get; init; }
-        public InterPersonalRelationToCreateForExistingParticipants ResolvePersonTo(int PersonIdTo)
+        public ToCreateForExistingParticipants ResolvePersonTo(int PersonIdTo)
         {
-            return new InterPersonalRelationToCreateForExistingParticipants {
+            return new ToCreateForExistingParticipants {
                 PersonIdFrom = PersonIdFrom,
                 PersonIdTo = PersonIdTo,
                 InterPersonalRelationDetails = InterPersonalRelationDetails,
@@ -97,55 +48,19 @@ public abstract record InterPersonalRelation : Node
                 IdentificationForCreate = IdentificationForCreate,
             };
         }
-        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
+        public required Identification.Possible IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
         public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
-        public override T Match<T>(
-            Func<InterPersonalRelationToCreateForExistingParticipants, T> create,
-            Func<InterPersonalRelationToCreateForNewPersonFrom, T> createNewFrom,
-            Func<InterPersonalRelationToCreateForNewPersonTo, T> createNewTo,
-            Func<InterPersonalRelationToUpdate, T> update
-         )
-        {
-            return createNewTo(this);
-        }
-        public override void Match(
-            Action<InterPersonalRelationToCreateForExistingParticipants> create,
-            Action<InterPersonalRelationToCreateForNewPersonFrom> createNewFrom,
-            Action<InterPersonalRelationToCreateForNewPersonTo> createNewTo,
-            Action<InterPersonalRelationToUpdate> update
-        )
-        {
-            createNewTo(this);
-        }
     }
     public sealed record InterPersonalRelationToUpdate : InterPersonalRelation, NodeToUpdate
     {
         public required int PersonIdFrom { get; init; }
         public required int PersonIdTo { get; init; }
-        public override Identification Identification => IdentificationForUpdate;
+        public override Identification Identification => IdentificationCertain;
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
-        public required Identification.IdentificationForUpdate IdentificationForUpdate { get; init; }
-        public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
-        public override T Match<T>(
-            Func<InterPersonalRelationToCreateForExistingParticipants, T> create,
-            Func<InterPersonalRelationToCreateForNewPersonFrom, T> createNewFrom,
-            Func<InterPersonalRelationToCreateForNewPersonTo, T> createNewTo,
-            Func<InterPersonalRelationToUpdate, T> update
-         )
-        {
-            return update(this);
-        }
-        public override void Match(
-            Action<InterPersonalRelationToCreateForExistingParticipants> create,
-            Action<InterPersonalRelationToCreateForNewPersonFrom> createNewFrom,
-            Action<InterPersonalRelationToCreateForNewPersonTo> createNewTo,
-            Action<InterPersonalRelationToUpdate> update
-        )
-        {
-            update(this);
-        }
+        public required Identification.Certain IdentificationCertain { get; init; }
+        public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
     }
 }
 

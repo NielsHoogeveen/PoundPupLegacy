@@ -7,18 +7,18 @@ internal sealed class PersonCreatorFactory(
     IDatabaseInserterFactory<LocatableToCreate> locatableInserterFactory,
     IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
     IDatabaseInserterFactory<PartyToCreate> partyInserterFactory,
-    IDatabaseInserterFactory<Person.PersonToCreate> personInserterFactory,
+    IDatabaseInserterFactory<Person.ToCreate> personInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory,
     LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
     IEntityCreatorFactory<ProfessionalRoleToCreateForExistingPerson> professionalRoleCreatorFactory,
-    IEntityCreatorFactory<PersonOrganizationRelation.PersonOrganizationRelationToCreateForExistingParticipants> personOrganizationRelationCreatorFactory,
-    IEntityCreatorFactory<InterPersonalRelation.InterPersonalRelationToCreateForExistingParticipants> interPersonalRelationCreatorFactory,
-    IEntityCreatorFactory<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForExistingParty> partyPoliticalRelationCreatorFactory
+    IEntityCreatorFactory<PersonOrganizationRelation.ToCreateForExistingParticipants> personOrganizationRelationCreatorFactory,
+    IEntityCreatorFactory<InterPersonalRelation.ToCreateForExistingParticipants> interPersonalRelationCreatorFactory,
+    IEntityCreatorFactory<PartyPoliticalEntityRelation.ToCreateForExistingParty> partyPoliticalRelationCreatorFactory
 
-) : IEntityCreatorFactory<Person.PersonToCreate>
+) : IEntityCreatorFactory<Person.ToCreate>
 {
-    public async Task<IEntityCreator<Person.PersonToCreate>> CreateAsync(IDbConnection connection) =>
+    public async Task<IEntityCreator<Person.ToCreate>> CreateAsync(IDbConnection connection) =>
         new PersonCreator(
             new() 
             {
@@ -41,18 +41,18 @@ internal sealed class PersonCreatorFactory(
 }
 
 internal sealed class PersonCreator(
-    List<IDatabaseInserter<Person.PersonToCreate>> inserters,
+    List<IDatabaseInserter<Person.ToCreate>> inserters,
     NodeDetailsCreator nodeDetailsCreator,
     TermCreator nameableDetailsCreator,
     LocatableDetailsCreator locatableDetailsCreator,
     IEntityCreator<ProfessionalRoleToCreateForExistingPerson> professionalRoleCreator,
-    IEntityCreator<PersonOrganizationRelation.PersonOrganizationRelationToCreateForExistingParticipants> personOrganizationRelationCreator,
-    IEntityCreator<InterPersonalRelation.InterPersonalRelationToCreateForExistingParticipants> interPersonalRelationCreator,
-    IEntityCreator<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForExistingParty> partyPoliticalRelationCreator
+    IEntityCreator<PersonOrganizationRelation.ToCreateForExistingParticipants> personOrganizationRelationCreator,
+    IEntityCreator<InterPersonalRelation.ToCreateForExistingParticipants> interPersonalRelationCreator,
+    IEntityCreator<PartyPoliticalEntityRelation.ToCreateForExistingParty> partyPoliticalRelationCreator
 ) : 
-    LocatableCreator<Person.PersonToCreate>(inserters, nodeDetailsCreator, nameableDetailsCreator, locatableDetailsCreator)
+    LocatableCreator<Person.ToCreate>(inserters, nodeDetailsCreator, nameableDetailsCreator, locatableDetailsCreator)
 {
-    public override async Task ProcessAsync(Person.PersonToCreate element, int id)
+    public override async Task ProcessAsync(Person.ToCreate element, int id)
     {
         await base.ProcessAsync(element, id);
         await professionalRoleCreator

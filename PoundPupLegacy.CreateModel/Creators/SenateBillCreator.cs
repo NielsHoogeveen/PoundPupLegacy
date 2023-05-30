@@ -6,13 +6,13 @@ internal sealed class SenateBillCreatorFactory(
     IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
     IDatabaseInserterFactory<DocumentableToCreate> documentableInserterFactory,
     IDatabaseInserterFactory<BillToCreate> billInserterFactory,
-    IDatabaseInserterFactory<SenateBill.SenateBillToCreate> senateBillInserterFactory,
+    IDatabaseInserterFactory<SenateBill.ToCreate> senateBillInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory
-) : IEntityCreatorFactory<SenateBill.SenateBillToCreate>
+) : IEntityCreatorFactory<SenateBill.ToCreate>
 {
-    public async Task<IEntityCreator<SenateBill.SenateBillToCreate>> CreateAsync(IDbConnection connection) => 
-        new NameableCreator<SenateBill.SenateBillToCreate>(
+    public async Task<IEntityCreator<SenateBill.ToCreate>> CreateAsync(IDbConnection connection) => 
+        new NameableCreator<SenateBill.ToCreate>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

@@ -6,7 +6,7 @@ public sealed record AccessRole : UserRole
 
     public required int? UserGroupId { get; set; }
 
-    public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
+    public required Identification.Possible IdentificationForCreate { get; init; }
 
     public Identification Identification => IdentificationForCreate;
 }

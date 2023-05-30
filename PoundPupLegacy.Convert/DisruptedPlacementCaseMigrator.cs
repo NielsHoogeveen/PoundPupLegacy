@@ -4,7 +4,7 @@ internal sealed class DisruptedPlacementCaseMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
-    IEntityCreatorFactory<DisruptedPlacementCase.DisruptedPlacementCaseToCreate> disruptedPlacementCaseCreatorFactory
+    IEntityCreatorFactory<DisruptedPlacementCase.ToCreate> disruptedPlacementCaseCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "disrupted placement cases";
@@ -16,7 +16,7 @@ internal sealed class DisruptedPlacementCaseMigrator(
         await using var termIdReader = await termIdReaderFactory.CreateAsync(_postgresConnection);
         await disruptedPlacementCaseCreator.CreateAsync(ReadDisruptedPlacementCases(nodeIdReader,termIdReader));
     }
-    private async IAsyncEnumerable<DisruptedPlacementCase.DisruptedPlacementCaseToCreate> ReadDisruptedPlacementCases(
+    private async IAsyncEnumerable<DisruptedPlacementCase.ToCreate> ReadDisruptedPlacementCases(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader)
     {
@@ -63,7 +63,7 @@ internal sealed class DisruptedPlacementCaseMigrator(
             var name = reader.GetString("title");
             var vocabularyNames = new List<NewTermForNewNameable> {
                 new NewTermForNewNameable {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -71,8 +71,8 @@ internal sealed class DisruptedPlacementCaseMigrator(
                     ParentTermIds = parentTermIds,
                 }
             };
-            var country = new DisruptedPlacementCase.DisruptedPlacementCaseToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            var country = new DisruptedPlacementCase.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -82,11 +82,11 @@ internal sealed class DisruptedPlacementCaseMigrator(
                     Title = name,
                     OwnerId = Constants.OWNER_CASES,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -95,9 +95,9 @@ internal sealed class DisruptedPlacementCaseMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,

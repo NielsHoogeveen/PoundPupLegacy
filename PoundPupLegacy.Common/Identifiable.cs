@@ -4,23 +4,23 @@ public interface Identifiable: IRequest
 {
     Identification Identification { get; }
 }
-public interface ImmediatelyIdentifiable : Identifiable
+public interface CertainlyIdentifiable : Identifiable
 {
-    Identification.IdentificationForUpdate IdentificationForUpdate { get; }
+    Identification.Certain IdentificationCertain { get; }
 }
 
-public interface EventuallyIdentifiable : Identifiable
+public interface PossiblyIdentifiable : Identifiable
 {
-    Identification.IdentificationForCreate IdentificationForCreate { get; }
+    Identification.Possible IdentificationForCreate { get; }
 }
 public abstract record Identification
 {
     private Identification() { }
-    public sealed record IdentificationForCreate : Identification
+    public sealed record Possible : Identification
     {
         public required int? Id { get; set; }
     }
-    public sealed record IdentificationForUpdate : Identification
+    public sealed record Certain : Identification
     {
         public required int Id { get; init; }
     }

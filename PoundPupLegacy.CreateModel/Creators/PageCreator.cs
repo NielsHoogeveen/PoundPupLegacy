@@ -4,12 +4,12 @@ internal sealed class PageCreatorFactory(
         IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
         IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
         IDatabaseInserterFactory<SimpleTextNodeToCreate> simpleTextNodeInserterFactory,
-        IDatabaseInserterFactory<Page.PageToCreate> pageInserterFactory,
+        IDatabaseInserterFactory<Page.ToCreate> pageInserterFactory,
         NodeDetailsCreatorFactory nodeDetailsCreatorFactory
-    ) : IEntityCreatorFactory<Page.PageToCreate>
+    ) : IEntityCreatorFactory<Page.ToCreate>
 {
-    public async Task<IEntityCreator<Page.PageToCreate>> CreateAsync(IDbConnection connection) =>
-        new NodeCreator<Page.PageToCreate>(
+    public async Task<IEntityCreator<Page.ToCreate>> CreateAsync(IDbConnection connection) =>
+        new NodeCreator<Page.ToCreate>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

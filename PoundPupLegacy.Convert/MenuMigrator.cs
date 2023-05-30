@@ -28,7 +28,7 @@ internal sealed class MenuMigrator(
         )
     {
         yield return new ActionMenuItem {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/contact" }),
@@ -36,7 +36,7 @@ internal sealed class MenuMigrator(
             Weight = 2,
         };
         yield return new ActionMenuItem {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/documents" }),
@@ -44,7 +44,7 @@ internal sealed class MenuMigrator(
             Weight = 3,
         };
         yield return new ActionMenuItem {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/blogs" }),
@@ -52,7 +52,7 @@ internal sealed class MenuMigrator(
             Weight = 4,
         };
         yield return new ActionMenuItem {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/cases" }),
@@ -60,7 +60,7 @@ internal sealed class MenuMigrator(
             Weight = 5,
         };
         yield return new ActionMenuItem {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/topics" }),
@@ -68,7 +68,7 @@ internal sealed class MenuMigrator(
             Weight = 6,
         };
         yield return new ActionMenuItem {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/countries" }),
@@ -76,7 +76,7 @@ internal sealed class MenuMigrator(
             Weight = 7,
         };
         yield return new ActionMenuItem {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/organizations" }),
@@ -84,7 +84,7 @@ internal sealed class MenuMigrator(
             Weight = 8,
         };
         yield return new ActionMenuItem {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/persons" }),
@@ -92,7 +92,7 @@ internal sealed class MenuMigrator(
             Weight = 9,
         };
         yield return new ActionMenuItem {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             ActionId = await actionIdReaderByPath.ReadAsync(new ActionIdReaderByPathRequest { Path = "/polls" }),
@@ -100,7 +100,7 @@ internal sealed class MenuMigrator(
             Weight = 10,
         };
         yield return new ActionMenuItem {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
@@ -110,7 +110,7 @@ internal sealed class MenuMigrator(
             Weight = 11,
         };
         yield return new ActionMenuItem {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
@@ -120,7 +120,7 @@ internal sealed class MenuMigrator(
             Weight = 12,
         };
         yield return new ActionMenuItem {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
@@ -130,7 +130,7 @@ internal sealed class MenuMigrator(
             Weight = 13,
         };
         yield return new ActionMenuItem {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
@@ -140,7 +140,7 @@ internal sealed class MenuMigrator(
             Weight = 14,
         };
         yield return new ActionMenuItem {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
@@ -150,7 +150,7 @@ internal sealed class MenuMigrator(
             Weight = 15,
         };
         yield return new ActionMenuItem {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
@@ -160,7 +160,7 @@ internal sealed class MenuMigrator(
             Weight = 16,
         };
         yield return new ActionMenuItem {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
@@ -170,7 +170,7 @@ internal sealed class MenuMigrator(
             Weight = 17,
         };
         yield return new ActionMenuItem {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
@@ -180,7 +180,7 @@ internal sealed class MenuMigrator(
             Weight = 18,
         };
         yield return new ActionMenuItem {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
@@ -190,7 +190,7 @@ internal sealed class MenuMigrator(
             Weight = 19,
         };
         yield return new ActionMenuItem {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
@@ -200,7 +200,7 @@ internal sealed class MenuMigrator(
             Weight = 20,
         };
         yield return new ActionMenuItem {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
@@ -210,7 +210,7 @@ internal sealed class MenuMigrator(
             Weight = 21,
         };
         yield return new ActionMenuItem {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
@@ -220,7 +220,7 @@ internal sealed class MenuMigrator(
             Weight = 22,
         };
         yield return new ActionMenuItem {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             ActionId = await createNodeActionIdReaderByNodeTypeId.ReadAsync(new CreateNodeActionIdReaderByNodeTypeIdRequest {
@@ -235,7 +235,7 @@ internal sealed class MenuMigrator(
     {
         await using var tenantNodeIdByUrlIdReader = await tenantNodeIdReaderByUrlIdFactory.CreateAsync(_postgresConnection);
         yield return new TenantNodeMenuItem {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             TenantNodeId = await tenantNodeIdByUrlIdReader.ReadAsync(new TenantNodeIdReaderByUrlIdRequest {
@@ -246,7 +246,7 @@ internal sealed class MenuMigrator(
             Weight = 0,
         };
         yield return new TenantNodeMenuItem {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null,
             },
             TenantNodeId = await tenantNodeIdByUrlIdReader.ReadAsync(new TenantNodeIdReaderByUrlIdRequest {

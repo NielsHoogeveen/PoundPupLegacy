@@ -2,11 +2,9 @@
 public interface PollToUpdate : Poll, NodeToUpdate
 {
 }
-
 public interface PollToCreate : Poll, NodeToCreate
 {
 }
-
 public interface Poll : Node
 {
     PollDetails PollDetails { get; }

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = PersonOrganizationRelation.PersonOrganizationRelationToCreateForExistingParticipants;
+using Request = PersonOrganizationRelation.ToCreateForExistingParticipants;
 
 internal sealed class PersonOrganizationRelationInserterFactory : ConditionalAutoGenerateIdDatabaseInserterFactory<Request>
 {

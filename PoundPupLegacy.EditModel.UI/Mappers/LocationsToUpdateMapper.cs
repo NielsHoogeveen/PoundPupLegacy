@@ -10,7 +10,7 @@ internal class LocationsToUpdateMapper : IEnumerableMapper<Location.ExistingLoca
             if(location.HasBeenDeleted)
                 continue;
             yield return new CreateModel.LocationToUpdate {
-                IdentificationForUpdate = new Identification.IdentificationForUpdate { 
+                IdentificationCertain = new Identification.Certain { 
                     Id = location.Id,
                 },
                 Additional = location.Addition,

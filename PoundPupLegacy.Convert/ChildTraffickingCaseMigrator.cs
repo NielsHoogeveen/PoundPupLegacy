@@ -4,7 +4,7 @@ internal sealed class ChildTraffickingCaseMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
-        IEntityCreatorFactory<ChildTraffickingCase.ChildTraffickingCaseToCreate> childTraffickingCaseCreatorFactory
+        IEntityCreatorFactory<ChildTraffickingCase.ToCreate> childTraffickingCaseCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "child trafficking cases";
@@ -16,7 +16,7 @@ internal sealed class ChildTraffickingCaseMigrator(
         await using var childTraffickingCaseCreator = await childTraffickingCaseCreatorFactory.CreateAsync(_postgresConnection);
         await childTraffickingCaseCreator.CreateAsync(ReadChildTraffickingCases(nodeIdReader,termIdReader));
     }
-    private async IAsyncEnumerable<ChildTraffickingCase.ChildTraffickingCaseToCreate> ReadChildTraffickingCases(
+    private async IAsyncEnumerable<ChildTraffickingCase.ToCreate> ReadChildTraffickingCases(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader)
     {
@@ -66,7 +66,7 @@ internal sealed class ChildTraffickingCaseMigrator(
 
             var vocabularyNames = new List<NewTermForNewNameable> {
                 new NewTermForNewNameable {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -75,8 +75,8 @@ internal sealed class ChildTraffickingCaseMigrator(
                 }
             };
 
-            var country = new ChildTraffickingCase.ChildTraffickingCaseToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            var country = new ChildTraffickingCase.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -86,11 +86,11 @@ internal sealed class ChildTraffickingCaseMigrator(
                     Title = name,
                     OwnerId = Constants.OWNER_CASES,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -99,9 +99,9 @@ internal sealed class ChildTraffickingCaseMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,

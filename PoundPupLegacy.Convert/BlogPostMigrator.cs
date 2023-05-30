@@ -2,7 +2,7 @@
 
 internal sealed class BlogPostMigrator(
         IDatabaseConnections databaseConnections,
-        IEntityCreatorFactory<BlogPost.BlogPostToCreate> blogPostCreatorFactory
+        IEntityCreatorFactory<BlogPost.ToCreate> blogPostCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "blog posts";
@@ -12,7 +12,7 @@ internal sealed class BlogPostMigrator(
         await using var blogPostCreator = await blogPostCreatorFactory.CreateAsync(_postgresConnection);
         await blogPostCreator.CreateAsync(ReadBlogPosts());
     }
-    private async IAsyncEnumerable<BlogPost.BlogPostToCreate> ReadBlogPosts()
+    private async IAsyncEnumerable<BlogPost.ToCreate> ReadBlogPosts()
     {
 
         var sql = $"""
@@ -38,8 +38,8 @@ internal sealed class BlogPostMigrator(
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var text = ReplacePHPCode(id, reader.GetString("text"));
-            var discussion = new BlogPost.BlogPostToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            var discussion = new BlogPost.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -49,11 +49,11 @@ internal sealed class BlogPostMigrator(
                     Title = reader.GetString("title"),
                     OwnerId = Constants.PPL,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = 1,

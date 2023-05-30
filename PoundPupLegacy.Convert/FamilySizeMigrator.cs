@@ -3,12 +3,12 @@
 internal sealed class FamilySizeMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        IEntityCreatorFactory<FamilySize.FamilySizeToCreate> familySizeCreatorFactory
+        IEntityCreatorFactory<FamilySize.ToCreate> familySizeCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "family sizes";
 
-    private static async IAsyncEnumerable<FamilySize.FamilySizeToCreate> GetFamilySizes(
+    private static async IAsyncEnumerable<FamilySize.ToCreate> GetFamilySizes(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         await Task.CompletedTask;
@@ -22,8 +22,8 @@ internal sealed class FamilySizeMigrator(
             UrlId = Constants.VOCABULARY_ID_FAMILY_SIZE
         });
 
-        yield return new FamilySize.FamilySizeToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new FamilySize.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -33,11 +33,11 @@ internal sealed class FamilySizeMigrator(
                 Title = "1 to 4",
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -46,9 +46,9 @@ internal sealed class FamilySizeMigrator(
                         SubgroupId = null,
                         UrlId = Constants.ONE_TO_FOUR
                     },
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -68,7 +68,7 @@ internal sealed class FamilySizeMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyIdFamilySize,
@@ -78,8 +78,8 @@ internal sealed class FamilySizeMigrator(
                 },
             }
         };
-        yield return new FamilySize.FamilySizeToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new FamilySize.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -89,11 +89,11 @@ internal sealed class FamilySizeMigrator(
                 Title = "4 to 8",
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
             {
-                new TenantNode.TenantNodeToCreateForNewNode
+                new TenantNode.ToCreateForNewNode
                 {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null
                     },
                     TenantId = Constants.PPL,
@@ -102,9 +102,9 @@ internal sealed class FamilySizeMigrator(
                     SubgroupId = null,
                     UrlId = Constants.FOUR_TO_EIGHT
                 },
-                new TenantNode.TenantNodeToCreateForNewNode
+                new TenantNode.ToCreateForNewNode
                 {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null
                     },
                     TenantId = Constants.CPCT,
@@ -124,7 +124,7 @@ internal sealed class FamilySizeMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyIdFamilySize,
@@ -134,8 +134,8 @@ internal sealed class FamilySizeMigrator(
                 },
             }
         };
-        yield return new FamilySize.FamilySizeToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new FamilySize.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -145,11 +145,11 @@ internal sealed class FamilySizeMigrator(
                 Title = "8 to 12",
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -158,9 +158,9 @@ internal sealed class FamilySizeMigrator(
                         SubgroupId = null,
                         UrlId = Constants.EIGHT_TO_TWELVE
                     },
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -180,7 +180,7 @@ internal sealed class FamilySizeMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyIdFamilySize,
@@ -190,8 +190,8 @@ internal sealed class FamilySizeMigrator(
                 },
             },
         };
-        yield return new FamilySize.FamilySizeToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new FamilySize.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -201,11 +201,11 @@ internal sealed class FamilySizeMigrator(
                 Title = "more than 12",
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -214,9 +214,9 @@ internal sealed class FamilySizeMigrator(
                         SubgroupId = null,
                         UrlId = Constants.MORE_THAN_TWELVE
                     },
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -236,7 +236,7 @@ internal sealed class FamilySizeMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyIdFamilySize,
@@ -245,7 +245,7 @@ internal sealed class FamilySizeMigrator(
                     },
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyIdTopics,

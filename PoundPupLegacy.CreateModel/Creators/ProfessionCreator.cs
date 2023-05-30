@@ -4,13 +4,13 @@ internal sealed class ProfessionCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
     IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
     IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
-    IDatabaseInserterFactory<Profession.ProfessionToCreate> professionInserterFactory,
+    IDatabaseInserterFactory<Profession.ToCreate> professionInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory
-) : IEntityCreatorFactory<Profession.ProfessionToCreate>
+) : IEntityCreatorFactory<Profession.ToCreate>
 {
-    public async Task<IEntityCreator<Profession.ProfessionToCreate>> CreateAsync(IDbConnection connection) => 
-        new NameableCreator<Profession.ProfessionToCreate>(
+    public async Task<IEntityCreator<Profession.ToCreate>> CreateAsync(IDbConnection connection) => 
+        new NameableCreator<Profession.ToCreate>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

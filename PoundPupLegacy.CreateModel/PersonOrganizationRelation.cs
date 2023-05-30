@@ -8,31 +8,18 @@ public abstract record PersonOrganizationRelation: Node
     public required PersonOrganizationRelationDetails PersonOrganizationRelationDetails { get; init; }
     public abstract Identification Identification { get; }
     public abstract NodeDetails NodeDetails { get; }
-    public abstract T Match<T>(
-        Func<PersonOrganizationRelationToCreateForExistingParticipants, T> create,
-        Func<PersonOrganizationRelationToCreateForNewPerson, T> createNewPerson,
-        Func<PersonOrganizationRelationToCreateForNewOrganization, T> createNewOrganization,
-        Func<PersonOrganizationRelationToUpdate, T> update
-     );
-    public abstract void Match(
-        Action<PersonOrganizationRelationToCreateForExistingParticipants> create,
-        Action<PersonOrganizationRelationToCreateForNewPerson> createNewPerson,
-        Action<PersonOrganizationRelationToCreateForNewOrganization> createNewOrganization,
-        Action<PersonOrganizationRelationToUpdate> update
-    );
-
-    public sealed record PersonOrganizationRelationToCreateForNewPerson : PersonOrganizationRelation, NodeToCreate
+    public sealed record ToCreateForNewPerson : PersonOrganizationRelation, NodeToCreate
     {
         public required int? PersonId { get; set; }
         public required int OrganizationId { get; init; }
 
-        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
+        public required Identification.Possible IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
         public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
-        public PersonOrganizationRelationToCreateForExistingParticipants ResolvePerson(int personId)
+        public ToCreateForExistingParticipants ResolvePerson(int personId)
         {
-            return new PersonOrganizationRelationToCreateForExistingParticipants {
+            return new ToCreateForExistingParticipants {
                 PersonId = personId,
                 OrganizationId = OrganizationId,
                 NodeDetailsForCreate = NodeDetailsForCreate,
@@ -40,36 +27,18 @@ public abstract record PersonOrganizationRelation: Node
                 PersonOrganizationRelationDetails = PersonOrganizationRelationDetails,
             };
         }
-        public override T Match<T>(
-            Func<PersonOrganizationRelationToCreateForExistingParticipants, T> create,
-            Func<PersonOrganizationRelationToCreateForNewPerson, T> createNewPerson,
-            Func<PersonOrganizationRelationToCreateForNewOrganization, T> createNewOrganization,
-            Func<PersonOrganizationRelationToUpdate, T> update
-         )
-        {
-            return createNewPerson(this);
-        }
-        public override void Match(
-            Action<PersonOrganizationRelationToCreateForExistingParticipants> create,
-            Action<PersonOrganizationRelationToCreateForNewPerson> createNewPerson,
-            Action<PersonOrganizationRelationToCreateForNewOrganization> createNewOrganization,
-            Action<PersonOrganizationRelationToUpdate> update
-        )
-        {
-            createNewPerson(this);
-        }
     }
-    public sealed record PersonOrganizationRelationToCreateForNewOrganization : PersonOrganizationRelation, NodeToCreate
+    public sealed record ToCreateForNewOrganization : PersonOrganizationRelation, NodeToCreate
     {
         public required int PersonId { get; set; }
         public required int? OrganizationId { get; set; }
-        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
+        public required Identification.Possible IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
         public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
-        public PersonOrganizationRelationToCreateForExistingParticipants ResolveOrganization(int organizationId)
+        public ToCreateForExistingParticipants ResolveOrganization(int organizationId)
         {
-            return new PersonOrganizationRelationToCreateForExistingParticipants {
+            return new ToCreateForExistingParticipants {
                 PersonId = PersonId,
                 OrganizationId = organizationId,
                 NodeDetailsForCreate = NodeDetailsForCreate,
@@ -77,83 +46,28 @@ public abstract record PersonOrganizationRelation: Node
                 PersonOrganizationRelationDetails = PersonOrganizationRelationDetails,
             };
         }
-        public override T Match<T>(
-            Func<PersonOrganizationRelationToCreateForExistingParticipants, T> create,
-            Func<PersonOrganizationRelationToCreateForNewPerson, T> createNewPerson,
-            Func<PersonOrganizationRelationToCreateForNewOrganization, T> createNewOrganization,
-            Func<PersonOrganizationRelationToUpdate, T> update
-         )
-        {
-            return createNewOrganization(this);
-        }
-        public override void Match(
-            Action<PersonOrganizationRelationToCreateForExistingParticipants> create,
-            Action<PersonOrganizationRelationToCreateForNewPerson> createNewPerson,
-            Action<PersonOrganizationRelationToCreateForNewOrganization> createNewOrganization,
-            Action<PersonOrganizationRelationToUpdate> update
-        )
-        {
-            createNewOrganization(this);
-        }
     }
 
-    public sealed record PersonOrganizationRelationToCreateForExistingParticipants : PersonOrganizationRelation, NodeToCreate
+    public sealed record ToCreateForExistingParticipants : PersonOrganizationRelation, NodeToCreate
     {
         public required int PersonId { get; set; }
         public required int OrganizationId { get; init; }
-        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
+        public required Identification.Possible IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
         public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
-        public override T Match<T>(
-            Func<PersonOrganizationRelationToCreateForExistingParticipants, T> create,
-            Func<PersonOrganizationRelationToCreateForNewPerson, T> createNewPerson,
-            Func<PersonOrganizationRelationToCreateForNewOrganization, T> createNewOrganization,
-            Func<PersonOrganizationRelationToUpdate, T> update
-         )
-        {
-            return create(this);
-        }
-        public override void Match(
-            Action<PersonOrganizationRelationToCreateForExistingParticipants> create,
-            Action<PersonOrganizationRelationToCreateForNewPerson> createNewPerson,
-            Action<PersonOrganizationRelationToCreateForNewOrganization> createNewOrganization,
-            Action<PersonOrganizationRelationToUpdate> update
-        )
-        {
-            create(this);
-        }
     }
 
-    public sealed record PersonOrganizationRelationToUpdate : PersonOrganizationRelation, NodeToUpdate
+    public sealed record ToUpdate : PersonOrganizationRelation, NodeToUpdate
     {
         public required int PersonId { get; set; }
         public required int OrganizationId { get; init; }
-        public override Identification Identification => IdentificationForUpdate;
+        public override Identification Identification => IdentificationCertain;
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
-        public required Identification.IdentificationForUpdate IdentificationForUpdate { get; init; }
-        public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
-        public override T Match<T>(
-            Func<PersonOrganizationRelationToCreateForExistingParticipants, T> create,
-            Func<PersonOrganizationRelationToCreateForNewPerson, T> createNewPerson,
-            Func<PersonOrganizationRelationToCreateForNewOrganization, T> createNewOrganization,
-            Func<PersonOrganizationRelationToUpdate, T> update
-         )
-        {
-            return update(this);
-        }
-        public override void Match(
-            Action<PersonOrganizationRelationToCreateForExistingParticipants> create,
-            Action<PersonOrganizationRelationToCreateForNewPerson> createNewPerson,
-            Action<PersonOrganizationRelationToCreateForNewOrganization> createNewOrganization,
-            Action<PersonOrganizationRelationToUpdate> update
-        )
-        {
-            update(this);
-        }
+        public required Identification.Certain IdentificationCertain { get; init; }
+        public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
     }
 }
-
 public sealed record PersonOrganizationRelationDetails
 {
     public required int PersonOrganizationRelationTypeId { get; init; }

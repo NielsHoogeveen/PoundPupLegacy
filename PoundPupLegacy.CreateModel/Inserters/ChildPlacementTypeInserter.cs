@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-internal sealed class ChildPlacementTypeInserterFactory : SingleIdInserterFactory<ChildPlacementType.ChildPlacementTypeToCreate>
+internal sealed class ChildPlacementTypeInserterFactory : SingleIdInserterFactory<ChildPlacementType.ToCreate>
 {
     protected override string TableName => "child_placement_type";
 

@@ -4,7 +4,7 @@ internal sealed class ProfessionMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreatorFactory<Profession.ProfessionToCreate> professionCreatorFactory
+    IEntityCreatorFactory<Profession.ToCreate> professionCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "professions";
@@ -16,7 +16,7 @@ internal sealed class ProfessionMigrator(
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await professionCreator.CreateAsync(ReadProfessions(nodeIdReader, fileIdReaderByTenantFileId));
     }
-    private async IAsyncEnumerable<Profession.ProfessionToCreate> ReadProfessions(
+    private async IAsyncEnumerable<Profession.ToCreate> ReadProfessions(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId
     )
@@ -91,7 +91,7 @@ internal sealed class ProfessionMigrator(
             {
                 new NewTermForNewNameable
                 {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = professionVocabularyId,
@@ -101,7 +101,7 @@ internal sealed class ProfessionMigrator(
             };
             if (topicName != null) {
                 vocabularyNames.Add(new NewTermForNewNameable {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = topicsVocabularyId,
@@ -110,8 +110,8 @@ internal sealed class ProfessionMigrator(
                 });
             }
 
-            yield return new Profession.ProfessionToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new Profession.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -121,11 +121,11 @@ internal sealed class ProfessionMigrator(
                     Title = name,
                     OwnerId = Constants.OWNER_PARTIES,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = 1,
@@ -134,9 +134,9 @@ internal sealed class ProfessionMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,
@@ -165,8 +165,8 @@ internal sealed class ProfessionMigrator(
             };
         }
         reader.Close();
-        yield return new Profession.ProfessionToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new Profession.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -176,11 +176,11 @@ internal sealed class ProfessionMigrator(
                 Title = "Senator",
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -189,9 +189,9 @@ internal sealed class ProfessionMigrator(
                         SubgroupId = null,
                         UrlId = null
                     },
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -211,7 +211,7 @@ internal sealed class ProfessionMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = professionVocabularyId,
@@ -224,8 +224,8 @@ internal sealed class ProfessionMigrator(
                 HasConcreteSubtype = true,
             },
         };
-        yield return new Profession.ProfessionToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new Profession.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -235,11 +235,11 @@ internal sealed class ProfessionMigrator(
                 Title = "Representative",
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -248,9 +248,9 @@ internal sealed class ProfessionMigrator(
                         SubgroupId = null,
                         UrlId = null
                     },
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -270,7 +270,7 @@ internal sealed class ProfessionMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = professionVocabularyId,

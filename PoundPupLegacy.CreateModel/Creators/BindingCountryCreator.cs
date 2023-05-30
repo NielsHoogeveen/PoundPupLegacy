@@ -9,14 +9,14 @@ internal sealed class BindingCountryCreatorFactory(
     IDatabaseInserterFactory<PoliticalEntityToCreate> politicalEntityInserterFactory,
     IDatabaseInserterFactory<CountryToCreate> countryInserterFactory,
     IDatabaseInserterFactory<TopLevelCountryToCreate> topLevelCountryInserterFactory,
-    IDatabaseInserterFactory<BindingCountry.BindingCountryToCreate> bindingCountryInserterFactory,
+    IDatabaseInserterFactory<BindingCountry.ToCreate> bindingCountryInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory
     
-) : IEntityCreatorFactory<BindingCountry.BindingCountryToCreate>
+) : IEntityCreatorFactory<BindingCountry.ToCreate>
 {
-    public async Task<IEntityCreator<BindingCountry.BindingCountryToCreate>> CreateAsync(IDbConnection connection) =>
-        new NameableCreator<BindingCountry.BindingCountryToCreate>(
+    public async Task<IEntityCreator<BindingCountry.ToCreate>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<BindingCountry.ToCreate>(
             new () {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

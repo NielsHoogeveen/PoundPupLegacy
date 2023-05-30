@@ -4,7 +4,7 @@ internal sealed class InterPersonalRelationTypeMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreatorFactory<InterPersonalRelationType.InterPersonalRelationTypeToCreate> interPersonalRelationTypeCreatorFactory
+    IEntityCreatorFactory<InterPersonalRelationType.ToCreate> interPersonalRelationTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "inter-personal relation types";
@@ -16,7 +16,7 @@ internal sealed class InterPersonalRelationTypeMigrator(
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await interPersonalRelationTypeCreator.CreateAsync(ReadInterPersonalRelationTypes(nodeIdReader,fileIdReaderByTenantFileId));
     }
-    private async IAsyncEnumerable<InterPersonalRelationType.InterPersonalRelationTypeToCreate> ReadInterPersonalRelationTypes(
+    private async IAsyncEnumerable<InterPersonalRelationType.ToCreate> ReadInterPersonalRelationTypes(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)
     {
@@ -61,7 +61,7 @@ internal sealed class InterPersonalRelationTypeMigrator(
             {
                 new NewTermForNewNameable
                 {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -69,8 +69,8 @@ internal sealed class InterPersonalRelationTypeMigrator(
                     ParentTermIds = new List<int>(),
                 }
             };
-            yield return new InterPersonalRelationType.InterPersonalRelationTypeToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new InterPersonalRelationType.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -80,11 +80,11 @@ internal sealed class InterPersonalRelationTypeMigrator(
                     Title = name,
                     OwnerId = Constants.OWNER_PARTIES,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -93,9 +93,9 @@ internal sealed class InterPersonalRelationTypeMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,

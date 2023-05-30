@@ -65,8 +65,8 @@ internal class CaseCaseRelationsMigrator(
                     UrlId = id,
                     TenantId = Constants.PPL
                 }),
-                CaseParties = new CaseParties.CasePartiesToCreate {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                CaseParties = new CaseParties.ToCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null
                     },
                     Organizations = reader.IsDBNull("organizations_text") ? null : reader.GetString("organizations_text"),

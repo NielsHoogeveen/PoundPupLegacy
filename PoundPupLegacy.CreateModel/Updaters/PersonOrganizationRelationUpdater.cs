@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Updaters;
 
-using Request = PersonOrganizationRelation.PersonOrganizationRelationToUpdate;
+using Request = PersonOrganizationRelation.ToUpdate;
 
 internal sealed class PersonOrganizationRelationUpdaterFactory : DatabaseUpdaterFactory<Request>
 {
@@ -34,7 +34,7 @@ internal sealed class PersonOrganizationRelationUpdaterFactory : DatabaseUpdater
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new List<ParameterValue> {
-            ParameterValue.Create(NodeId, request.IdentificationForUpdate.Id),
+            ParameterValue.Create(NodeId, request.IdentificationCertain.Id),
             ParameterValue.Create(Title, request.NodeDetails.Title),
             ParameterValue.Create(PersonId, request.PersonId),
             ParameterValue.Create(OrganizationId, request.OrganizationId),

@@ -5,7 +5,7 @@ internal sealed class ChildPlacementTypeMigrator(
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreatorFactory<ChildPlacementType.ChildPlacementTypeToCreate> childPlacementTypeCreatorFactory
+    IEntityCreatorFactory<ChildPlacementType.ToCreate> childPlacementTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "child placement types";
@@ -19,7 +19,7 @@ internal sealed class ChildPlacementTypeMigrator(
         await childPlacementTypeCreator.CreateAsync(ReadChildPlacementTypes(nodeIdReader,termIdReader,fileIdReaderByTenantFileId));
     }
 
-    private async IAsyncEnumerable<ChildPlacementType.ChildPlacementTypeToCreate> ReadChildPlacementTypes(
+    private async IAsyncEnumerable<ChildPlacementType.ToCreate> ReadChildPlacementTypes(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)
@@ -87,7 +87,7 @@ internal sealed class ChildPlacementTypeMigrator(
             {
                 new NewTermForNewNameable
                 {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyIdChildPlacementType,
@@ -104,7 +104,7 @@ internal sealed class ChildPlacementTypeMigrator(
                     }));
                 }
                 vocabularyNames.Add(new NewTermForNewNameable {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyIdTopics,
@@ -113,8 +113,8 @@ internal sealed class ChildPlacementTypeMigrator(
                 });
             }
 
-            yield return new ChildPlacementType.ChildPlacementTypeToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new ChildPlacementType.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -124,11 +124,11 @@ internal sealed class ChildPlacementTypeMigrator(
                     Title = name,
                     OwnerId = Constants.OWNER_CASES,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -137,9 +137,9 @@ internal sealed class ChildPlacementTypeMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,

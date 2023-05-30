@@ -4,7 +4,7 @@ internal sealed class BindingCountryMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
-        IEntityCreatorFactory<BindingCountry.BindingCountryToCreate> bindingCountryCreatorFactory
+        IEntityCreatorFactory<BindingCountry.ToCreate> bindingCountryCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "binding countries";
@@ -16,7 +16,7 @@ internal sealed class BindingCountryMigrator(
         await using var bindingCountryCreator = await bindingCountryCreatorFactory.CreateAsync(_postgresConnection);
         await bindingCountryCreator.CreateAsync(ReadBindingCountries(nodeIdReader, termIdReader));
     }
-    private async IAsyncEnumerable<BindingCountry.BindingCountryToCreate> ReadBindingCountries(
+    private async IAsyncEnumerable<BindingCountry.ToCreate> ReadBindingCountries(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader)
     {
@@ -64,7 +64,7 @@ internal sealed class BindingCountryMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -78,8 +78,8 @@ internal sealed class BindingCountryMigrator(
                     },
                 };
 
-            var country = new BindingCountry.BindingCountryToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            var country = new BindingCountry.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -89,11 +89,11 @@ internal sealed class BindingCountryMigrator(
                     Title = name,
                     OwnerId = Constants.OWNER_GEOGRAPHY,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -102,9 +102,9 @@ internal sealed class BindingCountryMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,

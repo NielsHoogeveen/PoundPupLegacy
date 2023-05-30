@@ -1,8 +1,8 @@
 ﻿namespace PoundPupLegacy.Convert;
 internal sealed class PollMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreatorFactory<SingleQuestionPoll.SingleQuestionPollToCreate> singleQuestionPollCreatorFactory,
-    IEntityCreatorFactory<MultiQuestionPoll.MultiQuestionPollToCreate> multiQuestionPollCreatorFactory
+    IEntityCreatorFactory<SingleQuestionPoll.ToCreate> singleQuestionPollCreatorFactory,
+    IEntityCreatorFactory<MultiQuestionPoll.ToCreate> multiQuestionPollCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "polls";
@@ -14,7 +14,7 @@ internal sealed class PollMigrator(
         await singleQuestionPollCreator.CreateAsync(ReadSingleQuestionPolls());
         await multiQuestionPollCreator.CreateAsync(ReadMultiQuestionPolls());
     }
-    private async IAsyncEnumerable<SingleQuestionPoll.SingleQuestionPollToCreate> ReadSingleQuestionPolls()
+    private async IAsyncEnumerable<SingleQuestionPoll.ToCreate> ReadSingleQuestionPolls()
     {
 
         var sql = $"""
@@ -59,7 +59,7 @@ internal sealed class PollMigrator(
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        SingleQuestionPoll.SingleQuestionPollToCreate? currentPoll = null;
+        SingleQuestionPoll.ToCreate? currentPoll = null;
         int? currentDelta = null;
 
         while (await reader.ReadAsync()) {
@@ -71,8 +71,8 @@ internal sealed class PollMigrator(
                 currentPoll = null;
                 currentDelta = null;
             }
-            currentPoll ??= new SingleQuestionPoll.SingleQuestionPollToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            currentPoll ??= new SingleQuestionPoll.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -82,11 +82,11 @@ internal sealed class PollMigrator(
                     Title = name,
                     OwnerId = Constants.OWNER_CASES,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -136,9 +136,9 @@ internal sealed class PollMigrator(
         }
         await reader.CloseAsync();
     }
-    private async IAsyncEnumerable<MultiQuestionPoll.MultiQuestionPollToCreate> ReadMultiQuestionPolls()
+    private async IAsyncEnumerable<MultiQuestionPoll.ToCreate> ReadMultiQuestionPolls()
     {
-        MultiQuestionPoll.MultiQuestionPollToCreate? multiQuestionPoll = null;
+        MultiQuestionPoll.ToCreate? multiQuestionPoll = null;
 
         using (var readCommand = _mySqlConnection.CreateCommand()) {
             var sql = $"""
@@ -169,8 +169,8 @@ internal sealed class PollMigrator(
             var name = reader.GetString("title");
 
 
-            multiQuestionPoll = new MultiQuestionPoll.MultiQuestionPollToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            multiQuestionPoll = new MultiQuestionPoll.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -180,11 +180,11 @@ internal sealed class PollMigrator(
                     Title = name,
                     OwnerId = Constants.OWNER_CASES,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -206,7 +206,7 @@ internal sealed class PollMigrator(
                     PollStatusId = 0,
                 },
                 MultiQuestionPollDetails = new MultiQuestionPollDetailsForCreate {
-                    PollQuestions = new List<MultiQuestionPollQuestion.MultiQuestionPollQuestionToCreate>(),
+                    PollQuestions = new List<MultiQuestionPollQuestion.ToCreate>(),
                 }
             };
             await reader.CloseAsync();
@@ -256,7 +256,7 @@ internal sealed class PollMigrator(
 
                 var reader = await readCommand.ExecuteReaderAsync();
 
-                MultiQuestionPollQuestion.MultiQuestionPollQuestionToCreate? currentQuestion = null;
+                MultiQuestionPollQuestion.ToCreate? currentQuestion = null;
                 int? currentDelta = null;
 
                 while (await reader.ReadAsync()) {
@@ -268,8 +268,8 @@ internal sealed class PollMigrator(
                         currentQuestion = null;
                         currentDelta = null;
                     }
-                    currentQuestion ??= new MultiQuestionPollQuestion.MultiQuestionPollQuestionToCreate {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                    currentQuestion ??= new MultiQuestionPollQuestion.ToCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -279,11 +279,11 @@ internal sealed class PollMigrator(
                             Title = name,
                             OwnerId = Constants.OWNER_CASES,
                             AuthoringStatusId = 1,
-                            TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                            TenantNodes = new List<TenantNode.ToCreateForNewNode>
                             {
-                                new TenantNode.TenantNodeToCreateForNewNode
+                                new TenantNode.ToCreateForNewNode
                                 {
-                                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                                    IdentificationForCreate = new Identification.Possible {
                                         Id = null
                                     },
                                     TenantId = Constants.PPL,

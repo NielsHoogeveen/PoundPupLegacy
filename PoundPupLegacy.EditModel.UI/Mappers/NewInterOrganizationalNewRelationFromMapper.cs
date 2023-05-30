@@ -2,14 +2,14 @@
 
 internal class NewInterOrganizationalNewRelationFromMapper(
     IMapper<EditModel.NodeDetails.NodeDetailsForCreate, CreateModel.NodeDetails.NodeDetailsForCreate> nodeDetailMapper
- ) : IEnumerableMapper<NewInterOrganizationalExistingRelationFrom, CreateModel.InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationFrom>
+ ) : IEnumerableMapper<NewInterOrganizationalExistingRelationFrom, CreateModel.InterOrganizationalRelation.ToCreateForNewOrganizationFrom>
 {
-    public IEnumerable<CreateModel.InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationFrom> Map(IEnumerable<NewInterOrganizationalExistingRelationFrom> source)
+    public IEnumerable<CreateModel.InterOrganizationalRelation.ToCreateForNewOrganizationFrom> Map(IEnumerable<NewInterOrganizationalExistingRelationFrom> source)
     {
         foreach (var relation in source) {
             var now = DateTime.Now;
-            yield return new CreateModel.InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationFrom {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new CreateModel.InterOrganizationalRelation.ToCreateForNewOrganizationFrom {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null,
                 },
                 NodeDetailsForCreate = nodeDetailMapper.Map(relation.NodeDetailsForCreate),

@@ -7,41 +7,22 @@ public abstract record SenateBill : Bill
     public abstract Identification Identification { get; }
     public abstract NodeDetails NodeDetails { get; }
     public abstract NameableDetails NameableDetails { get; }
-    public abstract T Match<T>(Func<SenateBillToCreate, T> create, Func<SenateBillToUpdate, T> update);
-    public abstract void Match(Action<SenateBillToCreate> create, Action<SenateBillToUpdate> update);
-
-    public sealed record SenateBillToCreate : SenateBill, BillToCreate
+    public sealed record ToCreate : SenateBill, BillToCreate
     {
         public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public override NameableDetails NameableDetails => NameableDetailsForCreate;
-        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
+        public required Identification.Possible IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
         public required NameableDetails.NameableDetailsForCreate NameableDetailsForCreate { get; init; }
-        public override T Match<T>(Func<SenateBillToCreate, T> create, Func<SenateBillToUpdate, T> update)
-        {
-            return create(this);
-        }
-        public override void Match(Action<SenateBillToCreate> create, Action<SenateBillToUpdate> update)
-        {
-            create(this);
-        }
     }
-    public sealed record SenateBillToUpdate : SenateBill, BillToUpdate
+    public sealed record ToUpdate : SenateBill, BillToUpdate
     {
-        public required Identification.IdentificationForUpdate IdentificationForUpdate { get; init; }
-        public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
+        public required Identification.Certain IdentificationCertain { get; init; }
+        public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
         public override NameableDetails NameableDetails => NameableDetailsForUpdate;
-        public override Identification Identification => IdentificationForUpdate;
+        public override Identification Identification => IdentificationCertain;
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
         public required NameableDetails.NameableDetailsForUpdate NameableDetailsForUpdate { get; init; }
-        public override T Match<T>(Func<SenateBillToCreate, T> create, Func<SenateBillToUpdate, T> update)
-        {
-            return update(this);
-        }
-        public override void Match(Action<SenateBillToCreate> create, Action<SenateBillToUpdate> update)
-        {
-            update(this);
-        }
     }
 }

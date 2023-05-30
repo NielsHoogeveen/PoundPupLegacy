@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = SenateTerm.SenateTermToCreate;
+using Request = SenateTerm.ToCreate;
 
 internal sealed class SenateTermInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

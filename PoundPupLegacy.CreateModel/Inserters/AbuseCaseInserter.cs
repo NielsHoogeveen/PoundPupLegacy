@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = AbuseCase.AbuseCaseToCreate;
+using Request = AbuseCase.ToCreate;
 
 internal sealed class AbuseCaseInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

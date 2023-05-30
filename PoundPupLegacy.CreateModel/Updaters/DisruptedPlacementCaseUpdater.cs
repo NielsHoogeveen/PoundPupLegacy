@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Updaters;
 
-using Request = DisruptedPlacementCase.DisruptedPlacementCaseToUpdate;
+using Request = DisruptedPlacementCase.ToUpdate;
 internal sealed class DisruptedPlacementCaseChangerFactory(
     IDatabaseUpdaterFactory<Request> databaseUpdaterFactory,
     NodeDetailsChangerFactory nodeDetailsChangerFactory) : IEntityChangerFactory<Request>
@@ -38,7 +38,7 @@ internal sealed class DisruptedPlacementCaseUpdaterFactory : DatabaseUpdaterFact
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new List<ParameterValue> {
-            ParameterValue.Create(NodeId, request.IdentificationForUpdate.Id),
+            ParameterValue.Create(NodeId, request.IdentificationCertain.Id),
             ParameterValue.Create(Title, request.NodeDetails.Title),
             ParameterValue.Create(Description, request.NameableDetails.Description),
             ParameterValue.Create(FuzzyDate, request.CaseDetails.Date),

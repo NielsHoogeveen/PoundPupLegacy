@@ -4,7 +4,7 @@ internal sealed class DeportationCaseMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
-    IEntityCreatorFactory<DeportationCase.DeportationCaseToCreate> deportationCaseCreatorFactory
+    IEntityCreatorFactory<DeportationCase.ToCreate> deportationCaseCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "deportation cases";
@@ -16,7 +16,7 @@ internal sealed class DeportationCaseMigrator(
         await using var deportationCaseCreator = await deportationCaseCreatorFactory.CreateAsync(_postgresConnection);
         await deportationCaseCreator.CreateAsync(ReadDeportationCases(nodeIdReader,termIdReader));
     }
-    private async IAsyncEnumerable<DeportationCase.DeportationCaseToCreate> ReadDeportationCases(
+    private async IAsyncEnumerable<DeportationCase.ToCreate> ReadDeportationCases(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader)
     {
@@ -79,7 +79,7 @@ internal sealed class DeportationCaseMigrator(
             var name = reader.GetString("title");
             var vocabularyNames = new List<NewTermForNewNameable> {
                 new NewTermForNewNameable {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -87,8 +87,8 @@ internal sealed class DeportationCaseMigrator(
                     ParentTermIds = parentTermIds,
                 }
             };
-            var country = new DeportationCase.DeportationCaseToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            var country = new DeportationCase.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -98,11 +98,11 @@ internal sealed class DeportationCaseMigrator(
                     Title = name,
                     OwnerId = Constants.OWNER_CASES,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -111,9 +111,9 @@ internal sealed class DeportationCaseMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,

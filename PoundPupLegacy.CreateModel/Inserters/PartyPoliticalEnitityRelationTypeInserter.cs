@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = PartyPoliticalEntityRelationType.PartyPoliticalEntityRelationTypeToCreate;
+using Request = PartyPoliticalEntityRelationType.ToCreate;
 
 internal sealed class PartyPoliticalEntityRelationTypeInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

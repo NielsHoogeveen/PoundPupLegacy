@@ -9,12 +9,12 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermNameReaderByNameableIdRequest, string> termReaderByNameableIdFactory,
     IMandatorySingleItemDatabaseReaderFactory<NameableIdReaderByTermNameRequest, int> termReaderByNameFactory,
-    IEntityCreatorFactory<InformalIntermediateLevelSubdivision.InformalIntermediateLevelSubdivisionToCreate> informalIntermediateLevelSubdivisionCreatorFactory
+    IEntityCreatorFactory<InformalIntermediateLevelSubdivision.ToCreate> informalIntermediateLevelSubdivisionCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "informal intermediate level subdivisions";
 
-    private async IAsyncEnumerable<InformalIntermediateLevelSubdivision.InformalIntermediateLevelSubdivisionToCreate> ReadInformalIntermediateLevelSubdivisionCsv(
+    private async IAsyncEnumerable<InformalIntermediateLevelSubdivision.ToCreate> ReadInformalIntermediateLevelSubdivisionCsv(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
         IMandatorySingleItemDatabaseReader<TermNameReaderByNameableIdRequest, string> termReaderByNameableId,
@@ -43,8 +43,8 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
                 NameableId = countryId,
                 VocabularyId = vocabularyIdTopics
             }));
-            yield return new InformalIntermediateLevelSubdivision.InformalIntermediateLevelSubdivisionToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new InformalIntermediateLevelSubdivision.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -54,11 +54,11 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
                     NodeTypeId = int.Parse(parts[4]),
                     OwnerId = Constants.OWNER_GEOGRAPHY,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -67,9 +67,9 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,
@@ -87,7 +87,7 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
                     {
                         new NewTermForNewNameable
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null,
                             },
                             VocabularyId = vocabularyIdTopics,
@@ -137,7 +137,7 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
             termReaderByName
         ));
     }
-    private async IAsyncEnumerable<InformalIntermediateLevelSubdivision.InformalIntermediateLevelSubdivisionToCreate> ReadInformalIntermediateLevelSubdivisions(
+    private async IAsyncEnumerable<InformalIntermediateLevelSubdivision.ToCreate> ReadInformalIntermediateLevelSubdivisions(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
         IMandatorySingleItemDatabaseReader<NameableIdReaderByTermNameRequest, int> termReaderByName
@@ -190,7 +190,7 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
             {
                 new NewTermForNewNameable
                 {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyIdTopics,
@@ -199,8 +199,8 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
                 }
             };
 
-            yield return new InformalIntermediateLevelSubdivision.InformalIntermediateLevelSubdivisionToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new InformalIntermediateLevelSubdivision.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -210,11 +210,11 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
                     Title = title,
                     OwnerId = Constants.OWNER_GEOGRAPHY,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -223,9 +223,9 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,

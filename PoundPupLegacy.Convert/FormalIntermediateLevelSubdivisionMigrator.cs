@@ -8,12 +8,12 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator(
         IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermNameReaderByNameableIdRequest, string> termReaderByNameableIdFactory,
         IMandatorySingleItemDatabaseReaderFactory<NameableIdReaderByTermNameRequest, int> termReaderByNameFactory,
-        IEntityCreatorFactory<FormalIntermediateLevelSubdivision.FormalIntermediateLevelSubdivisionToCreate> formalIntermediateLevelSubdivisionCreatorFactory
+        IEntityCreatorFactory<FormalIntermediateLevelSubdivision.ToCreate> formalIntermediateLevelSubdivisionCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "formal intermediate level subdivisions";
 
-    private async IAsyncEnumerable<FormalIntermediateLevelSubdivision.FormalIntermediateLevelSubdivisionToCreate> ReadFormalIntermediateLevelSubdivisionCsv(
+    private async IAsyncEnumerable<FormalIntermediateLevelSubdivision.ToCreate> ReadFormalIntermediateLevelSubdivisionCsv(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
         IMandatorySingleItemDatabaseReader<TermNameReaderByNameableIdRequest, string> termReaderByNameableId,
@@ -43,8 +43,8 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator(
                 VocabularyId = vocabularyIdTopics,
                 NameableId = countryId
             }));
-            yield return new FormalIntermediateLevelSubdivision.FormalIntermediateLevelSubdivisionToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new FormalIntermediateLevelSubdivision.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -54,11 +54,11 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator(
                     NodeTypeId = int.Parse(parts[4]),
                     OwnerId = Constants.OWNER_GEOGRAPHY,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -67,9 +67,9 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,
@@ -89,7 +89,7 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator(
                     {
                         new NewTermForNewNameable
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null,
                             },
                             VocabularyId = vocabularyIdTopics,

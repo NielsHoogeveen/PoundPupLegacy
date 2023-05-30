@@ -42,7 +42,7 @@ internal sealed class LocationMigratorPPL(
             UrlId = 105
         });
         yield return (new LocationToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = 18,
             },
             Street = "8010 S County Road 5 Suite 205",
@@ -1400,7 +1400,7 @@ internal sealed class LocationMigratorPPL(
                 UrlId = reader.GetInt32("node_id"),
             });
             yield return (new LocationToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = id
                 },
                 Street = GetStreet(id, reader.IsDBNull("street") ? null : reader.GetString("street")),

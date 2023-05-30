@@ -2,7 +2,7 @@
 
 internal sealed class PageMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreatorFactory<Page.PageToCreate> pageCreatorFactory
+    IEntityCreatorFactory<Page.ToCreate> pageCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "pages";
@@ -12,7 +12,7 @@ internal sealed class PageMigrator(
         await using var pageCreator = await pageCreatorFactory.CreateAsync(_postgresConnection);
         await pageCreator.CreateAsync(ReadPages());
     }
-    private async IAsyncEnumerable<Page.PageToCreate> ReadPages()
+    private async IAsyncEnumerable<Page.ToCreate> ReadPages()
     {
 
         var sql = $"""
@@ -41,8 +41,8 @@ internal sealed class PageMigrator(
 
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
-            yield return new Page.PageToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new Page.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -52,11 +52,11 @@ internal sealed class PageMigrator(
                     Title = reader.GetString("title"),
                     OwnerId = Constants.PPL,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = 1,

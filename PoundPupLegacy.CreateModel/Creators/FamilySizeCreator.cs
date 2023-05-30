@@ -5,13 +5,13 @@ internal sealed class FamilySizeCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
     IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
     IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
-    IDatabaseInserterFactory<FamilySize.FamilySizeToCreate> familySizeInserterFactory,
+    IDatabaseInserterFactory<FamilySize.ToCreate> familySizeInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory
-) : IEntityCreatorFactory<FamilySize.FamilySizeToCreate>
+) : IEntityCreatorFactory<FamilySize.ToCreate>
 {
-    public async Task<IEntityCreator<FamilySize.FamilySizeToCreate>> CreateAsync(IDbConnection connection) =>
-        new NameableCreator<FamilySize.FamilySizeToCreate>(
+    public async Task<IEntityCreator<FamilySize.ToCreate>> CreateAsync(IDbConnection connection) =>
+        new NameableCreator<FamilySize.ToCreate>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

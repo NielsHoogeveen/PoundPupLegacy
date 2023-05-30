@@ -4,7 +4,7 @@ internal sealed class CoercedAdoptionCaseMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
-    IEntityCreatorFactory<CoercedAdoptionCase.CoercedAdoptionCaseToCreate> coercedAdoptionCaseCreatorFactory
+    IEntityCreatorFactory<CoercedAdoptionCase.ToCreate> coercedAdoptionCaseCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "coerced adoption cases";
@@ -16,7 +16,7 @@ internal sealed class CoercedAdoptionCaseMigrator(
         await using var termIdReader = await termIdReaderFactory.CreateAsync(_postgresConnection);
         await coercedAdoptionCaseCreator.CreateAsync(ReadCoercedAdoptionCases(nodeIdReader,termIdReader));
     }
-    private async IAsyncEnumerable<CoercedAdoptionCase.CoercedAdoptionCaseToCreate> ReadCoercedAdoptionCases(
+    private async IAsyncEnumerable<CoercedAdoptionCase.ToCreate> ReadCoercedAdoptionCases(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader)
     {
@@ -115,7 +115,7 @@ internal sealed class CoercedAdoptionCaseMigrator(
             var name = reader.GetString("title");
             var vocabularyNames = new List<NewTermForNewNameable> {
                 new NewTermForNewNameable {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -125,8 +125,8 @@ internal sealed class CoercedAdoptionCaseMigrator(
             };
 
 
-            var country = new CoercedAdoptionCase.CoercedAdoptionCaseToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            var country = new CoercedAdoptionCase.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -136,11 +136,11 @@ internal sealed class CoercedAdoptionCaseMigrator(
                     Title = name,
                     OwnerId = Constants.OWNER_CASES,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -149,9 +149,9 @@ internal sealed class CoercedAdoptionCaseMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,

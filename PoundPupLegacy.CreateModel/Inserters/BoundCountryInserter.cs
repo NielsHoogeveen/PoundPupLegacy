@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = BoundCountry.BoundCountryToCreate;
+using Request = BoundCountry.ToCreate;
 
 internal sealed class BoundCountryInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

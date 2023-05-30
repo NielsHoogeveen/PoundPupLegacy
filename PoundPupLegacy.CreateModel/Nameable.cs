@@ -8,12 +8,10 @@ public interface NameableToCreate: Nameable, SearchableToCreate
 {
     NameableDetails.NameableDetailsForCreate NameableDetailsForCreate { get; }
 }
-
 public interface Nameable : Searchable
 {
     NameableDetails NameableDetails { get; }
 }
-
 public abstract record NameableDetails
 {
     private NameableDetails() { }

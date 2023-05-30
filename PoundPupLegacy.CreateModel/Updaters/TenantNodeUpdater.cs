@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Updaters;
 
-using Request = TenantNode.TenantNodeToUpdate;
+using Request = TenantNode.ToUpdate;
 
 internal sealed class TenantNodeUpdaterFactory : DatabaseUpdaterFactory<Request>
 {
@@ -20,7 +20,7 @@ internal sealed class TenantNodeUpdaterFactory : DatabaseUpdaterFactory<Request>
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new List<ParameterValue> {
-            ParameterValue.Create(Id, request.IdentificationForUpdate.Id),
+            ParameterValue.Create(Id, request.IdentificationCertain.Id),
             ParameterValue.Create(UrlPath, request.UrlPath),
             ParameterValue.Create(SubgroupId, request.SubgroupId),
             ParameterValue.Create(PublicationStatusId, request.PublicationStatusId)

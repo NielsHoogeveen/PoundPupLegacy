@@ -118,10 +118,10 @@ public sealed record StoredTerm
 internal class MemberOfCongressMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        IEntityCreatorFactory<Person.PersonToCreate> personCreatorFactory,
+        IEntityCreatorFactory<Person.ToCreate> personCreatorFactory,
         IEntityCreatorFactory<File> fileCreatorFactory,
         IEntityCreatorFactory<NodeFile> nodeFileCreatorFactory,
-        IEntityCreatorFactory<PersonOrganizationRelation.PersonOrganizationRelationToCreateForExistingParticipants> personOrganizationRelationCreatorFactory,
+        IEntityCreatorFactory<PersonOrganizationRelation.ToCreateForExistingParticipants> personOrganizationRelationCreatorFactory,
         IEntityCreatorFactory<ProfessionalRole> professionalRoleCreatorFactory
 
     ) : MigratorPPL(databaseConnections)
@@ -282,7 +282,7 @@ internal class MemberOfCongressMigrator(
         });
     }
 
-    private async IAsyncEnumerable<Person.PersonToCreate> GetMembersOfCongressAsync(
+    private async IAsyncEnumerable<Person.ToCreate> GetMembersOfCongressAsync(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
@@ -408,12 +408,12 @@ internal class MemberOfCongressMigrator(
                     return politicalPartyAffiliations!.First(x => x.Item1 == party.ToLower()).Item2;
                 }
 
-                List<CongressionalTermPoliticalPartyAffiliation.CongressionalTermPoliticalPartyAffiliationToCreateForNewTerm> GetPartyAffiliations(Term term)
+                List<CongressionalTermPoliticalPartyAffiliation.ToCreateForNewTerm> GetPartyAffiliations(Term term)
                 {
                     if (term.party_affiliations == null) {
-                        return new List<CongressionalTermPoliticalPartyAffiliation.CongressionalTermPoliticalPartyAffiliationToCreateForNewTerm> {
-                            new CongressionalTermPoliticalPartyAffiliation.CongressionalTermPoliticalPartyAffiliationToCreateForNewTerm {
-                                IdentificationForCreate = new Identification.IdentificationForCreate {
+                        return new List<CongressionalTermPoliticalPartyAffiliation.ToCreateForNewTerm> {
+                            new CongressionalTermPoliticalPartyAffiliation.ToCreateForNewTerm {
+                                IdentificationForCreate = new Identification.Possible {
                                     Id = null
                                 },
                                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate{
@@ -423,10 +423,10 @@ internal class MemberOfCongressMigrator(
                                     Title = $"{name} is {term.party} from {term.start.ToString("dd MMMM yyyy")} to {term.end.ToString("dd MMMM yyyy")}",
                                     OwnerId = Constants.OWNER_PARTIES,
                                     AuthoringStatusId = 1,
-                                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                                     {
-                                        new TenantNode.TenantNodeToCreateForNewNode {
-                                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                        new TenantNode.ToCreateForNewNode {
+                                            IdentificationForCreate = new Identification.Possible {
                                                 Id = null
                                             },
                                             TenantId = 1,
@@ -446,8 +446,8 @@ internal class MemberOfCongressMigrator(
                             }
                         };
                     }
-                    return term.party_affiliations.Select(party_affiliations => new CongressionalTermPoliticalPartyAffiliation.CongressionalTermPoliticalPartyAffiliationToCreateForNewTerm {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                    return term.party_affiliations.Select(party_affiliations => new CongressionalTermPoliticalPartyAffiliation.ToCreateForNewTerm {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -457,9 +457,9 @@ internal class MemberOfCongressMigrator(
                             Title = $"{name} is {term.party} from {term.start.ToString("dd MMMM yyyy")} to {term.end.ToString("dd MMMM yyyy")}",
                             OwnerId = Constants.OWNER_PARTIES,
                             AuthoringStatusId = 1,
-                            TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode> {
-                                new TenantNode.TenantNodeToCreateForNewNode {
-                                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                            TenantNodes = new List<TenantNode.ToCreateForNewNode> {
+                                new TenantNode.ToCreateForNewNode {
+                                    IdentificationForCreate = new Identification.Possible {
                                         Id = null
                                     },
                                     TenantId = 1,
@@ -485,13 +485,13 @@ internal class MemberOfCongressMigrator(
                     return states!.First(x => x.Item1 == $"US-{term.state}").Item2;
                 }
 
-                List<SenateTerm.SenateTermToCreate> GetSenateTerms()
+                List<SenateTerm.ToCreate> GetSenateTerms()
                 {
                     return memberOfCongress.terms.Where(x => x.type == "sen").Select(term => {
                         var subdivisionId = GetStateId(term);
                         var partyAffiliations = GetPartyAffiliations(term);
-                        var senateTerm = new SenateTerm.SenateTermToCreate {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                        var senateTerm = new SenateTerm.ToCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -501,9 +501,9 @@ internal class MemberOfCongressMigrator(
                                 Title = $"{name} is senator",
                                 OwnerId = Constants.OWNER_PARTIES,
                                 AuthoringStatusId = 1,
-                                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode> {
-                                    new TenantNode.TenantNodeToCreateForNewNode {
-                                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                                TenantNodes = new List<TenantNode.ToCreateForNewNode> {
+                                    new TenantNode.ToCreateForNewNode {
+                                        IdentificationForCreate = new Identification.Possible {
                                             Id = null
                                         },
                                         TenantId = 1,
@@ -528,14 +528,14 @@ internal class MemberOfCongressMigrator(
                         return senateTerm;
                     }).ToList();
                 }
-                List<HouseTerm.HouseTermToCreate> GetHouseTerms()
+                List<HouseTerm.ToCreate> GetHouseTerms()
                 {
                     return memberOfCongress.terms.Where(x => x.type == "rep").Select(term => {
                         var subdivisionId = GetStateId(term);
                         var partyAffiliations = GetPartyAffiliations(term);
 
-                        var houseTerm = new HouseTerm.HouseTermToCreate {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                        var houseTerm = new HouseTerm.ToCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -545,9 +545,9 @@ internal class MemberOfCongressMigrator(
                                 Title = $"{name} is representative",
                                 OwnerId = Constants.OWNER_PARTIES,
                                 AuthoringStatusId = 1,
-                                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode> {
-                                    new TenantNode.TenantNodeToCreateForNewNode {
-                                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                                TenantNodes = new List<TenantNode.ToCreateForNewNode> {
+                                    new TenantNode.ToCreateForNewNode {
+                                        IdentificationForCreate = new Identification.Possible {
                                             Id = null
                                         },
                                         TenantId = 1,
@@ -579,8 +579,8 @@ internal class MemberOfCongressMigrator(
 
                 if (memberOfCongress.node_id.HasValue) {
                     if (isSenator) {
-                        professionalRolesExistingPerson.Add(new Senator.SenatorToCreateForExistingPerson {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                        professionalRolesExistingPerson.Add(new Senator.ToCreateForExistingPerson {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null,
                             },
                             ProfessionalRoleDetailsForCreate = new ProfessionalRoleDetails.ProfessionalRoleDetailsForCreateOfExistingPerson {
@@ -589,14 +589,14 @@ internal class MemberOfCongressMigrator(
                                 ProfessionId = senatorRoleId,
                                 PersonId = memberOfCongress.node_id.Value,
                             },
-                            SenatorDetailsToCreate = new SenatorDetails.SenatorDetailsForCreate {
+                            SenatorDetailsToCreate = new SenatorDetails.ForCreate {
                                 SenateTermToCreate = GetSenateTerms(),
                             },
                         });
                     }
                     if (isRepresentative) {
-                        professionalRolesExistingPerson.Add(new Representative.RepresentativeToCreateForExistingPerson {
-                            IdentificationForCreate = new Identification.IdentificationForCreate { 
+                        professionalRolesExistingPerson.Add(new Representative.ToCreateForExistingPerson {
+                            IdentificationForCreate = new Identification.Possible { 
                                 Id = null
                             },
                             ProfessionalRoleDetailsForCreate = new ProfessionalRoleDetails.ProfessionalRoleDetailsForCreateOfExistingPerson {
@@ -626,24 +626,24 @@ internal class MemberOfCongressMigrator(
                 else {
 
                     if (isSenator) {
-                        professionalRolesNewPerson.Add(new Senator.SenatorToCreateForNewPerson {
+                        professionalRolesNewPerson.Add(new Senator.ToCreateForNewPerson {
                             ProfessionalRoleDetailsForCreate = new ProfessionalRoleDetails.ProfessionalRoleDetailsForCreateOfNewPerson 
                             {
                                 Id  = null,
                                 DateTimeRange = null,
                                 ProfessionId = senatorRoleId,
                             },
-                            SenatorDetailsForCreate = new SenatorDetails.SenatorDetailsForCreate {
+                            SenatorDetailsForCreate = new SenatorDetails.ForCreate {
                                 SenateTermToCreate = GetSenateTerms(),
                             },
-                            IdentificationForCreate = new Identification.IdentificationForCreate { 
+                            IdentificationForCreate = new Identification.Possible { 
                                 Id = null
                             },
                         });
                     }
                     if (isRepresentative) {
-                        professionalRolesNewPerson.Add(new Representative.BasticProfessionalRoleToCreateForNewPerson {
-                            IdentificationForCreate = new Identification.IdentificationForCreate { 
+                        professionalRolesNewPerson.Add(new Representative.ToCreateForNewPerson {
+                            IdentificationForCreate = new Identification.Possible { 
                                 Id = null
                             },
                             ProfessionalRoleDetailsForCreate = new ProfessionalRoleDetails.ProfessionalRoleDetailsForCreateOfNewPerson{
@@ -659,14 +659,14 @@ internal class MemberOfCongressMigrator(
 
                     var terms = memberOfCongress.terms.Select(x => (x.start, x.end, x.party)).GroupBy(x => x.party).ToList();
 
-                    var relations = new List<PersonOrganizationRelation.PersonOrganizationRelationToCreateForExistingParticipants>();
+                    var relations = new List<PersonOrganizationRelation.ToCreateForExistingParticipants>();
                     if (terms.Count == 1) {
 
                     }
                     var title = memberOfCongress.name.official_full is null ? $"{memberOfCongress.name.first} {memberOfCongress.name.middle} {memberOfCongress.name.last} {memberOfCongress.name.suffix}".Replace("  ", " ") : memberOfCongress.name.official_full;
                     var vocabularyNames = new List<NewTermForNewNameable> {
                         new NewTermForNewNameable {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             VocabularyId = vocabularyId,
@@ -675,8 +675,8 @@ internal class MemberOfCongressMigrator(
                         }
                     };
 
-                    yield return new Person.PersonToCreate {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                    yield return new Person.ToCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -686,9 +686,9 @@ internal class MemberOfCongressMigrator(
                             Title = title,
                             OwnerId = Constants.OWNER_PARTIES,
                             AuthoringStatusId = 1,
-                            TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode> {
-                                new TenantNode.TenantNodeToCreateForNewNode {
-                                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                            TenantNodes = new List<TenantNode.ToCreateForNewNode> {
+                                new TenantNode.ToCreateForNewNode {
+                                    IdentificationForCreate = new Identification.Possible {
                                         Id = null
                                     },
                                     TenantId = 1,
@@ -721,10 +721,10 @@ internal class MemberOfCongressMigrator(
                             Suffix = memberOfCongress.name.suffix,
                             Bioguide = memberOfCongress.id.bioguide,
                             ProfessionalRolesToCreate = professionalRolesNewPerson,
-                            InterPersonalRelationsToCreateFrom = new List<InterPersonalRelation.InterPersonalRelationToCreateForNewPersonFrom>(),
-                            InterPersonalRelationsToCreateTo = new List<InterPersonalRelation.InterPersonalRelationToCreateForNewPersonTo>(),
-                            PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForNewParty>(),
-                            PersonOrganizationRelationToCreate = new List<PersonOrganizationRelation.PersonOrganizationRelationToCreateForNewPerson>(),
+                            InterPersonalRelationsToCreateFrom = new List<InterPersonalRelation.ToCreateForNewPersonFrom>(),
+                            InterPersonalRelationsToCreateTo = new List<InterPersonalRelation.ToCreateForNewPersonTo>(),
+                            PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.ToCreateForNewParty>(),
+                            PersonOrganizationRelationToCreate = new List<PersonOrganizationRelation.ToCreateForNewPerson>(),
                         },
                     };
                 }
@@ -773,7 +773,7 @@ internal class MemberOfCongressMigrator(
             var file = new FileInfo(fileNameSource);
             if (file.Exists) {
                 yield return new File {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     Path = $"files/members_of_congress/{reader.GetString(1)}.jpg",
@@ -878,7 +878,7 @@ internal class MemberOfCongressMigrator(
         }
     }
 
-    private async IAsyncEnumerable<PersonOrganizationRelation.PersonOrganizationRelationToCreateForExistingParticipants> GetPartyMembership()
+    private async IAsyncEnumerable<PersonOrganizationRelation.ToCreateForExistingParticipants> GetPartyMembership()
     {
 
         var sql = $"""
@@ -1002,8 +1002,8 @@ internal class MemberOfCongressMigrator(
 
 
             var now = DateTime.Now;
-            yield return new PersonOrganizationRelation.PersonOrganizationRelationToCreateForExistingParticipants{
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new PersonOrganizationRelation.ToCreateForExistingParticipants{
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -1013,11 +1013,11 @@ internal class MemberOfCongressMigrator(
                     Title = reader.GetString("title"),
                     OwnerId = Constants.OWNER_PARTIES,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = 1,
@@ -1026,9 +1026,9 @@ internal class MemberOfCongressMigrator(
                             SubgroupId = null,
                             UrlId = null
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,

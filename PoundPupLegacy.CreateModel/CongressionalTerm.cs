@@ -16,7 +16,7 @@ public abstract record CongressionalTermDetails
 {
     public sealed record CongressionalTermDetailsForCreate: CongressionalTermDetails
     {
-        public required List<CongressionalTermPoliticalPartyAffiliation.CongressionalTermPoliticalPartyAffiliationToCreateForNewTerm> PartyAffiliations { get; init; }
+        public required List<CongressionalTermPoliticalPartyAffiliation.ToCreateForNewTerm> PartyAffiliations { get; init; }
     }
     public sealed record CongressionalTermDetailsForUpdate: CongressionalTermDetails
     {

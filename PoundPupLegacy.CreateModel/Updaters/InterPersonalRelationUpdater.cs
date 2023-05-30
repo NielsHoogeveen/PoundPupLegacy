@@ -32,7 +32,7 @@ internal sealed class InterPersonalRelationUpdaterFactory : DatabaseUpdaterFacto
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new List<ParameterValue> {
-            ParameterValue.Create(NodeId, request.IdentificationForUpdate.Id),
+            ParameterValue.Create(NodeId, request.IdentificationCertain.Id),
             ParameterValue.Create(Title, request.NodeDetails.Title),
             ParameterValue.Create(PersonIdFrom, request.PersonIdFrom),
             ParameterValue.Create(PersonIdTo, request.PersonIdTo),

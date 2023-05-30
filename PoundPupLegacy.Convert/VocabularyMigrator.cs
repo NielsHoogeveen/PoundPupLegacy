@@ -3,15 +3,15 @@
 internal sealed class VocabularyMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
-    IEntityCreatorFactory<Vocabulary.VocabularyToCreate> vocabularyCreatorFactory
+    IEntityCreatorFactory<Vocabulary.ToCreate> vocabularyCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "vocabularies";
-    private static async IAsyncEnumerable<Vocabulary.VocabularyToCreate> GetVocabularies()
+    private static async IAsyncEnumerable<Vocabulary.ToCreate> GetVocabularies()
     {
         await Task.CompletedTask;
-        yield return new Vocabulary.VocabularyToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new Vocabulary.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -21,11 +21,11 @@ internal sealed class VocabularyMigrator(
                 Title = Constants.VOCABULARY_CHILD_PLACEMENT_TYPE,
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = 1,
@@ -44,8 +44,8 @@ internal sealed class VocabularyMigrator(
                 OwnerId = Constants.OWNER_CASES,
             },
         };
-        yield return new Vocabulary.VocabularyToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new Vocabulary.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -55,11 +55,11 @@ internal sealed class VocabularyMigrator(
                 Title = Constants.VOCABULARY_TYPE_OF_ABUSE,
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = 1,
@@ -78,8 +78,8 @@ internal sealed class VocabularyMigrator(
                 OwnerId = Constants.OWNER_CASES,
             },
         };
-        yield return new Vocabulary.VocabularyToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new Vocabulary.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -89,11 +89,11 @@ internal sealed class VocabularyMigrator(
                 Title = Constants.VOCABULARY_TYPE_OF_ABUSER,
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = 1,
@@ -112,8 +112,8 @@ internal sealed class VocabularyMigrator(
                 OwnerId = Constants.OWNER_CASES,
             },
         };
-        yield return new Vocabulary.VocabularyToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new Vocabulary.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -123,11 +123,11 @@ internal sealed class VocabularyMigrator(
                 Title = Constants.VOCABULARY_FAMILY_SIZE,
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = 1,
@@ -146,8 +146,8 @@ internal sealed class VocabularyMigrator(
                 OwnerId = Constants.OWNER_CASES,
             },
         };
-        yield return new Vocabulary.VocabularyToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new Vocabulary.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -157,11 +157,11 @@ internal sealed class VocabularyMigrator(
                 Title = Constants.VOCABULARY_BILL_ACTION,
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = 1,
@@ -180,8 +180,8 @@ internal sealed class VocabularyMigrator(
                 OwnerId = Constants.OWNER_PARTIES,
             },
         };
-        yield return new Vocabulary.VocabularyToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new Vocabulary.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -191,11 +191,11 @@ internal sealed class VocabularyMigrator(
                 Title = Constants.VOCABULARY_ORGANIZATION_ACT_RELATION_TYPE,
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = 1,
@@ -214,8 +214,8 @@ internal sealed class VocabularyMigrator(
                 OwnerId = Constants.OWNER_PARTIES,
             },
         };
-        yield return new Vocabulary.VocabularyToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new Vocabulary.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -225,11 +225,11 @@ internal sealed class VocabularyMigrator(
                 Title = Constants.VOCABULARY_SUBDIVISION_TYPE,
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = 1,
@@ -248,8 +248,8 @@ internal sealed class VocabularyMigrator(
                 OwnerId = Constants.OWNER_GEOGRAPHY,
             },
         };
-        yield return new Vocabulary.VocabularyToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new Vocabulary.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -259,11 +259,11 @@ internal sealed class VocabularyMigrator(
                 Title = Constants.VOCABULARY_UNITED_STATES_POLITICAL_PARTY_AFFILITION_TYPE,
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = 1,
@@ -282,8 +282,8 @@ internal sealed class VocabularyMigrator(
                 OwnerId = Constants.OWNER_PARTIES,
             },
         };
-        yield return new Vocabulary.VocabularyToCreate {
-            IdentificationForCreate = new Identification.IdentificationForCreate {
+        yield return new Vocabulary.ToCreate {
+            IdentificationForCreate = new Identification.Possible {
                 Id = null
             },
             NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -293,11 +293,11 @@ internal sealed class VocabularyMigrator(
                 Title = Constants.VOCABULARY_CASE_PARTY_TYPE,
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreateForNewNode>
                 {
-                    new TenantNode.TenantNodeToCreateForNewNode
+                    new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                        IdentificationForCreate = new Identification.Possible {
                             Id = null
                         },
                         TenantId = 1,
@@ -359,7 +359,7 @@ internal sealed class VocabularyMigrator(
         await vocabularyCreator.CreateAsync(GetVocabularies());
         await vocabularyCreator.CreateAsync(ReadVocabularies());
     }
-    private async IAsyncEnumerable<Vocabulary.VocabularyToCreate> ReadVocabularies()
+    private async IAsyncEnumerable<Vocabulary.ToCreate> ReadVocabularies()
     {
 
         var sql = $"""
@@ -390,8 +390,8 @@ internal sealed class VocabularyMigrator(
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("name");
-            yield return new Vocabulary.VocabularyToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new Vocabulary.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -401,11 +401,11 @@ internal sealed class VocabularyMigrator(
                     Title = GetVocabularyName(id, name),
                     OwnerId = GetOwner(id),
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = 1,

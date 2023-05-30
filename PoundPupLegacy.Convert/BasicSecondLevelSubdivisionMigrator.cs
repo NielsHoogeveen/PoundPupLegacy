@@ -10,11 +10,11 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
         IMandatorySingleItemDatabaseReaderFactory<TermNameReaderByNameableIdRequest, string> termReaderByNameableIdFactory,
         IMandatorySingleItemDatabaseReaderFactory<NameableIdReaderByTermNameRequest, int> termReaderByNameFactory,
         IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166CodeFactory,
-        IEntityCreatorFactory<BasicSecondLevelSubdivision.BasicSecondLevelSubdivisionToCreate> basicSecondLevelSubdivisionCreatorFactory
+        IEntityCreatorFactory<BasicSecondLevelSubdivision.ToCreate> basicSecondLevelSubdivisionCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "basic second level subdivisions";
-    private async IAsyncEnumerable<BasicSecondLevelSubdivision.BasicSecondLevelSubdivisionToCreate> ReadBasicSecondLevelSubdivisionsInInformalPrimarySubdivisionCsv(
+    private async IAsyncEnumerable<BasicSecondLevelSubdivision.ToCreate> ReadBasicSecondLevelSubdivisionsInInformalPrimarySubdivisionCsv(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
         IMandatorySingleItemDatabaseReader<SubdivisionIdReaderByNameRequest, int> subdivisionIdByNameReader,
@@ -46,8 +46,8 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                 NameableId = subdivisionId,
                 VocabularyId = vocabularyIdTopics
             }));
-            yield return new BasicSecondLevelSubdivision.BasicSecondLevelSubdivisionToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new BasicSecondLevelSubdivision.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -57,11 +57,11 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                     NodeTypeId = int.Parse(parts[4]),
                     OwnerId = Constants.OWNER_GEOGRAPHY,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -70,9 +70,9 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,
@@ -91,7 +91,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                     {
                         new NewTermForNewNameable
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null,
                             },
                             VocabularyId = vocabularyIdTopics,
@@ -125,7 +125,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
         }
     }
 
-    private async IAsyncEnumerable<BasicSecondLevelSubdivision.BasicSecondLevelSubdivisionToCreate> ReadBasicSecondLevelSubdivisionCsv(
+    private async IAsyncEnumerable<BasicSecondLevelSubdivision.ToCreate> ReadBasicSecondLevelSubdivisionCsv(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
         IMandatorySingleItemDatabaseReader<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166Code,
@@ -153,8 +153,8 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                 NameableId = subdivisionId,
                 VocabularyId = vocabularyIdTopics
             }));
-            yield return new BasicSecondLevelSubdivision.BasicSecondLevelSubdivisionToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new BasicSecondLevelSubdivision.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -164,11 +164,11 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                     NodeTypeId = int.Parse(parts[4]),
                     OwnerId = Constants.OWNER_GEOGRAPHY,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -177,9 +177,9 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,
@@ -198,7 +198,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                     {
                         new NewTermForNewNameable
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null,
                             },
                             VocabularyId = vocabularyIdTopics,
@@ -266,7 +266,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
         ));
 
     }
-    private async IAsyncEnumerable<BasicSecondLevelSubdivision.BasicSecondLevelSubdivisionToCreate> ReadBasicSecondLevelSubdivisions(
+    private async IAsyncEnumerable<BasicSecondLevelSubdivision.ToCreate> ReadBasicSecondLevelSubdivisions(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
         IMandatorySingleItemDatabaseReader<NameableIdReaderByTermNameRequest, int> termReaderByName
@@ -321,7 +321,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
             {
                 new NewTermForNewNameable
                 {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyIdTopics,
@@ -334,8 +334,8 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                     },
                 }
             };
-            yield return new BasicSecondLevelSubdivision.BasicSecondLevelSubdivisionToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new BasicSecondLevelSubdivision.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
@@ -345,11 +345,11 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                     Title = title,
                     OwnerId = Constants.OWNER_GEOGRAPHY,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -358,9 +358,9 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,

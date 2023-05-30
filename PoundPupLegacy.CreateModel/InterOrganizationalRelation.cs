@@ -6,50 +6,26 @@ public abstract record InterOrganizationalRelation: Node
     public abstract Identification Identification { get; }
     public abstract NodeDetails NodeDetails { get; }
     public required InterOrganizationalRelationDetails InterOrganizationalRelationDetails { get; init; }
-    public abstract T Match<T>(
-        Func<InterOrganizationalRelationToCreateForExistingParticipants, T> create,
-        Func<InterOrganizationalRelationToCreateForNewOrganizationFrom, T> createNewFrom,
-        Func<InterOrganizationalRelationToCreateForNewOrganizationTo, T> createNewTo,
-        Func<InterOrganizationalRelationToUpdate, T> update
-     );
-    public abstract void Match(
-        Action<InterOrganizationalRelationToCreateForExistingParticipants> create,
-        Action<InterOrganizationalRelationToCreateForNewOrganizationFrom> createNewFrom,
-        Action<InterOrganizationalRelationToCreateForNewOrganizationTo> createNewTo,
-        Action<InterOrganizationalRelationToUpdate> update
-    );
 
-    public sealed record InterOrganizationalRelationToCreateForExistingParticipants : InterOrganizationalRelation, NodeToCreate
+    public sealed record ToCreateForExistingParticipants : InterOrganizationalRelation, NodeToCreate
     {
         public required int OrganizationIdFrom { get; init; }
         public required int OrganizationIdTo { get; init; }
-        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
+        public required Identification.Possible IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
         public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
-        public override T Match<T>(
-            Func<InterOrganizationalRelationToCreateForExistingParticipants, T> create,
-            Func<InterOrganizationalRelationToCreateForNewOrganizationFrom, T> createNewFrom,
-            Func<InterOrganizationalRelationToCreateForNewOrganizationTo, T> createNewTo,
-            Func<InterOrganizationalRelationToUpdate, T> update
-         ){
-            return create(this);
-        }
-        public override void Match(
-            Action<InterOrganizationalRelationToCreateForExistingParticipants> create,
-            Action<InterOrganizationalRelationToCreateForNewOrganizationFrom> createNewFrom,
-            Action<InterOrganizationalRelationToCreateForNewOrganizationTo> createNewTo,
-            Action<InterOrganizationalRelationToUpdate> update
-        ){
-            create(this);
-        }
     }
-    public sealed record InterOrganizationalRelationToCreateForNewOrganizationFrom : InterOrganizationalRelation, NodeToCreate
+    public sealed record ToCreateForNewOrganizationFrom : InterOrganizationalRelation, NodeToCreate
     {
         public required int OrganizationIdTo { get; init; }
-        public InterOrganizationalRelationToCreateForExistingParticipants ResolveOrganizationFrom(int organizationIdFrom)
+        public required Identification.Possible IdentificationForCreate { get; init; }
+        public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+        public override Identification Identification => IdentificationForCreate;
+        public override NodeDetails NodeDetails => NodeDetailsForCreate;
+        public ToCreateForExistingParticipants ResolveOrganizationFrom(int organizationIdFrom)
         {
-            return new InterOrganizationalRelationToCreateForExistingParticipants {
+            return new ToCreateForExistingParticipants {
                 OrganizationIdFrom = organizationIdFrom,
                 OrganizationIdTo = OrganizationIdTo,
                 InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
@@ -57,34 +33,18 @@ public abstract record InterOrganizationalRelation: Node
                 IdentificationForCreate = IdentificationForCreate,
             };
         }
-        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
+    }
+
+    public sealed record ToCreateForNewOrganizationTo : InterOrganizationalRelation, NodeToCreate
+    {
+        public required int OrganizationIdFrom { get; init; }
+        public required Identification.Possible IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
         public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
-        public override T Match<T>(
-            Func<InterOrganizationalRelationToCreateForExistingParticipants, T> create,
-            Func<InterOrganizationalRelationToCreateForNewOrganizationFrom, T> createNewFrom,
-            Func<InterOrganizationalRelationToCreateForNewOrganizationTo, T> createNewTo,
-            Func<InterOrganizationalRelationToUpdate, T> update
-         ){
-            return createNewFrom(this);
-        }
-        public override void Match(
-            Action<InterOrganizationalRelationToCreateForExistingParticipants> create,
-            Action<InterOrganizationalRelationToCreateForNewOrganizationFrom> createNewFrom,
-            Action<InterOrganizationalRelationToCreateForNewOrganizationTo> createNewTo,
-            Action<InterOrganizationalRelationToUpdate> update
-        ){
-            createNewFrom(this);
-        }
-    }
-
-    public sealed record InterOrganizationalRelationToCreateForNewOrganizationTo : InterOrganizationalRelation, NodeToCreate
-    {
-        public required int OrganizationIdFrom { get; init; }
-        public InterOrganizationalRelationToCreateForExistingParticipants ResolveOrganizationTo(int organizationIdTo)
+        public ToCreateForExistingParticipants ResolveOrganizationTo(int organizationIdTo)
         {
-            return new InterOrganizationalRelationToCreateForExistingParticipants {
+            return new ToCreateForExistingParticipants {
                 OrganizationIdFrom = OrganizationIdFrom,
                 OrganizationIdTo = organizationIdTo,
                 InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
@@ -92,51 +52,15 @@ public abstract record InterOrganizationalRelation: Node
                 IdentificationForCreate = IdentificationForCreate,
             };
         }
-        public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-        public override Identification Identification => IdentificationForCreate;
-        public override NodeDetails NodeDetails => NodeDetailsForCreate;
-        public override T Match<T>(
-            Func<InterOrganizationalRelationToCreateForExistingParticipants, T> create,
-            Func<InterOrganizationalRelationToCreateForNewOrganizationFrom, T> createNewFrom,
-            Func<InterOrganizationalRelationToCreateForNewOrganizationTo, T> createNewTo,
-            Func<InterOrganizationalRelationToUpdate, T> update
-         ){
-            return createNewTo(this);
-        }
-        public override void Match(
-            Action<InterOrganizationalRelationToCreateForExistingParticipants> create,
-            Action<InterOrganizationalRelationToCreateForNewOrganizationFrom> createNewFrom,
-            Action<InterOrganizationalRelationToCreateForNewOrganizationTo> createNewTo,
-            Action<InterOrganizationalRelationToUpdate> update
-        ){
-            createNewTo(this);
-        }
     }
-    public sealed record InterOrganizationalRelationToUpdate : InterOrganizationalRelation, NodeToUpdate
+    public sealed record ToUpdate : InterOrganizationalRelation, NodeToUpdate
     {
         public required int OrganizationIdFrom { get; init; }
         public required int OrganizationIdTo { get; init; }
-        public override Identification Identification => IdentificationForUpdate;
+        public override Identification Identification => IdentificationCertain;
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
-        public required Identification.IdentificationForUpdate IdentificationForUpdate { get; init; }
-        public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
-        public override T Match<T>(
-            Func<InterOrganizationalRelationToCreateForExistingParticipants, T> create,
-            Func<InterOrganizationalRelationToCreateForNewOrganizationFrom, T> createNewFrom,
-            Func<InterOrganizationalRelationToCreateForNewOrganizationTo, T> createNewTo,
-            Func<InterOrganizationalRelationToUpdate, T> update
-         ){
-            return update(this);
-        }
-        public override void Match(
-            Action<InterOrganizationalRelationToCreateForExistingParticipants> create,
-            Action<InterOrganizationalRelationToCreateForNewOrganizationFrom> createNewFrom,
-            Action<InterOrganizationalRelationToCreateForNewOrganizationTo> createNewTo,
-            Action<InterOrganizationalRelationToUpdate> update
-        ){
-            update(this);
-        }
+        public required Identification.Certain IdentificationCertain { get; init; }
+        public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
     }
 }
 

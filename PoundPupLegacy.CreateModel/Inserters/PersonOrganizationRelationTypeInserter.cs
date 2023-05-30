@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = PersonOrganizationRelationType.PersonOrganizationRelationTypeToCreate;
+using Request = PersonOrganizationRelationType.ToCreate;
 
 internal sealed class PersonOrganizationRelationTypeInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

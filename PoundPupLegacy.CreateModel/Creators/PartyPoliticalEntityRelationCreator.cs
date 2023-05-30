@@ -2,12 +2,12 @@
 
 internal sealed class PartyPoliticalEntityRelationCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
-    IDatabaseInserterFactory<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForExistingParty> partyPoliticalEntityRelationInserterFactory,
+    IDatabaseInserterFactory<PartyPoliticalEntityRelation.ToCreateForExistingParty> partyPoliticalEntityRelationInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory
-) : IEntityCreatorFactory<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForExistingParty>
+) : IEntityCreatorFactory<PartyPoliticalEntityRelation.ToCreateForExistingParty>
 {
-    public async Task<IEntityCreator<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForExistingParty>> CreateAsync(IDbConnection connection) =>
-        new NodeCreator<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForExistingParty>(
+    public async Task<IEntityCreator<PartyPoliticalEntityRelation.ToCreateForExistingParty>> CreateAsync(IDbConnection connection) =>
+        new NodeCreator<PartyPoliticalEntityRelation.ToCreateForExistingParty>(
             new (){
                 await nodeInserterFactory.CreateAsync(connection),
                 await partyPoliticalEntityRelationInserterFactory.CreateAsync(connection)

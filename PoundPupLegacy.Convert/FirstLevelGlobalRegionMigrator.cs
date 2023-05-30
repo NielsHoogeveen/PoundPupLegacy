@@ -4,7 +4,7 @@ internal sealed class FirstLevelGlobalRegionMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreatorFactory<FirstLevelGlobalRegion.FirstLevelGlobalRegionToCreate> firstLevelGlobalRegionCreatorFactory
+    IEntityCreatorFactory<FirstLevelGlobalRegion.ToCreate> firstLevelGlobalRegionCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "first level global regions";
@@ -17,7 +17,7 @@ internal sealed class FirstLevelGlobalRegionMigrator(
         await firstLevelGlobalRegionCreator.CreateAsync(ReadFirstLevelGlobalRegions(nodeIdReader,fileIdReaderByTenantFileId));
     }
 
-    private async IAsyncEnumerable<FirstLevelGlobalRegion.FirstLevelGlobalRegionToCreate> ReadFirstLevelGlobalRegions(
+    private async IAsyncEnumerable<FirstLevelGlobalRegion.ToCreate> ReadFirstLevelGlobalRegions(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)
     {
@@ -61,7 +61,7 @@ internal sealed class FirstLevelGlobalRegionMigrator(
             {
                 new NewTermForNewNameable
                 {
-                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                    IdentificationForCreate = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -70,8 +70,8 @@ internal sealed class FirstLevelGlobalRegionMigrator(
                 }
             };
 
-            yield return new FirstLevelGlobalRegion.FirstLevelGlobalRegionToCreate {
-                IdentificationForCreate = new Identification.IdentificationForCreate {
+            yield return new FirstLevelGlobalRegion.ToCreate {
+                IdentificationForCreate = new Identification.Possible {
                     Id = null
                 },
                 NodeDetailsForCreate =new NodeDetails.NodeDetailsForCreate {
@@ -81,11 +81,11 @@ internal sealed class FirstLevelGlobalRegionMigrator(
                     Title = name,
                     OwnerId = Constants.OWNER_GEOGRAPHY,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
                     {
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -94,9 +94,9 @@ internal sealed class FirstLevelGlobalRegionMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.TenantNodeToCreateForNewNode
+                        new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                            IdentificationForCreate = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,
