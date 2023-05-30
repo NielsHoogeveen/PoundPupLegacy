@@ -3,7 +3,7 @@
 internal sealed class InterOrganizationalRelationMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    IEntityCreatorFactory<InterOrganizationalRelation.ToCreateForExistingParticipants> interOrganizationalRelationCreatorFactory
+    IEntityCreatorFactory<InterOrganizationalRelation.ToCreate.ForExistingParticipants> interOrganizationalRelationCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
 
@@ -16,7 +16,7 @@ internal sealed class InterOrganizationalRelationMigratorPPL(
         await interOrganizationalRelationCreator.CreateAsync(ReadInterOrganizationalRelations(nodeIdReader));
     }
 
-    private async IAsyncEnumerable<InterOrganizationalRelation.ToCreateForExistingParticipants> ReadInterOrganizationalRelations(
+    private async IAsyncEnumerable<InterOrganizationalRelation.ToCreate.ForExistingParticipants> ReadInterOrganizationalRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
@@ -134,7 +134,7 @@ internal sealed class InterOrganizationalRelationMigratorPPL(
                 TenantId = Constants.PPL
             });
 
-            yield return new InterOrganizationalRelation.ToCreateForExistingParticipants {
+            yield return new InterOrganizationalRelation.ToCreate.ForExistingParticipants {
                 Identification = new Identification.Possible {
                     Id = null
                 },

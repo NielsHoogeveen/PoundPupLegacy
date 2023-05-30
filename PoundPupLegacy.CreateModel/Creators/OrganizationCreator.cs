@@ -13,9 +13,9 @@ internal sealed class OrganizationCreatorFactory(
     LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
     IDatabaseInserterFactory<UnitedStatesPoliticalParty.ToCreate> unitedStatesPoliticalPartyInserterFactory,
     IDatabaseInserterFactory<OrganizationOrganizationType> organizationOrganizationTypeInserterFactory,
-    IEntityCreatorFactory<InterOrganizationalRelation.ToCreateForExistingParticipants> interOrganizationalRelationCreatorFactory,
-    IEntityCreatorFactory<PersonOrganizationRelation.ToCreateForExistingParticipants> personOrganizationRelationCreatorFactory,
-    IEntityCreatorFactory<PartyPoliticalEntityRelation.ToCreateForExistingParty> partyPoliticalRelationCreatorFactory
+    IEntityCreatorFactory<InterOrganizationalRelation.ToCreate.ForExistingParticipants> interOrganizationalRelationCreatorFactory,
+    IEntityCreatorFactory<PersonOrganizationRelation.ToCreate.ForExistingParticipants> personOrganizationRelationCreatorFactory,
+    IEntityCreatorFactory<PartyPoliticalEntityRelation.ToCreate.ForExistingParty> partyPoliticalRelationCreatorFactory
 ) : IEntityCreatorFactory<OrganizationToCreate>
 {
     public async Task<IEntityCreator<OrganizationToCreate>> CreateAsync(IDbConnection connection) =>
@@ -47,9 +47,9 @@ public class OrganizationCreator(
     LocatableDetailsCreator locatableDetailsCreator,
     IDatabaseInserter<UnitedStatesPoliticalParty.ToCreate> unitedStatesPoliticalPartyInserter,
     IDatabaseInserter<OrganizationOrganizationType> organizationOrganizationTypeInserter,
-    IEntityCreator<InterOrganizationalRelation.ToCreateForExistingParticipants> interOrganizationalRelationCreator,
-    IEntityCreator<PersonOrganizationRelation.ToCreateForExistingParticipants> personOrganizationRelationCreator,
-    IEntityCreator<PartyPoliticalEntityRelation.ToCreateForExistingParty> partyPoliticalRelationCreator
+    IEntityCreator<InterOrganizationalRelation.ToCreate.ForExistingParticipants> interOrganizationalRelationCreator,
+    IEntityCreator<PersonOrganizationRelation.ToCreate.ForExistingParticipants> personOrganizationRelationCreator,
+    IEntityCreator<PartyPoliticalEntityRelation.ToCreate.ForExistingParty> partyPoliticalRelationCreator
     ) : LocatableCreator<OrganizationToCreate>(inserter, nodeDetailsCreator, nameableDetailsCreator, locatableDetailsCreator) 
 {
     public override async Task ProcessAsync(OrganizationToCreate element, int id)

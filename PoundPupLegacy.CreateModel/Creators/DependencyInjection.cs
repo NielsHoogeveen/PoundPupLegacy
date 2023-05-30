@@ -66,9 +66,9 @@ internal static class DependencyInjection
         services.AddTransient<IEntityCreatorFactory<InformalIntermediateLevelSubdivision.ToCreate>, InformalIntermediateLevelSubdivisionCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<InterCountryRelation.ToCreate>, InterCountryRelationCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<InterCountryRelationType.ToCreate>, InterCountryRelationTypeCreatorFactory>();
-        services.AddTransient<IEntityCreatorFactory<InterOrganizationalRelation.ToCreateForExistingParticipants>, InterOrganizationalRelationCreatorFactory>();
+        services.AddTransient<IEntityCreatorFactory<InterOrganizationalRelation.ToCreate.ForExistingParticipants>, InterOrganizationalRelationCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<InterOrganizationalRelationType.ToCreate>, InterOrganizationalRelationTypeCreatorFactory>();
-        services.AddTransient<IEntityCreatorFactory<InterPersonalRelation.ToCreateForExistingParticipants>, InterPersonalRelationCreatorFactory>();
+        services.AddTransient<IEntityCreatorFactory<InterPersonalRelation.ToCreate.ForExistingParticipants>, InterPersonalRelationCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<InterPersonalRelationType.ToCreate>, InterPersonalRelationTypeCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<LocationToCreate>, LocationCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<LocationLocatable>, LocationLocatableCreatorFactory>();
@@ -79,10 +79,10 @@ internal static class DependencyInjection
         services.AddTransient<IEntityCreatorFactory<OrganizationToCreate>, OrganizationCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<OrganizationType.ToCreate>, OrganizationTypeCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<Page.ToCreate>, PageCreatorFactory>();
-        services.AddTransient<IEntityCreatorFactory<PartyPoliticalEntityRelation.ToCreateForExistingParty>, PartyPoliticalEntityRelationCreatorFactory>();
+        services.AddTransient<IEntityCreatorFactory<PartyPoliticalEntityRelation.ToCreate.ForExistingParty>, PartyPoliticalEntityRelationCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<PartyPoliticalEntityRelationType.ToCreate>, PartyPoliticalEntityRelationTypeCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<Person.ToCreate>, PersonCreatorFactory>();
-        services.AddTransient<IEntityCreatorFactory<PersonOrganizationRelation.ToCreateForExistingParticipants>, PersonOrganizationRelationCreatorFactory>();
+        services.AddTransient<IEntityCreatorFactory<PersonOrganizationRelation.ToCreate.ForExistingParticipants>, PersonOrganizationRelationCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<PersonOrganizationRelationType.ToCreate>, PersonOrganizationRelationTypeCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<PollStatus>, PollStatusCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<BasicProfessionalRole.ToCreateForExistingPerson>, ProfessionalRoleCreatorFactory>();

@@ -4,24 +4,26 @@ public abstract record PartyPoliticalEntityRelation: Node
 {
     private PartyPoliticalEntityRelation() { }
     public required PartyPoliticalEntityRelationDetails PartyPoliticalEntityRelationDetails { get; init; }
-    public sealed record ToCreateForExistingParty: PartyPoliticalEntityRelation, NodeToCreate
+    public abstract record ToCreate : PartyPoliticalEntityRelation, NodeToCreate
     {
-        public required int PartyId { get; init; }
+        private ToCreate() { }
         public required Identification.Possible Identification { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
-    }
-    public sealed record ToCreateForNewParty: PartyPoliticalEntityRelation, NodeToCreate
-    {
-        public required Identification.Possible Identification { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
-        public ToCreateForExistingParty ResolveParty(int partyId)
+        public sealed record ForExistingParty : ToCreate
         {
-            return new ToCreateForExistingParty {
-                PartyId = partyId,
-                NodeDetails = NodeDetails,
-                Identification = Identification,
-                PartyPoliticalEntityRelationDetails = PartyPoliticalEntityRelationDetails
-            };
+            public required int PartyId { get; init; }
+        }
+        public sealed record ForNewParty : ToCreate
+        {
+            public ForExistingParty ResolveParty(int partyId)
+            {
+                return new ForExistingParty {
+                    PartyId = partyId,
+                    NodeDetails = NodeDetails,
+                    Identification = Identification,
+                    PartyPoliticalEntityRelationDetails = PartyPoliticalEntityRelationDetails
+                };
+            }
         }
     }
     public sealed record ToUpdate: PartyPoliticalEntityRelation, NodeToUpdate

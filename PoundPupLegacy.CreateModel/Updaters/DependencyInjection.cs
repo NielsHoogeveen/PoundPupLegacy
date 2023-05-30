@@ -28,7 +28,7 @@ public static class DependencyInjection
         services.AddTransient<IDatabaseUpdaterFactory<Document.DocumentToUpdate>, DocumentUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<LocationUpdaterRequest>, LocationUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<InterOrganizationalRelation.ToUpdate>, InterOrganizationalRelationUpdaterFactory>();
-        services.AddTransient<IDatabaseUpdaterFactory<InterPersonalRelation.InterPersonalRelationToUpdate>, InterPersonalRelationUpdaterFactory>();
+        services.AddTransient<IDatabaseUpdaterFactory<InterPersonalRelation.ToUpdate>, InterPersonalRelationUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<NodeUnpublishRequest>, NodeUnpublishFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<OrganizationToUpdate>, OrganizationUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<PartyPoliticalEntityRelation.ToUpdate>, PartyPoliticalEntityRelationUpdaterFactory>();

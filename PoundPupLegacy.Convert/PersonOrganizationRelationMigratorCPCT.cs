@@ -4,7 +4,7 @@ internal sealed class PersonOrganizationRelationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreateForExistingNode> tenantNodeReaderByUrlIdFactory,
-    IEntityCreatorFactory<PersonOrganizationRelation.ToCreateForExistingParticipants> personOrganizationRelationCreatorFactory
+    IEntityCreatorFactory<PersonOrganizationRelation.ToCreate.ForExistingParticipants> personOrganizationRelationCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
     nodeIdReaderFactory, 
@@ -21,7 +21,7 @@ internal sealed class PersonOrganizationRelationMigratorCPCT(
         await personOrganizationRelationCreator.CreateAsync(ReadPersonOrganizationRelations(nodeIdReader, tenantNodeReaderByUrlId));
     }
 
-    private async IAsyncEnumerable<PersonOrganizationRelation.ToCreateForExistingParticipants> ReadPersonOrganizationRelations(
+    private async IAsyncEnumerable<PersonOrganizationRelation.ToCreate.ForExistingParticipants> ReadPersonOrganizationRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreateForExistingNode> tenantNodeReaderByUrlId
     )
@@ -129,7 +129,7 @@ internal sealed class PersonOrganizationRelationMigratorCPCT(
                     UrlId = null
                 });
             }
-            yield return new PersonOrganizationRelation.ToCreateForExistingParticipants {
+            yield return new PersonOrganizationRelation.ToCreate.ForExistingParticipants {
                 Identification = new Identification.Possible {
                     Id = null
                 },

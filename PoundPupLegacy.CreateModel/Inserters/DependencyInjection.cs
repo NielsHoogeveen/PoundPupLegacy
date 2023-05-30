@@ -77,9 +77,9 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<InterCountryRelation.ToCreate>, InterCountryRelationInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<InterCountryRelationType.ToCreate>, InterCountryRelationTypeInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<IntermediateLevelSubdivisionToCreate>, IntermediateLevelSubdivisionInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<InterOrganizationalRelation.ToCreateForExistingParticipants>, InterOrganizationalRelationInserterForExistingParticipantsFactory>();
+        services.AddTransient<IDatabaseInserterFactory<InterOrganizationalRelation.ToCreate.ForExistingParticipants>, InterOrganizationalRelationInserterForExistingParticipantsFactory>();
         services.AddTransient<IDatabaseInserterFactory<InterOrganizationalRelationType.ToCreate>, InterOrganizationalRelationTypeInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<InterPersonalRelation.ToCreateForExistingParticipants>, InterPersonalRelationInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<InterPersonalRelation.ToCreate.ForExistingParticipants>, InterPersonalRelationInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<InterPersonalRelationType.ToCreate>, InterPersonalRelationTypeInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<ISOCodedFirstLevelSubdivisionToCreate>, ISOCodedFirstLevelSubdivisionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<ISOCodedSubdivisionToCreate>, ISOCodedSubdivisionInserterFactory>();
@@ -103,9 +103,9 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<Page.ToCreate>, PageInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<PartyToCreate>, PartyInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<PartyPoliticalEntityRelationType.ToCreate>, PartyPoliticalEntityRelationTypeInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<PartyPoliticalEntityRelation.ToCreateForExistingParty>, PartyPoliticalEntityRelationInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<PartyPoliticalEntityRelation.ToCreate.ForExistingParty>, PartyPoliticalEntityRelationInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<Person.ToCreate>, PersonInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<PersonOrganizationRelation.ToCreateForExistingParticipants>, PersonOrganizationRelationInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<PersonOrganizationRelation.ToCreate.ForExistingParticipants>, PersonOrganizationRelationInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<PersonOrganizationRelationType.ToCreate>, PersonOrganizationRelationTypeInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<PoliticalEntityToCreate>, PoliticalEntityInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<PollToCreate>, PollInserterFactory>();

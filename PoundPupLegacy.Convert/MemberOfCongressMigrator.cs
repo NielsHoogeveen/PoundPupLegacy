@@ -121,7 +121,7 @@ internal class MemberOfCongressMigrator(
         IEntityCreatorFactory<Person.ToCreate> personCreatorFactory,
         IEntityCreatorFactory<File> fileCreatorFactory,
         IEntityCreatorFactory<NodeFile> nodeFileCreatorFactory,
-        IEntityCreatorFactory<PersonOrganizationRelation.ToCreateForExistingParticipants> personOrganizationRelationCreatorFactory,
+        IEntityCreatorFactory<PersonOrganizationRelation.ToCreate.ForExistingParticipants> personOrganizationRelationCreatorFactory,
         IEntityCreatorFactory<ProfessionalRole> professionalRoleCreatorFactory
 
     ) : MigratorPPL(databaseConnections)
@@ -659,7 +659,7 @@ internal class MemberOfCongressMigrator(
 
                     var terms = memberOfCongress.terms.Select(x => (x.start, x.end, x.party)).GroupBy(x => x.party).ToList();
 
-                    var relations = new List<PersonOrganizationRelation.ToCreateForExistingParticipants>();
+                    var relations = new List<PersonOrganizationRelation.ToCreate.ForExistingParticipants>();
                     if (terms.Count == 1) {
 
                     }
@@ -721,10 +721,10 @@ internal class MemberOfCongressMigrator(
                             Suffix = memberOfCongress.name.suffix,
                             Bioguide = memberOfCongress.id.bioguide,
                             ProfessionalRolesToCreate = professionalRolesNewPerson,
-                            InterPersonalRelationsToCreateFrom = new List<InterPersonalRelation.ToCreateForNewPersonFrom>(),
-                            InterPersonalRelationsToCreateTo = new List<InterPersonalRelation.ToCreateForNewPersonTo>(),
-                            PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.ToCreateForNewParty>(),
-                            PersonOrganizationRelationToCreate = new List<PersonOrganizationRelation.ToCreateForNewPerson>(),
+                            InterPersonalRelationsToCreateFrom = new List<InterPersonalRelation.ToCreate.ForNewPersonFrom>(),
+                            InterPersonalRelationsToCreateTo = new List<InterPersonalRelation.ToCreate.ForNewPersonTo>(),
+                            PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.ToCreate.ForNewParty>(),
+                            PersonOrganizationRelationToCreate = new List<PersonOrganizationRelation.ToCreate.ForNewPerson>(),
                         },
                     };
                 }
@@ -878,7 +878,7 @@ internal class MemberOfCongressMigrator(
         }
     }
 
-    private async IAsyncEnumerable<PersonOrganizationRelation.ToCreateForExistingParticipants> GetPartyMembership()
+    private async IAsyncEnumerable<PersonOrganizationRelation.ToCreate.ForExistingParticipants> GetPartyMembership()
     {
 
         var sql = $"""
@@ -1002,7 +1002,7 @@ internal class MemberOfCongressMigrator(
 
 
             var now = DateTime.Now;
-            yield return new PersonOrganizationRelation.ToCreateForExistingParticipants{
+            yield return new PersonOrganizationRelation.ToCreate.ForExistingParticipants{
                 Identification = new Identification.Possible {
                     Id = null
                 },

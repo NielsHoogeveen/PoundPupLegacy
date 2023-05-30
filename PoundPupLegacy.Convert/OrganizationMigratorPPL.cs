@@ -97,10 +97,10 @@ internal sealed class OrganizationMigratorPPL(
                         UrlId = 12625
                     })
                 },
-                InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.ToCreateForNewOrganizationFrom>(),
-                InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.ToCreateForNewOrganizationTo>(),
-                PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.ToCreateForNewParty>(),
-                PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.ToCreateForNewOrganization>(),
+                InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.ToCreate.ForNewOrganizationFrom>(),
+                InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.ToCreate.ForNewOrganizationTo>(),
+                PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.ToCreate.ForNewParty>(),
+                PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.ToCreate.ForNewOrganization>(),
             }
         };
         yield return new UnitedStatesPoliticalParty.ToCreate {
@@ -177,10 +177,10 @@ internal sealed class OrganizationMigratorPPL(
                         UrlId = Constants.POLITICAL_PARTY
                     })
                 },
-                InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.ToCreateForNewOrganizationFrom>(),
-                InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.ToCreateForNewOrganizationTo>(),
-                PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.ToCreateForNewParty>(),
-                PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.ToCreateForNewOrganization>(),
+                InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.ToCreate.ForNewOrganizationFrom>(),
+                InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.ToCreate.ForNewOrganizationTo>(),
+                PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.ToCreate.ForNewParty>(),
+                PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.ToCreate.ForNewOrganization>(),
             },
         };
         yield return new UnitedStatesPoliticalParty.ToCreate {
@@ -257,10 +257,10 @@ internal sealed class OrganizationMigratorPPL(
                         UrlId = Constants.POLITICAL_PARTY
                     })
                 },
-                InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.ToCreateForNewOrganizationFrom>(),
-                InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.ToCreateForNewOrganizationTo>(),
-                PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.ToCreateForNewParty>(),
-                PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.ToCreateForNewOrganization>(),
+                InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.ToCreate.ForNewOrganizationFrom>(),
+                InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.ToCreate.ForNewOrganizationTo>(),
+                PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.ToCreate.ForNewParty>(),
+                PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.ToCreate.ForNewOrganization>(),
             },
         };
         yield return new BasicOrganization.ToCreate {
@@ -337,10 +337,10 @@ internal sealed class OrganizationMigratorPPL(
                         UrlId = 12630
                     })
                 },
-                InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.ToCreateForNewOrganizationFrom>(),
-                InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.ToCreateForNewOrganizationTo>(),
-                PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.ToCreateForNewParty>(),
-                PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.ToCreateForNewOrganization>(),
+                InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.ToCreate.ForNewOrganizationFrom>(),
+                InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.ToCreate.ForNewOrganizationTo>(),
+                PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.ToCreate.ForNewParty>(),
+                PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.ToCreate.ForNewOrganization>(),
             },
         };
     }
@@ -623,10 +623,10 @@ internal sealed class OrganizationMigratorPPL(
                                 UrlId = Constants.POLITICAL_PARTY
                             })
                         },
-                        InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.ToCreateForNewOrganizationFrom>(),
-                        InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.ToCreateForNewOrganizationTo>(),
-                        PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.ToCreateForNewParty>(),
-                        PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.ToCreateForNewOrganization>(),
+                        InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.ToCreate.ForNewOrganizationFrom>(),
+                        InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.ToCreate.ForNewOrganizationTo>(),
+                        PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.ToCreate.ForNewParty>(),
+                        PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.ToCreate.ForNewOrganization>(),
                     }
                 };
             }
@@ -684,10 +684,10 @@ internal sealed class OrganizationMigratorPPL(
                         EmailAddress = reader.IsDBNull("email_address") ? null : reader.GetString("email_address"),
                         Established = reader.IsDBNull("established") ? null : (new DateTimeRange(reader.GetDateTime("established").Date, reader.GetDateTime("established").Date.AddDays(1).AddMilliseconds(-1))).ToFuzzyDate(),
                         Terminated = reader.IsDBNull("terminated") ? null : (new DateTimeRange(reader.GetDateTime("terminated").Date, reader.GetDateTime("terminated").Date.AddDays(1).AddMilliseconds(-1))).ToFuzzyDate(),
-                        InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.ToCreateForNewOrganizationFrom>(),
-                        InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.ToCreateForNewOrganizationTo>(),
-                        PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.ToCreateForNewParty>(),
-                        PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.ToCreateForNewOrganization>(),
+                        InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.ToCreate.ForNewOrganizationFrom>(),
+                        InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.ToCreate.ForNewOrganizationTo>(),
+                        PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.ToCreate.ForNewParty>(),
+                        PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.ToCreate.ForNewOrganization>(),
                     },
                 };
             }

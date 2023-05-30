@@ -4,7 +4,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreateForExistingNode> tenantNodeReaderByUrlIdFactory,
-    IEntityCreatorFactory<PartyPoliticalEntityRelation.ToCreateForExistingParty> partyPoliticalEntityRelationCreatorFactory
+    IEntityCreatorFactory<PartyPoliticalEntityRelation.ToCreate.ForExistingParty> partyPoliticalEntityRelationCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
     nodeIdReaderFactory, 
@@ -21,7 +21,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT(
         await partyPoliticalEntityRelationCreator.CreateAsync(ReadPartyPoliticalEntityRelations(nodeIdReader, tenantNodeReader));
     }
 
-    private async IAsyncEnumerable<PartyPoliticalEntityRelation.ToCreateForExistingParty> ReadPartyPoliticalEntityRelations(
+    private async IAsyncEnumerable<PartyPoliticalEntityRelation.ToCreate.ForExistingParty> ReadPartyPoliticalEntityRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreateForExistingNode> tenantNodeReader)
     {
@@ -128,7 +128,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT(
                     UrlId = null
                 });
             }
-            yield return new PartyPoliticalEntityRelation.ToCreateForExistingParty {
+            yield return new PartyPoliticalEntityRelation.ToCreate.ForExistingParty {
                 Identification = new Identification.Possible {
                     Id = null
                 },

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Updaters;
 
-using Request = InterPersonalRelation.InterPersonalRelationToUpdate;
+using Request = InterPersonalRelation.ToUpdate;
 
 internal sealed class InterPersonalRelationUpdaterFactory : DatabaseUpdaterFactory<Request>
 {

@@ -30,8 +30,8 @@ public abstract record OrganizationDetails
         public override IEnumerable<InterOrganizationalRelation> InterOrganizationalRelations => GetInterOrganizationalRelations();
         public override IEnumerable<PartyPoliticalEntityRelation> PartyPoliticalEntityRelations => PartyPoliticalEntityRelationsToCreate;
         public override IEnumerable<PersonOrganizationRelation> PersonOrganizationRelations => PersonOrganizationRelationsToCreate;
-        public required List<InterOrganizationalRelation.ToCreateForNewOrganizationFrom> InterOrganizationalRelationsFrom { get; init; }
-        public required List<InterOrganizationalRelation.ToCreateForNewOrganizationTo> InterOrganizationalRelationsTo { get; init; }
+        public required List<InterOrganizationalRelation.ToCreate.ForNewOrganizationFrom> InterOrganizationalRelationsFrom { get; init; }
+        public required List<InterOrganizationalRelation.ToCreate.ForNewOrganizationTo> InterOrganizationalRelationsTo { get; init; }
         private IEnumerable<InterOrganizationalRelation> GetInterOrganizationalRelations()
         {
             foreach(var relation in InterOrganizationalRelationsFrom) {
@@ -41,9 +41,9 @@ public abstract record OrganizationDetails
                 yield return relation;
             }
         }
-        public required List<PartyPoliticalEntityRelation.ToCreateForNewParty> PartyPoliticalEntityRelationsToCreate { get; init; }
+        public required List<PartyPoliticalEntityRelation.ToCreate.ForNewParty> PartyPoliticalEntityRelationsToCreate { get; init; }
 
-        public required List<PersonOrganizationRelation.ToCreateForNewOrganization> PersonOrganizationRelationsToCreate { get; init; }
+        public required List<PersonOrganizationRelation.ToCreate.ForNewOrganization> PersonOrganizationRelationsToCreate { get; init; }
         public override T Match<T>(Func<OrganizationDetailsForCreate, T> create, Func<OrganizationDetailsForUpdate, T> update)
         {
             return create(this);
@@ -58,9 +58,9 @@ public abstract record OrganizationDetails
         public override IEnumerable<InterOrganizationalRelation> InterOrganizationalRelations => InterOrganizationalRelationsToCreate;
         public override IEnumerable<PartyPoliticalEntityRelation> PartyPoliticalEntityRelations => PartyPoliticalEntityRelationsToCreate;
         public override IEnumerable<PersonOrganizationRelation> PersonOrganizationRelations => PersonOrganizationRelationsToCreate;
-        public required List<InterOrganizationalRelation.ToCreateForExistingParticipants> InterOrganizationalRelationsToCreate { get; init; }
-        public required List<PartyPoliticalEntityRelation.ToCreateForExistingParty> PartyPoliticalEntityRelationsToCreate { get; init; }
-        public required List<PersonOrganizationRelation.ToCreateForExistingParticipants> PersonOrganizationRelationsToCreate { get; init; }
+        public required List<InterOrganizationalRelation.ToCreate.ForExistingParticipants> InterOrganizationalRelationsToCreate { get; init; }
+        public required List<PartyPoliticalEntityRelation.ToCreate.ForExistingParty> PartyPoliticalEntityRelationsToCreate { get; init; }
+        public required List<PersonOrganizationRelation.ToCreate.ForExistingParticipants> PersonOrganizationRelationsToCreate { get; init; }
         public required List<PersonOrganizationRelation.ToUpdate> PersonOrganizationRelationsToUpdate { get; init; }
         public required List<PartyPoliticalEntityRelation.ToUpdate> PartyPoliticalEntityRelationToUpdates { get; init; }
         public required List<PersonOrganizationRelation.ToUpdate> PersonOrganizationRelationToUpdates { get; init; }

@@ -4,48 +4,49 @@ public abstract record InterPersonalRelation : Node
 {
     private InterPersonalRelation() { }
     public required InterPersonalRelationDetails InterPersonalRelationDetails { get; init; }
-    public sealed record ToCreateForExistingParticipants : InterPersonalRelation, NodeToCreate
-    {
-        public required int PersonIdFrom { get; init; }
-        public required int PersonIdTo { get; init; }
-        public required Identification.Possible Identification { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
-    }
-    public sealed record ToCreateForNewPersonFrom : InterPersonalRelation, NodeToCreate
-    {
-        public required int PersonIdTo { get; init; }
-        public ToCreateForExistingParticipants ResolvePersonFrom(int PersonIdFrom)
-        {
-            return new ToCreateForExistingParticipants {
-                PersonIdFrom = PersonIdFrom,
-                PersonIdTo = PersonIdTo,
-                InterPersonalRelationDetails = InterPersonalRelationDetails,
-                NodeDetails = NodeDetails,
-                Identification = Identification,
-            };
-        }
-        public required Identification.Possible Identification { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
-    }
 
-    public sealed record ToCreateForNewPersonTo : InterPersonalRelation, NodeToCreate
+    public abstract record ToCreate : InterPersonalRelation, NodeToCreate
     {
-        public required int PersonIdFrom { get; init; }
-        public required int InterPersonalRelationTypeId { get; init; }
-        public ToCreateForExistingParticipants ResolvePersonTo(int PersonIdTo)
-        {
-            return new ToCreateForExistingParticipants {
-                PersonIdFrom = PersonIdFrom,
-                PersonIdTo = PersonIdTo,
-                InterPersonalRelationDetails = InterPersonalRelationDetails,
-                NodeDetails = NodeDetails,
-                Identification = Identification,
-            };
-        }
+        private ToCreate() { }
         public required Identification.Possible Identification { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
+
+        public sealed record ForExistingParticipants : ToCreate
+        {
+            public required int PersonIdFrom { get; init; }
+            public required int PersonIdTo { get; init; }
+        }
+        public sealed record ForNewPersonFrom : ToCreate
+        {
+            public required int PersonIdTo { get; init; }
+            public ForExistingParticipants ResolvePersonFrom(int PersonIdFrom)
+            {
+                return new ForExistingParticipants {
+                    PersonIdFrom = PersonIdFrom,
+                    PersonIdTo = PersonIdTo,
+                    InterPersonalRelationDetails = InterPersonalRelationDetails,
+                    NodeDetails = NodeDetails,
+                    Identification = Identification,
+                };
+            }
+        }
+
+        public sealed record ForNewPersonTo : ToCreate
+        {
+            public required int PersonIdFrom { get; init; }
+            public ForExistingParticipants ResolvePersonTo(int PersonIdTo)
+            {
+                return new ForExistingParticipants {
+                    PersonIdFrom = PersonIdFrom,
+                    PersonIdTo = PersonIdTo,
+                    InterPersonalRelationDetails = InterPersonalRelationDetails,
+                    NodeDetails = NodeDetails,
+                    Identification = Identification,
+                };
+            }
+        }
     }
-    public sealed record InterPersonalRelationToUpdate : InterPersonalRelation, NodeToUpdate
+    public sealed record ToUpdate : InterPersonalRelation, NodeToUpdate
     {
         public required int PersonIdFrom { get; init; }
         public required int PersonIdTo { get; init; }

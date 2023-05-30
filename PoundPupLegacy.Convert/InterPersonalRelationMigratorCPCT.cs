@@ -4,7 +4,7 @@ internal sealed class InterPersonalRelationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreateForExistingNode> tenantNodeReaderByUrlIdFactory,
-    IEntityCreatorFactory<InterPersonalRelation.ToCreateForExistingParticipants> interPersonalRelationCreatorFactory
+    IEntityCreatorFactory<InterPersonalRelation.ToCreate.ForExistingParticipants> interPersonalRelationCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
     nodeIdReaderFactory, 
@@ -22,7 +22,7 @@ internal sealed class InterPersonalRelationMigratorCPCT(
 
     }
 
-    private async IAsyncEnumerable<InterPersonalRelation.ToCreateForExistingParticipants> ReadInterPersonalRelations(
+    private async IAsyncEnumerable<InterPersonalRelation.ToCreate.ForExistingParticipants> ReadInterPersonalRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreateForExistingNode> tenantNodeReaderByUrlId
     )
@@ -118,7 +118,7 @@ internal sealed class InterPersonalRelationMigratorCPCT(
                     UrlId = null
                 });
             }
-            yield return new InterPersonalRelation.ToCreateForExistingParticipants{
+            yield return new InterPersonalRelation.ToCreate.ForExistingParticipants{
                 Identification = new Identification.Possible {
                     Id = null
                 },

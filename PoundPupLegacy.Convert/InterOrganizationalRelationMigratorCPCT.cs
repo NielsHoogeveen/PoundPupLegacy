@@ -4,7 +4,7 @@ internal sealed class InterOrganizationalRelationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreateForExistingNode> tenantNodeReaderByUrlIdFactory,
-    IEntityCreatorFactory<InterOrganizationalRelation.ToCreateForExistingParticipants> interOrganizationalRelationCreatorFactory
+    IEntityCreatorFactory<InterOrganizationalRelation.ToCreate.ForExistingParticipants> interOrganizationalRelationCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
     nodeIdReaderFactory, 
@@ -22,7 +22,7 @@ internal sealed class InterOrganizationalRelationMigratorCPCT(
         await interOrganizationalRelationCreator.CreateAsync(ReadInterOrganizationalRelations(nodeIdReader, tenantNodeReaderByUrlId));
     }
 
-    private async IAsyncEnumerable<InterOrganizationalRelation.ToCreateForExistingParticipants> ReadInterOrganizationalRelations(
+    private async IAsyncEnumerable<InterOrganizationalRelation.ToCreate.ForExistingParticipants> ReadInterOrganizationalRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreateForExistingNode> tenantNodeReaderByUrlId
     )
@@ -126,7 +126,7 @@ internal sealed class InterOrganizationalRelationMigratorCPCT(
                 });
             }
 
-            yield return new InterOrganizationalRelation.ToCreateForExistingParticipants{
+            yield return new InterOrganizationalRelation.ToCreate.ForExistingParticipants{
                 Identification = new Identification.Possible {
                     Id = null
                 },

@@ -290,10 +290,10 @@ internal sealed class OrganizationMigratorCPCT(
                     Established = reader.IsDBNull("established") ? null : (new DateTimeRange(reader.GetDateTime("established").Date, reader.GetDateTime("established").Date.AddDays(1).AddMilliseconds(-1))).ToFuzzyDate(),
                     Terminated = reader.IsDBNull("terminated") ? null : (new DateTimeRange(reader.GetDateTime("terminated").Date, reader.GetDateTime("terminated").Date.AddDays(1).AddMilliseconds(-1))).ToFuzzyDate(),
                     OrganizationTypeIds = organizationOrganizationTypeIds,
-                    InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.ToCreateForNewOrganizationFrom>(),
-                    InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.ToCreateForNewOrganizationTo>(),
-                    PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.ToCreateForNewParty>(),
-                    PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.ToCreateForNewOrganization>()
+                    InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.ToCreate.ForNewOrganizationFrom>(),
+                    InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.ToCreate.ForNewOrganizationTo>(),
+                    PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.ToCreate.ForNewParty>(),
+                    PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.ToCreate.ForNewOrganization>()
                 },
             };
         }

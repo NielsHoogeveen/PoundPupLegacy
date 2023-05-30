@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = InterPersonalRelation.ToCreateForExistingParticipants;
+using Request = InterPersonalRelation.ToCreate.ForExistingParticipants;
 
 internal sealed class InterPersonalRelationInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

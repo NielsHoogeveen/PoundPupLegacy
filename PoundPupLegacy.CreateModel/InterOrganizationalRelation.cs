@@ -5,46 +5,47 @@ public abstract record InterOrganizationalRelation: Node
     private InterOrganizationalRelation() { }
     public required InterOrganizationalRelationDetails InterOrganizationalRelationDetails { get; init; }
 
-    public sealed record ToCreateForExistingParticipants : InterOrganizationalRelation, NodeToCreate
+    public abstract record ToCreate : InterOrganizationalRelation, NodeToCreate
     {
-        public required int OrganizationIdFrom { get; init; }
-        public required int OrganizationIdTo { get; init; }
+        private ToCreate() { }
         public required Identification.Possible Identification { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
-    }
-    public sealed record ToCreateForNewOrganizationFrom : InterOrganizationalRelation, NodeToCreate
-    {
-        public required int OrganizationIdTo { get; init; }
-        public required Identification.Possible Identification { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
-        public ToCreateForExistingParticipants ResolveOrganizationFrom(int organizationIdFrom)
+        public sealed record ForExistingParticipants : ToCreate
         {
-            return new ToCreateForExistingParticipants {
-                OrganizationIdFrom = organizationIdFrom,
-                OrganizationIdTo = OrganizationIdTo,
-                InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
-                NodeDetails = NodeDetails,
-                Identification = Identification,
-            };
+            public required int OrganizationIdFrom { get; init; }
+            public required int OrganizationIdTo { get; init; }
+        }
+        public sealed record ForNewOrganizationFrom : ToCreate
+        {
+            public required int OrganizationIdTo { get; init; }
+            public ForExistingParticipants ResolveOrganizationFrom(int organizationIdFrom)
+            {
+                return new ForExistingParticipants {
+                    OrganizationIdFrom = organizationIdFrom,
+                    OrganizationIdTo = OrganizationIdTo,
+                    InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
+                    NodeDetails = NodeDetails,
+                    Identification = Identification,
+                };
+            }
+        }
+
+        public sealed record ForNewOrganizationTo : ToCreate
+        {
+            public required int OrganizationIdFrom { get; init; }
+            public ForExistingParticipants ResolveOrganizationTo(int organizationIdTo)
+            {
+                return new ForExistingParticipants {
+                    OrganizationIdFrom = OrganizationIdFrom,
+                    OrganizationIdTo = organizationIdTo,
+                    InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
+                    NodeDetails = NodeDetails,
+                    Identification = Identification,
+                };
+            }
         }
     }
 
-    public sealed record ToCreateForNewOrganizationTo : InterOrganizationalRelation, NodeToCreate
-    {
-        public required int OrganizationIdFrom { get; init; }
-        public required Identification.Possible Identification { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
-        public ToCreateForExistingParticipants ResolveOrganizationTo(int organizationIdTo)
-        {
-            return new ToCreateForExistingParticipants {
-                OrganizationIdFrom = OrganizationIdFrom,
-                OrganizationIdTo = organizationIdTo,
-                InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
-                NodeDetails = NodeDetails,
-                Identification = Identification,
-            };
-        }
-    }
     public sealed record ToUpdate : InterOrganizationalRelation, NodeToUpdate
     {
         public required int OrganizationIdFrom { get; init; }

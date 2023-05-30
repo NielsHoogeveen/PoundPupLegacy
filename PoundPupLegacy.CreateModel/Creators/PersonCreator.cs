@@ -12,9 +12,9 @@ internal sealed class PersonCreatorFactory(
     TermCreatorFactory nameableDetailsCreatorFactory,
     LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
     IEntityCreatorFactory<ProfessionalRoleToCreateForExistingPerson> professionalRoleCreatorFactory,
-    IEntityCreatorFactory<PersonOrganizationRelation.ToCreateForExistingParticipants> personOrganizationRelationCreatorFactory,
-    IEntityCreatorFactory<InterPersonalRelation.ToCreateForExistingParticipants> interPersonalRelationCreatorFactory,
-    IEntityCreatorFactory<PartyPoliticalEntityRelation.ToCreateForExistingParty> partyPoliticalRelationCreatorFactory
+    IEntityCreatorFactory<PersonOrganizationRelation.ToCreate.ForExistingParticipants> personOrganizationRelationCreatorFactory,
+    IEntityCreatorFactory<InterPersonalRelation.ToCreate.ForExistingParticipants> interPersonalRelationCreatorFactory,
+    IEntityCreatorFactory<PartyPoliticalEntityRelation.ToCreate.ForExistingParty> partyPoliticalRelationCreatorFactory
 
 ) : IEntityCreatorFactory<Person.ToCreate>
 {
@@ -46,9 +46,9 @@ internal sealed class PersonCreator(
     TermCreator nameableDetailsCreator,
     LocatableDetailsCreator locatableDetailsCreator,
     IEntityCreator<ProfessionalRoleToCreateForExistingPerson> professionalRoleCreator,
-    IEntityCreator<PersonOrganizationRelation.ToCreateForExistingParticipants> personOrganizationRelationCreator,
-    IEntityCreator<InterPersonalRelation.ToCreateForExistingParticipants> interPersonalRelationCreator,
-    IEntityCreator<PartyPoliticalEntityRelation.ToCreateForExistingParty> partyPoliticalRelationCreator
+    IEntityCreator<PersonOrganizationRelation.ToCreate.ForExistingParticipants> personOrganizationRelationCreator,
+    IEntityCreator<InterPersonalRelation.ToCreate.ForExistingParticipants> interPersonalRelationCreator,
+    IEntityCreator<PartyPoliticalEntityRelation.ToCreate.ForExistingParty> partyPoliticalRelationCreator
 ) : 
     LocatableCreator<Person.ToCreate>(inserters, nodeDetailsCreator, nameableDetailsCreator, locatableDetailsCreator)
 {
