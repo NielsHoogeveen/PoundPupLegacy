@@ -3,7 +3,7 @@
 internal sealed class PersonMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreateForExistingNode> tenantNodeReaderByUrlIdFactory,
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreate.ForExistingNode> tenantNodeReaderByUrlIdFactory,
     IEntityCreatorFactory<Person.ToCreate> personCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
@@ -112,9 +112,9 @@ internal sealed class PersonMigratorCPCT(
                     Title = title,
                     OwnerId = Constants.OWNER_PARTIES,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                     {
-                        new TenantNode.ToCreateForNewNode
+                        new TenantNode.ToCreate.ForNewNode
                         {
                             Identification = new Identification.Possible {
                                 Id = null
@@ -125,7 +125,7 @@ internal sealed class PersonMigratorCPCT(
                             SubgroupId = null,
                             UrlId = null
                         },
-                        new TenantNode.ToCreateForNewNode
+                        new TenantNode.ToCreate.ForNewNode
                         {
                             Identification = new Identification.Possible {
                                 Id = null

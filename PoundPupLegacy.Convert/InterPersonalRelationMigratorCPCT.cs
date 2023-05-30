@@ -3,7 +3,7 @@
 internal sealed class InterPersonalRelationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreateForExistingNode> tenantNodeReaderByUrlIdFactory,
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreate.ForExistingNode> tenantNodeReaderByUrlIdFactory,
     IEntityCreatorFactory<InterPersonalRelation.ToCreate.ForExistingParticipants> interPersonalRelationCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
@@ -24,7 +24,7 @@ internal sealed class InterPersonalRelationMigratorCPCT(
 
     private async IAsyncEnumerable<InterPersonalRelation.ToCreate.ForExistingParticipants> ReadInterPersonalRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreateForExistingNode> tenantNodeReaderByUrlId
+        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreate.ForExistingNode> tenantNodeReaderByUrlId
     )
     {
 
@@ -92,9 +92,9 @@ internal sealed class InterPersonalRelationMigratorCPCT(
                 UrlId = reader.GetInt32("nameable_id")
             });
 
-            var tenantNodes = new List<TenantNode.ToCreateForNewNode>
+            var tenantNodes = new List<TenantNode.ToCreate.ForNewNode>
             {
-                new TenantNode.ToCreateForNewNode
+                new TenantNode.ToCreate.ForNewNode
                 {
                     Identification = new Identification.Possible {
                         Id = null
@@ -107,7 +107,7 @@ internal sealed class InterPersonalRelationMigratorCPCT(
                 }
             };
             if (personFromPublicationStatusId == 1 && personToPublicationStatusId == 1) {
-                tenantNodes.Add(new TenantNode.ToCreateForNewNode {
+                tenantNodes.Add(new TenantNode.ToCreate.ForNewNode {
                     Identification = new Identification.Possible {
                         Id = null
                     },

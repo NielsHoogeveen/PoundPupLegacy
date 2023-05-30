@@ -35,9 +35,9 @@ internal sealed class CasePartyTypeMigrator(
                 Title = Constants.HOMESTUDY_CASE_TYPE_NAME,
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                 {
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -48,7 +48,7 @@ internal sealed class CasePartyTypeMigrator(
                         SubgroupId = null,
                         UrlId = Constants.HOMESTUDY_CASE_TYPE
                     },
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -92,9 +92,9 @@ internal sealed class CasePartyTypeMigrator(
                 Title = Constants.PLACEMENT_CASE_TYPE_NAME,
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                 {
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -105,7 +105,7 @@ internal sealed class CasePartyTypeMigrator(
                         SubgroupId = null,
                         UrlId = Constants.PLACEMENT_CASE_TYPE
                     },
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -148,9 +148,9 @@ internal sealed class CasePartyTypeMigrator(
                 Title = Constants.POSTPLACEMENT_CASE_TYPE_NAME,
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                 {
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -161,7 +161,7 @@ internal sealed class CasePartyTypeMigrator(
                         SubgroupId = null,
                         UrlId = Constants.POSTPLACEMENT_CASE_TYPE
                     },
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -204,9 +204,9 @@ internal sealed class CasePartyTypeMigrator(
                 Title = Constants.FACILITATION_CASE_TYPE_NAME,
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                 {
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -217,7 +217,7 @@ internal sealed class CasePartyTypeMigrator(
                         SubgroupId = null,
                         UrlId = Constants.FACILITATION_CASE_TYPE
                     },
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -260,9 +260,9 @@ internal sealed class CasePartyTypeMigrator(
                 Title = Constants.INSTITUTION_CASE_TYPE_NAME,
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                 {
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -273,7 +273,7 @@ internal sealed class CasePartyTypeMigrator(
                         SubgroupId = null,
                         UrlId = Constants.INSTITUTION_CASE_TYPE
                     },
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -316,9 +316,9 @@ internal sealed class CasePartyTypeMigrator(
                 Title = Constants.THERAPY_CASE_TYPE_NAME,
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                 {
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -329,7 +329,7 @@ internal sealed class CasePartyTypeMigrator(
                         SubgroupId = null,
                         UrlId = Constants.THERAPY_CASE_TYPE
                     },
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -372,9 +372,9 @@ internal sealed class CasePartyTypeMigrator(
                 Title = Constants.AUTHORITIES_CASE_TYPE_NAME,
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                 {
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -385,7 +385,7 @@ internal sealed class CasePartyTypeMigrator(
                         SubgroupId = null,
                         UrlId = Constants.AUTHORITIES_CASE_TYPE
                     },
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null

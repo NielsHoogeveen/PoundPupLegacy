@@ -43,9 +43,9 @@ internal sealed class UnitedStatesCongressionalMeetingMigrator(
                     NodeTypeId = 52,
                     OwnerId = Constants.OWNER_GEOGRAPHY,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                     {
-                        new TenantNode.ToCreateForNewNode
+                        new TenantNode.ToCreate.ForNewNode
                         {
                             Identification = new Identification.Possible {
                                 Id = null

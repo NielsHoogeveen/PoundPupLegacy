@@ -26,12 +26,12 @@ public abstract record NodeDetails{
         public required DateTime CreatedDateTime { get; init; }
         public required int OwnerId { get; init; }
         public required int NodeTypeId { get; init; }
-        public required List<TenantNode.ToCreateForNewNode> TenantNodes { get; init; }
+        public required List<TenantNode.ToCreate.ForNewNode> TenantNodes { get; init; }
         public required List<int> TermIds { get; init; }
     }
     public sealed record ForUpdate : NodeDetails
     {
-        public required List<TenantNode.ToCreateForExistingNode> TenantNodesToAdd { get; init; }
+        public required List<TenantNode.ToCreate.ForExistingNode> TenantNodesToAdd { get; init; }
         public required List<TenantNode.ToUpdate> TenantNodesToUpdate { get; init; }
         public required List<TenantNodeToDelete> TenantNodesToRemove { get; init; }
         public required List<NodeTermToAdd> NodeTermsToAdd { get; init; }

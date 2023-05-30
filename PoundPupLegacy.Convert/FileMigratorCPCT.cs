@@ -5,7 +5,7 @@ namespace PoundPupLegacy.Convert;
 internal sealed class FileMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, CreateModel.TenantNode.ToCreateForExistingNode> tenantNodeReaderByUrlIdFactory,
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, CreateModel.TenantNode.ToCreate.ForExistingNode> tenantNodeReaderByUrlIdFactory,
     IEntityCreatorFactory<File> fileCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 

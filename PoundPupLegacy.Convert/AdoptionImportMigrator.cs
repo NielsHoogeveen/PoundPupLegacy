@@ -143,8 +143,8 @@ internal sealed class AdoptionImportMigrator(
                 ChangedDateTime = DateTime.Now,
                 CreatedDateTime = DateTime.Now,
                 NodeTypeId = 50,
-                TenantNodes = new List<TenantNode.ToCreateForNewNode>{
-                    new TenantNode.ToCreateForNewNode
+                TenantNodes = new List<TenantNode.ToCreate.ForNewNode>{
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null

@@ -53,9 +53,9 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                 Title = "Åland",
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                 {
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -66,7 +66,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                         SubgroupId = null,
                         UrlId = Constants.ALAND
                     },
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -151,9 +151,9 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                 Title = "Curaçao",
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                 {
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -164,7 +164,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                         SubgroupId = null,
                         UrlId = Constants.CURACAO
                     },
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -249,9 +249,9 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                 Title = "Sint Maarten",
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                 {
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -262,7 +262,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                         SubgroupId = null,
                         UrlId = Constants.SINT_MAARTEN
                     },
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -347,9 +347,9 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                 Title = "United States Minor Outlying Islands",
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                 {
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                                 Id = null
@@ -360,7 +360,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                         SubgroupId = null,
                         UrlId = Constants.UNITED_STATES_MINOR_OUTLYING_ISLANDS
                     },
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                                 Id = null
@@ -538,9 +538,9 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                     Title = name,
                     OwnerId = Constants.OWNER_GEOGRAPHY,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                     {
-                        new TenantNode.ToCreateForNewNode
+                        new TenantNode.ToCreate.ForNewNode
                         {
                             Identification = new Identification.Possible {
                                 Id = null
@@ -551,7 +551,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.ToCreateForNewNode
+                        new TenantNode.ToCreate.ForNewNode
                         {
                             Identification = new Identification.Possible {
                                 Id = null

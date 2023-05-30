@@ -327,9 +327,9 @@ internal sealed class UserMigrator(
                     Title = Constants.VOCABULARY_TOPICS,
                     OwnerId = Constants.OWNER_SYSTEM,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.ToCreateForNewNode>()
+                    TenantNodes = new List<TenantNode.ToCreate.ForNewNode>()
                     {
-                        new TenantNode.ToCreateForNewNode
+                        new TenantNode.ToCreate.ForNewNode
                         {
                             Identification = new Identification.Possible {
                                 Id = null
@@ -340,7 +340,7 @@ internal sealed class UserMigrator(
                             SubgroupId = null,
                             UrlId = Constants.VOCABULARY_ID_TOPICS
                         },
-                        new TenantNode.ToCreateForNewNode
+                        new TenantNode.ToCreate.ForNewNode
                         {
                             Identification = new Identification.Possible {
                                 Id = null

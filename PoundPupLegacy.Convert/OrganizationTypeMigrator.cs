@@ -173,9 +173,9 @@ internal sealed class OrganizationTypeMigrator(
                     Title = name,
                     OwnerId = Constants.OWNER_PARTIES,
                     AuthoringStatusId = 1,
-                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                     {
-                        new TenantNode.ToCreateForNewNode
+                        new TenantNode.ToCreate.ForNewNode
                         {
                             Identification = new Identification.Possible {
                                 Id = null
@@ -186,7 +186,7 @@ internal sealed class OrganizationTypeMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.ToCreateForNewNode
+                        new TenantNode.ToCreate.ForNewNode
                         {
                             Identification = new Identification.Possible {
                                 Id = null
@@ -230,9 +230,9 @@ internal sealed class OrganizationTypeMigrator(
                 Title = Constants.POLITICAL_PARTY_NAME,
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                {
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -243,7 +243,7 @@ internal sealed class OrganizationTypeMigrator(
                         SubgroupId = null,
                         UrlId = Constants.POLITICAL_PARTY
                     },
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null

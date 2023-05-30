@@ -3,7 +3,7 @@
 internal sealed class PersonOrganizationRelationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreateForExistingNode> tenantNodeReaderByUrlIdFactory,
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreate.ForExistingNode> tenantNodeReaderByUrlIdFactory,
     IEntityCreatorFactory<PersonOrganizationRelation.ToCreate.ForExistingParticipants> personOrganizationRelationCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
@@ -23,7 +23,7 @@ internal sealed class PersonOrganizationRelationMigratorCPCT(
 
     private async IAsyncEnumerable<PersonOrganizationRelation.ToCreate.ForExistingParticipants> ReadPersonOrganizationRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreateForExistingNode> tenantNodeReaderByUrlId
+        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreate.ForExistingNode> tenantNodeReaderByUrlId
     )
     {
 
@@ -103,9 +103,9 @@ internal sealed class PersonOrganizationRelationMigratorCPCT(
                 TenantId = Constants.PPL
             });
 
-            var tenantNodes = new List<TenantNode.ToCreateForNewNode>
+            var tenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                 {
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -118,7 +118,7 @@ internal sealed class PersonOrganizationRelationMigratorCPCT(
                     }
                 };
             if (personPublicationStatusId == 1 && organizationPublicationStatusId == 1) {
-                tenantNodes.Add(new TenantNode.ToCreateForNewNode {
+                tenantNodes.Add(new TenantNode.ToCreate.ForNewNode {
                     Identification = new Identification.Possible {
                         Id = null
                     },

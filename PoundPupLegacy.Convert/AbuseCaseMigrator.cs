@@ -173,9 +173,9 @@ internal sealed class AbuseCaseMigrator(
                     AuthoringStatusId = 1,
                     NodeTypeId = reader.GetInt32("node_type_id"),
                     TermIds = new List<int>(),
-                    TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                    TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                     {
-                        new TenantNode.ToCreateForNewNode
+                        new TenantNode.ToCreate.ForNewNode
                         {
                             Identification = new Identification.Possible {
                                 Id = null
@@ -186,7 +186,7 @@ internal sealed class AbuseCaseMigrator(
                             SubgroupId = null,
                             UrlId = id
                         },
-                        new TenantNode.ToCreateForNewNode
+                        new TenantNode.ToCreate.ForNewNode
                         {
                             Identification = new Identification.Possible {
                                 Id = null

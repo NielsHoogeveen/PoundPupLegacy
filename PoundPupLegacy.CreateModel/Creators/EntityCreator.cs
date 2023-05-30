@@ -161,7 +161,7 @@ public class NameableCreator<T>(
 }
 public class NodeDetailsCreatorFactory(
     IDatabaseInserterFactory<ResolvedNodeTermToAdd> nodeTermInserterFactory,
-    IDatabaseInserterFactory<TenantNode.ToCreateForExistingNode> tenantNodeInserterFactory
+    IDatabaseInserterFactory<TenantNode.ToCreate.ForExistingNode> tenantNodeInserterFactory
 )
 { 
     public async Task<NodeDetailsCreator> CreateAsync(IDbConnection connection)
@@ -175,7 +175,7 @@ public class NodeDetailsCreatorFactory(
 
 public class NodeDetailsCreator(
     IDatabaseInserter<ResolvedNodeTermToAdd> nodeTermInserter,
-    IDatabaseInserter<TenantNode.ToCreateForExistingNode> tenantNodeInserter
+    IDatabaseInserter<TenantNode.ToCreate.ForExistingNode> tenantNodeInserter
 ) : IAsyncDisposable
 {
     public async Task ProcessAsync(NodeToCreate element, int id)

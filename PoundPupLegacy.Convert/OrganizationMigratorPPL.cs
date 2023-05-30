@@ -34,9 +34,9 @@ internal sealed class OrganizationMigratorPPL(
                 Title = "Colorado Adoption Center",
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                 {
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -47,7 +47,7 @@ internal sealed class OrganizationMigratorPPL(
                         SubgroupId = null,
                         UrlId = Constants.COLORADO_ADOPTION_CENTER
                     },
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -114,9 +114,9 @@ internal sealed class OrganizationMigratorPPL(
                 Title = "Popular Democratic Party",
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                 {
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -127,7 +127,7 @@ internal sealed class OrganizationMigratorPPL(
                         SubgroupId = null,
                         UrlId = Constants.POPULAR_DEMOCRAT_PARTY
                     },
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -194,9 +194,9 @@ internal sealed class OrganizationMigratorPPL(
                 Title = "Libertarian Party",
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                 {
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                                 Id = null
@@ -207,7 +207,7 @@ internal sealed class OrganizationMigratorPPL(
                         SubgroupId = null,
                         UrlId = Constants.LIBERTARIAN_PARTY
                     },
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                                 Id = null
@@ -274,9 +274,9 @@ internal sealed class OrganizationMigratorPPL(
                 Title = "Government of Italy",
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                 {
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -287,7 +287,7 @@ internal sealed class OrganizationMigratorPPL(
                         SubgroupId = null,
                         UrlId = 17036
                     },
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -577,8 +577,8 @@ internal sealed class OrganizationMigratorPPL(
                         Title = reader.GetString("title"),
                         OwnerId = Constants.OWNER_PARTIES,
                         AuthoringStatusId = 1,
-                        TenantNodes = new List<TenantNode.ToCreateForNewNode> {
-                            new TenantNode.ToCreateForNewNode {
+                        TenantNodes = new List<TenantNode.ToCreate.ForNewNode> {
+                            new TenantNode.ToCreate.ForNewNode {
                                 Identification = new Identification.Possible {
                                     Id = null
                                 },
@@ -588,7 +588,7 @@ internal sealed class OrganizationMigratorPPL(
                                 SubgroupId = null,
                                 UrlId = id
                             },
-                            new TenantNode.ToCreateForNewNode {
+                            new TenantNode.ToCreate.ForNewNode {
                                 Identification = new Identification.Possible {
                                     Id = null
                                 },
@@ -642,9 +642,9 @@ internal sealed class OrganizationMigratorPPL(
                         Title = name,
                         OwnerId = Constants.OWNER_PARTIES,
                         AuthoringStatusId = 1,
-                        TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                        TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                         {
-                            new TenantNode.ToCreateForNewNode
+                            new TenantNode.ToCreate.ForNewNode
                             {
                                 Identification = new Identification.Possible {
                                     Id = null
@@ -655,7 +655,7 @@ internal sealed class OrganizationMigratorPPL(
                                 SubgroupId = null,
                                 UrlId = id
                             },
-                            new TenantNode.ToCreateForNewNode
+                            new TenantNode.ToCreate.ForNewNode
                             {
                                 Identification = new Identification.Possible {
                                     Id = null

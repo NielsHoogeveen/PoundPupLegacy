@@ -33,9 +33,9 @@ internal sealed class FamilySizeMigrator(
                 Title = "1 to 4",
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                 {
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -46,7 +46,7 @@ internal sealed class FamilySizeMigrator(
                         SubgroupId = null,
                         UrlId = Constants.ONE_TO_FOUR
                     },
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -89,9 +89,9 @@ internal sealed class FamilySizeMigrator(
                 Title = "4 to 8",
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
             {
-                new TenantNode.ToCreateForNewNode
+                new TenantNode.ToCreate.ForNewNode
                 {
                     Identification = new Identification.Possible {
                         Id = null
@@ -102,7 +102,7 @@ internal sealed class FamilySizeMigrator(
                     SubgroupId = null,
                     UrlId = Constants.FOUR_TO_EIGHT
                 },
-                new TenantNode.ToCreateForNewNode
+                new TenantNode.ToCreate.ForNewNode
                 {
                     Identification = new Identification.Possible {
                         Id = null
@@ -145,9 +145,9 @@ internal sealed class FamilySizeMigrator(
                 Title = "8 to 12",
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                 {
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -158,7 +158,7 @@ internal sealed class FamilySizeMigrator(
                         SubgroupId = null,
                         UrlId = Constants.EIGHT_TO_TWELVE
                     },
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -201,9 +201,9 @@ internal sealed class FamilySizeMigrator(
                 Title = "more than 12",
                 OwnerId = Constants.OWNER_CASES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                 {
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -214,7 +214,7 @@ internal sealed class FamilySizeMigrator(
                         SubgroupId = null,
                         UrlId = Constants.MORE_THAN_TWELVE
                     },
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null

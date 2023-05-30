@@ -3,7 +3,7 @@
 internal sealed class OrganizationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreateForExistingNode> tenantNodeReaderByUrlIdFactory,
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreate.ForExistingNode> tenantNodeReaderByUrlIdFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameableIdRequest, int> termIdReaderByNameableIdFactory,
     IEntityCreatorFactory<Organization> organizationCreatorFactory
 ) : MigratorCPCT(
@@ -231,9 +231,9 @@ internal sealed class OrganizationMigratorCPCT(
             var id = reader.GetInt32("id");
 
 
-            var tenantNodes = new List<TenantNode.ToCreateForNewNode>
+            var tenantNodes = new List<TenantNode.ToCreate.ForNewNode>
             {
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -249,7 +249,7 @@ internal sealed class OrganizationMigratorCPCT(
             var toSkipForPPL = new List<int> { 34447, 42413, 46479, 48178, 39305, 45402, 46671, 33634, 48051 };
 
             if (!organizationOrganizationTypeIds.Contains(miscellaneous) && !toSkipForPPL.Contains(id)) {
-                tenantNodes.Add(new TenantNode.ToCreateForNewNode {
+                tenantNodes.Add(new TenantNode.ToCreate.ForNewNode {
                     Identification = new Identification.Possible {
                         Id = null
                     },

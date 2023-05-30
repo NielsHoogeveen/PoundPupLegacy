@@ -3,7 +3,7 @@
 internal sealed class InterOrganizationalRelationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreateForExistingNode> tenantNodeReaderByUrlIdFactory,
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreate.ForExistingNode> tenantNodeReaderByUrlIdFactory,
     IEntityCreatorFactory<InterOrganizationalRelation.ToCreate.ForExistingParticipants> interOrganizationalRelationCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
@@ -24,7 +24,7 @@ internal sealed class InterOrganizationalRelationMigratorCPCT(
 
     private async IAsyncEnumerable<InterOrganizationalRelation.ToCreate.ForExistingParticipants> ReadInterOrganizationalRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreateForExistingNode> tenantNodeReaderByUrlId
+        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreate.ForExistingNode> tenantNodeReaderByUrlId
     )
     {
         var sql = $"""
@@ -99,9 +99,9 @@ internal sealed class InterOrganizationalRelationMigratorCPCT(
                 UrlId = reader.GetInt32("nameable_id"),
                 TenantId = Constants.CPCT
             });
-            var tenantNodes = new List<TenantNode.ToCreateForNewNode>
+            var tenantNodes = new List<TenantNode.ToCreate.ForNewNode>
             {
-                new TenantNode.ToCreateForNewNode
+                new TenantNode.ToCreate.ForNewNode
                 {
                     Identification = new Identification.Possible {
                         Id = null
@@ -114,7 +114,7 @@ internal sealed class InterOrganizationalRelationMigratorCPCT(
                 }
             };
             if (organizationFromPublicationStatusId == 1 && organizationToPublicationStatusId == 1) {
-                tenantNodes.Add(new TenantNode.ToCreateForNewNode {
+                tenantNodes.Add(new TenantNode.ToCreate.ForNewNode {
                     Identification = new Identification.Possible {
                         Id = null
                     },

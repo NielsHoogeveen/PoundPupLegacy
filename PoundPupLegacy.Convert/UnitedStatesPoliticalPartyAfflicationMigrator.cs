@@ -28,9 +28,9 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 Title = Constants.DEMOCRAT_NAME,
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                 {
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -41,7 +41,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                         SubgroupId = null,
                         UrlId = Constants.DEMOCRAT
                     },
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -91,9 +91,9 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 Title = Constants.REPUBLICAN_NAME,
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                 {
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -104,7 +104,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                         SubgroupId = null,
                         UrlId = Constants.REPUBLICAN
                     },
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -153,9 +153,9 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 Title = Constants.INDEPENDENT_NAME,
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                 {
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -166,7 +166,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                         SubgroupId = null,
                         UrlId = Constants.INDEPENDENT
                     },
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -212,9 +212,9 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 Title = Constants.POPULAR_DEMOCRAT_NAME,
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                 {
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -225,7 +225,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                         SubgroupId = null,
                         UrlId = Constants.POPULAR_DEMOCRAT
                     },
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -274,9 +274,9 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                 Title = Constants.LIBERTARIAN_NAME,
                 OwnerId = Constants.OWNER_PARTIES,
                 AuthoringStatusId = 1,
-                TenantNodes = new List<TenantNode.ToCreateForNewNode>
+                TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                 {
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null
@@ -287,7 +287,7 @@ internal sealed class UnitedStatesPoliticalPartyAffliationMigrator(
                         SubgroupId = null,
                         UrlId = Constants.LIBERTARIAN
                     },
-                    new TenantNode.ToCreateForNewNode
+                    new TenantNode.ToCreate.ForNewNode
                     {
                         Identification = new Identification.Possible {
                             Id = null

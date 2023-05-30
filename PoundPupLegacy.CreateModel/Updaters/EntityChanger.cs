@@ -10,7 +10,7 @@ public interface IEntityUpdater<T>
 public class NodeDetailsChangerFactory(
     IDatabaseUpdaterFactory<TenantNode.ToUpdate> tenantNodeUpdaterFactory,
     IDatabaseDeleterFactory<TenantNodeToDelete> tenantNodeDeleterFactory,
-    IDatabaseInserterFactory<TenantNode.ToCreateForExistingNode> tenantNodeInserterFactory,
+    IDatabaseInserterFactory<TenantNode.ToCreate.ForExistingNode> tenantNodeInserterFactory,
     IDatabaseInserterFactory<NodeTermToAdd> nodeTermInserterFactory,
     IDatabaseDeleterFactory<NodeTermToRemove> nodeTermDeleterFactory
 )
@@ -30,7 +30,7 @@ public class NodeDetailsChangerFactory(
 public class NodeDetailsChanger(
     IDatabaseUpdater<TenantNode.ToUpdate> tenantNodeUpdater,
     IDatabaseDeleter<TenantNodeToDelete> tenantNodeDeleter,
-    IDatabaseInserter<TenantNode.ToCreateForExistingNode> tenantNodeInserter,
+    IDatabaseInserter<TenantNode.ToCreate.ForExistingNode> tenantNodeInserter,
     IDatabaseInserter<NodeTermToAdd> nodeTermInserter,
     IDatabaseDeleter<NodeTermToRemove> nodeTermDeleter
 ) : IAsyncDisposable

@@ -137,7 +137,7 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<SystemGroup>, SystemGroupInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<TenantFile>, TenantFileInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<Tenant>, TenantInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<TenantNode.ToCreateForExistingNode>, TenantNodeInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<TenantNode.ToCreate.ForExistingNode>, TenantNodeInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<TenantNodeMenuItem>, TenantNodeMenuItemInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<TermToCreateForExistingNameable>, TermInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<TermHierarchy>, TermHierarchyInserterFactory>();
