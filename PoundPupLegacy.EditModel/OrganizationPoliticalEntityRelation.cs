@@ -54,6 +54,8 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
     public abstract record Incomplete : OrganizationPoliticalEntityRelation
     {
         private Incomplete() { }
+        public override NodeDetails NodeDetails => NodeDetailsForCreate;
+        public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
         public override T Match<T>(
             Func<Incomplete, T> incompleteOrganizationPoliticalEntityRelation,
             Func<Complete, T> completedOrganizationPoliticalEntityRelation
@@ -65,8 +67,6 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
         public abstract Complete GetCompletedRelation(PoliticalEntityListItem politicalEntity);
         public sealed record ToCreateForNewOrganization : Incomplete, NewNode
         {
-            public override NodeDetails NodeDetails => NodeDetailsForCreate;
-            public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
             public override T Match<T>(
                 Func<ToCreateForNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
                 Func<ToCreateForExistingOrganization, T> newOrganizationPoliticalEntityRelationExistingOrganization,
@@ -95,8 +95,6 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
         }
         public sealed record ToCreateForExistingOrganization : Incomplete, NewNode
         {
-            public override NodeDetails NodeDetails => NodeDetailsForCreate;
-            public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
             public override T Match<T>(
                 Func<ToCreateForNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
                 Func<ToCreateForExistingOrganization, T> newOrganizationPoliticalEntityRelationExistingOrganization,

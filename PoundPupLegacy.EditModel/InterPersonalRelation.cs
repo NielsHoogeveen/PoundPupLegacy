@@ -7,9 +7,9 @@ public partial class ExistingInterPersonalRelationFromJsonContext : JsonSerializ
 public partial class ExistingInterPersonalRelationToJsonContext : JsonSerializerContext { }
 
 public static class InterPersonalRelationExtentions{
-    public static InterPersonalRelation.From.Incomplete.New.ToCreateForExistingPerson GetNewInterPersonalRelationFrom(this PersonListItem personListItem, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId)
+    public static InterPersonalRelation.From.Incomplete.ToCreateForExistingPerson GetNewInterPersonalRelationFrom(this PersonListItem personListItem, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId)
     {
-        return new InterPersonalRelation.From.Incomplete.New.ToCreateForExistingPerson {
+        return new InterPersonalRelation.From.Incomplete.ToCreateForExistingPerson {
             PersonFrom = personListItem,
             PersonTo = null,
             InterPersonalRelationType = interPersonalRelationType,
@@ -17,9 +17,9 @@ public static class InterPersonalRelationExtentions{
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }
-    public static InterPersonalRelation.To.Incomplete.New.ToCreateForExistingPerson GetNewInterPersonalRelationTo(this PersonListItem personListItem, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId)
+    public static InterPersonalRelation.To.Incomplete.ToCreateForExistingPerson GetNewInterPersonalRelationTo(this PersonListItem personListItem, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId)
     {
-        return new InterPersonalRelation.To.Incomplete.New.ToCreateForExistingPerson {
+        return new InterPersonalRelation.To.Incomplete.ToCreateForExistingPerson {
             PersonFrom = null,
             PersonTo = personListItem,
             InterPersonalRelationType = interPersonalRelationType,
@@ -28,9 +28,9 @@ public static class InterPersonalRelationExtentions{
         };
 
     }
-    public static InterPersonalRelation.From.Incomplete.New.ToCreateForNewPerson GetNewInterPersonalRelationFrom(this PersonName personName, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId)
+    public static InterPersonalRelation.From.Incomplete.ToCreateForNewPerson GetNewInterPersonalRelationFrom(this PersonName personName, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId)
     {
-        return new InterPersonalRelation.From.Incomplete.New.ToCreateForNewPerson {
+        return new InterPersonalRelation.From.Incomplete.ToCreateForNewPerson {
             PersonFrom = personName,
             PersonTo = null,
             InterPersonalRelationType = interPersonalRelationType,
@@ -38,9 +38,9 @@ public static class InterPersonalRelationExtentions{
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }
-    public static InterPersonalRelation.To.Incomplete.New.ToCreateForNewPerson GetNewInterPersonalRelationTo(this PersonName personName, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId)
+    public static InterPersonalRelation.To.Incomplete.ToCreateForNewPerson GetNewInterPersonalRelationTo(this PersonName personName, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId)
     {
-        return new InterPersonalRelation.To.Incomplete.New.ToCreateForNewPerson {
+        return new InterPersonalRelation.To.Incomplete.ToCreateForNewPerson {
             PersonFrom = null,
             PersonTo = personName,
             InterPersonalRelationType = interPersonalRelationType,
@@ -78,6 +78,8 @@ public abstract record InterPersonalRelation : Relation
         public abstract record Incomplete : From
         {
             private Incomplete() { }
+            public override NodeDetails NodeDetails => NodeDetailsForCreate;
+            public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
             public sealed override T Match<T>(
                 Func<Incomplete, T> incompleteInterPersonalRelationFrom,
                 Func<Complete, T> completedInterPersonalRelationFrom
@@ -86,90 +88,83 @@ public abstract record InterPersonalRelation : Relation
                 return incompleteInterPersonalRelationFrom(this);
             }
             public abstract Complete GetCompletedRelation(PersonListItem organizationListItemFrom);
-            public abstract record New : Incomplete
+            public required PersonListItem? PersonTo { get; set; }
+
+            private PersonListItem? organizationItemTo = null;
+
+            public sealed override PersonListItem? PersonItemTo {
+                get {
+                    if (organizationItemTo is null) {
+                        organizationItemTo = PersonTo;
+                    }
+                    return organizationItemTo;
+                }
+                set {
+                    organizationItemTo = value;
+                }
+            }
+            public sealed override string PersonToName => PersonTo is null ? "" : PersonTo.Name;
+
+            public sealed record ToCreateForNewPerson : Incomplete, NewNode
             {
-                public required PersonListItem? PersonTo { get; set; }
-
-                private PersonListItem? organizationItemTo = null;
-
-                public sealed override PersonListItem? PersonItemTo {
-                    get {
-                        if (organizationItemTo is null) {
-                            organizationItemTo = PersonTo;
-                        }
-                        return organizationItemTo;
-                    }
-                    set {
-                        organizationItemTo = value;
-                    }
-                }
-                public sealed override string PersonToName => PersonTo is null ? "" : PersonTo.Name;
-
-                public sealed record ToCreateForNewPerson : New, NewNode
+                public required PersonName PersonFrom { get; set; }
+                public sealed override void SetName(string name)
                 {
-                    public override NodeDetails NodeDetails => NodeDetailsForCreate;
-                    public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-                    public required PersonName PersonFrom { get; set; }
-                    public sealed override void SetName(string name)
-                    {
-                        PersonFrom.Name = name;
-                    }
-                    public sealed override string PersonFromName => PersonFrom.Name;
-                    public sealed override PersonItem? PersonItemFrom => PersonFrom;
-                    public sealed override To.Incomplete.New.ToCreateForNewPerson SwapFromAndTo()
-                    {
-                        return new To.Incomplete.New.ToCreateForNewPerson {
-                            PersonFrom = PersonTo,
-                            PersonTo = PersonFrom,
-                            InterPersonalRelationType = InterPersonalRelationType,
-                            NodeDetailsForCreate = NodeDetailsForCreate,
-                            RelationDetails = RelationDetails,
-                        };
-                    }
-                    public sealed override Complete GetCompletedRelation(PersonListItem organizationListItemTo)
-                    {
-                        return new Complete.ToCreateForNewPerson {
-                            PersonFrom = PersonFrom,
-                            PersonTo = organizationListItemTo,
-                            InterPersonalRelationType = InterPersonalRelationType,
-                            NodeDetailsForCreate = NodeDetailsForCreate,
-                            RelationDetails = RelationDetails,
-                        };
-                    }
+                    PersonFrom.Name = name;
+                }
+                public sealed override string PersonFromName => PersonFrom.Name;
+                public sealed override PersonItem? PersonItemFrom => PersonFrom;
+                public sealed override To.Incomplete.ToCreateForNewPerson SwapFromAndTo()
+                {
+                    return new To.Incomplete.ToCreateForNewPerson {
+                        PersonFrom = PersonTo,
+                        PersonTo = PersonFrom,
+                        InterPersonalRelationType = InterPersonalRelationType,
+                        NodeDetailsForCreate = NodeDetailsForCreate,
+                        RelationDetails = RelationDetails,
+                    };
+                }
+                public sealed override Complete GetCompletedRelation(PersonListItem organizationListItemTo)
+                {
+                    return new Complete.ToCreateForNewPerson {
+                        PersonFrom = PersonFrom,
+                        PersonTo = organizationListItemTo,
+                        InterPersonalRelationType = InterPersonalRelationType,
+                        NodeDetailsForCreate = NodeDetailsForCreate,
+                        RelationDetails = RelationDetails,
+                    };
+                }
+            }
+
+            public sealed record ToCreateForExistingPerson : Incomplete, NewNode
+            {
+                public required PersonListItem PersonFrom { get; set; }
+                public sealed override void SetName(string name)
+                {
+                    PersonFrom.Name = name;
+                }
+                public sealed override string PersonFromName => PersonFrom.Name;
+                public sealed override PersonItem? PersonItemFrom => PersonFrom;
+                public sealed override To.Incomplete.ToCreateForExistingPerson SwapFromAndTo()
+                {
+                    return new To.Incomplete.ToCreateForExistingPerson {
+                        PersonFrom = PersonTo,
+                        PersonTo = PersonFrom,
+                        InterPersonalRelationType = InterPersonalRelationType,
+                        NodeDetailsForCreate = NodeDetailsForCreate,
+                        RelationDetails = RelationDetails,
+                    };
                 }
 
-                public sealed record ToCreateForExistingPerson : New, NewNode
+                public sealed override Complete GetCompletedRelation(PersonListItem organizationListItemTo)
                 {
-                    public override NodeDetails NodeDetails => NodeDetailsForCreate;
-                    public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-                    public required PersonListItem PersonFrom { get; set; }
-                    public sealed override void SetName(string name)
-                    {
-                        PersonFrom.Name = name;
-                    }
-                    public sealed override string PersonFromName => PersonFrom.Name;
-                    public sealed override PersonItem? PersonItemFrom => PersonFrom;
-                    public sealed override To.Incomplete.New.ToCreateForExistingPerson SwapFromAndTo()
-                    {
-                        return new To.Incomplete.New.ToCreateForExistingPerson {
-                            PersonFrom = PersonTo,
-                            PersonTo = PersonFrom,
-                            InterPersonalRelationType = InterPersonalRelationType,
-                            NodeDetailsForCreate = NodeDetailsForCreate,
-                            RelationDetails = RelationDetails,
-                        };
-                    }
-
-                    public sealed override Complete GetCompletedRelation(PersonListItem organizationListItemTo)
-                    {
-                        return new Complete.Resolved.ToCreate {
-                            PersonFrom = PersonFrom,
-                            PersonTo = organizationListItemTo,
-                            InterPersonalRelationType = InterPersonalRelationType,
-                            NodeDetailsForCreate = NodeDetailsForCreate,
-                            RelationDetails = RelationDetails,
-                        };
-                    }
+                    return new Complete.Resolved.ToCreate {
+                        PersonFrom = PersonFrom,
+                        PersonTo = organizationListItemTo,
+                        InterPersonalRelationType = InterPersonalRelationType,
+                        NodeDetailsForCreate = NodeDetailsForCreate,
+                        RelationDetails = RelationDetails,
+                    };
                 }
             }
         }
@@ -291,6 +286,8 @@ public abstract record InterPersonalRelation : Relation
         public sealed override RelationSide RelationSideThisPerson => RelationSide.To;
         public abstract record Incomplete : To
         {
+            public override NodeDetails NodeDetails => NodeDetailsForCreate;
+            public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
             private Incomplete() { }
 
             public sealed override T Match<T>(
@@ -302,88 +299,81 @@ public abstract record InterPersonalRelation : Relation
             }
             public abstract Complete GetCompletedRelation(PersonListItem organizationListItemFrom);
 
-            public abstract record New : Incomplete
+            public required PersonListItem? PersonFrom { get; set; }
+            public sealed override string PersonFromName => PersonFrom is null ? "" : PersonFrom.Name;
+            private PersonListItem? organizationItemFrom = null;
+            public sealed override PersonListItem? PersonItemFrom {
+                get {
+                    if (organizationItemFrom is null) {
+                        organizationItemFrom = PersonFrom;
+                    }
+                    return organizationItemFrom;
+                }
+                set {
+                    organizationItemFrom = value;
+                }
+            }
+            public sealed record ToCreateForExistingPerson : Incomplete, NewNode
             {
-                public required PersonListItem? PersonFrom { get; set; }
-                public sealed override string PersonFromName => PersonFrom is null ? "" : PersonFrom.Name;
-                private PersonListItem? organizationItemFrom = null;
-                public sealed override PersonListItem? PersonItemFrom {
-                    get {
-                        if (organizationItemFrom is null) {
-                            organizationItemFrom = PersonFrom;
-                        }
-                        return organizationItemFrom;
-                    }
-                    set {
-                        organizationItemFrom = value;
-                    }
-                }
-                public sealed record ToCreateForExistingPerson : New, NewNode
+                public required PersonListItem PersonTo { get; set; }
+                public sealed override void SetName(string name)
                 {
-                    public override NodeDetails NodeDetails => NodeDetailsForCreate;
-                    public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-                    public required PersonListItem PersonTo { get; set; }
-                    public sealed override void SetName(string name)
-                    {
-                        PersonTo.Name = name;
-                    }
-                    public sealed override string PersonToName => PersonTo.Name;
-                    public sealed override PersonItem? PersonItemTo => PersonTo;
-                    public sealed override From.Incomplete.New.ToCreateForExistingPerson SwapFromAndTo()
-                    {
-                        return new From.Incomplete.New.ToCreateForExistingPerson {
-                            PersonFrom = PersonTo,
-                            PersonTo = PersonFrom,
-                            InterPersonalRelationType = InterPersonalRelationType,
-                            NodeDetailsForCreate = NodeDetailsForCreate,
-                            RelationDetails = RelationDetails,
-                        };
-                    }
-
-                    public sealed override Complete GetCompletedRelation(PersonListItem organizationListItemFrom)
-                    {
-                        return new Complete.Resolved.ToCreate {
-                            PersonFrom = organizationListItemFrom,
-                            PersonTo = PersonTo,
-                            InterPersonalRelationType = InterPersonalRelationType,
-                            NodeDetailsForCreate = NodeDetailsForCreate,
-                            RelationDetails = RelationDetails,
-                        };
-                    }
+                    PersonTo.Name = name;
+                }
+                public sealed override string PersonToName => PersonTo.Name;
+                public sealed override PersonItem? PersonItemTo => PersonTo;
+                public sealed override From.Incomplete.ToCreateForExistingPerson SwapFromAndTo()
+                {
+                    return new From.Incomplete.ToCreateForExistingPerson {
+                        PersonFrom = PersonTo,
+                        PersonTo = PersonFrom,
+                        InterPersonalRelationType = InterPersonalRelationType,
+                        NodeDetailsForCreate = NodeDetailsForCreate,
+                        RelationDetails = RelationDetails,
+                    };
                 }
 
-                public sealed record ToCreateForNewPerson : New, NewNode
+                public sealed override Complete GetCompletedRelation(PersonListItem organizationListItemFrom)
                 {
-                    public override NodeDetails NodeDetails => NodeDetailsForCreate;
-                    public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-                    public required PersonName PersonTo { get; set; }
-                    public sealed override void SetName(string name)
-                    {
-                        PersonTo.Name = name;
-                    }
-                    public sealed override string PersonToName => PersonTo.Name;
-                    public sealed override PersonItem? PersonItemTo => PersonTo;
+                    return new Complete.Resolved.ToCreate {
+                        PersonFrom = organizationListItemFrom,
+                        PersonTo = PersonTo,
+                        InterPersonalRelationType = InterPersonalRelationType,
+                        NodeDetailsForCreate = NodeDetailsForCreate,
+                        RelationDetails = RelationDetails,
+                    };
+                }
+            }
 
-                    public sealed override From.Incomplete.New.ToCreateForNewPerson SwapFromAndTo()
-                    {
-                        return new From.Incomplete.New.ToCreateForNewPerson {
-                            PersonFrom = PersonTo,
-                            PersonTo = PersonFrom,
-                            InterPersonalRelationType = InterPersonalRelationType,
-                            NodeDetailsForCreate = NodeDetailsForCreate,
-                            RelationDetails = RelationDetails,
-                        };
-                    }
-                    public sealed override Complete GetCompletedRelation(PersonListItem organizationListItemFrom)
-                    {
-                        return new Complete.ToCreateNewPerson {
-                            PersonFrom = organizationListItemFrom,
-                            PersonTo = PersonTo,
-                            InterPersonalRelationType = InterPersonalRelationType,
-                            NodeDetailsForCreate = NodeDetailsForCreate,
-                            RelationDetails = RelationDetails,
-                        };
-                    }
+            public sealed record ToCreateForNewPerson : Incomplete, NewNode
+            {
+                public required PersonName PersonTo { get; set; }
+                public sealed override void SetName(string name)
+                {
+                    PersonTo.Name = name;
+                }
+                public sealed override string PersonToName => PersonTo.Name;
+                public sealed override PersonItem? PersonItemTo => PersonTo;
+
+                public sealed override From.Incomplete.ToCreateForNewPerson SwapFromAndTo()
+                {
+                    return new From.Incomplete.ToCreateForNewPerson {
+                        PersonFrom = PersonTo,
+                        PersonTo = PersonFrom,
+                        InterPersonalRelationType = InterPersonalRelationType,
+                        NodeDetailsForCreate = NodeDetailsForCreate,
+                        RelationDetails = RelationDetails,
+                    };
+                }
+                public sealed override Complete GetCompletedRelation(PersonListItem organizationListItemFrom)
+                {
+                    return new Complete.ToCreateNewPerson {
+                        PersonFrom = organizationListItemFrom,
+                        PersonTo = PersonTo,
+                        InterPersonalRelationType = InterPersonalRelationType,
+                        NodeDetailsForCreate = NodeDetailsForCreate,
+                        RelationDetails = RelationDetails,
+                    };
                 }
             }
         }

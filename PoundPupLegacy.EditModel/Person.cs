@@ -23,6 +23,13 @@
 [JsonSerializable(typeof(PersonOrganizationRelation.ForPerson.Complete.Resolved.ToUpdate), TypeInfoPropertyName = "PersonOrganizationRelationForPersonCompleteResolvedToUpdate")]
 [JsonSerializable(typeof(List<PersonOrganizationRelation.ForPerson.Complete.Resolved.ToUpdate>), TypeInfoPropertyName = "PersonOrganizationRelationListForPersonCompleteResolvedToUpdate")]
 
+[JsonSerializable(typeof(IEnumerable<PersonPoliticalEntityRelation.Complete>), TypeInfoPropertyName = "PersonPoliticalEntityEnumerableRelationComplete")]
+[JsonSerializable(typeof(PersonPoliticalEntityRelation.Complete), TypeInfoPropertyName = "PersonPoliticalEntityRelationComplete")]
+[JsonSerializable(typeof(List<PersonPoliticalEntityRelation.Complete>), TypeInfoPropertyName = "PersonPoliticalEntityRelationListComplete")]
+
+[JsonSerializable(typeof(PersonPoliticalEntityRelation.Complete.Resolved.ToUpdate), TypeInfoPropertyName = "PersonPoliticalEntityRelationCompleteResolvedToUpdate")]
+[JsonSerializable(typeof(List<PersonPoliticalEntityRelation.Complete.Resolved.ToUpdate>), TypeInfoPropertyName = "PersonPoliticalEntityRelationListCompleteResolvedToUpdate")]
+
 public partial class ExistingPersonJsonContext : JsonSerializerContext { }
 
 [JsonSerializable(typeof(IEnumerable<InterPersonalRelation.From.Complete>), TypeInfoPropertyName = "InterPersonalRelationIterableFromComplete")]
@@ -37,6 +44,10 @@ public partial class ExistingPersonJsonContext : JsonSerializerContext { }
 [JsonSerializable(typeof(IEnumerable<PersonOrganizationRelation.ForPerson.Complete>), TypeInfoPropertyName = "PersonOrganizationRelationEnumerableForPersonComplete")]
 [JsonSerializable(typeof(PersonOrganizationRelation.ForPerson.Complete), TypeInfoPropertyName = "PersonOrganizationRelationForPersonComplete")]
 [JsonSerializable(typeof(List<PersonOrganizationRelation.ForPerson.Complete>), TypeInfoPropertyName = "PersonOrganizationRelationListForPersonComplete")]
+
+[JsonSerializable(typeof(IEnumerable<PersonPoliticalEntityRelation.Complete>), TypeInfoPropertyName = "PersonPoliticalEntityEnumerableRelationComplete")]
+[JsonSerializable(typeof(PersonPoliticalEntityRelation.Complete), TypeInfoPropertyName = "PersonPoliticalEntityRelationComplete")]
+[JsonSerializable(typeof(List<PersonPoliticalEntityRelation.Complete>), TypeInfoPropertyName = "PersonPoliticalEntityRelationListComplete")]
 public partial class NewPersonJsonContext : JsonSerializerContext { }
 
 public abstract record Person : Locatable, ResolvedNode
@@ -47,7 +58,7 @@ public abstract record Person : Locatable, ResolvedNode
     public required NameableDetails NameableDetails { get; init; }
     public abstract LocatableDetails LocatableDetails { get; }
     public abstract NodeDetails NodeDetails { get; }
-    public abstract IEnumerable<CompletedPersonPoliticalEntityRelation> PersonPoliticalEntityRelations { get; }
+    public abstract IEnumerable<PersonPoliticalEntityRelation.Complete> PersonPoliticalEntityRelations { get; }
     public required List<PersonPoliticalEntityRelationTypeListItem> PersonPoliticalEntityRelationTypes { get; init; }
     public abstract IEnumerable<InterPersonalRelation.From.Complete> InterPersonalRelationsFrom { get; }
     public abstract IEnumerable<InterPersonalRelation.To.Complete> InterPersonalRelationsTo { get; }
@@ -61,8 +72,8 @@ public abstract record Person : Locatable, ResolvedNode
         public override LocatableDetails LocatableDetails => ExistingLocatableDetails;
         public required LocatableDetails.ExistingLocatableDetails ExistingLocatableDetails { get; init; }
         public required NodeIdentification NodeIdentification { get; init; }
-        private List<ExistingPersonPoliticalEntityRelation> existingPersonPoliticalEntityRelations = new();
-        public List<ExistingPersonPoliticalEntityRelation> ExistingPersonPoliticalEntityRelations {
+        private List<PersonPoliticalEntityRelation.Complete.Resolved.ToUpdate> existingPersonPoliticalEntityRelations = new();
+        public List<PersonPoliticalEntityRelation.Complete.Resolved.ToUpdate> ExistingPersonPoliticalEntityRelations {
             get => existingPersonPoliticalEntityRelations;
             init {
                 if (value is not null) {
@@ -70,8 +81,8 @@ public abstract record Person : Locatable, ResolvedNode
                 }
             }
         }
-        public override IEnumerable<CompletedPersonPoliticalEntityRelation> PersonPoliticalEntityRelations => GetPersonPoliticalEntityRelations();
-        private IEnumerable<CompletedPersonPoliticalEntityRelation> GetPersonPoliticalEntityRelations()
+        public override IEnumerable<PersonPoliticalEntityRelation.Complete> PersonPoliticalEntityRelations => GetPersonPoliticalEntityRelations();
+        private IEnumerable<PersonPoliticalEntityRelation.Complete> GetPersonPoliticalEntityRelations()
         {
             foreach (var elem in ExistingPersonPoliticalEntityRelations) {
                 yield return elem;
@@ -137,7 +148,7 @@ public abstract record Person : Locatable, ResolvedNode
                 yield return elem;
             }
         }
-        public List<CompletedPersonPoliticalEntityRelation> NewPersonPoliticalEntityRelations { get; } = new();
+        public List<PersonPoliticalEntityRelation.Complete> NewPersonPoliticalEntityRelations { get; } = new();
         public List<InterPersonalRelation.From.Complete> NewInterPersonalRelationsFrom { get; set; } = new();
         public List<InterPersonalRelation.To.Complete> NewInterPersonalRelationsTo { get; set; } = new();
         public List<PersonOrganizationRelation.ForPerson.Complete.Resolved.ToCreate> NewPersonOrganizationRelations { get; } = new();
@@ -156,11 +167,11 @@ public abstract record Person : Locatable, ResolvedNode
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
         public override LocatableDetails LocatableDetails => NewLocatableDetails;
         public required LocatableDetails.NewLocatableDetails NewLocatableDetails { get; init; }
-        public override IEnumerable<CompletedPersonPoliticalEntityRelation> PersonPoliticalEntityRelations => NewPersonPoliticalEntityRelations;
+        public override IEnumerable<PersonPoliticalEntityRelation.Complete> PersonPoliticalEntityRelations => NewPersonPoliticalEntityRelations;
         public override IEnumerable<PersonOrganizationRelation.ForPerson.Complete> PersonOrganizationRelations => NewPersonOrganizationRelations;
         public override IEnumerable<InterPersonalRelation.From.Complete> InterPersonalRelationsFrom => NewInterPersonalRelationsFrom;
         public override IEnumerable<InterPersonalRelation.To.Complete> InterPersonalRelationsTo => NewInterPersonalRelationsTo;
-        public List<CompletedPersonPoliticalEntityRelation> NewPersonPoliticalEntityRelations { get; } = new();
+        public List<PersonPoliticalEntityRelation.Complete> NewPersonPoliticalEntityRelations { get; } = new();
         public List<InterPersonalRelation.From.Complete> NewInterPersonalRelationsFrom { get; set; } = new();
         public List<InterPersonalRelation.To.Complete> NewInterPersonalRelationsTo { get; set; } = new();
         public List<PersonOrganizationRelation.ForPerson.Complete.Resolved.ToCreate> NewPersonOrganizationRelations { get; } = new();

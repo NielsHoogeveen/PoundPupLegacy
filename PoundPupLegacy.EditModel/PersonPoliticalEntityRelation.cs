@@ -1,13 +1,13 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(ExistingPersonPoliticalEntityRelation))]
+[JsonSerializable(typeof(PersonPoliticalEntityRelation.Complete.Resolved.ToUpdate))]
 public partial class ExistingPersonPoliticalEntityRelationJsonContext : JsonSerializerContext { }
 
 public static class PersonPoliticalEntityRelationExtensions
 {
     public static PersonPoliticalEntityRelation GetPersonPoliticalEntityRelation(this PersonListItem personListItem, PersonPoliticalEntityRelationTypeListItem relationType, int ownerId, int publisherId)
     {
-        return new NewPersonPoliticalEntityRelationExistingPerson {
+        return new PersonPoliticalEntityRelation.Incomplete.ToCreateForExistingPerson {
             Person = personListItem,
             PersonPoliticalEntityRelationType = relationType,        
             RelationDetails = RelationDetails.EmptyInstance,
@@ -17,7 +17,7 @@ public static class PersonPoliticalEntityRelationExtensions
     }
     public static PersonPoliticalEntityRelation GetPersonPoliticalEntityRelation(this PersonName personName, PersonPoliticalEntityRelationTypeListItem relationType, int ownerId, int publisherId)
     {
-        return new NewPersonPoliticalEntityRelationNewPerson {
+        return new PersonPoliticalEntityRelation.Incomplete.ToCreateForNewPerson {
             Person = personName,
             PersonPoliticalEntityRelationType = relationType,        
             RelationDetails = RelationDetails.EmptyInstance,
@@ -37,55 +37,34 @@ public abstract record PersonPoliticalEntityRelation : Relation
 
     [RequireNamedArgs]
     public abstract T Match<T>(
-        Func<NewPersonPoliticalEntityRelationNewPerson, T> newPersonPoliticalEntityRelationNewPerson,
-        Func<NewPersonPoliticalEntityRelationExistingPerson, T> newPersonPoliticalEntityRelationExistingPerson,
-        Func<ExistingPersonPoliticalEntityRelation, T> existingPersonPoliticalEntityRelation,
-        Func<CompletedNewPersonPoliticalEntityRelationNewPerson, T> completedNewPersonPoliticalEntityRelationNewPerson,
-        Func<CompletedNewPersonPoliticalEntityRelationExistingPerson, T> completedNewPersonPoliticalEntityRelationExistingPerson
-     );
-    [RequireNamedArgs]
-    public abstract T Match<T>(
-        Func<IncompletePersonPoliticalEntityRelation, T> incompletePersonPoliticalEntityRelation,
-        Func<CompletedPersonPoliticalEntityRelation, T> completedPersonPoliticalEntityRelation
+        Func<Incomplete, T> incompletePersonPoliticalEntityRelation,
+        Func<Complete, T> completedPersonPoliticalEntityRelation
      );
 
     public abstract PersonItem? PersonItem { get; }
     public abstract PoliticalEntityListItem? PoliticalEntityItem { get; }
-
-    public abstract record IncompletePersonPoliticalEntityRelation : PersonPoliticalEntityRelation
+    public abstract record Incomplete : PersonPoliticalEntityRelation
     {
-        private IncompletePersonPoliticalEntityRelation() { }
-        public abstract CompletedPersonPoliticalEntityRelation GetCompletedRelation(PoliticalEntityListItem politicalEntity);
+        private Incomplete() { }
+        public override NodeDetails NodeDetails => NodeDetailsForCreate;
+        public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+        public abstract Complete GetCompletedRelation(PoliticalEntityListItem politicalEntity);
         public override T Match<T>(
-            Func<IncompletePersonPoliticalEntityRelation, T> incompletePersonPoliticalEntityRelation,
-            Func<CompletedPersonPoliticalEntityRelation, T> completedPersonPoliticalEntityRelation
+            Func<Incomplete, T> incomplete,
+            Func<Complete, T> complete
          )
         {
-            return incompletePersonPoliticalEntityRelation(this); 
+            return incomplete(this); 
         }
-        public sealed record NewPersonPoliticalEntityRelationNewPerson : IncompletePersonPoliticalEntityRelation, NewNode
+        public sealed record ToCreateForNewPerson : Incomplete, NewNode
         {
-            public override NodeDetails NodeDetails => NodeDetailsForCreate;
-            public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-
-            public override T Match<T>(
-                Func<NewPersonPoliticalEntityRelationNewPerson, T> newPersonPoliticalEntityRelationNewPerson,
-                Func<NewPersonPoliticalEntityRelationExistingPerson, T> newPersonPoliticalEntityRelationExistingPerson,
-                Func<ExistingPersonPoliticalEntityRelation, T> existingPersonPoliticalEntityRelation,
-                Func<CompletedNewPersonPoliticalEntityRelationNewPerson, T> completedNewPersonPoliticalEntityRelationNewPerson,
-                Func<CompletedNewPersonPoliticalEntityRelationExistingPerson, T> completedNewPersonPoliticalEntityRelationExistingPerson
-             )
-            {
-                return newPersonPoliticalEntityRelationNewPerson(this);
-            }
-
             public required PersonName Person { get; set; }
             public required PoliticalEntityListItem? PoliticalEntity { get; set; }
             public override PersonItem? PersonItem => Person;
             public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
-            public override CompletedPersonPoliticalEntityRelation GetCompletedRelation(PoliticalEntityListItem politicalEntity)
+            public override Complete GetCompletedRelation(PoliticalEntityListItem politicalEntity)
             {
-                return new CompletedNewPersonPoliticalEntityRelationNewPerson {
+                return new Complete.ToCreateForNewPerson {
                     Person = Person,
                     PoliticalEntity = politicalEntity,
                     NodeDetailsForCreate = NodeDetailsForCreate,
@@ -94,28 +73,15 @@ public abstract record PersonPoliticalEntityRelation : Relation
                 };
             }
         }
-        public sealed record NewPersonPoliticalEntityRelationExistingPerson : IncompletePersonPoliticalEntityRelation, NewNode
+        public sealed record ToCreateForExistingPerson : Incomplete, NewNode
         {
-            public override NodeDetails NodeDetails => NodeDetailsForCreate;
-            public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-            public override T Match<T>(
-                Func<NewPersonPoliticalEntityRelationNewPerson, T> newPersonPoliticalEntityRelationNewPerson,
-                Func<NewPersonPoliticalEntityRelationExistingPerson, T> newPersonPoliticalEntityRelationExistingPerson,
-                Func<ExistingPersonPoliticalEntityRelation, T> existingPersonPoliticalEntityRelation,
-                Func<CompletedNewPersonPoliticalEntityRelationNewPerson, T> completedNewPersonPoliticalEntityRelationNewPerson,
-                Func<CompletedNewPersonPoliticalEntityRelationExistingPerson, T> completedNewPersonPoliticalEntityRelationExistingPerson
-             )
-            {
-                return newPersonPoliticalEntityRelationExistingPerson(this);
-            }
-
             public required PersonListItem Person { get; set; }
             public required PoliticalEntityListItem? PoliticalEntity { get; set; }
             public override PersonItem? PersonItem => Person;
             public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
-            public override CompletedPersonPoliticalEntityRelation GetCompletedRelation(PoliticalEntityListItem politicalEntity)
+            public override Complete GetCompletedRelation(PoliticalEntityListItem politicalEntity)
             {
-                return new CompletedNewPersonPoliticalEntityRelationExistingPerson {
+                return new Complete.Resolved.ToCreate {
                     Person = Person,
                     PoliticalEntity = politicalEntity,
                     NodeDetailsForCreate = NodeDetailsForCreate,
@@ -125,38 +91,28 @@ public abstract record PersonPoliticalEntityRelation : Relation
             }
         }
     }
-    public abstract record CompletedPersonPoliticalEntityRelation : PersonPoliticalEntityRelation
+    public abstract record Complete : PersonPoliticalEntityRelation
     {
-        private CompletedPersonPoliticalEntityRelation() { }
+        private Complete() { }
         public abstract string PersonName { get; }
 
         public abstract string PoliticalEntityName { get; }
         public override T Match<T>(
-            Func<IncompletePersonPoliticalEntityRelation, T> incompletePersonPoliticalEntityRelation,
-            Func<CompletedPersonPoliticalEntityRelation, T> completedPersonPoliticalEntityRelation
+            Func<Incomplete, T> incompletePersonPoliticalEntityRelation,
+            Func<Complete, T> completedPersonPoliticalEntityRelation
          )
         {
             return completedPersonPoliticalEntityRelation(this);
         }
 
-        public abstract record ResolvedPersonPoliticalEntityRelation : CompletedPersonPoliticalEntityRelation
+        public abstract record Resolved : Complete
         {
-            private ResolvedPersonPoliticalEntityRelation() { }
-            public sealed record ExistingPersonPoliticalEntityRelation : ResolvedPersonPoliticalEntityRelation, ExistingNode
+            private Resolved() { }
+            public sealed record ToUpdate : Resolved, ExistingNode
             {
                 public override NodeDetails NodeDetails => NodeDetailsForUpdate;
                 public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
                 public required NodeIdentification NodeIdentification { get; init; }
-                public override T Match<T>(
-                    Func<NewPersonPoliticalEntityRelationNewPerson, T> newPersonPoliticalEntityRelationNewPerson,
-                    Func<NewPersonPoliticalEntityRelationExistingPerson, T> newPersonPoliticalEntityRelationExistingPerson,
-                    Func<ExistingPersonPoliticalEntityRelation, T> existingPersonPoliticalEntityRelation,
-                    Func<CompletedNewPersonPoliticalEntityRelationNewPerson, T> completedNewPersonPoliticalEntityRelationNewPerson,
-                    Func<CompletedNewPersonPoliticalEntityRelationExistingPerson, T> completedNewPersonPoliticalEntityRelationExistingPerson
-                 )
-                {
-                    return existingPersonPoliticalEntityRelation(this);
-                }
                 public int NodeId { get; init; }
                 public int UrlId { get; set; }
                 public required PersonListItem Person { get; set; }
@@ -166,22 +122,10 @@ public abstract record PersonPoliticalEntityRelation : Relation
                 public override PersonItem? PersonItem => Person;
                 public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
             }
-            public sealed record CompletedNewPersonPoliticalEntityRelationExistingPerson : ResolvedPersonPoliticalEntityRelation, NewNode
+            public sealed record ToCreate : Resolved, NewNode
             {
                 public override NodeDetails NodeDetails => NodeDetailsForCreate;
                 public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-
-                public override T Match<T>(
-                    Func<NewPersonPoliticalEntityRelationNewPerson, T> newPersonPoliticalEntityRelationNewPerson,
-                    Func<NewPersonPoliticalEntityRelationExistingPerson, T> newPersonPoliticalEntityRelationExistingPerson,
-                    Func<ExistingPersonPoliticalEntityRelation, T> existingPersonPoliticalEntityRelation,
-                    Func<CompletedNewPersonPoliticalEntityRelationNewPerson, T> completedNewPersonPoliticalEntityRelationNewPerson,
-                    Func<CompletedNewPersonPoliticalEntityRelationExistingPerson, T> completedNewPersonPoliticalEntityRelationExistingPerson
-                 )
-                {
-                    return completedNewPersonPoliticalEntityRelationExistingPerson(this);
-                }
-
                 public required PersonListItem Person { get; set; }
                 public required PoliticalEntityListItem PoliticalEntity { get; set; }
                 public override string PersonName => Person.Name;
@@ -190,20 +134,10 @@ public abstract record PersonPoliticalEntityRelation : Relation
                 public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
             }
         }
-        public sealed record CompletedNewPersonPoliticalEntityRelationNewPerson : CompletedPersonPoliticalEntityRelation, NewNode
+        public sealed record ToCreateForNewPerson : Complete, NewNode
         {
             public override NodeDetails NodeDetails => NodeDetailsForCreate;
             public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-            public override T Match<T>(
-                Func<NewPersonPoliticalEntityRelationNewPerson, T> newPersonPoliticalEntityRelationNewPerson,
-                Func<NewPersonPoliticalEntityRelationExistingPerson, T> newPersonPoliticalEntityRelationExistingPerson,
-                Func<ExistingPersonPoliticalEntityRelation, T> existingPersonPoliticalEntityRelation,
-                Func<CompletedNewPersonPoliticalEntityRelationNewPerson, T> completedNewPersonPoliticalEntityRelationNewPerson,
-                Func<CompletedNewPersonPoliticalEntityRelationExistingPerson, T> completedNewPersonPoliticalEntityRelationExistingPerson
-             )
-            {
-                return completedNewPersonPoliticalEntityRelationNewPerson(this);
-            }
             public required PersonName Person { get; set; }
             public required PoliticalEntityListItem PoliticalEntity { get; set; }
             public override string PersonName => Person.Name;

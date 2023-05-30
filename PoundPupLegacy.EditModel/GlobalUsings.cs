@@ -4,9 +4,5 @@ global using System.Text.Json.Serialization;
 global using static PoundPupLegacy.EditModel.Location;
 global using static PoundPupLegacy.EditModel.OrganizationItem;
 global using static PoundPupLegacy.EditModel.PersonItem;
-global using static PoundPupLegacy.EditModel.PersonPoliticalEntityRelation;
-global using static PoundPupLegacy.EditModel.PersonPoliticalEntityRelation.CompletedPersonPoliticalEntityRelation;
-global using static PoundPupLegacy.EditModel.PersonPoliticalEntityRelation.CompletedPersonPoliticalEntityRelation.ResolvedPersonPoliticalEntityRelation;
-global using static PoundPupLegacy.EditModel.PersonPoliticalEntityRelation.IncompletePersonPoliticalEntityRelation;
 
 

@@ -185,6 +185,8 @@ public abstract record PersonOrganizationRelation : Relation
         }
         public abstract record Incomplete : ForOrganization
         {
+            public override NodeDetails NodeDetails => NodeDetailsForCreate;
+            public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
             public override T Match<T>(
                 Func<Complete, T> completedPersonOrganizationRelationForOrganization,
                 Func<Incomplete, T> incompletePersonOrganizationRelationForOrganization
@@ -195,8 +197,6 @@ public abstract record PersonOrganizationRelation : Relation
             public abstract Complete GetCompletedRelation(PersonListItem personListItem);
             public sealed record ToCreateForExistingOrganization : Incomplete, NewNode
             {
-                public override NodeDetails NodeDetails => NodeDetailsForCreate;
-                public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
                 public required PersonListItem? Person { get; set; }
                 public required OrganizationListItem Organization { get; set; }
                 private PersonListItem? personItem = null;
@@ -226,8 +226,6 @@ public abstract record PersonOrganizationRelation : Relation
             }
             public sealed record ToCreateForNewOrganization : Incomplete, NewNode
             {
-                public override NodeDetails NodeDetails => NodeDetailsForCreate;
-                public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
                 public required PersonListItem? Person { get; set; }
                 public required OrganizationName Organization { get; set; }
                 private PersonListItem? personItem = null;

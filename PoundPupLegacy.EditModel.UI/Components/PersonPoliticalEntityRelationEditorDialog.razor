@@ -89,7 +89,7 @@
             }
         }
     }
-    public CompletedPersonPoliticalEntityRelation? GetValidRelation()
+    public PersonPoliticalEntityRelation.Complete? GetValidRelation()
     {
         validationMessageStore?.Clear();
         bool hasErrors = false;
@@ -101,7 +101,7 @@
         if (hasErrors)
             return null;
 
-        return Relation.Match<CompletedPersonPoliticalEntityRelation>(
+        return Relation.Match<PersonPoliticalEntityRelation.Complete>(
             incompletePersonPoliticalEntityRelation: r => r.GetCompletedRelation(Relation.PoliticalEntityItem!),
             completedPersonPoliticalEntityRelation: r => r
         );
