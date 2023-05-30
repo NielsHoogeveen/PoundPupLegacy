@@ -63,7 +63,7 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public List<CompletedPersonOrganizationRelationForPerson> Relations { get; set; } = default!;
+    public List<PersonOrganizationRelation.ForPerson.Complete> Relations { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
@@ -75,7 +75,7 @@
 
     private PersonOrganizationRelationEditorForPersonDialog? dialog;
 
-    private PersonOrganizationRelationForPerson? _relationToEdit = null;
+    private PersonOrganizationRelation.ForPerson? _relationToEdit = null;
 
     public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
     {
@@ -85,19 +85,19 @@
     {
 
     }
-    private void RestoreRelation(PersonOrganizationRelationForPerson relation)
+    private void RestoreRelation(PersonOrganizationRelation.ForPerson relation)
     {
         relation.RelationDetails.HasBeenDeleted = false;
         StateHasChanged();
     }
 
-    private void RemoveRelation(PersonOrganizationRelationForPerson relation)
+    private void RemoveRelation(PersonOrganizationRelation.ForPerson relation)
     {
         relation.RelationDetails.HasBeenDeleted = true;
         StateHasChanged();
     }
 
-    private void EditRelation(CompletedPersonOrganizationRelationForPerson relationToEdit)
+    private void EditRelation(PersonOrganizationRelation.ForPerson.Complete relationToEdit)
     {
         _relationToEdit = relationToEdit;
         StateHasChanged();
@@ -120,7 +120,7 @@
     }
     private void OnAdd()
     {
-        _relationToEdit = Person.Match<PersonOrganizationRelationForPerson>(
+        _relationToEdit = Person.Match<PersonOrganizationRelation.ForPerson>(
             personListItem: pli => pli.GetPersonOrganizationRelationForPerson(RelationTypes.First(), TenantId, UserId),
             personName: pn => pn.GetPersonOrganizationRelationForPerson(RelationTypes.First(), TenantId, UserId));
         StateHasChanged();

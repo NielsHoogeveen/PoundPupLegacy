@@ -1,11 +1,9 @@
-﻿using static PoundPupLegacy.EditModel.PersonOrganizationRelation;
+﻿namespace PoundPupLegacy.EditModel;
 
-namespace PoundPupLegacy.EditModel;
-
-[JsonSerializable(typeof(ExistingPersonOrganizationRelationForPerson))]
+[JsonSerializable(typeof(PersonOrganizationRelation.ForPerson.Complete.Resolved.ToUpdate))]
 public partial class ExistingPersonOrganizationRelationForPersonJsonContext : JsonSerializerContext { }
 
-[JsonSerializable(typeof(ExistingPersonOrganizationRelationForOrganization))]
+[JsonSerializable(typeof(PersonOrganizationRelation.ForOrganization.Complete.Resolved.ToUpdate))]
 public partial class ExistingPersonOrganizationRelationForOrganizationJsonContext : JsonSerializerContext { }
 
 public interface ResolvedPersonOrganizationRelation : Relation
@@ -28,9 +26,9 @@ public interface CompletedNewPersonOrganizationRelation : ResolvedPersonOrganiza
 
 public static class PersonOrganizationRelationExtensions
 {
-    public static PersonOrganizationRelationForOrganization GetPersonOrganizationRelationForOrganization(this OrganizationListItem organizationListItem, PersonOrganizationRelationTypeListItem relationType, int ownerId, int publisherId)
+    public static PersonOrganizationRelation.ForOrganization GetPersonOrganizationRelationForOrganization(this OrganizationListItem organizationListItem, PersonOrganizationRelationTypeListItem relationType, int ownerId, int publisherId)
     {
-        return new NewPersonOrganizationRelationExistingOrganization {
+        return new PersonOrganizationRelation.ForOrganization.Incomplete.ToCreateForExistingOrganization {
             Person = null,
             Organization = organizationListItem,
             PersonOrganizationRelationType = relationType,
@@ -39,9 +37,9 @@ public static class PersonOrganizationRelationExtensions
             NodeDetailsForCreate = NodeDetails.EmptyInstance(48, "person organization relation", ownerId, publisherId)
         };
     }
-    public static PersonOrganizationRelationForOrganization GetPersonOrganizationRelationForOrganization(this OrganizationName organizationName, PersonOrganizationRelationTypeListItem relationType, int ownerId, int publisherId)
+    public static PersonOrganizationRelation.ForOrganization GetPersonOrganizationRelationForOrganization(this OrganizationName organizationName, PersonOrganizationRelationTypeListItem relationType, int ownerId, int publisherId)
     {
-        return new NewPersonOrganizationRelationNewOrganization {
+        return new PersonOrganizationRelation.ForOrganization.Incomplete.ToCreateForNewOrganization {
             Person = null,
             Organization = organizationName,
             PersonOrganizationRelationType = relationType,
@@ -49,9 +47,9 @@ public static class PersonOrganizationRelationExtensions
             NodeDetailsForCreate = NodeDetails.EmptyInstance(48, "person organization relation", ownerId, publisherId)
         };
     }
-    public static PersonOrganizationRelationForPerson GetPersonOrganizationRelationForPerson(this PersonListItem personListItem, PersonOrganizationRelationTypeListItem relationType, int ownerId, int publisherId)
+    public static PersonOrganizationRelation.ForPerson GetPersonOrganizationRelationForPerson(this PersonListItem personListItem, PersonOrganizationRelationTypeListItem relationType, int ownerId, int publisherId)
     {
-        return new NewPersonOrganizationRelationExistingPerson {
+        return new PersonOrganizationRelation.ForPerson.Incomplete.ToCreateForExistingPerson {
             Person = personListItem,
             Organization = null,
             PersonOrganizationRelationType = relationType,
@@ -59,9 +57,9 @@ public static class PersonOrganizationRelationExtensions
             NodeDetailsForCreate = NodeDetails.EmptyInstance(48,"person organization relation", ownerId, publisherId)
         };
     }
-    public static PersonOrganizationRelationForPerson GetPersonOrganizationRelationForPerson(this PersonName personName, PersonOrganizationRelationTypeListItem relationType, int ownerId, int publisherId)
+    public static PersonOrganizationRelation.ForPerson GetPersonOrganizationRelationForPerson(this PersonName personName, PersonOrganizationRelationTypeListItem relationType, int ownerId, int publisherId)
     {
-        return new NewPersonOrganizationRelationNewPerson {
+        return new PersonOrganizationRelation.ForPerson.Incomplete.ToCreateForNewPerson {
             Person = personName,
             Organization = null,
             PersonOrganizationRelationType = relationType,
@@ -79,55 +77,37 @@ public abstract record PersonOrganizationRelation : Relation
     public required PersonOrganizationRelationTypeListItem PersonOrganizationRelationType { get; set; }
     public GeographicalEntityListItem? GeographicalEntity { get; set; }
 
-    public abstract record PersonOrganizationRelationForOrganization : PersonOrganizationRelation
+    public abstract record ForOrganization : PersonOrganizationRelation
     {
-        private PersonOrganizationRelationForOrganization() { }
+        private ForOrganization() { }
         public abstract PersonListItem? PersonItem { get; set; }
         public abstract OrganizationItem OrganizationItem { get; }
 
         [RequireNamedArgs]
         public abstract T Match<T>(
-            Func<CompletedNewPersonOrganizationRelationNewOrganization, T> completedNewPersonOrganizationRelationNewOrganization,
-            Func<ExistingPersonOrganizationRelationForOrganization, T> existingPersonOrganizationRelationForOrganization,
-            Func<CompletedNewPersonOrganizationRelationForOrganization, T> completedNewPersonOrganizationRelationForOrganization,
-            Func<NewPersonOrganizationRelationExistingOrganization, T> newPersonOrganizationRelationExistingOrganization,
-            Func<NewPersonOrganizationRelationNewOrganization, T> newPersonOrganizationRelationNewOrganization
-        );
-        [RequireNamedArgs]
-        public abstract T Match<T>(
-            Func<CompletedPersonOrganizationRelationForOrganization, T> completedPersonOrganizationRelationForOrganization,
-            Func<IncompletePersonOrganizationRelationForOrganization, T> incompletePersonOrganizationRelationForOrganization
+            Func<Complete, T> complete,
+            Func<Incomplete, T> incomplete
         );
 
-        public abstract record CompletedPersonOrganizationRelationForOrganization : PersonOrganizationRelationForOrganization
+        public abstract record Complete : ForOrganization
         {
 
-            private CompletedPersonOrganizationRelationForOrganization() { }
+            private Complete() { }
             public abstract string PersonName { get; }
             public abstract string OrganizationName { get; }
 
             public override T Match<T>(
-                Func<CompletedPersonOrganizationRelationForOrganization, T> completedPersonOrganizationRelationForOrganization,
-                Func<IncompletePersonOrganizationRelationForOrganization, T> incompletePersonOrganizationRelationForOrganization
+                Func<Complete, T> complete,
+                Func<Incomplete, T> incomplete
             )
             {
-                return completedPersonOrganizationRelationForOrganization(this);
+                return complete(this);
             }
 
-            public sealed record CompletedNewPersonOrganizationRelationNewOrganization : CompletedPersonOrganizationRelationForOrganization, NewNode
+            public sealed record ToCreateForNewOrganization : Complete, NewNode
             {
                 public override NodeDetails NodeDetails => NodeDetailsForCreate;
                 public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-                public override T Match<T>(
-                    Func<CompletedNewPersonOrganizationRelationNewOrganization, T> completedNewPersonOrganizationRelationNewOrganization,
-                    Func<ExistingPersonOrganizationRelationForOrganization, T> existingPersonOrganizationRelationForOrganization,
-                    Func<CompletedNewPersonOrganizationRelationForOrganization, T> completedNewPersonOrganizationRelationForOrganization,
-                    Func<NewPersonOrganizationRelationExistingOrganization, T> newPersonOrganizationRelationExistingOrganization,
-                    Func<NewPersonOrganizationRelationNewOrganization, T> newPersonOrganizationRelationNewOrganization
-                )
-                {
-                    return completedNewPersonOrganizationRelationNewOrganization(this);
-                }
                 public required PersonListItem Person { get; set; }
                 public required OrganizationName Organization { get; set; }
                 private PersonListItem? personItem = null;
@@ -148,26 +128,14 @@ public abstract record PersonOrganizationRelation : Relation
                 public override string OrganizationName => Organization.Name;
             }
 
-            public abstract record ResolvedPersonOrganizationRelationForOrganization : CompletedPersonOrganizationRelationForOrganization
+            public abstract record Resolved : Complete
             {
-                private ResolvedPersonOrganizationRelationForOrganization() { }
-                public sealed record ExistingPersonOrganizationRelationForOrganization : ResolvedPersonOrganizationRelationForOrganization, ExistingPersonOrganizationRelation
+                private Resolved() { }
+                public sealed record ToUpdate : Resolved, ExistingPersonOrganizationRelation
                 {
                     public override NodeDetails NodeDetails => NodeDetailsForUpdate;
                     public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
                     public required NodeIdentification NodeIdentification { get; init; }
-
-                    public override T Match<T>(
-                        Func<CompletedNewPersonOrganizationRelationNewOrganization, T> completedNewPersonOrganizationRelationNewOrganization,
-                        Func<ExistingPersonOrganizationRelationForOrganization, T> existingPersonOrganizationRelationForOrganization,
-                        Func<CompletedNewPersonOrganizationRelationForOrganization, T> completedNewPersonOrganizationRelationForOrganization,
-                        Func<NewPersonOrganizationRelationExistingOrganization, T> newPersonOrganizationRelationExistingOrganization,
-                        Func<NewPersonOrganizationRelationNewOrganization, T> newPersonOrganizationRelationNewOrganization
-                    )
-                    {
-                        return existingPersonOrganizationRelationForOrganization(this);
-                    }
-
                     public required PersonListItem Person { get; set; }
                     public required OrganizationListItem Organization { get; set; }
 
@@ -189,20 +157,10 @@ public abstract record PersonOrganizationRelation : Relation
 
                 }
 
-                public sealed record CompletedNewPersonOrganizationRelationForOrganization : ResolvedPersonOrganizationRelationForOrganization, CompletedNewPersonOrganizationRelation
+                public sealed record ToCreate : Resolved, CompletedNewPersonOrganizationRelation
                 {
                     public override NodeDetails NodeDetails => NodeDetailsForCreate;
                     public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-                    public override T Match<T>(
-                        Func<CompletedNewPersonOrganizationRelationNewOrganization, T> completedNewPersonOrganizationRelationNewOrganization,
-                        Func<ExistingPersonOrganizationRelationForOrganization, T> existingPersonOrganizationRelationForOrganization,
-                        Func<CompletedNewPersonOrganizationRelationForOrganization, T> completedNewPersonOrganizationRelationForOrganization,
-                        Func<NewPersonOrganizationRelationExistingOrganization, T> newPersonOrganizationRelationExistingOrganization,
-                        Func<NewPersonOrganizationRelationNewOrganization, T> newPersonOrganizationRelationNewOrganization
-                    )
-                    {
-                        return completedNewPersonOrganizationRelationForOrganization(this);
-                    }
                     public required PersonListItem Person { get; set; }
                     public required OrganizationListItem Organization { get; set; }
 
@@ -225,31 +183,20 @@ public abstract record PersonOrganizationRelation : Relation
                 }
             }
         }
-        public abstract record IncompletePersonOrganizationRelationForOrganization : PersonOrganizationRelationForOrganization
+        public abstract record Incomplete : ForOrganization
         {
             public override T Match<T>(
-                Func<CompletedPersonOrganizationRelationForOrganization, T> completedPersonOrganizationRelationForOrganization,
-                Func<IncompletePersonOrganizationRelationForOrganization, T> incompletePersonOrganizationRelationForOrganization
+                Func<Complete, T> completedPersonOrganizationRelationForOrganization,
+                Func<Incomplete, T> incompletePersonOrganizationRelationForOrganization
             )
             {
                 return incompletePersonOrganizationRelationForOrganization(this);
             }
-            public abstract CompletedPersonOrganizationRelationForOrganization GetCompletedRelation(PersonListItem personListItem);
-            public sealed record NewPersonOrganizationRelationExistingOrganization : IncompletePersonOrganizationRelationForOrganization, NewNode
+            public abstract Complete GetCompletedRelation(PersonListItem personListItem);
+            public sealed record ToCreateForExistingOrganization : Incomplete, NewNode
             {
                 public override NodeDetails NodeDetails => NodeDetailsForCreate;
                 public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-                public override T Match<T>(
-                    Func<CompletedNewPersonOrganizationRelationNewOrganization, T> completedNewPersonOrganizationRelationNewOrganization,
-                    Func<ExistingPersonOrganizationRelationForOrganization, T> existingPersonOrganizationRelationForOrganization,
-                    Func<CompletedNewPersonOrganizationRelationForOrganization, T> completedNewPersonOrganizationRelationForOrganization,
-                    Func<NewPersonOrganizationRelationExistingOrganization, T> newPersonOrganizationRelationExistingOrganization,
-                    Func<NewPersonOrganizationRelationNewOrganization, T> newPersonOrganizationRelationNewOrganization
-                )
-                {
-                    return newPersonOrganizationRelationExistingOrganization(this);
-                }
-
                 public required PersonListItem? Person { get; set; }
                 public required OrganizationListItem Organization { get; set; }
                 private PersonListItem? personItem = null;
@@ -265,9 +212,9 @@ public abstract record PersonOrganizationRelation : Relation
                     }
                 }
                 public override OrganizationItem OrganizationItem => Organization;
-                public override CompletedPersonOrganizationRelationForOrganization GetCompletedRelation(PersonListItem personListItem)
+                public override Complete GetCompletedRelation(PersonListItem personListItem)
                 {
-                    return new CompletedNewPersonOrganizationRelationForOrganization {
+                    return new Complete.Resolved.ToCreate {
                         Person = personListItem,
                         Organization = Organization,
                         PersonOrganizationRelationType = PersonOrganizationRelationType,
@@ -277,21 +224,10 @@ public abstract record PersonOrganizationRelation : Relation
                     };
                 }
             }
-            public sealed record NewPersonOrganizationRelationNewOrganization : IncompletePersonOrganizationRelationForOrganization, NewNode
+            public sealed record ToCreateForNewOrganization : Incomplete, NewNode
             {
                 public override NodeDetails NodeDetails => NodeDetailsForCreate;
                 public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-                public override T Match<T>(
-                    Func<CompletedNewPersonOrganizationRelationNewOrganization, T> completedNewPersonOrganizationRelationNewOrganization,
-                    Func<ExistingPersonOrganizationRelationForOrganization, T> existingPersonOrganizationRelationForOrganization,
-                    Func<CompletedNewPersonOrganizationRelationForOrganization, T> completedNewPersonOrganizationRelationForOrganization,
-                    Func<NewPersonOrganizationRelationExistingOrganization, T> newPersonOrganizationRelationExistingOrganization,
-                    Func<NewPersonOrganizationRelationNewOrganization, T> newPersonOrganizationRelationNewOrganization
-                )
-                {
-                    return newPersonOrganizationRelationNewOrganization(this);
-                }
-
                 public required PersonListItem? Person { get; set; }
                 public required OrganizationName Organization { get; set; }
                 private PersonListItem? personItem = null;
@@ -308,9 +244,9 @@ public abstract record PersonOrganizationRelation : Relation
                 }
 
                 public override OrganizationItem OrganizationItem => Organization;
-                public override CompletedPersonOrganizationRelationForOrganization GetCompletedRelation(PersonListItem personListItem)
+                public override Complete GetCompletedRelation(PersonListItem personListItem)
                 {
-                    return new CompletedNewPersonOrganizationRelationNewOrganization {
+                    return new Complete.ToCreateForNewOrganization {
                         Person = personListItem,
                         Organization = Organization,
                         PersonOrganizationRelationType = PersonOrganizationRelationType,
@@ -323,52 +259,32 @@ public abstract record PersonOrganizationRelation : Relation
         }
     }
 
-    public abstract record PersonOrganizationRelationForPerson : PersonOrganizationRelation
+    public abstract record ForPerson : PersonOrganizationRelation
     {
         public abstract PersonItem PersonItem { get; }
         public abstract OrganizationListItem? OrganizationItem { get; set; }
 
         [RequireNamedArgs]
         public abstract T Match<T>(
-            Func<CompletedNewPersonOrganizationRelationNewPerson, T> completedNewPersonOrganizationRelationNewPerson,
-            Func<ExistingPersonOrganizationRelationForPerson, T> existingPersonOrganizationRelationForPerson,
-            Func<CompletedNewPersonOrganizationRelationForPerson, T> completedNewPersonOrganizationRelationForPerson,
-            Func<NewPersonOrganizationRelationExistingPerson, T> newPersonOrganizationRelationExistingPerson,
-            Func<NewPersonOrganizationRelationNewPerson, T> newPersonOrganizationRelationNewPerson
+            Func<Complete, T> complete,
+            Func<Incomplete, T> incomplete
         );
 
-        [RequireNamedArgs]
-        public abstract T Match<T>(
-            Func<CompletedPersonOrganizationRelationForPerson, T> completedPersonOrganizationRelationForPerson,
-            Func<IncompletePersonOrganizationRelationForPerson, T> incompletePersonOrganizationRelationForPerson
-        );
-
-        public abstract record CompletedPersonOrganizationRelationForPerson : PersonOrganizationRelationForPerson
+        public abstract record Complete : ForPerson
         {
             public abstract string PersonName { get; }
             public abstract string OrganizationName { get; }
             public override T Match<T>(
-                Func<CompletedPersonOrganizationRelationForPerson, T> completedPersonOrganizationRelationForPerson,
-                Func<IncompletePersonOrganizationRelationForPerson, T> incompletePersonOrganizationRelationForPerson
+                Func<Complete, T> complete,
+                Func<Incomplete, T> incomplete
             )
             {
-                return completedPersonOrganizationRelationForPerson(this);
+                return complete(this);
             }
-
-            public sealed record CompletedNewPersonOrganizationRelationNewPerson : CompletedPersonOrganizationRelationForPerson, NewNode
+            public sealed record ToCreateForNewPerson : Complete, NewNode
             {
                 public override NodeDetails NodeDetails => NodeDetailsForCreate;
                 public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-                public override T Match<T>(
-                    Func<CompletedNewPersonOrganizationRelationNewPerson, T> completedNewPersonOrganizationRelationNewPerson,
-                    Func<ExistingPersonOrganizationRelationForPerson, T> existingPersonOrganizationRelationForPerson,
-                    Func<CompletedNewPersonOrganizationRelationForPerson, T> completedNewPersonOrganizationRelationForPerson,
-                    Func<NewPersonOrganizationRelationExistingPerson, T> newPersonOrganizationRelationExistingPerson,
-                    Func<NewPersonOrganizationRelationNewPerson, T> newPersonOrganizationRelationNewPerson
-                )
-                {
-                    return completedNewPersonOrganizationRelationNewPerson(this);
-                }
                 public required PersonName Person { get; set; }
                 public required OrganizationListItem Organization { get; set; }
                 public override PersonItem PersonItem => Person;
@@ -389,27 +305,15 @@ public abstract record PersonOrganizationRelation : Relation
                 public override string OrganizationName => Organization.Name;
             }
 
-            public abstract record ResolvedPersonOrganizationRelationForPerson : CompletedPersonOrganizationRelationForPerson
+            public abstract record Resolved : Complete
             {
 
-                public sealed record ExistingPersonOrganizationRelationForPerson : ResolvedPersonOrganizationRelationForPerson, ExistingPersonOrganizationRelation
+                public sealed record ToUpdate : Resolved, ExistingPersonOrganizationRelation
                 {
                     public override NodeDetails NodeDetails => NodeDetailsForUpdate;
                     public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
                     public required NodeIdentification NodeIdentification { get; init; }
-
-                    public override T Match<T>(
-                        Func<CompletedNewPersonOrganizationRelationNewPerson, T> completedNewPersonOrganizationRelationNewPerson,
-                        Func<ExistingPersonOrganizationRelationForPerson, T> existingPersonOrganizationRelationForPerson,
-                        Func<CompletedNewPersonOrganizationRelationForPerson, T> completedNewPersonOrganizationRelationForPerson,
-                        Func<NewPersonOrganizationRelationExistingPerson, T> newPersonOrganizationRelationExistingPerson,
-                        Func<NewPersonOrganizationRelationNewPerson, T> newPersonOrganizationRelationNewPerson
-                    )
-                    {
-                        return existingPersonOrganizationRelationForPerson(this);
-                    }
                     public int NodeId { get; init; }
-
                     public int UrlId { get; set; }
                     public required PersonListItem Person { get; set; }
                     public required OrganizationListItem Organization { get; set; }
@@ -432,20 +336,10 @@ public abstract record PersonOrganizationRelation : Relation
 
                 }
 
-                public sealed record CompletedNewPersonOrganizationRelationForPerson : ResolvedPersonOrganizationRelationForPerson, CompletedNewPersonOrganizationRelation
+                public sealed record ToCreate : Resolved, CompletedNewPersonOrganizationRelation
                 {
                     public override NodeDetails NodeDetails => NodeDetailsForCreate;
                     public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-                    public override T Match<T>(
-                        Func<CompletedNewPersonOrganizationRelationNewPerson, T> completedNewPersonOrganizationRelationNewPerson,
-                        Func<ExistingPersonOrganizationRelationForPerson, T> existingPersonOrganizationRelationForPerson,
-                        Func<CompletedNewPersonOrganizationRelationForPerson, T> completedNewPersonOrganizationRelationForPerson,
-                        Func<NewPersonOrganizationRelationExistingPerson, T> newPersonOrganizationRelationExistingPerson,
-                        Func<NewPersonOrganizationRelationNewPerson, T> newPersonOrganizationRelationNewPerson
-                    )
-                    {
-                        return completedNewPersonOrganizationRelationForPerson(this);
-                    }
                     public required PersonListItem Person { get; set; }
                     public required OrganizationListItem Organization { get; set; }
                     public override PersonItem PersonItem => Person;
@@ -468,32 +362,22 @@ public abstract record PersonOrganizationRelation : Relation
 
             }
         }
-        public abstract record IncompletePersonOrganizationRelationForPerson : PersonOrganizationRelationForPerson, NewNode
+        public abstract record Incomplete : ForPerson, NewNode
         {
             public override NodeDetails NodeDetails => NodeDetailsForCreate;
             public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
             public override T Match<T>(
-                Func<CompletedPersonOrganizationRelationForPerson, T> completedPersonOrganizationRelationForPerson,
-                Func<IncompletePersonOrganizationRelationForPerson, T> incompletePersonOrganizationRelationForPerson
+                Func<Complete, T> complete,
+                Func<Incomplete, T> incomplete
             )
             {
-                return incompletePersonOrganizationRelationForPerson(this);
+                return incomplete(this);
             }
 
-            public abstract CompletedPersonOrganizationRelationForPerson GetCompletedRelation(OrganizationListItem organizationListItem);
+            public abstract Complete GetCompletedRelation(OrganizationListItem organizationListItem);
 
-            public sealed record NewPersonOrganizationRelationExistingPerson : IncompletePersonOrganizationRelationForPerson
+            public sealed record ToCreateForExistingPerson : Incomplete
             {
-                public override T Match<T>(
-                    Func<CompletedNewPersonOrganizationRelationNewPerson, T> completedNewPersonOrganizationRelationNewPerson,
-                    Func<ExistingPersonOrganizationRelationForPerson, T> existingPersonOrganizationRelationForPerson,
-                    Func<CompletedNewPersonOrganizationRelationForPerson, T> completedNewPersonOrganizationRelationForPerson,
-                    Func<NewPersonOrganizationRelationExistingPerson, T> newPersonOrganizationRelationExistingPerson,
-                    Func<NewPersonOrganizationRelationNewPerson, T> newPersonOrganizationRelationNewPerson
-                )
-                {
-                    return newPersonOrganizationRelationExistingPerson(this);
-                }
                 public required PersonListItem Person { get; set; }
                 public required OrganizationListItem? Organization { get; set; }
                 public override PersonItem PersonItem => Person;
@@ -510,10 +394,9 @@ public abstract record PersonOrganizationRelation : Relation
                         organizationItem = value;
                     }
                 }
-
-                public override CompletedPersonOrganizationRelationForPerson GetCompletedRelation(OrganizationListItem organizationListItem)
+                public override Complete GetCompletedRelation(OrganizationListItem organizationListItem)
                 {
-                    return new CompletedNewPersonOrganizationRelationForPerson {
+                    return new Complete.Resolved.ToCreate {
                         Person = Person,
                         Organization = organizationListItem,
                         PersonOrganizationRelationType = PersonOrganizationRelationType,
@@ -524,22 +407,11 @@ public abstract record PersonOrganizationRelation : Relation
                 }
             }
 
-            public sealed record NewPersonOrganizationRelationNewPerson : IncompletePersonOrganizationRelationForPerson
+            public sealed record ToCreateForNewPerson : Incomplete
             {
-                public override T Match<T>(
-                    Func<CompletedNewPersonOrganizationRelationNewPerson, T> completedNewPersonOrganizationRelationNewPerson,
-                    Func<ExistingPersonOrganizationRelationForPerson, T> existingPersonOrganizationRelationForPerson,
-                    Func<CompletedNewPersonOrganizationRelationForPerson, T> completedNewPersonOrganizationRelationForPerson,
-                    Func<NewPersonOrganizationRelationExistingPerson, T> newPersonOrganizationRelationExistingPerson,
-                    Func<NewPersonOrganizationRelationNewPerson, T> newPersonOrganizationRelationNewPerson
-                )
-                {
-                    return newPersonOrganizationRelationNewPerson(this);
-                }
                 public required PersonName Person { get; set; }
                 public required OrganizationListItem? Organization { get; set; }
                 public override PersonItem PersonItem => Person;
-
                 private OrganizationListItem? organizationItem = null;
                 public override OrganizationListItem? OrganizationItem {
                     get {
@@ -552,9 +424,9 @@ public abstract record PersonOrganizationRelation : Relation
                         organizationItem = value;
                     }
                 }
-                public override CompletedPersonOrganizationRelationForPerson GetCompletedRelation(OrganizationListItem organizationListItem)
+                public override Complete GetCompletedRelation(OrganizationListItem organizationListItem)
                 {
-                    return new CompletedNewPersonOrganizationRelationNewPerson {
+                    return new Complete.ToCreateForNewPerson {
                         Person = Person,
                         Organization = organizationListItem,
                         PersonOrganizationRelationType = PersonOrganizationRelationType,

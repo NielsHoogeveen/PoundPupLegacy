@@ -31,10 +31,10 @@
 
     public override void OnTitleChange(string title)
     {
-        foreach (var relation in Model.PersonPoliticalEntityRelations.OfType<ExistingPersonOrganizationRelationForPerson>()) {
+        foreach (var relation in Model.PersonPoliticalEntityRelations.OfType<PersonOrganizationRelation.ForPerson.Complete.Resolved.ToUpdate>()) {
             relation.Person.Name = title;
         };
-        foreach (var relation in Model.PersonOrganizationRelations.OfType<CompletedNewPersonOrganizationRelationForPerson>()) {
+        foreach (var relation in Model.PersonOrganizationRelations.OfType<PersonOrganizationRelation.ForPerson.Complete.Resolved.ToCreate>()) {
             relation.Person.Name = title;
         };
         StateHasChanged();

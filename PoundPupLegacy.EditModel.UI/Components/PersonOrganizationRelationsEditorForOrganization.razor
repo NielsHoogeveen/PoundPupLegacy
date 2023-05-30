@@ -63,7 +63,7 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public List<CompletedPersonOrganizationRelationForOrganization> Relations { get; set; } = default!;
+    public List<PersonOrganizationRelation.ForOrganization.Complete> Relations { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
@@ -75,7 +75,7 @@
 
     private PersonOrganizationRelationEditorForOrganizationDialog? dialog;
 
-    private PersonOrganizationRelationForOrganization? _relationToEdit = null;
+    private PersonOrganizationRelation.ForOrganization? _relationToEdit = null;
 
     public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
     {
@@ -97,7 +97,7 @@
         StateHasChanged();
     }
 
-    private void EditRelation(CompletedPersonOrganizationRelationForOrganization relationToEdit)
+    private void EditRelation(PersonOrganizationRelation.ForOrganization.Complete relationToEdit)
     {
         _relationToEdit = relationToEdit;
         StateHasChanged();
@@ -120,7 +120,7 @@
     }
     private void OnAdd()
     {
-        _relationToEdit = Organization.Match<PersonOrganizationRelationForOrganization>(
+        _relationToEdit = Organization.Match<PersonOrganizationRelation.ForOrganization.ForOrganization>(
             organizationListItem: oli => oli.GetPersonOrganizationRelationForOrganization(RelationTypes.First(), TenantId, UserId),
             organizationName: on => on.GetPersonOrganizationRelationForOrganization(RelationTypes.First(), TenantId, UserId));
         StateHasChanged();

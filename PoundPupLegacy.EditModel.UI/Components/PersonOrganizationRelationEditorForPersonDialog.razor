@@ -54,7 +54,7 @@
 
     [Parameter]
     [EditorRequired]
-    public PersonOrganizationRelationForPerson Relation { get; set; } = default!;
+    public PersonOrganizationRelation.ForPerson.ForPerson Relation { get; set; } = default!;
 
 
     [Parameter]
@@ -82,7 +82,7 @@
         }
     }
 
-    public CompletedPersonOrganizationRelationForPerson? GetValidRelation()
+    public PersonOrganizationRelation.ForPerson.ForPerson.Complete? GetValidRelation()
     {
         validationMessageStore?.Clear();
         bool hasErrors = false;
@@ -94,9 +94,9 @@
         if (hasErrors)
             return null;
 
-        return Relation.Match<CompletedPersonOrganizationRelationForPerson>(
-            completedPersonOrganizationRelationForPerson: r => r,
-            incompletePersonOrganizationRelationForPerson: r => r.GetCompletedRelation(Relation.OrganizationItem!)
+        return Relation.Match<PersonOrganizationRelation.ForPerson.ForPerson.Complete>(
+            complete: r => r,
+            incomplete: r => r.GetCompletedRelation(Relation.OrganizationItem!)
         );
     }
 
