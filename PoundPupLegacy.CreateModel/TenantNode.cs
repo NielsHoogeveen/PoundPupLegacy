@@ -2,6 +2,7 @@
 
 public abstract record TenantNode: IRequest
 {
+    private TenantNode() { }
     public required int TenantId { get; init; }
     public required string? UrlPath { get; init; }
     public required int? SubgroupId { get; init; }
@@ -12,6 +13,7 @@ public abstract record TenantNode: IRequest
     }
     public abstract record ToCreate: TenantNode, PossiblyIdentifiable
     {
+        private ToCreate() { }
         public required Identification.Possible Identification { get; init; }
         public sealed record ForNewNode : ToCreate
         {

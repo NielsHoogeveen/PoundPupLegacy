@@ -2,11 +2,12 @@
 
 public abstract record CaseCaseParties: IRequest 
 {
+    private CaseCaseParties() { }
     public required int CasePartyTypeId { get; init; }
     public abstract record ToCreate : CaseCaseParties
     {
+        private ToCreate() { }
         public required CaseParties.ToCreate CaseParties { get; init; }
-
         public sealed record ForExistingCase : ToCreate
         {
             public required int CaseId { get; init; }
