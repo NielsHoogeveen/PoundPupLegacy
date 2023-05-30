@@ -98,11 +98,10 @@ public class CaseCreator<T>(
     public override async Task ProcessAsync(T element, int id)
     {
         await base.ProcessAsync(element, id);
-        await casePartiesCreator.CreateAsync(element.CaseDetails.CaseCaseParties.Select(x => new CaseCaseParties.ToCreate.ForExistingCase { 
-            CaseId  = id,
-            CaseParties = x.CaseParties,
-            CasePartyTypeId = x.CasePartyTypeId
-        }).ToAsyncEnumerable());
+        await casePartiesCreator
+            .CreateAsync(element.CaseDetails.CaseCaseParties
+                .Select(x => x.ResolvedCase(id))
+                .ToAsyncEnumerable());
     }
 
     public override async ValueTask DisposeAsync()

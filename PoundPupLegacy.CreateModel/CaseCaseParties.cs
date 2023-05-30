@@ -13,6 +13,14 @@ public abstract record CaseCaseParties: IRequest
         }
         public sealed record ForNewCase : ToCreate
         {
+            public ForExistingCase ResolvedCase(int caseId)
+            {
+                return new ForExistingCase {
+                    CaseId = caseId,
+                    CaseParties = CaseParties,
+                    CasePartyTypeId = CasePartyTypeId
+                };
+            }
         }
     }
     public sealed record ToUpdate : CaseCaseParties
