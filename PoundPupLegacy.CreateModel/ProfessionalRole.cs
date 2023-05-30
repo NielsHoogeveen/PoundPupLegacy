@@ -1,42 +1,21 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record ProfessionalRoleToCreate: ProfessionalRole, EventuallyIdentifiable
+public interface ProfessionalRoleToCreateForNewPerson : ProfessionalRole, EventuallyIdentifiable
 {
-    public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
-
-    public Identification Identification => IdentificationForCreate;
-
-    public override ProfessionalRoleDetails ProfessionalRoleDetails => ProfessionalRoleDetailsForCreate;
-    public required ProfessionalRoleDetails.ProfessionalRoleDetailsForCreateOfNewPerson ProfessionalRoleDetailsForCreate { get; init; }
-    public ResolvedProfessionalRoleToCreate ResolvePerson(int personId)
-    {
-        return new ResolvedProfessionalRoleToCreate {
-            IdentificationForCreate = IdentificationForCreate,
-            ProfessionalRoleDetailsForCreate = ProfessionalRoleDetailsForCreate.ResolvePerson(personId)
-        };
-    }
+    ProfessionalRoleDetails.ProfessionalRoleDetailsForCreateOfNewPerson ProfessionalRoleDetailsForCreate { get; }
+    public ProfessionalRoleToCreateForExistingPerson ResolvePerson(int personId);
 }
-public sealed record ResolvedProfessionalRoleToCreate : ProfessionalRole, EventuallyIdentifiable
+public interface ProfessionalRoleToCreateForExistingPerson : ProfessionalRole, EventuallyIdentifiable
 {
-    public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
-
-    public Identification Identification => IdentificationForCreate;
-
-    public override ProfessionalRoleDetails ProfessionalRoleDetails => ProfessionalRoleDetailsForCreate;
-    public required ProfessionalRoleDetails.ProfessionalRoleDetailsForCreateOfExistingPerson ProfessionalRoleDetailsForCreate { get; init; }
+    ProfessionalRoleDetails.ProfessionalRoleDetailsForCreateOfExistingPerson ProfessionalRoleDetailsForCreate { get; }
 }
-public sealed record ProfessionalRoleToUpdate : ProfessionalRole, ImmediatelyIdentifiable
+public interface ProfessionalRoleToUpdate : ProfessionalRole, ImmediatelyIdentifiable
 {
-    public required Identification.IdentificationForUpdate IdentificationForUpdate { get; init; }
-
-    public Identification Identification => IdentificationForUpdate;
-
-    public override ProfessionalRoleDetails ProfessionalRoleDetails => ProfessionalRoleDetailsForUpdate;
-    public required ProfessionalRoleDetails.ProfessionalRoleDetailsForUpdate ProfessionalRoleDetailsForUpdate { get; init; }
+    ProfessionalRoleDetails.ProfessionalRoleDetailsForUpdate ProfessionalRoleDetailsForUpdate { get; }
 }
-public abstract record ProfessionalRole : IRequest
+public interface ProfessionalRole : IRequest
 {
-    public abstract ProfessionalRoleDetails ProfessionalRoleDetails { get; }
+    ProfessionalRoleDetails ProfessionalRoleDetails { get; }
 }
 
 public abstract record ProfessionalRoleDetails

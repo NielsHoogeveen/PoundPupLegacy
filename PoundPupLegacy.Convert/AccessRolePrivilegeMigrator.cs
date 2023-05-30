@@ -326,19 +326,19 @@ internal sealed class AccessRolePrivilegeMigrator(
             yield return new AccessRolePrivilege {
                 AccessRoleId = Constants.PPL_EDITOR,
                 ActionId = await editNodeActionIdReaderByNodeTypeId.ReadAsync(new EditNodeActionIdReaderByNodeTypeIdRequest {
-                    NodeTypeId = nodeType.Id!.Value
+                    NodeTypeId = nodeType.IdentificationForCreate.Id!.Value
                 })
             };
             yield return new AccessRolePrivilege {
                 AccessRoleId = Constants.CPCT_EDITOR,
                 ActionId = await editNodeActionIdReaderByNodeTypeId.ReadAsync(new EditNodeActionIdReaderByNodeTypeIdRequest {
-                    NodeTypeId = nodeType.Id!.Value
+                    NodeTypeId = nodeType.IdentificationForCreate.Id!.Value
                 })
             };
             yield return new AccessRolePrivilege {
                 AccessRoleId = Constants.ADULT_AFTERMATH_EDITOR,
                 ActionId = await editNodeActionIdReaderByNodeTypeId.ReadAsync(new EditNodeActionIdReaderByNodeTypeIdRequest {
-                    NodeTypeId = nodeType.Id!.Value
+                    NodeTypeId = nodeType.IdentificationForCreate.Id!.Value
                 })
             };
         }
@@ -346,19 +346,19 @@ internal sealed class AccessRolePrivilegeMigrator(
             yield return new AccessRolePrivilege {
                 AccessRoleId = Constants.PPL_MEMBER,
                 ActionId = await editOwnNodeActionIdReaderByNodeTypeId.ReadAsync(new EditOwnNodeActionIdReaderByNodeTypeIdRequest {
-                    NodeTypeId = nodeType.Id!.Value
+                    NodeTypeId = nodeType.IdentificationForCreate.Id!.Value
                 })
             };
             yield return new AccessRolePrivilege {
                 AccessRoleId = Constants.CPCT_MEMBER,
                 ActionId = await editOwnNodeActionIdReaderByNodeTypeId.ReadAsync(new EditOwnNodeActionIdReaderByNodeTypeIdRequest {
-                    NodeTypeId = nodeType.Id!.Value
+                    NodeTypeId = nodeType.IdentificationForCreate.Id!.Value
                 })
             };
             yield return new AccessRolePrivilege {
                 AccessRoleId = Constants.ADULT_AFTERMATH_MEMBER,
                 ActionId = await editOwnNodeActionIdReaderByNodeTypeId.ReadAsync(new EditOwnNodeActionIdReaderByNodeTypeIdRequest {
-                    NodeTypeId = nodeType.Id!.Value
+                    NodeTypeId = nodeType.IdentificationForCreate.Id!.Value
                 })
             };
         }

@@ -3,32 +3,31 @@ using PoundPupLegacy.CreateModel.Deleters;
 
 namespace PoundPupLegacy.EditModel.UI.Mappers;
 
-internal class InterOrganizationalRelationsToUpdateMapper : IEnumerableMapper<ExistingInterOrganizationalRelationTo, ImmediatelyIdentifiableInterOrganizationalRelation>
+internal class InterOrganizationalRelationsToUpdateMapper(
+    IMapper<EditModel.NodeDetails.NodeDetailsForUpdate, CreateModel.NodeDetails.NodeDetailsForUpdate> nodeDetailsMapper
+    ) : IEnumerableMapper<ExistingInterOrganizationalRelationTo, CreateModel.InterOrganizationalRelation.InterOrganizationalRelationToUpdate>
 {
-    public IEnumerable<ImmediatelyIdentifiableInterOrganizationalRelation> Map(IEnumerable<ExistingInterOrganizationalRelationTo> source)
+    public IEnumerable<CreateModel.InterOrganizationalRelation.InterOrganizationalRelationToUpdate> Map(IEnumerable<ExistingInterOrganizationalRelationTo> source)
     {
         foreach(var relation in source) {
             if(relation.RelationDetails.HasBeenDeleted)
                 continue;
-            yield return new ExistingInterOrganizationalRelation {
-                Id = relation.NodeIdentification.NodeId,
-                Title = relation.NodeDetails.Title,
-                Description = relation.RelationDetails.Description,
+            yield return new CreateModel.InterOrganizationalRelation.InterOrganizationalRelationToUpdate {
+                IdentificationForUpdate = new Identification.IdentificationForUpdate {
+                    Id = relation.NodeIdentification.NodeId
+                },
+                NodeDetailsForUpdate = nodeDetailsMapper.Map(relation.NodeDetailsForUpdate),
+                InterOrganizationalRelationDetails = new CreateModel.InterOrganizationalRelationDetails {
+                    InterOrganizationalRelationTypeId = relation.InterOrganizationalRelationDetails.InterOrganizationalRelationType.Id,
+                    DateRange = relation.RelationDetails.DateRange ?? new DateTimeRange(null, null),
+                    GeographicalEntityId = relation.InterOrganizationalRelationDetails.GeographicalEntity?.Id,
+                    DocumentIdProof = relation.RelationDetails.ProofDocument?.Id,
+                    MoneyInvolved = relation.InterOrganizationalRelationDetails.MoneyInvolved,
+                    NumberOfChildrenInvolved = relation.InterOrganizationalRelationDetails.NumberOfChildrenInvolved,
+                    Description = relation.RelationDetails.Description,
+                },                    
                 OrganizationIdFrom = relation.OrganizationFrom.Id,
                 OrganizationIdTo = relation.OrganizationTo.Id,
-                InterOrganizationalRelationTypeId = relation.InterOrganizationalRelationDetails.InterOrganizationalRelationType.Id,
-                DateRange = relation.RelationDetails.DateRange ?? new DateTimeRange(null, null),
-                GeographicalEntityId = relation.InterOrganizationalRelationDetails.GeographicalEntity?.Id,
-                DocumentIdProof = relation.RelationDetails.ProofDocument?.Id,
-                MoneyInvolved = relation.InterOrganizationalRelationDetails.MoneyInvolved,
-                NumberOfChildrenInvolved = relation.InterOrganizationalRelationDetails.NumberOfChildrenInvolved,
-                NodeTermsToAdd = new List<NodeTermToAdd>(),
-                NodeTermsToRemove = new List<NodeTermToRemove>(),
-                AuthoringStatusId = relation.RelationDetails.HasBeenDeleted? 2: 1,
-                ChangedDateTime = DateTime.Now,
-                TenantNodesToAdd = new List<NewTenantNodeForExistingNode>(),
-                TenantNodesToRemove = new List<TenantNodeToDelete>(),
-                TenantNodesToUpdate = new List<ExistingTenantNode>()
             };
         }
     }

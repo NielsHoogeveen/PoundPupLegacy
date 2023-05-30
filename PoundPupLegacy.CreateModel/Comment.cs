@@ -2,7 +2,8 @@
 
 public sealed record Comment : EventuallyIdentifiable
 {
-    public required int? Id { get; set; }
+    public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
+    public Identification Identification => IdentificationForCreate;
 
     public required int NodeId { get; init; }
 

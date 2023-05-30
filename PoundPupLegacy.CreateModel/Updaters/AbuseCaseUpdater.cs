@@ -3,7 +3,7 @@
 using PoundPupLegacy.Common;
 using System.Data;
 using System.Threading.Tasks;
-using Request = ImmediatelyIdentifiableAbuseCase;
+using Request = AbuseCase.AbuseCaseToUpdate;
 
 internal sealed class AbuseCaseChangerFactory(
     IDatabaseUpdaterFactory<Request> databaseUpdaterFactory,
@@ -60,15 +60,15 @@ internal sealed class AbuseCaseUpdaterFactory : DatabaseUpdaterFactory<Request>
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new List<ParameterValue> {
-            ParameterValue.Create(NodeId, request.Id),
-            ParameterValue.Create(Title, request.Title),
-            ParameterValue.Create(Description, request.Description),
-            ParameterValue.Create(FuzzyDate, request.Date),
-            ParameterValue.Create(ChildPlacementTypeId, request.ChildPlacementTypeId),
-            ParameterValue.Create(FamilySizeId, request.FamilySizeId),
-            ParameterValue.Create(HomeSchoolingInvolved, request.HomeschoolingInvolved),
-            ParameterValue.Create(FundamentalFaithInvolved, request.FundamentalFaithInvolved),
-            ParameterValue.Create(DisabilitiesInvolved, request.DisabilitiesInvolved),
+            ParameterValue.Create(NodeId, request.IdentificationForUpdate.Id),
+            ParameterValue.Create(Title, request.NodeDetails.Title),
+            ParameterValue.Create(Description, request.NameableDetails.Description),
+            ParameterValue.Create(FuzzyDate, request.CaseDetails.Date),
+            ParameterValue.Create(ChildPlacementTypeId, request.AbuseCaseDetails.ChildPlacementTypeId),
+            ParameterValue.Create(FamilySizeId, request.AbuseCaseDetails.FamilySizeId),
+            ParameterValue.Create(HomeSchoolingInvolved, request.AbuseCaseDetails.HomeschoolingInvolved),
+            ParameterValue.Create(FundamentalFaithInvolved, request.AbuseCaseDetails.FundamentalFaithInvolved),
+            ParameterValue.Create(DisabilitiesInvolved, request.AbuseCaseDetails.DisabilitiesInvolved),
         };
     }
 }

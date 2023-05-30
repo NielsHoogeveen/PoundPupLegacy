@@ -4,7 +4,7 @@ internal sealed class RepresentativeHouseBillActionMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
         IMandatorySingleItemDatabaseReaderFactory<ProfessionIdReaderRequest, int> professionIdReaderFactory,
-        IEntityCreatorFactory<EventuallyIdentifiableRepresentativeHouseBillAction> representativeHouseBillActionCreatorFactory
+        IEntityCreatorFactory<RepresentativeHouseBillAction> representativeHouseBillActionCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "representative house bill action";
@@ -18,7 +18,7 @@ internal sealed class RepresentativeHouseBillActionMigrator(
 
     }
 
-    private async IAsyncEnumerable<NewRepresentativeHouseBillAction> ReadRepresentativeHouseBillActionsPPL(
+    private async IAsyncEnumerable<RepresentativeHouseBillAction> ReadRepresentativeHouseBillActionsPPL(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<ProfessionIdReaderRequest, int> professionIdReader
     )
@@ -73,41 +73,51 @@ internal sealed class RepresentativeHouseBillActionMigrator(
                 UrlId = reader.GetInt32("nameable_id")
             });
 
-            yield return new NewRepresentativeHouseBillAction {
-                Id = null,
-                PublisherId = reader.GetInt32("user_id"),
-                CreatedDateTime = reader.GetDateTime("created_date_time"),
-                ChangedDateTime = reader.GetDateTime("changed_date_time"),
-                Title = reader.GetString("title"),
-                OwnerId = Constants.OWNER_PARTIES,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = 1,
-                        PublicationStatusId = reader.GetInt32("status"),
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id
-                    },
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id < 33163 ? id : null
-                    }
+            yield return new RepresentativeHouseBillAction {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                NodeTypeId = 48,
-                RepresentativeId = representativeId,
-                HouseBillId = billId,
-                BillActionTypeId = billActionTypeId,
-                Date = reader.GetDateTime("date"),
-                TermIds = new List<int>(),
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = reader.GetInt32("user_id"),
+                    CreatedDateTime = reader.GetDateTime("created_date_time"),
+                    ChangedDateTime = reader.GetDateTime("changed_date_time"),
+                    Title = reader.GetString("title"),
+                    OwnerId = Constants.OWNER_PARTIES,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    {
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = 1,
+                            PublicationStatusId = reader.GetInt32("status"),
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id
+                        },
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.CPCT,
+                            PublicationStatusId = 2,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id < 33163 ? id : null
+                        }
+                    },
+                    NodeTypeId = 48,
+                    TermIds = new List<int>(),
+                },
+                RepresentativeHouseBillActionDetails = new RepresentativeHouseBillActionDetails {
+                    RepresentativeId = representativeId,
+                    HouseBillId = billId,
+                    BillActionTypeId = billActionTypeId,
+                    Date = reader.GetDateTime("date"),
+                }
             };
         }
         await reader.CloseAsync();

@@ -3,7 +3,7 @@
 internal sealed class LocationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForExistingNode> tenantNodeReaderByUrlIdFactory,
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.TenantNodeToCreateForExistingNode> tenantNodeReaderByUrlIdFactory,
     IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166CodeFactory,
     IEntityCreatorFactory<EventuallyIdentifiableLocation> locationCreatorFactory,
     IDatabaseInserterFactory<LocationLocatable> locationLocatableInserterFactory
@@ -25,7 +25,7 @@ internal sealed class LocationMigratorCPCT(
         foreach (var item in locations) {
             await locationLocatableInserter.InsertAsync(new LocationLocatable {
                 LocatableId = item.Item2,
-                LocationId = item.Item1.Id!.Value
+                LocationId = item.Item1.IdentificationForCreate.Id!.Value
             });
         }
     }
@@ -366,7 +366,9 @@ internal sealed class LocationMigratorCPCT(
                 UrlId = urlId
             });
             yield return (new LocationToCreate {
-                Id = renamedId,
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = renamedId
+                },
                 Street = GetStreet(id, reader.IsDBNull("street") ? null : reader.GetString("street")),
                 Additional = GetAdditional(id, reader.IsDBNull("additional") ? null : reader.GetString("additional")),
                 City = GetCity(id, reader.IsDBNull("city") ? null : reader.GetString("city")),

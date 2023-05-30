@@ -11,11 +11,15 @@ internal sealed class PollStatusMigrator(
     {
         await Task.CompletedTask;
         yield return new PollStatus {
-            Id = 0,
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = 0,
+            },
             Name = "Closed",
         };
         yield return new PollStatus {
-            Id = 1,
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = 1,
+            },
             Name = "Open",
         };
     }

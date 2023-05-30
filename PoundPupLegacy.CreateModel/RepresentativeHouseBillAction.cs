@@ -9,7 +9,7 @@ public sealed record RepresentativeHouseBillAction: NodeToCreate
 }
 
 
-public abstract record RepresentativeHouseBillActionDetails
+public sealed record RepresentativeHouseBillActionDetails
 {
     public required int RepresentativeId { get; init; }
     public required int HouseBillId { get; init; }

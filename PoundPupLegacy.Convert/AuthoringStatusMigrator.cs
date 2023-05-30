@@ -11,11 +11,15 @@ internal sealed class AuthoringStatusMigrator(
     {
         await Task.CompletedTask;
         yield return new AuthoringStatus {
-            Id = 1,
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = 1,
+            },
             Name = "Authored",
         };
         yield return new AuthoringStatus {
-            Id = 2,
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = 2,
+            },
             Name = "Retracted",
         };
     }

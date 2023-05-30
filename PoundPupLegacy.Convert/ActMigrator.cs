@@ -2,7 +2,7 @@
 
 internal sealed class ActMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreatorFactory<ActToCreate> actCreatorFactory,
+    IEntityCreatorFactory<Act.ActToCreate> actCreatorFactory,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory
 ) : MigratorPPL(databaseConnections)
@@ -26,7 +26,7 @@ internal sealed class ActMigrator(
             _ => null
         };
     }
-    private async IAsyncEnumerable<NewAct> ReadArticles(
+    private async IAsyncEnumerable<Act.ActToCreate> ReadArticles(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader
     )
@@ -135,6 +135,9 @@ internal sealed class ActMigrator(
                     }));
                 }
                 vocabularyNames.Add(new NewTermForNewNameable {
+                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                        Id = null,
+                    },
                     VocabularyId = vocabularyId,
                     Name = topicName,
                     ParentTermIds = topicParentIds,
@@ -142,6 +145,9 @@ internal sealed class ActMigrator(
             }
             else {
                 vocabularyNames.Add(new NewTermForNewNameable {
+                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                        Id = null,
+                    },
                     VocabularyId = vocabularyId,
                     Name = title,
                     ParentTermIds = new List<int> {
@@ -154,32 +160,42 @@ internal sealed class ActMigrator(
             }
 
 
-            yield return new NewAct {
-                Id = null,
-                PublisherId = reader.GetInt32("user_id"),
-                CreatedDateTime = reader.GetDateTime("created"),
-                ChangedDateTime = reader.GetDateTime("changed"),
-                Title = title,
-                OwnerId = Constants.PPL,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = 1,
-                        PublicationStatusId = reader.GetInt32("status"),
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id
-                    }
+            yield return new Act.ActToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                NodeTypeId = 36,
-                Description = reader.GetString("description"),
-                Terms = vocabularyNames,
-                FileIdTileImage = null,
-                EnactmentDate = GetEnactmentDate(id),
-                TermIds = new List<int>(),
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = reader.GetInt32("user_id"),
+                    CreatedDateTime = reader.GetDateTime("created"),
+                    ChangedDateTime = reader.GetDateTime("changed"),
+                    Title = title,
+                    OwnerId = Constants.PPL,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    {
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = 1,
+                            PublicationStatusId = reader.GetInt32("status"),
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id
+                        }
+                    },
+                    NodeTypeId = 36,
+                    TermIds = new List<int>(),
+                },
+                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                    Description = reader.GetString("description"),
+                    FileIdTileImage = null,
+                    Terms = vocabularyNames,
+                },
+                ActDetails = new ActDetails {
+                    EnactmentDate = GetEnactmentDate(id),
+                }
             };
         }
         await reader.CloseAsync();

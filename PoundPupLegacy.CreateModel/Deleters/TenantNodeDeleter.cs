@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Deleters;
 
-using Request = ImmediatelyIdentifiableTenantNode;
+using Request = TenantNodeToDelete;
 
 public record TenantNodeToDelete: IRequest
 {

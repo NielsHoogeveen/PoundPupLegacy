@@ -4,7 +4,7 @@ public abstract record SenateTerm : CongressionalTerm
 {
     private SenateTerm() { }
     public required SenateTermDetails SenateTermDetails { get; init; }
-    public required CongressionalTermDetails CongressionalTermDetails { get; init; }
+    public abstract CongressionalTermDetails CongressionalTermDetails { get; }
     public abstract Identification Identification { get; }
     public abstract NodeDetails NodeDetails { get; }
     public abstract T Match<T>(Func<SenateTermToCreate, T> create, Func<SenateTermToUpdate, T> update);
@@ -12,6 +12,8 @@ public abstract record SenateTerm : CongressionalTerm
 
     public sealed record SenateTermToCreate : SenateTerm, CongressionalTermToCreate
     {
+        public override CongressionalTermDetails CongressionalTermDetails => CongressionalTermDetailsForCreate;
+        public required CongressionalTermDetails.CongressionalTermDetailsForCreate CongressionalTermDetailsForCreate { get; init; }
         public override Identification Identification => IdentificationForCreate;
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
@@ -27,6 +29,8 @@ public abstract record SenateTerm : CongressionalTerm
     }
     public sealed record SenateTermToUpdate : SenateTerm, CongressionalTermToUpdate
     {
+        public override CongressionalTermDetails CongressionalTermDetails => CongressionalTermDetailsForUpdate;
+        public required CongressionalTermDetails.CongressionalTermDetailsForUpdate CongressionalTermDetailsForUpdate { get; init; }
         public required Identification.IdentificationForUpdate IdentificationForUpdate { get; init; }
         public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
         public override Identification Identification => IdentificationForUpdate;

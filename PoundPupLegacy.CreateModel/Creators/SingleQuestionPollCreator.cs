@@ -1,12 +1,12 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class SingleQuestionPollCreatorFactory(
-    IEntityCreatorFactory<PollQuestion> pollQuestionCreatorFactory,
+    IEntityCreatorFactory<PollQuestionToCreate> pollQuestionCreatorFactory,
     IDatabaseInserterFactory<PollToCreate> pollInserterFactory,
     IDatabaseInserterFactory<SingleQuestionPoll.SingleQuestionPollToCreate> singleQuestionPollInserterFactory
 ) : IEntityCreatorFactory<SingleQuestionPoll.SingleQuestionPollToCreate>
 {
-    public async Task<IEntityCreator<EventuallyIdentifiableSingleQuestionPoll>> CreateAsync(IDbConnection connection) =>
+    public async Task<IEntityCreator<SingleQuestionPoll.SingleQuestionPollToCreate>> CreateAsync(IDbConnection connection) =>
         new SingleQuestionPollCreator(
             await pollQuestionCreatorFactory.CreateAsync(connection),
             await pollInserterFactory.CreateAsync(connection),
@@ -15,12 +15,12 @@ internal sealed class SingleQuestionPollCreatorFactory(
 }
 
 public class SingleQuestionPollCreator(
-    IEntityCreator<EventuallyIdentifiablePollQuestion> pollQuestionCreator,
+    IEntityCreator<PollQuestionToCreate> pollQuestionCreator,
     IDatabaseInserter<PollToCreate> pollInserter,
-    IDatabaseInserter<EventuallyIdentifiableSingleQuestionPoll> singleQuestionPollInserter
-) : EntityCreator<EventuallyIdentifiableSingleQuestionPoll>
+    IDatabaseInserter<SingleQuestionPoll.SingleQuestionPollToCreate> singleQuestionPollInserter
+) : EntityCreator<SingleQuestionPoll.SingleQuestionPollToCreate>
 {
-    public override async Task ProcessAsync(EventuallyIdentifiableSingleQuestionPoll element)
+    public override async Task ProcessAsync(SingleQuestionPoll.SingleQuestionPollToCreate element)
     {
         await base.ProcessAsync(element);
         await pollQuestionCreator.CreateAsync(element);

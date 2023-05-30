@@ -2,7 +2,7 @@
 
 internal sealed class DiscussionMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreatorFactory<EventuallyIdentifiableDiscussion> discussionCreatorFactory
+    IEntityCreatorFactory<Discussion.DiscussionToCreate> discussionCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "discussions";
@@ -12,7 +12,7 @@ internal sealed class DiscussionMigrator(
         await using var discussionCreator = await discussionCreatorFactory.CreateAsync(_postgresConnection);
         await discussionCreator.CreateAsync(ReadDiscussions());
     }
-    private async IAsyncEnumerable<NewDiscussion> ReadDiscussions()
+    private async IAsyncEnumerable<Discussion.DiscussionToCreate> ReadDiscussions()
     {
 
         var sql = $"""
@@ -33,40 +33,45 @@ internal sealed class DiscussionMigrator(
         readCommand.CommandTimeout = 300;
         readCommand.CommandText = sql;
 
-
         var reader = await readCommand.ExecuteReaderAsync();
 
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
-            var discussion = new NewDiscussion {
-                Id = null,
-                PublisherId = reader.GetInt32("user_id"),
-                CreatedDateTime = reader.GetDateTime("created"),
-                ChangedDateTime = reader.GetDateTime("changed"),
-                Title = reader.GetString("title"),
-                OwnerId = Constants.PPL,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = 1,
-                        PublicationStatusId = reader.GetInt32("status"),
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id
-                    }
+            var discussion = new Discussion.DiscussionToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                NodeTypeId = 37,
-                Text = TextToHtml(reader.GetString("text")),
-                Teaser = TextToTeaser(reader.GetString("text")),
-                TermIds = new List<int>(),
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = reader.GetInt32("user_id"),
+                    CreatedDateTime = reader.GetDateTime("created"),
+                    ChangedDateTime = reader.GetDateTime("changed"),
+                    Title = reader.GetString("title"),
+                    OwnerId = Constants.PPL,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    {
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = 1,
+                            PublicationStatusId = reader.GetInt32("status"),
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id
+                        }
+                    },
+                    NodeTypeId = 37,
+                    TermIds = new List<int>(),
+                },
+                SimpleTextNodeDetails = new SimpleTextNodeDetails {
+                    Text = TextToHtml(reader.GetString("text")),
+                    Teaser = TextToTeaser(reader.GetString("text")),
+                }
             };
             yield return discussion;
-
         }
         await reader.CloseAsync();
     }
-
 }

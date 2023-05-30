@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Updaters;
 
-using Request = ImmediatelyIdentifiableDocument;
+using Request = Document.DocumentToUpdate;
 internal sealed class DocumentChangerFactory(
     IDatabaseUpdaterFactory<Request> databaseUpdaterFactory,
     NodeDetailsChangerFactory nodeDetailsChangerFactory) : IEntityChangerFactory<Request>
@@ -22,7 +22,7 @@ internal sealed class DocumentUpdaterFactory : DatabaseUpdaterFactory<Request>
     private static readonly NonNullableStringDatabaseParameter Title = new() { Name = "title" };
     private static readonly NullableFuzzyDateDatabaseParameter Published = new() { Name = "published" };
     private static readonly NullableStringDatabaseParameter SourceUrl = new() { Name = "source_url" };
-    private static readonly NonNullableIntegerDatabaseParameter DocumentTypeId = new() { Name = "document_type_id" };
+    private static readonly NullableIntegerDatabaseParameter DocumentTypeId = new() { Name = "document_type_id" };
 
     public override string Sql => $"""
         update node set title=@title
@@ -35,13 +35,13 @@ internal sealed class DocumentUpdaterFactory : DatabaseUpdaterFactory<Request>
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new List<ParameterValue> {
-            ParameterValue.Create(Title, request.Title),
-            ParameterValue.Create(NodeId, request.Id),
-            ParameterValue.Create(Text, request.Text),
-            ParameterValue.Create(Teaser, request.Teaser),
-            ParameterValue.Create(DocumentTypeId, request.DocumentTypeId),
-            ParameterValue.Create(SourceUrl, request.SourceUrl),
-            ParameterValue.Create(Published, request.Published),
+            ParameterValue.Create(NodeId, request.IdentificationForUpdate.Id),
+            ParameterValue.Create(Title, request.NodeDetails.Title),
+            ParameterValue.Create(Text, request.SimpleTextNodeDetails.Text),
+            ParameterValue.Create(Teaser, request.SimpleTextNodeDetails.Teaser),
+            ParameterValue.Create(DocumentTypeId, request.DocumentDetails.DocumentTypeId),
+            ParameterValue.Create(SourceUrl, request.DocumentDetails.SourceUrl),
+            ParameterValue.Create(Published, request.DocumentDetails.Published),
         };
     }
 }

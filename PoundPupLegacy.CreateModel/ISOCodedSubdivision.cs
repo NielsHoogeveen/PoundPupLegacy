@@ -12,6 +12,4 @@ public interface ISOCodedSubdivision : Subdivision, PoliticalEntity
 public sealed record ISOCodedSubdivisionDetails
 {
     public required string ISO3166_2_Code { get; init; }
-
-    public required int? FileIdFlag { get; init; }
 }

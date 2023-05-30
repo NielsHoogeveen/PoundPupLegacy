@@ -3,7 +3,7 @@
 internal sealed class PersonOrganizationRelationMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
-    IEntityCreatorFactory<EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants> personOrganizationRelationCreatorFactory
+    IEntityCreatorFactory<PersonOrganizationRelation.PersonOrganizationRelationToCreateForExistingParticipants> personOrganizationRelationCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "person organization relation (ppl)";
@@ -15,7 +15,7 @@ internal sealed class PersonOrganizationRelationMigratorPPL(
         await personOrganizationRelationCreator.CreateAsync(ReadPersonOrganizationRelationsPPL(nodeIdReader));
     }
 
-    private async IAsyncEnumerable<EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants> ReadPersonOrganizationRelationsPPL(
+    private async IAsyncEnumerable<PersonOrganizationRelation.PersonOrganizationRelationToCreateForExistingParticipants> ReadPersonOrganizationRelationsPPL(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
     )
     {
@@ -124,53 +124,61 @@ internal sealed class PersonOrganizationRelationMigratorPPL(
                 TenantId = Constants.PPL,
             });
 
-            yield return new PersonOrganizationRelationToCreateForExistingParticipants {
-                Id = null,
-                PublisherId = reader.GetInt32("user_id"),
-                CreatedDateTime = reader.GetDateTime("created_date_time"),
-                ChangedDateTime = reader.GetDateTime("changed_date_time"),
-                Title = reader.GetString("title"),
-                OwnerId = Constants.OWNER_PARTIES,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = 1,
-                        PublicationStatusId = reader.GetInt32("status"),
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id
-                    },
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id < 33163 ? id : null
-                    }
+            yield return new PersonOrganizationRelation.PersonOrganizationRelationToCreateForExistingParticipants {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                NodeTypeId = 48,
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = reader.GetInt32("user_id"),
+                    CreatedDateTime = reader.GetDateTime("created_date_time"),
+                    ChangedDateTime = reader.GetDateTime("changed_date_time"),
+                    Title = reader.GetString("title"),
+                    OwnerId = Constants.OWNER_PARTIES,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    {
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = 1,
+                            PublicationStatusId = reader.GetInt32("status"),
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id
+                        },
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.CPCT,
+                            PublicationStatusId = 2,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id < 33163 ? id : null
+                        }
+                    },
+                    NodeTypeId = 48,
+                    TermIds = new List<int>(),
+                },
                 PersonId = personId,
                 OrganizationId = organizationId,
-                GeographicalEntityId = geographicalEntityId,
-                PersonOrganizationRelationTypeId = personOrganizationRelationTypeId,
-                DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null : reader.GetDateTime("end_date")),
-
-                DocumentIdProof = reader.IsDBNull("document_id_proof")
-                    ? null
-                    : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                        TenantId = Constants.PPL,
-                        UrlId = reader.GetInt32("document_id_proof")
-                    }),
-                Description = reader.IsDBNull("description") ? null : reader.GetString("description"),
-                TermIds = new List<int>(),
+                PersonOrganizationRelationDetails = new PersonOrganizationRelationDetails {
+                    GeographicalEntityId = geographicalEntityId,
+                    PersonOrganizationRelationTypeId = personOrganizationRelationTypeId,
+                    DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null : reader.GetDateTime("end_date")),
+                    DocumentIdProof = reader.IsDBNull("document_id_proof")
+                        ? null
+                        : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+                            TenantId = Constants.PPL,
+                            UrlId = reader.GetInt32("document_id_proof")
+                        }),
+                    Description = reader.IsDBNull("description") ? null : reader.GetString("description"),
+                },
             };
         }
         await reader.CloseAsync();
     }
-
 }

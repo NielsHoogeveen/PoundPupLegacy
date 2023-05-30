@@ -10,11 +10,11 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
         IMandatorySingleItemDatabaseReaderFactory<TermNameReaderByNameableIdRequest, string> termReaderByNameableIdFactory,
         IMandatorySingleItemDatabaseReaderFactory<NameableIdReaderByTermNameRequest, int> termReaderByNameFactory,
         IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166CodeFactory,
-        IEntityCreatorFactory<EventuallyIdentifiableBasicSecondLevelSubdivision> basicSecondLevelSubdivisionCreatorFactory
+        IEntityCreatorFactory<BasicSecondLevelSubdivision.BasicSecondLevelSubdivisionToCreate> basicSecondLevelSubdivisionCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "basic second level subdivisions";
-    private async IAsyncEnumerable<NewBasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisionsInInformalPrimarySubdivisionCsv(
+    private async IAsyncEnumerable<BasicSecondLevelSubdivision.BasicSecondLevelSubdivisionToCreate> ReadBasicSecondLevelSubdivisionsInInformalPrimarySubdivisionCsv(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
         IMandatorySingleItemDatabaseReader<SubdivisionIdReaderByNameRequest, int> subdivisionIdByNameReader,
@@ -46,67 +46,86 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                 NameableId = subdivisionId,
                 VocabularyId = vocabularyIdTopics
             }));
-            yield return new NewBasicSecondLevelSubdivision {
-                Id = null,
-                CreatedDateTime = DateTime.Parse(parts[1]),
-                ChangedDateTime = DateTime.Parse(parts[2]),
-                NodeTypeId = int.Parse(parts[4]),
-                OwnerId = Constants.OWNER_GEOGRAPHY,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = int.Parse(parts[5]),
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id
-                    },
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id < 33163 ? id : null
-                    }
+            yield return new BasicSecondLevelSubdivision.BasicSecondLevelSubdivisionToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                PublisherId = int.Parse(parts[6]),
-                CountryId = countryId,
-                Title = title,
-                Name = parts[9],
-                Description = "",
-                Terms = new List<NewTermForNewNameable>
-                {
-                    new NewTermForNewNameable
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    Title = title,
+                    CreatedDateTime = DateTime.Parse(parts[1]),
+                    ChangedDateTime = DateTime.Parse(parts[2]),
+                    NodeTypeId = int.Parse(parts[4]),
+                    OwnerId = Constants.OWNER_GEOGRAPHY,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
                     {
-                        VocabularyId = vocabularyIdTopics,
-                        Name = title,
-                        ParentTermIds = new List<int> {
-                            await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
-                                Name = topicName ,
-                                VocabularyId = vocabularyIdTopics
-                            })
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.PPL,
+                            PublicationStatusId = int.Parse(parts[5]),
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id
                         },
-                    }
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.CPCT,
+                            PublicationStatusId = 2,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id < 33163 ? id : null
+                        }
+                    },
+                    PublisherId = int.Parse(parts[6]),
+                    TermIds = new List<int>(),
                 },
-                ISO3166_2_Code = parts[10],
+                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                    Description = "",
+                    Terms = new List<NewTermForNewNameable>
+                    {
+                        new NewTermForNewNameable
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null,
+                            },
+                            VocabularyId = vocabularyIdTopics,
+                            Name = title,
+                            ParentTermIds = new List<int> {
+                                await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                                    Name = topicName ,
+                                    VocabularyId = vocabularyIdTopics
+                                })
+                            },
+                        }
+                    },
+                    FileIdTileImage = null,
+                },
+                PoliticalEntityDetails = new PoliticalEntityDetails {
+                    FileIdFlag = null,
+                },
+                SubdivisionDetails = new SubdivisionDetails {
+                    CountryId = countryId,
+                    Name = parts[9],
+                    SubdivisionTypeId = (await termReaderByName.ReadAsync(new NameableIdReaderByTermNameRequest {
+                        VocabularyId = vocabularyIdSubdivisionTypes,
+                        Name = parts[12].Trim()
+                    })),
+                },
+                ISOCodedSubdivisionDetails = new ISOCodedSubdivisionDetails {
+                    ISO3166_2_Code = parts[10],
+                },
                 IntermediateLevelSubdivisionId = subdivisionId,
-                FileIdFlag = null,
-                FileIdTileImage = null,
-                SubdivisionTypeId = (await termReaderByName.ReadAsync(new NameableIdReaderByTermNameRequest {
-                    VocabularyId = vocabularyIdSubdivisionTypes,
-                    Name = parts[12].Trim()
-                })),
-                TermIds = new List<int>(),
             };
         }
     }
 
-    private async IAsyncEnumerable<NewBasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisionCsv(
+    private async IAsyncEnumerable<BasicSecondLevelSubdivision.BasicSecondLevelSubdivisionToCreate> ReadBasicSecondLevelSubdivisionCsv(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
         IMandatorySingleItemDatabaseReader<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166Code,
@@ -134,65 +153,85 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                 NameableId = subdivisionId,
                 VocabularyId = vocabularyIdTopics
             }));
-            yield return new NewBasicSecondLevelSubdivision {
-                Id = null,
-                CreatedDateTime = DateTime.Parse(parts[1]),
-                ChangedDateTime = DateTime.Parse(parts[2]),
-                NodeTypeId = int.Parse(parts[4]),
-                OwnerId = Constants.OWNER_GEOGRAPHY,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = int.Parse(parts[5]),
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id
-                    },
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id < 33163 ? id : null
-                    }
+            yield return new BasicSecondLevelSubdivision.BasicSecondLevelSubdivisionToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                PublisherId = int.Parse(parts[6]),
-                CountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest() {
-                    TenantId = Constants.PPL,
-                    UrlId = int.Parse(parts[7])
-                }),
-                Title = title,
-                Name = parts[9],
-                Description = "",
-                Terms = new List<NewTermForNewNameable>
-                {
-                    new NewTermForNewNameable
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    Title = title,
+                    CreatedDateTime = DateTime.Parse(parts[1]),
+                    ChangedDateTime = DateTime.Parse(parts[2]),
+                    NodeTypeId = int.Parse(parts[4]),
+                    OwnerId = Constants.OWNER_GEOGRAPHY,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
                     {
-                        VocabularyId = vocabularyIdTopics,
-                        Name = title,
-                        ParentTermIds = new List<int> {
-                            await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
-                                Name = topicName,
-                                VocabularyId = vocabularyIdTopics
-                            })
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.PPL,
+                            PublicationStatusId = int.Parse(parts[5]),
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id
                         },
-                    }
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.CPCT,
+                            PublicationStatusId = 2,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id < 33163 ? id : null
+                        }
+                    },
+                    PublisherId = int.Parse(parts[6]),
+                    TermIds = new List<int>(),
                 },
-                ISO3166_2_Code = parts[10],
+                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                    Description = "",
+                    Terms = new List<NewTermForNewNameable>
+                    {
+                        new NewTermForNewNameable
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null,
+                            },
+                            VocabularyId = vocabularyIdTopics,
+                            Name = title,
+                            ParentTermIds = new List<int> {
+                                await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                                    Name = topicName,
+                                    VocabularyId = vocabularyIdTopics
+                                })
+                            },
+                        }
+                    },
+                    FileIdTileImage = null,
+                },
+                PoliticalEntityDetails = new PoliticalEntityDetails {
+                    FileIdFlag = null,
+                },
+                SubdivisionDetails = new SubdivisionDetails {
+                    CountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest() {
+                        TenantId = Constants.PPL,
+                        UrlId = int.Parse(parts[7])
+                    }),
+                    Name = parts[9],
+                    SubdivisionTypeId = (await termReaderByName.ReadAsync(new NameableIdReaderByTermNameRequest {
+                        VocabularyId = vocabularyIdSubdivisionTypes,
+                        Name = parts[12].Trim()
+                    })),
+
+                },
+                ISOCodedSubdivisionDetails = new ISOCodedSubdivisionDetails {
+                    ISO3166_2_Code = parts[10],
+                },
                 IntermediateLevelSubdivisionId = subdivisionId,
-                FileIdFlag = null,
-                FileIdTileImage = null,
-                SubdivisionTypeId = (await termReaderByName.ReadAsync(new NameableIdReaderByTermNameRequest {
-                    VocabularyId = vocabularyIdSubdivisionTypes,
-                    Name = parts[12].Trim()
-                })),
-                TermIds = new List<int>(),
             };
         }
     }
@@ -227,7 +266,7 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
         ));
 
     }
-    private async IAsyncEnumerable<NewBasicSecondLevelSubdivision> ReadBasicSecondLevelSubdivisions(
+    private async IAsyncEnumerable<BasicSecondLevelSubdivision.BasicSecondLevelSubdivisionToCreate> ReadBasicSecondLevelSubdivisions(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
         IMandatorySingleItemDatabaseReader<NameableIdReaderByTermNameRequest, int> termReaderByName
@@ -282,6 +321,9 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
             {
                 new NewTermForNewNameable
                 {
+                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                        Id = null,
+                    },
                     VocabularyId = vocabularyIdTopics,
                     Name = title,
                     ParentTermIds = new List<int>{
@@ -292,55 +334,71 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                     },
                 }
             };
-            yield return new NewBasicSecondLevelSubdivision {
-                Id = null,
-                PublisherId = reader.GetInt32("access_role_id"),
-                CreatedDateTime = reader.GetDateTime("created_date_time"),
-                ChangedDateTime = reader.GetDateTime("changed_date_time"),
-                Title = title,
-                Name = reader.GetString("title"),
-                OwnerId = Constants.OWNER_GEOGRAPHY,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = reader.GetInt32("node_status_id"),
-                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                        SubgroupId = null,
-                        UrlId = id
-                    },
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id < 33163 ? id : null
-                    }
+            yield return new BasicSecondLevelSubdivision.BasicSecondLevelSubdivisionToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                NodeTypeId = 19,
-                Description = "",
-                Terms = vocabularyNames,
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = reader.GetInt32("access_role_id"),
+                    CreatedDateTime = reader.GetDateTime("created_date_time"),
+                    ChangedDateTime = reader.GetDateTime("changed_date_time"),
+                    Title = title,
+                    OwnerId = Constants.OWNER_GEOGRAPHY,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    {
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.PPL,
+                            PublicationStatusId = reader.GetInt32("node_status_id"),
+                            UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
+                            SubgroupId = null,
+                            UrlId = id
+                        },
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.CPCT,
+                            PublicationStatusId = 2,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id < 33163 ? id : null
+                        }
+                    },
+                    NodeTypeId = 19,
+                    TermIds = new List<int>(),
+                },
+                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                    Description = "",
+                    Terms = vocabularyNames,
+                    FileIdTileImage = null,
+                },
+                PoliticalEntityDetails = new PoliticalEntityDetails {
+                    FileIdFlag = reader.IsDBNull("file_id_flag") ? null : reader.GetInt32("file_id_flag"),
+                },
+                SubdivisionDetails = new SubdivisionDetails {
+                    Name = reader.GetString("title"),
+                    CountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+                        TenantId = Constants.PPL,
+                        UrlId = reader.GetInt32("country_id")
+                    }),
+                    SubdivisionTypeId = (await termReaderByName.ReadAsync(new NameableIdReaderByTermNameRequest {
+                        VocabularyId = vocabularyIdSubdivisionTypes,
+                        Name = "State"
+                    })),
+                },
+                ISOCodedSubdivisionDetails = new ISOCodedSubdivisionDetails {
+                    ISO3166_2_Code = reader.GetString("iso_3166_2_code"),
+                },
                 IntermediateLevelSubdivisionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("intermediate_level_subdivision_id")
                 }),
-                CountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                    TenantId = Constants.PPL,
-                    UrlId = reader.GetInt32("country_id")
-                }),
-                ISO3166_2_Code = reader.GetString("iso_3166_2_code"),
-                FileIdFlag = reader.IsDBNull("file_id_flag") ? null : reader.GetInt32("file_id_flag"),
-                FileIdTileImage = null,
-                SubdivisionTypeId = (await termReaderByName.ReadAsync(new NameableIdReaderByTermNameRequest {
-                    VocabularyId = vocabularyIdSubdivisionTypes,
-                    Name = "State"
-                })),
-                TermIds = new List<int>(),
             };
         }
         await reader.CloseAsync();

@@ -30,10 +30,10 @@ internal sealed class SimpleTextNodeUpdaterFactory : DatabaseUpdaterFactory<Requ
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new List<ParameterValue> {
-            ParameterValue.Create(Title, request.Title),
-            ParameterValue.Create(NodeId, request.Id),
-            ParameterValue.Create(Text, request.Text),
-            ParameterValue.Create(Teaser, request.Teaser),
+            ParameterValue.Create(NodeId, request.IdentificationForUpdate.Id),
+            ParameterValue.Create(Title, request.NodeDetails.Title),
+            ParameterValue.Create(Text, request.SimpleTextNodeDetails.Text),
+            ParameterValue.Create(Teaser, request.SimpleTextNodeDetails.Teaser),
         };
     }
 }

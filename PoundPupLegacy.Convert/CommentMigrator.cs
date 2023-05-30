@@ -73,7 +73,9 @@ internal sealed class CommentMigrator(
 
         while (await reader.ReadAsync()) {
             var discussion = new Comment {
-                Id = reader.GetInt32("id"),
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = reader.GetInt32("id"),
+                },
                 NodeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     TenantId = Constants.PPL,
                     UrlId = reader.GetInt32("node_id")

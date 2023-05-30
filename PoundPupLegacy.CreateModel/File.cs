@@ -2,14 +2,11 @@
 
 public sealed record File : EventuallyIdentifiable
 {
-    public required int? Id { get; set; }
-
-    public required String Path { get; init; }
-
-    public required String Name { get; init; }
-
-    public required String MimeType { get; init; }
-
+    public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
+    public Identification Identification => IdentificationForCreate;
+    public required string Path { get; init; }
+    public required string Name { get; init; }
+    public required string MimeType { get; init; }
     public required int Size { get; init; }
     public required List<TenantFile> TenantFiles { get; init; }
 }

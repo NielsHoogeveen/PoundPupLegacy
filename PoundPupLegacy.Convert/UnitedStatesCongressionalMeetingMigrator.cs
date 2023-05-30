@@ -4,12 +4,12 @@ internal sealed class UnitedStatesCongressionalMeetingMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
-        IEntityCreatorFactory<EventuallyIdentifiableUnitedStatesCongressionalMeeting> unitedStatesCongressionalMeetingCreatorFactory
+        IEntityCreatorFactory<UnitedStatesCongressionalMeeting.UnitedStatesCongressionalMeetingToCreate> unitedStatesCongressionalMeetingCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "united states congressional meetings";
 
-    private async IAsyncEnumerable<NewUnitedStatesCongressionalMeeting> ReadUnitedStatesCongressionalMeetingCsv(
+    private async IAsyncEnumerable<UnitedStatesCongressionalMeeting.UnitedStatesCongressionalMeetingToCreate> ReadUnitedStatesCongressionalMeetingCsv(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader
     )
@@ -33,41 +33,54 @@ internal sealed class UnitedStatesCongressionalMeetingMigrator(
             var startDate = DateTime.Parse(parts[1]).AddHours(12);
             var endDate = DateTime.Parse(parts[2]).AddHours(12).AddMicroseconds(-1);
             var number = int.Parse(parts[3]);
-            yield return new NewUnitedStatesCongressionalMeeting {
-                Id = null,
-                CreatedDateTime = DateTime.Now,
-                ChangedDateTime = DateTime.Now,
-                Terms = new List<NewTermForNewNameable>
-                {
-                    new NewTermForNewNameable
-                    {
-                        VocabularyId = vocabularyId,
-                        Name = title,
-                        ParentTermIds = parentTermIds,
-                    }
+            yield return new UnitedStatesCongressionalMeeting.UnitedStatesCongressionalMeetingToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                Description = "",
-                FileIdTileImage = null,
-                NodeTypeId = 52,
-                OwnerId = Constants.OWNER_GEOGRAPHY,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    CreatedDateTime = DateTime.Now,
+                    ChangedDateTime = DateTime.Now,
+                    NodeTypeId = 52,
+                    OwnerId = Constants.OWNER_GEOGRAPHY,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
                     {
-                        Id = null,
-                        TenantId = 1,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = null
-                    }
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = 1,
+                            PublicationStatusId = 1,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = null
+                        }
+                    },
+                    PublisherId = 2,
+                    Title = title,
+                    TermIds = new List<int>(),
                 },
-                PublisherId = 2,
-                Title = title,
-                DateRange = new DateTimeRange(startDate, endDate),
-                Number = number,
-                TermIds = new List<int>(),
+                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                    Terms = new List<NewTermForNewNameable>
+                    {
+                        new NewTermForNewNameable
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id= null
+                            },
+                            VocabularyId = vocabularyId,
+                            Name = title,
+                            ParentTermIds = parentTermIds,
+                        }
+                    },
+                    Description = "",
+                    FileIdTileImage = null,
+                },
+                UnitedStatesCongressionalMeetingDetails = new UnitedStatesCongressionalMeetingDetails {
+                    DateRange = new DateTimeRange(startDate, endDate),
+                    Number = number,
+                },
             };
         }
     }

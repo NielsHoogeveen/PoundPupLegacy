@@ -2,7 +2,7 @@
 
 internal sealed class ReviewMigrator(
         IDatabaseConnections databaseConnections,
-        IEntityCreatorFactory<EventuallyIdentifiableBlogPost> blogPostCreatorFactory
+        IEntityCreatorFactory<BlogPost.BlogPostToCreate> blogPostCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "reviews";
@@ -12,7 +12,7 @@ internal sealed class ReviewMigrator(
         await using var blogPostCreator = await blogPostCreatorFactory.CreateAsync(_postgresConnection);
         await blogPostCreator.CreateAsync(ReadReviews());
     }
-    private async IAsyncEnumerable<NewBlogPost> ReadReviews()
+    private async IAsyncEnumerable<BlogPost.BlogPostToCreate> ReadReviews()
     {
 
         var sql = $"""
@@ -39,31 +39,38 @@ internal sealed class ReviewMigrator(
 
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
-            yield return new NewBlogPost {
-                Id = null,
-                PublisherId = reader.GetInt32("user_id"),
-                CreatedDateTime = reader.GetDateTime("created"),
-                ChangedDateTime = reader.GetDateTime("changed"),
-                Title = reader.GetString("title"),
-                OwnerId = Constants.PPL,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = 1,
-                        PublicationStatusId = reader.GetInt32("status"),
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id
-                    }
+            yield return new BlogPost.BlogPostToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-
-                NodeTypeId = 35,
-                Text = TextToHtml(reader.GetString("text")),
-                Teaser = TextToTeaser(reader.GetString("text")),
-                TermIds = new List<int>(),
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = reader.GetInt32("user_id"),
+                    CreatedDateTime = reader.GetDateTime("created"),
+                    ChangedDateTime = reader.GetDateTime("changed"),
+                    Title = reader.GetString("title"),
+                    OwnerId = Constants.PPL,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    {
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = 1,
+                            PublicationStatusId = reader.GetInt32("status"),
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id
+                        }
+                    },
+                    NodeTypeId = 35,
+                    TermIds = new List<int>(),
+                },
+                SimpleTextNodeDetails = new SimpleTextNodeDetails {
+                    Text = TextToHtml(reader.GetString("text")),
+                    Teaser = TextToTeaser(reader.GetString("text")),
+                },
             };
 
         }

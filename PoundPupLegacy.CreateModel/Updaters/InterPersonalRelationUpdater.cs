@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Updaters;
 
-using Request = ImmediatelyIdentifiableInterPersonalRelation;
+using Request = InterPersonalRelation.InterPersonalRelationToUpdate;
 
 internal sealed class InterPersonalRelationUpdaterFactory : DatabaseUpdaterFactory<Request>
 {
@@ -32,14 +32,14 @@ internal sealed class InterPersonalRelationUpdaterFactory : DatabaseUpdaterFacto
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new List<ParameterValue> {
-            ParameterValue.Create(NodeId, request.Id),
-            ParameterValue.Create(Title, request.Title),
+            ParameterValue.Create(NodeId, request.IdentificationForUpdate.Id),
+            ParameterValue.Create(Title, request.NodeDetails.Title),
             ParameterValue.Create(PersonIdFrom, request.PersonIdFrom),
             ParameterValue.Create(PersonIdTo, request.PersonIdTo),
-            ParameterValue.Create(InterPersonalRelationTypeId, request.InterPersonalRelationTypeId),
-            ParameterValue.Create(DateRange, request.DateRange),
-            ParameterValue.Create(DocumentIdProof, request.DocumentIdProof),
-            ParameterValue.Create(Description, request.Description),
+            ParameterValue.Create(InterPersonalRelationTypeId, request.InterPersonalRelationDetails.InterPersonalRelationTypeId),
+            ParameterValue.Create(DateRange, request.InterPersonalRelationDetails.DateRange),
+            ParameterValue.Create(DocumentIdProof, request.InterPersonalRelationDetails.DocumentIdProof),
+            ParameterValue.Create(Description, request.InterPersonalRelationDetails.Description),
         };
     }
 }

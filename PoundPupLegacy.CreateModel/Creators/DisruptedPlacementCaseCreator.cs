@@ -11,7 +11,7 @@ internal sealed class DisruptedPlacementCaseCreatorFactory(
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory,
     LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
-    IEntityCreatorFactory<CaseNewCasePartiesToUpdate> caseCaseTypeCreatorFactory
+    IEntityCreatorFactory<CaseExistingCasePartiesToCreate> caseCaseTypeCreatorFactory
 ) : IEntityCreatorFactory<DisruptedPlacementCase.DisruptedPlacementCaseToCreate>
 {
     public async Task<IEntityCreator<DisruptedPlacementCase.DisruptedPlacementCaseToCreate>> CreateAsync(IDbConnection connection) =>

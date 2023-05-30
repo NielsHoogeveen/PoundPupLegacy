@@ -8,9 +8,9 @@ internal sealed class PollQuestionCreatorFactory(
     IDatabaseInserterFactory<PollOption> pollOptionInserterFactory,
     IDatabaseInserterFactory<PollVote> pollVoteInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory
-) : IEntityCreatorFactory<PollQuestion>
+) : IEntityCreatorFactory<PollQuestionToCreate>
 {
-    public async Task<IEntityCreator<EventuallyIdentifiablePollQuestion>> CreateAsync(IDbConnection connection) =>
+    public async Task<IEntityCreator<PollQuestionToCreate>> CreateAsync(IDbConnection connection) =>
         new PollQuestionCreator(
             new () {
                 await nodeInserterFactory.CreateAsync(connection),
@@ -24,23 +24,23 @@ internal sealed class PollQuestionCreatorFactory(
         );
 }
 internal sealed class PollQuestionCreator(
-    List<IDatabaseInserter<EventuallyIdentifiablePollQuestion>> inserters,
+    List<IDatabaseInserter<PollQuestionToCreate>> inserters,
     NodeDetailsCreator nodeDetailsCreator,
     IDatabaseInserter<PollOption> pollOptionInserter,
     IDatabaseInserter<PollVote> pollVoteInserter
-) : NodeCreator<EventuallyIdentifiablePollQuestion>(
+) : NodeCreator<PollQuestionToCreate>(
         inserters,
         nodeDetailsCreator
 )
 {
-    public override async Task ProcessAsync(EventuallyIdentifiablePollQuestion element, int id)
+    public override async Task ProcessAsync(PollQuestionToCreate element, int id)
     {
         await base.ProcessAsync(element, id);
-        foreach (var pollOption in element.PollOptions) {
+        foreach (var pollOption in element.PollQuestionDetails.PollOptions) {
             pollOption.PollQuestionId = id;
             await pollOptionInserter.InsertAsync(pollOption);
         }
-        foreach (var pollVote in element.PollVotes) {
+        foreach (var pollVote in element.PollQuestionDetails.PollVotes) {
             pollVote.PollId = id;
             await pollVoteInserter.InsertAsync(pollVote);
         }

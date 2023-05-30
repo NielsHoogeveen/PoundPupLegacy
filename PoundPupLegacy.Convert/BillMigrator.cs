@@ -4,8 +4,8 @@ internal sealed class BillMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
-        IEntityCreatorFactory<EventuallyIdentifiableHouseBill> houseBillCreatorFactory,
-        IEntityCreatorFactory<EventuallyIdentifiableSenateBill> senateBillCreatorFactory
+        IEntityCreatorFactory<HouseBill.HouseBillToCreate> houseBillCreatorFactory,
+        IEntityCreatorFactory<SenateBill.SenateBillToCreate> senateBillCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "bills";
@@ -20,7 +20,7 @@ internal sealed class BillMigrator(
         await senateBillCreator.CreateAsync(ReadSenateBills(nodeIdReader,termIdReader));
     }
 
-    private async IAsyncEnumerable<NewHouseBill> ReadHouseBills(
+    private async IAsyncEnumerable<HouseBill.HouseBillToCreate> ReadHouseBills(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader)
     {
@@ -160,6 +160,9 @@ internal sealed class BillMigrator(
                 }
 
                 vocabularyNames.Add(new NewTermForNewNameable {
+                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                        Id = null,
+                    },
                     VocabularyId = vocabularyId,
                     Name = topicName,
                     ParentTermIds = topicParentIds,
@@ -167,6 +170,9 @@ internal sealed class BillMigrator(
             }
             else {
                 vocabularyNames.Add(new NewTermForNewNameable {
+                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                        Id = null,
+                    },
                     VocabularyId = vocabularyId,
                     Name = title,
                     ParentTermIds = new List<int> {
@@ -178,41 +184,51 @@ internal sealed class BillMigrator(
                 });
             }
 
-            yield return new NewHouseBill {
-                Id = null,
-                PublisherId = reader.GetInt32("user_id"),
-                CreatedDateTime = reader.GetDateTime("created"),
-                ChangedDateTime = reader.GetDateTime("changed"),
-                Title = title,
-                OwnerId = Constants.PPL,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = 1,
-                        PublicationStatusId = reader.GetInt32("status"),
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id
-                    }
+            yield return new HouseBill.HouseBillToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                NodeTypeId = 56,
-                Description = reader.GetString("description"),
-                Terms = vocabularyNames,
-                FileIdTileImage = null,
-                IntroductionDate = reader.IsDBNull("introduction_date") ? null : reader.GetDateTime("introduction_date"),
-                ActId = reader.IsDBNull("act_id") ? null : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                    TenantId = Constants.PPL,
-                    UrlId = reader.GetInt32("act_id")
-                }),
-                TermIds = new List<int>(),
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = reader.GetInt32("user_id"),
+                    CreatedDateTime = reader.GetDateTime("created"),
+                    ChangedDateTime = reader.GetDateTime("changed"),
+                    Title = title,
+                    OwnerId = Constants.PPL,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    {
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = 1,
+                            PublicationStatusId = reader.GetInt32("status"),
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id
+                        }
+                    },
+                    NodeTypeId = 56,
+                    TermIds = new List<int>(),
+                },
+                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                    Description = reader.GetString("description"),
+                    Terms = vocabularyNames,
+                    FileIdTileImage = null,
+                },
+                BillDetails = new BillDetails {
+                    IntroductionDate = reader.IsDBNull("introduction_date") ? null : reader.GetDateTime("introduction_date"),
+                    ActId = reader.IsDBNull("act_id") ? null : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+                        TenantId = Constants.PPL,
+                        UrlId = reader.GetInt32("act_id")
+                    }),
+                }
             };
         }
         await reader.CloseAsync();
     }
-    private async IAsyncEnumerable<NewSenateBill> ReadSenateBills(
+    private async IAsyncEnumerable<SenateBill.SenateBillToCreate> ReadSenateBills(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader)
     {
@@ -351,6 +367,9 @@ internal sealed class BillMigrator(
                     }));
                 }
                 vocabularyNames.Add(new NewTermForNewNameable {
+                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                        Id = null,
+                    },
                     VocabularyId = vocabularyId,
                     Name = topicName,
                     ParentTermIds = topicParentIds,
@@ -358,6 +377,9 @@ internal sealed class BillMigrator(
             }
             else {
                 vocabularyNames.Add(new NewTermForNewNameable {
+                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                        Id = null,
+                    },
                     VocabularyId = vocabularyId,
                     Name = title,
                     ParentTermIds = new List<int> {
@@ -369,39 +391,48 @@ internal sealed class BillMigrator(
                 });
             }
 
-            yield return new NewSenateBill {
-                Id = null,
-                PublisherId = reader.GetInt32("user_id"),
-                CreatedDateTime = reader.GetDateTime("created"),
-                ChangedDateTime = reader.GetDateTime("changed"),
-                Title = title,
-                OwnerId = Constants.PPL,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = 1,
-                        PublicationStatusId = reader.GetInt32("status"),
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id
-                    }
+            yield return new SenateBill.SenateBillToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                NodeTypeId = 57,
-                Description = reader.GetString("description"),
-                Terms = vocabularyNames,
-                FileIdTileImage = null,
-                IntroductionDate = reader.IsDBNull("introduction_date") ? null : reader.GetDateTime("introduction_date"),
-                ActId = reader.IsDBNull("act_id") ? null : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                    TenantId = Constants.PPL,
-                    UrlId = reader.GetInt32("act_id")
-                }),
-                TermIds = new List<int>(),
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = reader.GetInt32("user_id"),
+                    CreatedDateTime = reader.GetDateTime("created"),
+                    ChangedDateTime = reader.GetDateTime("changed"),
+                    Title = title,
+                    OwnerId = Constants.PPL,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    {
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = 1,
+                            PublicationStatusId = reader.GetInt32("status"),
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id
+                        }
+                    },
+                    NodeTypeId = 57,
+                    TermIds = new List<int>(),
+                },
+                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                    Description = reader.GetString("description"),
+                    Terms = vocabularyNames,
+                    FileIdTileImage = null,
+                },
+                BillDetails = new BillDetails {
+                    IntroductionDate = reader.IsDBNull("introduction_date") ? null : reader.GetDateTime("introduction_date"),
+                    ActId = reader.IsDBNull("act_id") ? null : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+                        TenantId = Constants.PPL,
+                        UrlId = reader.GetInt32("act_id")
+                    }),
+                },
             };
         }
         await reader.CloseAsync();
     }
-
 }

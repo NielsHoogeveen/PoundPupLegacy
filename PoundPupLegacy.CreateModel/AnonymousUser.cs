@@ -2,11 +2,8 @@
 
 public sealed record AnonymousUser : Publisher
 {
-    public int? Id { get; set; }
-    public string Name { get; }
-    public AnonymousUser()
-    {
-        Id = 0;
-        Name = "anonymous";
-    }
+    public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
+    public Identification Identification => IdentificationForCreate;
+
+    public required string Name { get; init; }
 }

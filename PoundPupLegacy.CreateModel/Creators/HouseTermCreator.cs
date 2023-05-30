@@ -8,7 +8,7 @@ internal sealed class HouseTermCreatorFactory(
     IDatabaseInserterFactory<CongressionalTermToCreate> congressionalTermInserterFactory,
     IDatabaseInserterFactory<HouseTerm.HouseTermToCreate> houseTermInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    IEntityCreatorFactory<CongressionalTermPoliticalPartyAffiliation.CongressionalTermPoliticalPartyAffiliationToCreate> congressionalTermPoliticalPartyAffiliationCreatorFactory
+    IEntityCreatorFactory<CongressionalTermPoliticalPartyAffiliation.CongressionalTermPoliticalPartyAffiliationToCreateForExistingTerm> congressionalTermPoliticalPartyAffiliationCreatorFactory
 ) : IEntityCreatorFactory<HouseTerm.HouseTermToCreate>
 {
     public async Task<IEntityCreator<HouseTerm.HouseTermToCreate>> CreateAsync(IDbConnection connection) =>
@@ -29,16 +29,16 @@ internal sealed class HouseTermCreatorFactory(
 public class HouseTermCreator(
     List<IDatabaseInserter<HouseTerm.HouseTermToCreate>> inserters,
     NodeDetailsCreator nodeDetailsCreator,
-    IEntityCreator<CongressionalTermPoliticalPartyAffiliation.CongressionalTermPoliticalPartyAffiliationToCreate> congressionalTermPoliticalPartyAffiliationCreator
+    IEntityCreator<CongressionalTermPoliticalPartyAffiliation.CongressionalTermPoliticalPartyAffiliationToCreateForExistingTerm> congressionalTermPoliticalPartyAffiliationCreator
 ) : NodeCreator<HouseTerm.HouseTermToCreate>(inserters, nodeDetailsCreator)
 {
     public override async Task ProcessAsync(HouseTerm.HouseTermToCreate element, int id)
     {
         await base.ProcessAsync(element, id);
-        foreach (var partyAffiliation in element.CongressionalTermDetails.PartyAffiliations) {
-            partyAffiliation.CongressionalTermPoliticalPartyAffiliationDetails.CongressionalTermId = id;
-        }
-        await congressionalTermPoliticalPartyAffiliationCreator.CreateAsync(element.CongressionalTermDetails.PartyAffiliations.ToAsyncEnumerable());
+        await congressionalTermPoliticalPartyAffiliationCreator
+            .CreateAsync(element.CongressionalTermDetailsForCreate.PartyAffiliations
+            .Select(x => x.ResolveCongressionalTerm(id))
+            .ToAsyncEnumerable());
 
     }
     public override async ValueTask DisposeAsync()

@@ -22,13 +22,13 @@ internal sealed class LocationMigratorPPL(
         foreach (var item in locations) {
             await locationLocatableInserter.InsertAsync(new LocationLocatable {
                 LocatableId = item.Item2,
-                LocationId = item.Item1.Id!.Value
+                LocationId = item.Item1.IdentificationForCreate.Id!.Value
             });
         }
         foreach (var item in readLocations) {
             await locationLocatableInserter.InsertAsync(new LocationLocatable {
                 LocatableId = item.Item2,
-                LocationId = item.Item1.Id!.Value
+                LocationId = item.Item1.IdentificationForCreate.Id!.Value
             });
         }
     }
@@ -42,7 +42,9 @@ internal sealed class LocationMigratorPPL(
             UrlId = 105
         });
         yield return (new LocationToCreate {
-            Id = 18,
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = 18,
+            },
             Street = "8010 S County Road 5 Suite 205",
             Additional = null,
             PostalCode = "80528",
@@ -1398,7 +1400,9 @@ internal sealed class LocationMigratorPPL(
                 UrlId = reader.GetInt32("node_id"),
             });
             yield return (new LocationToCreate {
-                Id = id,
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = id
+                },
                 Street = GetStreet(id, reader.IsDBNull("street") ? null : reader.GetString("street")),
                 Additional = GetAdditional(id, reader.IsDBNull("additional") ? null : reader.GetString("additional")),
                 City = GetCity(id, reader.IsDBNull("city") ? null : reader.GetString("city")),

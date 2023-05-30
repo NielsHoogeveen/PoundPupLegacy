@@ -2,7 +2,8 @@
 
 public sealed record User : Publisher
 {
-    public required int? Id { get; set; }
+    public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
+    public Identification Identification => IdentificationForCreate;
     public required string Name { get; init; }
     public required DateTime CreatedDateTime { get; init; }
     public required string? AboutMe { get; init; }

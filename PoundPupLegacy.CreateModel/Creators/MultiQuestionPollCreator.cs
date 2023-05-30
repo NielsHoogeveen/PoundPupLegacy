@@ -7,7 +7,7 @@ internal sealed class MultiQuestionPollCreatorFactory(
     IDatabaseInserterFactory<PollToCreate> pollInserterFactory,
     IDatabaseInserterFactory<MultiQuestionPoll.MultiQuestionPollToCreate> multiQuestionPollInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    IEntityCreatorFactory<MultiQuestionPollQuestion.MultiQuestionPollQuestionToCreate> pollQuestionCreatorFactory,
+    IEntityCreatorFactory<PollQuestionToCreate> pollQuestionCreatorFactory,
     IDatabaseInserterFactory<MultiQuestionPollPollQuestion> multiQuestionPollPollQuestionInserterFactory
 ) : IEntityCreatorFactory<MultiQuestionPoll.MultiQuestionPollToCreate>
 {
@@ -30,7 +30,7 @@ internal sealed class MultiQuestionPollCreatorFactory(
 public class MultiQuestionPollCreator(
     List<IDatabaseInserter<MultiQuestionPoll.MultiQuestionPollToCreate>> inserters,
     NodeDetailsCreator nodeDetailsCreator,
-    IEntityCreator<MultiQuestionPollQuestion.MultiQuestionPollQuestionToCreate> pollQuestionCreatorFactory,
+    IEntityCreator<PollQuestionToCreate> pollQuestionCreatorFactory,
     IDatabaseInserter<MultiQuestionPollPollQuestion> multiQuestionPollPollQuestionInserter
     ) : NodeCreator<MultiQuestionPoll.MultiQuestionPollToCreate>(inserters, nodeDetailsCreator)
 {

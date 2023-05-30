@@ -3,12 +3,12 @@
 internal sealed class FamilySizeMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        IEntityCreatorFactory<EventuallyIdentifiableFamilySize> familySizeCreatorFactory
+        IEntityCreatorFactory<FamilySize.FamilySizeToCreate> familySizeCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "family sizes";
 
-    private static async IAsyncEnumerable<NewFamilySize> GetFamilySizes(
+    private static async IAsyncEnumerable<FamilySize.FamilySizeToCreate> GetFamilySizes(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         await Task.CompletedTask;
@@ -22,183 +22,238 @@ internal sealed class FamilySizeMigrator(
             UrlId = Constants.VOCABULARY_ID_FAMILY_SIZE
         });
 
-        yield return new NewFamilySize {
-            Id = null,
-            PublisherId = 1,
-            CreatedDateTime = DateTime.Now,
-            ChangedDateTime = DateTime.Now,
-            Title = "1 to 4",
-            OwnerId = Constants.OWNER_CASES,
-            AuthoringStatusId = 1,
-            TenantNodes = new List<NewTenantNodeForNewNode>
-            {
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = Constants.PPL,
-                    PublicationStatusId = 1,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.ONE_TO_FOUR
-                },
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = Constants.CPCT,
-                    PublicationStatusId = 2,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.ONE_TO_FOUR
-                }
+        yield return new FamilySize.FamilySizeToCreate {
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = null
             },
-            NodeTypeId = 28,
-            Description = "",
-            FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameable>
-            {
-                new NewTermForNewNameable
+            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                PublisherId = 1,
+                CreatedDateTime = DateTime.Now,
+                ChangedDateTime = DateTime.Now,
+                Title = "1 to 4",
+                OwnerId = Constants.OWNER_CASES,
+                AuthoringStatusId = 1,
+                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
                 {
-                    VocabularyId = vocabularyIdFamilySize,
-                    Name = "1 to 4",
-                    ParentTermIds = new List<int>(),
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = Constants.PPL,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = Constants.ONE_TO_FOUR
+                    },
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = Constants.ONE_TO_FOUR
+                    }
                 },
+                NodeTypeId = 28,
+                TermIds = new List<int>(),
             },
-            TermIds = new List<int>(),
-        };
-        yield return new NewFamilySize {
-            Id = null,
-            PublisherId = 1,
-            CreatedDateTime = DateTime.Now,
-            ChangedDateTime = DateTime.Now,
-            Title = "4 to 8",
-            OwnerId = Constants.OWNER_CASES,
-            AuthoringStatusId = 1,
-            TenantNodes = new List<NewTenantNodeForNewNode>
-            {
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = Constants.PPL,
-                    PublicationStatusId = 1,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.FOUR_TO_EIGHT
-                },
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = Constants.CPCT,
-                    PublicationStatusId = 2,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.FOUR_TO_EIGHT
-                }
-            },
-            NodeTypeId = 28,
-            Description = "",
-            FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameable>
-            {
-                new NewTermForNewNameable
-                {
-                    VocabularyId = vocabularyIdFamilySize,
-                    Name = "4 to 8",
-                    ParentTermIds = new List<int>(),
-                },
-            },
-            TermIds = new List<int>(),
-        };
-        yield return new NewFamilySize {
-            Id = null,
-            PublisherId = 1,
-            CreatedDateTime = DateTime.Now,
-            ChangedDateTime = DateTime.Now,
-            Title = "8 to 12",
-            OwnerId = Constants.OWNER_CASES,
-            AuthoringStatusId = 1,
-            TenantNodes = new List<NewTenantNodeForNewNode>
-            {
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = Constants.PPL,
-                    PublicationStatusId = 1,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.EIGHT_TO_TWELVE
-                },
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = Constants.CPCT,
-                    PublicationStatusId = 2,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.EIGHT_TO_TWELVE
-                }
-            },
-            NodeTypeId = 28,
-            Description = "",
-            FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameable>
+            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                Description = "",
+                FileIdTileImage = null,
+                Terms = new List<NewTermForNewNameable>
                 {
                     new NewTermForNewNameable
                     {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null,
+                        },
+                        VocabularyId = vocabularyIdFamilySize,
+                        Name = "1 to 4",
+                        ParentTermIds = new List<int>(),
+                    },
+                },
+            }
+        };
+        yield return new FamilySize.FamilySizeToCreate {
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = null
+            },
+            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                PublisherId = 1,
+                CreatedDateTime = DateTime.Now,
+                ChangedDateTime = DateTime.Now,
+                Title = "4 to 8",
+                OwnerId = Constants.OWNER_CASES,
+                AuthoringStatusId = 1,
+                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+            {
+                new TenantNode.TenantNodeToCreateForNewNode
+                {
+                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                        Id = null
+                    },
+                    TenantId = Constants.PPL,
+                    PublicationStatusId = 1,
+                    UrlPath = null,
+                    SubgroupId = null,
+                    UrlId = Constants.FOUR_TO_EIGHT
+                },
+                new TenantNode.TenantNodeToCreateForNewNode
+                {
+                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                        Id = null
+                    },
+                    TenantId = Constants.CPCT,
+                    PublicationStatusId = 2,
+                    UrlPath = null,
+                    SubgroupId = null,
+                    UrlId = Constants.FOUR_TO_EIGHT
+                }
+            },
+                NodeTypeId = 28,
+                TermIds = new List<int>(),
+            },
+            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                Description = "",
+                FileIdTileImage = null,
+                Terms = new List<NewTermForNewNameable>
+                {
+                    new NewTermForNewNameable
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null,
+                        },
+                        VocabularyId = vocabularyIdFamilySize,
+                        Name = "4 to 8",
+                        ParentTermIds = new List<int>(),
+                    },
+                },
+            }
+        };
+        yield return new FamilySize.FamilySizeToCreate {
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = null
+            },
+            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                PublisherId = 1,
+                CreatedDateTime = DateTime.Now,
+                ChangedDateTime = DateTime.Now,
+                Title = "8 to 12",
+                OwnerId = Constants.OWNER_CASES,
+                AuthoringStatusId = 1,
+                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                {
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = Constants.PPL,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = Constants.EIGHT_TO_TWELVE
+                    },
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = Constants.EIGHT_TO_TWELVE
+                    }
+                },
+                NodeTypeId = 28,
+                TermIds = new List<int>(),
+            },
+            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                Description = "",
+                FileIdTileImage = null,
+                Terms = new List<NewTermForNewNameable>
+                {
+                    new NewTermForNewNameable
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null,
+                        },
                         VocabularyId = vocabularyIdFamilySize,
                         Name = "8 to 12",
                         ParentTermIds = new List<int>(),
                     },
                 },
-            TermIds = new List<int>(),
+            },
         };
-        yield return new NewFamilySize {
-            Id = null,
-            PublisherId = 1,
-            CreatedDateTime = DateTime.Now,
-            ChangedDateTime = DateTime.Now,
-            Title = "more than 12",
-            OwnerId = Constants.OWNER_CASES,
-            AuthoringStatusId = 1,
-            TenantNodes = new List<NewTenantNodeForNewNode>
-            {
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = Constants.PPL,
-                    PublicationStatusId = 1,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.MORE_THAN_TWELVE
-                },
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = Constants.CPCT,
-                    PublicationStatusId = 2,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.MORE_THAN_TWELVE
-                }
+        yield return new FamilySize.FamilySizeToCreate {
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = null
             },
-            NodeTypeId = 28,
-            Description = "",
-            FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameable>
-            {
-                new NewTermForNewNameable
+            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                PublisherId = 1,
+                CreatedDateTime = DateTime.Now,
+                ChangedDateTime = DateTime.Now,
+                Title = "more than 12",
+                OwnerId = Constants.OWNER_CASES,
+                AuthoringStatusId = 1,
+                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
                 {
-                    VocabularyId = vocabularyIdFamilySize,
-                    Name = "more than 12",
-                    ParentTermIds = new List<int>(),
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = Constants.PPL,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = Constants.MORE_THAN_TWELVE
+                    },
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = Constants.MORE_THAN_TWELVE
+                    }
                 },
-                new NewTermForNewNameable
+                NodeTypeId = 28,
+                TermIds = new List<int>(),
+            },
+            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                Description = "",
+                FileIdTileImage = null,
+                Terms = new List<NewTermForNewNameable>
                 {
-                    VocabularyId = vocabularyIdTopics,
-                    Name = "mega families",
-                    ParentTermIds = new List<int>(),
+                    new NewTermForNewNameable
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null,
+                        },
+                        VocabularyId = vocabularyIdFamilySize,
+                        Name = "more than 12",
+                        ParentTermIds = new List<int>(),
+                    },
+                    new NewTermForNewNameable
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null,
+                        },
+                        VocabularyId = vocabularyIdTopics,
+                        Name = "mega families",
+                        ParentTermIds = new List<int>(),
+                    },
                 },
             },
-            TermIds = new List<int>(),
         };
     }
     protected override async Task MigrateImpl()

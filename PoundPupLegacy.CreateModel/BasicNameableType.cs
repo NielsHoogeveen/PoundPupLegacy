@@ -5,7 +5,9 @@ public sealed record BasicNameableType : NameableTypeBase, NameableTypeToAdd
     public static BasicNameableType Create(int id, string name, string description, bool authorSpecific, string tagLabelName)
     {
         return new BasicNameableType {
-            Id = id,
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = id,
+            },
             Name = name,
             Description = description,
             AuthorSpecific = authorSpecific,

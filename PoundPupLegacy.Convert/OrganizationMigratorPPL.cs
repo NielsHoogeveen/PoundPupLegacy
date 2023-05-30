@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Net.Http.Headers;
 
 namespace PoundPupLegacy.Convert;
 
@@ -7,12 +8,12 @@ internal sealed class OrganizationMigratorPPL(
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermNameReaderByNameableIdRequest, string> termReaderByNameableIdFactory,
-    IEntityCreatorFactory<EventuallyIdentifiableOrganization> organizationCreatorFactory
+    IEntityCreatorFactory<OrganizationToCreate> organizationCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "organizations (ppl)";
 
-    private async IAsyncEnumerable<EventuallyIdentifiableOrganization> GetOrganizations(
+    private async IAsyncEnumerable<OrganizationToCreate> GetOrganizations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader
     )
@@ -22,258 +23,325 @@ internal sealed class OrganizationMigratorPPL(
             UrlId = Constants.VOCABULARY_ID_TOPICS
         });
 
-        yield return new NewBasicOrganization {
-            Id = null,
-            PublisherId = 1,
-            CreatedDateTime = DateTime.Now,
-            ChangedDateTime = DateTime.Now,
-            Title = "Colorado Adoption Center",
-            OwnerId = Constants.OWNER_PARTIES,
-            AuthoringStatusId = 1,
-            TenantNodes = new List<NewTenantNodeForNewNode>
-            {
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = Constants.PPL,
-                    PublicationStatusId = 1,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.COLORADO_ADOPTION_CENTER
-                },
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = Constants.CPCT,
-                    PublicationStatusId = 2,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.COLORADO_ADOPTION_CENTER
-                }
+        yield return new BasicOrganization.BasicOrganizationToCreate {
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = null
             },
-            NodeTypeId = 23,
-            WebsiteUrl = null,
-            EmailAddress = null,
-            Established = null,
-            Terminated = null,
-            Description = "",
-            FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameable> {
-                new NewTermForNewNameable {
-                    VocabularyId = vocabularyId,
-                    Name = "Colorado Adoption Center",
-                    ParentTermIds = new List<int>{
-                        await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
-                            Name = "adoption agencies",
-                            VocabularyId = vocabularyId
-                        })
+            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                PublisherId = 1,
+                CreatedDateTime = DateTime.Now,
+                ChangedDateTime = DateTime.Now,
+                Title = "Colorado Adoption Center",
+                OwnerId = Constants.OWNER_PARTIES,
+                AuthoringStatusId = 1,
+                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                {
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = Constants.PPL,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = Constants.COLORADO_ADOPTION_CENTER
                     },
-                }
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = Constants.COLORADO_ADOPTION_CENTER
+                    }
+                },
+                NodeTypeId = 23,
+                TermIds = new List<int>(),
             },
-            OrganizationTypeIds = new List<int>
-            {
-                await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest
+            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                Description = "",
+                FileIdTileImage = null,
+                Terms = new List<NewTermForNewNameable> {
+                    new NewTermForNewNameable {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null,
+                        },
+                        VocabularyId = vocabularyId,
+                        Name = "Colorado Adoption Center",
+                        ParentTermIds = new List<int>{
+                            await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                                Name = "adoption agencies",
+                                VocabularyId = vocabularyId
+                            })
+                        },
+                    }
+                },
+            },
+            LocatableDetailsForCreate = new LocatableDetails.LocatableDetailsForCreate {
+                Locations = new List<EventuallyIdentifiableLocation>(),
+            },
+            OrganizationDetailsForCreate = new OrganizationDetails.OrganizationDetailsForCreate {
+                WebsiteUrl = null,
+                EmailAddress = null,
+                Established = null,
+                Terminated = null,
+                OrganizationTypeIds = new List<int>
                 {
-                    TenantId = Constants.PPL,
-                    UrlId = 12625
-                })
-            },
-            TermIds = new List<int>(),
-            Locations = new List<EventuallyIdentifiableLocation>(),
-            PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
-            PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewOrganization>(),
-            InterOrganizationalRelationsToAddFrom = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationFrom>(),
-            InterOrganizationalRelationsToAddTo = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationTo>(),
+                    await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest
+                    {
+                        TenantId = Constants.PPL,
+                        UrlId = 12625
+                    })
+                },
+                InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationFrom>(),
+                InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationTo>(),
+                PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForNewParty>(),
+                PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.PersonOrganizationRelationToCreateForNewOrganization>(),
+            }
         };
-        yield return new NewUnitedStatesPoliticalParty {
-            Id = null,
-            PublisherId = 1,
-            CreatedDateTime = DateTime.Now,
-            ChangedDateTime = DateTime.Now,
-            Title = "Popular Democratic Party",
-            OwnerId = Constants.OWNER_PARTIES,
-            AuthoringStatusId = 1,
-            TenantNodes = new List<NewTenantNodeForNewNode>
-            {
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = Constants.PPL,
-                    PublicationStatusId = 1,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.POPULAR_DEMOCRAT_PARTY
-                },
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = Constants.CPCT,
-                    PublicationStatusId = 2,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.POPULAR_DEMOCRAT_PARTY
-                }
+        yield return new UnitedStatesPoliticalParty.UnitedStatesPoliticalPartyToCreate {
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = null
             },
-            NodeTypeId = 63,
-            WebsiteUrl = null,
-            EmailAddress = null,
-            Established = null,
-            Terminated = null,
-            Description = "",
-            FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameable> {
-                new NewTermForNewNameable {
-                    VocabularyId = vocabularyId,
-                    Name = "Popular Democratic Party",
-                    ParentTermIds = new List<int>{
-                        await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
-                            Name = "political party" ,
-                            VocabularyId = vocabularyId
-                        })
+            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                PublisherId = 1,
+                CreatedDateTime = DateTime.Now,
+                ChangedDateTime = DateTime.Now,
+                Title = "Popular Democratic Party",
+                OwnerId = Constants.OWNER_PARTIES,
+                AuthoringStatusId = 1,
+                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                {
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = Constants.PPL,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = Constants.POPULAR_DEMOCRAT_PARTY
                     },
-                }
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = Constants.POPULAR_DEMOCRAT_PARTY
+                    }
+                },
+                NodeTypeId = 63,
+                TermIds = new List<int>(),
             },
-            OrganizationTypeIds = new List<int>
-            {
-                await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest
+            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                Description = "",
+                FileIdTileImage = null,
+                Terms = new List<NewTermForNewNameable> {
+                    new NewTermForNewNameable {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null,
+                        },
+                        VocabularyId = vocabularyId,
+                        Name = "Popular Democratic Party",
+                        ParentTermIds = new List<int>{
+                            await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                                Name = "political party" ,
+                                VocabularyId = vocabularyId
+                            })
+                        },
+                    }
+                },
+            },
+            LocatableDetailsForCreate = new LocatableDetails.LocatableDetailsForCreate {
+                Locations = new List<EventuallyIdentifiableLocation>(),
+            },
+            OrganizationDetailsForCreate = new OrganizationDetails.OrganizationDetailsForCreate {
+                WebsiteUrl = null,
+                EmailAddress = null,
+                Established = null,
+                Terminated = null,
+                OrganizationTypeIds = new List<int>
                 {
-                    TenantId = Constants.PPL,
-                    UrlId = Constants.POLITICAL_PARTY
-                })
+                    await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest
+                    {
+                        TenantId = Constants.PPL,
+                        UrlId = Constants.POLITICAL_PARTY
+                    })
+                },
+                InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationFrom>(),
+                InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationTo>(),
+                PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForNewParty>(),
+                PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.PersonOrganizationRelationToCreateForNewOrganization>(),
             },
-            TermIds = new List<int>(),
-            Locations = new List<EventuallyIdentifiableLocation>(),
-            PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
-            PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewOrganization>(),
-            InterOrganizationalRelationsToAddFrom = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationFrom>(),
-            InterOrganizationalRelationsToAddTo = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationTo>(),
-
         };
-        yield return new NewUnitedStatesPoliticalParty {
-            Id = null,
-            PublisherId = 1,
-            CreatedDateTime = DateTime.Now,
-            ChangedDateTime = DateTime.Now,
-            Title = "Libertarian Party",
-            OwnerId = Constants.OWNER_PARTIES,
-            AuthoringStatusId = 1,
-            TenantNodes = new List<NewTenantNodeForNewNode>
-            {
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = Constants.PPL,
-                    PublicationStatusId = 1,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.LIBERTARIAN_PARTY
-                },
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = Constants.CPCT,
-                    PublicationStatusId = 2,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.LIBERTARIAN_PARTY
-                }
+        yield return new UnitedStatesPoliticalParty.UnitedStatesPoliticalPartyToCreate {
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = null
             },
-            NodeTypeId = 63,
-            WebsiteUrl = null,
-            EmailAddress = null,
-            Established = null,
-            Terminated = null,
-            Description = "",
-            FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameable> {
-                new NewTermForNewNameable {
-                    VocabularyId = vocabularyId,
-                    Name = "Libertarian Party",
-                    ParentTermIds = new List<int>{
-                        await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
-                            Name = "political party" ,
-                            VocabularyId = vocabularyId
-                        }) 
+            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                PublisherId = 1,
+                CreatedDateTime = DateTime.Now,
+                ChangedDateTime = DateTime.Now,
+                Title = "Libertarian Party",
+                OwnerId = Constants.OWNER_PARTIES,
+                AuthoringStatusId = 1,
+                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                {
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                        TenantId = Constants.PPL,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = Constants.LIBERTARIAN_PARTY
                     },
-                }
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = Constants.LIBERTARIAN_PARTY
+                    }
+                },
+                NodeTypeId = 63,
+                TermIds = new List<int>(),
             },
-            OrganizationTypeIds = new List<int>
-            {
-                await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest
+            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                Description = "",
+                FileIdTileImage = null,
+                Terms = new List<NewTermForNewNameable> {
+                    new NewTermForNewNameable {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null,
+                        },
+                        VocabularyId = vocabularyId,
+                        Name = "Libertarian Party",
+                        ParentTermIds = new List<int>{
+                            await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                                Name = "political party" ,
+                                VocabularyId = vocabularyId
+                            })
+                        },
+                    }
+                },
+            },
+            LocatableDetailsForCreate = new LocatableDetails.LocatableDetailsForCreate {
+                Locations = new List<EventuallyIdentifiableLocation>(),
+            },
+            OrganizationDetailsForCreate = new OrganizationDetails.OrganizationDetailsForCreate {
+                WebsiteUrl = null,
+                EmailAddress = null,
+                Established = null,
+                Terminated = null,
+                OrganizationTypeIds = new List<int>
                 {
-                    TenantId = Constants.PPL,
-                    UrlId = Constants.POLITICAL_PARTY
-                })
+                    await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest
+                    {
+                        TenantId = Constants.PPL,
+                        UrlId = Constants.POLITICAL_PARTY
+                    })
+                },
+                InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationFrom>(),
+                InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationTo>(),
+                PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForNewParty>(),
+                PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.PersonOrganizationRelationToCreateForNewOrganization>(),
             },
-            TermIds = new List<int>(),
-            Locations = new List<EventuallyIdentifiableLocation>(),
-            PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
-            PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewOrganization>(),
-            InterOrganizationalRelationsToAddFrom = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationFrom>(),
-            InterOrganizationalRelationsToAddTo = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationTo>(),
         };
-        yield return new NewBasicOrganization {
-            Id = null,
-            PublisherId = 1,
-            CreatedDateTime = DateTime.Now,
-            ChangedDateTime = DateTime.Now,
-            Title = "Government of Italy",
-            OwnerId = Constants.OWNER_PARTIES,
-            AuthoringStatusId = 1,
-            TenantNodes = new List<NewTenantNodeForNewNode>
-            {
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = Constants.PPL,
-                    PublicationStatusId = 1,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = 17036
-                },
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = Constants.CPCT,
-                    PublicationStatusId = 2,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = 17036
-                }
+        yield return new BasicOrganization.BasicOrganizationToCreate {
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = null
             },
-            NodeTypeId = 23,
-            WebsiteUrl = null,
-            EmailAddress = null,
-            Established = null,
-            Terminated = null,
-            Description = "",
-            FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameable> {
-                new NewTermForNewNameable {
-                    VocabularyId = vocabularyId,
-                    Name = "Government of Italy",
-                    ParentTermIds = new List<int>{
-                        await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
-                            Name = "governmental organization" ,
-                            VocabularyId = vocabularyId
-                        })
+            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                PublisherId = 1,
+                CreatedDateTime = DateTime.Now,
+                ChangedDateTime = DateTime.Now,
+                Title = "Government of Italy",
+                OwnerId = Constants.OWNER_PARTIES,
+                AuthoringStatusId = 1,
+                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                {
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = Constants.PPL,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = 17036
                     },
-                }
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = 17036
+                    }
+                },
+                NodeTypeId = 23,
+                TermIds = new List<int>(),
             },
-            OrganizationTypeIds = new List<int>
-            {
-                await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest
+            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                Description = "",
+                FileIdTileImage = null,
+                Terms = new List<NewTermForNewNameable> {
+                    new NewTermForNewNameable {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null,
+                        },
+                        VocabularyId = vocabularyId,
+                        Name = "Government of Italy",
+                        ParentTermIds = new List<int>{
+                            await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                                Name = "governmental organization" ,
+                                VocabularyId = vocabularyId
+                            })
+                        },
+                    }
+                },
+            },
+            LocatableDetailsForCreate = new LocatableDetails.LocatableDetailsForCreate {
+                Locations = new List<EventuallyIdentifiableLocation>(),
+            },
+            OrganizationDetailsForCreate = new OrganizationDetails.OrganizationDetailsForCreate {
+                WebsiteUrl = null,
+                EmailAddress = null,
+                Established = null,
+                Terminated = null,
+                OrganizationTypeIds = new List<int>
                 {
-                    TenantId = Constants.PPL,
-                    UrlId = 12630
-                })
+                    await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest
+                    {
+                        TenantId = Constants.PPL,
+                        UrlId = 12630
+                    })
+                },
+                InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationFrom>(),
+                InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationTo>(),
+                PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForNewParty>(),
+                PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.PersonOrganizationRelationToCreateForNewOrganization>(),
             },
-            TermIds = new List<int>(),
-            Locations = new List<EventuallyIdentifiableLocation>(),
-            PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
-            PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewOrganization>(),
-            InterOrganizationalRelationsToAddFrom = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationFrom>(),
-            InterOrganizationalRelationsToAddTo = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationTo>(),
         };
     }
 
@@ -286,7 +354,7 @@ internal sealed class OrganizationMigratorPPL(
         await organizationCreator.CreateAsync(GetOrganizations(nodeIdReader,termIdReader));
         await organizationCreator.CreateAsync(ReadOrganizations(nodeIdReader, termIdReader, termReaderByNameableId));
     }
-    private async IAsyncEnumerable<EventuallyIdentifiableOrganization> ReadOrganizations(
+    private async IAsyncEnumerable<OrganizationToCreate> ReadOrganizations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
         IMandatorySingleItemDatabaseReader<TermNameReaderByNameableIdRequest, string> termReaderByNameableId
@@ -489,113 +557,141 @@ internal sealed class OrganizationMigratorPPL(
                 }));
             }
             vocabularyNames.Add(new NewTermForNewNameable {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null,
+                },
                 VocabularyId = vocabularyId,
                 Name = topicName,
                 ParentTermIds = topicParentIds,
             });
 
             if (id == Constants.DEMOCRATIC_PARTY || id == Constants.REPUBLICAN_PARTY) {
-                yield return new NewUnitedStatesPoliticalParty {
-                    Id = null,
-                    PublisherId = reader.GetInt32("access_role_id"),
-                    CreatedDateTime = reader.GetDateTime("created_date_time"),
-                    ChangedDateTime = reader.GetDateTime("changed_date_time"),
-                    Title = reader.GetString("title"),
-                    OwnerId = Constants.OWNER_PARTIES,
-                    AuthoringStatusId = 1,
-                    TenantNodes = new List<NewTenantNodeForNewNode> {
-                        new NewTenantNodeForNewNode {
-                            Id = null,
-                            TenantId = Constants.PPL,
-                            PublicationStatusId = reader.GetInt32("node_status_id"),
-                            UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                            SubgroupId = null,
-                            UrlId = id
+                yield return new UnitedStatesPoliticalParty.UnitedStatesPoliticalPartyToCreate {
+                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                        Id = null
+                    },
+                    NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                        PublisherId = reader.GetInt32("access_role_id"),
+                        CreatedDateTime = reader.GetDateTime("created_date_time"),
+                        ChangedDateTime = reader.GetDateTime("changed_date_time"),
+                        Title = reader.GetString("title"),
+                        OwnerId = Constants.OWNER_PARTIES,
+                        AuthoringStatusId = 1,
+                        TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode> {
+                            new TenantNode.TenantNodeToCreateForNewNode {
+                                IdentificationForCreate = new Identification.IdentificationForCreate {
+                                    Id = null
+                                },
+                                TenantId = Constants.PPL,
+                                PublicationStatusId = reader.GetInt32("node_status_id"),
+                                UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
+                                SubgroupId = null,
+                                UrlId = id
+                            },
+                            new TenantNode.TenantNodeToCreateForNewNode {
+                                IdentificationForCreate = new Identification.IdentificationForCreate {
+                                    Id = null
+                                },
+                                TenantId = Constants.CPCT,
+                                PublicationStatusId = 2,
+                                UrlPath = null,
+                                SubgroupId = null,
+                                UrlId = id < 33163 ? id : null
+                            }
                         },
-                        new NewTenantNodeForNewNode {
-                            Id = null,
-                            TenantId = Constants.CPCT,
-                            PublicationStatusId = 2,
-                            UrlPath = null,
-                            SubgroupId = null,
-                            UrlId = id < 33163 ? id : null
-                        }
+                        NodeTypeId = 63,
+                        TermIds = new List<int>(),
                     },
-                    NodeTypeId = 63,
-                    WebsiteUrl = reader.IsDBNull("website_url") ? null : reader.GetString("website_url"),
-                    EmailAddress = reader.IsDBNull("email_address") ? null : reader.GetString("email_address"),
-                    Description = reader.IsDBNull("description") ? "" : reader.GetString("description"),
-                    Established = reader.IsDBNull("established") ? null : (new DateTimeRange(reader.GetDateTime("established"), reader.GetDateTime("established"))).ToFuzzyDate(),
-                    Terminated = reader.IsDBNull("terminated") ? null : (new DateTimeRange(reader.GetDateTime("terminated"), reader.GetDateTime("terminated"))).ToFuzzyDate(),
-                    FileIdTileImage = null,
-                    Terms = vocabularyNames,
-                    OrganizationTypeIds = new List<int>
-                    {
-                        await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest
+                    NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                        FileIdTileImage = null,
+                        Description = reader.IsDBNull("description") ? "" : reader.GetString("description"),
+                        Terms = vocabularyNames,
+                    },
+                    LocatableDetailsForCreate = new LocatableDetails.LocatableDetailsForCreate {
+                        Locations = new List<EventuallyIdentifiableLocation>(),
+                    },
+                    OrganizationDetailsForCreate = new OrganizationDetails.OrganizationDetailsForCreate {
+                        WebsiteUrl = reader.IsDBNull("website_url") ? null : reader.GetString("website_url"),
+                        EmailAddress = reader.IsDBNull("email_address") ? null : reader.GetString("email_address"),
+                        Established = reader.IsDBNull("established") ? null : (new DateTimeRange(reader.GetDateTime("established"), reader.GetDateTime("established"))).ToFuzzyDate(),
+                        Terminated = reader.IsDBNull("terminated") ? null : (new DateTimeRange(reader.GetDateTime("terminated"), reader.GetDateTime("terminated"))).ToFuzzyDate(),
+                        OrganizationTypeIds = new List<int>
                         {
-                            TenantId = Constants.PPL,
-                            UrlId = Constants.POLITICAL_PARTY
-                        })
-                    },
-                    TermIds = new List<int>(),
-                    Locations = new List<EventuallyIdentifiableLocation>(),
-                    PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
-                    PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewOrganization>(),
-                    InterOrganizationalRelationsToAddFrom = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationFrom>(),
-                    InterOrganizationalRelationsToAddTo = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationTo>(),
+                            await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest
+                            {
+                                TenantId = Constants.PPL,
+                                UrlId = Constants.POLITICAL_PARTY
+                            })
+                        },
+                        InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationFrom>(),
+                        InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationTo>(),
+                        PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForNewParty>(),
+                        PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.PersonOrganizationRelationToCreateForNewOrganization>(),
+                    }
                 };
             }
             else {
-                yield return new NewBasicOrganization {
-                    Id = null,
-                    PublisherId = reader.GetInt32("access_role_id"),
-                    CreatedDateTime = reader.GetDateTime("created_date_time"),
-                    ChangedDateTime = reader.GetDateTime("changed_date_time"),
-                    Title = name,
-                    OwnerId = Constants.OWNER_PARTIES,
-                    AuthoringStatusId = 1,
-                    TenantNodes = new List<NewTenantNodeForNewNode>
-                    {
-                        new NewTenantNodeForNewNode
-                        {
-                            Id = null,
-                            TenantId = Constants.PPL,
-                            PublicationStatusId = reader.GetInt32("node_status_id"),
-                            UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                            SubgroupId = null,
-                            UrlId = id
-                        },
-                        new NewTenantNodeForNewNode
-                        {
-                            Id = null,
-                            TenantId = Constants.CPCT,
-                            PublicationStatusId = 2,
-                            UrlPath = null,
-                            SubgroupId = null,
-                            UrlId = id < 33163 ? id : null
-                        }
+                yield return new BasicOrganization.BasicOrganizationToCreate {
+                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                        Id = null
                     },
-                    NodeTypeId = reader.GetInt16("node_type_id"),
-                    WebsiteUrl = reader.IsDBNull("website_url") ? null : reader.GetString("website_url"),
-                    EmailAddress = reader.IsDBNull("email_address") ? null : reader.GetString("email_address"),
-                    Description = reader.IsDBNull("description") ? "" : reader.GetString("description"),
-                    Established = reader.IsDBNull("established") ? null : (new DateTimeRange(reader.GetDateTime("established").Date, reader.GetDateTime("established").Date.AddDays(1).AddMilliseconds(-1))).ToFuzzyDate(),
-                    Terminated = reader.IsDBNull("terminated") ? null : (new DateTimeRange(reader.GetDateTime("terminated").Date, reader.GetDateTime("terminated").Date.AddDays(1).AddMilliseconds(-1))).ToFuzzyDate(),
-                    FileIdTileImage = null,
-                    Terms = vocabularyNames,
-                    OrganizationTypeIds = organizationOrganizationTypeIds,
-                    TermIds = new List<int>(),
-                    Locations = new List<EventuallyIdentifiableLocation>(),
-                    PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
-                    PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewOrganization>(),
-                    InterOrganizationalRelationsToAddFrom = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationFrom>(),
-                    InterOrganizationalRelationsToAddTo = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationTo>(),
+                    NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                        PublisherId = reader.GetInt32("access_role_id"),
+                        CreatedDateTime = reader.GetDateTime("created_date_time"),
+                        ChangedDateTime = reader.GetDateTime("changed_date_time"),
+                        Title = name,
+                        OwnerId = Constants.OWNER_PARTIES,
+                        AuthoringStatusId = 1,
+                        TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                        {
+                            new TenantNode.TenantNodeToCreateForNewNode
+                            {
+                                IdentificationForCreate = new Identification.IdentificationForCreate {
+                                    Id = null
+                                },
+                                TenantId = Constants.PPL,
+                                PublicationStatusId = reader.GetInt32("node_status_id"),
+                                UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
+                                SubgroupId = null,
+                                UrlId = id
+                            },
+                            new TenantNode.TenantNodeToCreateForNewNode
+                            {
+                                IdentificationForCreate = new Identification.IdentificationForCreate {
+                                    Id = null
+                                },
+                                TenantId = Constants.CPCT,
+                                PublicationStatusId = 2,
+                                UrlPath = null,
+                                SubgroupId = null,
+                                UrlId = id < 33163 ? id : null
+                            }
+                        },
+                        NodeTypeId = reader.GetInt16("node_type_id"),
+                        TermIds = new List<int>(),
+                    },
+                    NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                        FileIdTileImage = null,
+                        Terms = vocabularyNames,
+                        Description = reader.IsDBNull("description") ? "" : reader.GetString("description"),
+                    },
+                    LocatableDetailsForCreate = new LocatableDetails.LocatableDetailsForCreate {
+                        Locations = new List<EventuallyIdentifiableLocation>(),
+                    },
+                    OrganizationDetailsForCreate = new OrganizationDetails.OrganizationDetailsForCreate {
+                        OrganizationTypeIds = organizationOrganizationTypeIds,
+                        WebsiteUrl = reader.IsDBNull("website_url") ? null : reader.GetString("website_url"),
+                        EmailAddress = reader.IsDBNull("email_address") ? null : reader.GetString("email_address"),
+                        Established = reader.IsDBNull("established") ? null : (new DateTimeRange(reader.GetDateTime("established").Date, reader.GetDateTime("established").Date.AddDays(1).AddMilliseconds(-1))).ToFuzzyDate(),
+                        Terminated = reader.IsDBNull("terminated") ? null : (new DateTimeRange(reader.GetDateTime("terminated").Date, reader.GetDateTime("terminated").Date.AddDays(1).AddMilliseconds(-1))).ToFuzzyDate(),
+                        InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationFrom>(),
+                        InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationTo>(),
+                        PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForNewParty>(),
+                        PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.PersonOrganizationRelationToCreateForNewOrganization>(),
+                    },
                 };
             }
-
         }
         await reader.CloseAsync();
     }
-
-
 }

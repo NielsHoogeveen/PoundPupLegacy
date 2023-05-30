@@ -7,7 +7,7 @@ internal sealed class BoundCountryMigrator(
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<NameableIdReaderByTermNameRequest, int> termReaderByNameFactory,
-        IEntityCreatorFactory<EventuallyIdentifiableBoundCountry> boundCountryCreatorFactory
+        IEntityCreatorFactory<BoundCountry.BoundCountryToCreate> boundCountryCreatorFactory
     ) : CountryMigrator(databaseConnections)
 {
     protected override string Name => "bound countries";
@@ -25,7 +25,7 @@ internal sealed class BoundCountryMigrator(
         ));
     }
 
-    private async IAsyncEnumerable<NewBoundCountry> ReadBoundCountries(
+    private async IAsyncEnumerable<BoundCountry.BoundCountryToCreate> ReadBoundCountries(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
         IMandatorySingleItemDatabaseReader<NameableIdReaderByTermNameRequest, int> termReaderByName
@@ -81,6 +81,9 @@ internal sealed class BoundCountryMigrator(
             {
                 new NewTermForNewNameable
                 {
+                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                        Id = null,
+                    },
                     VocabularyId = vocabularyIdTopics,
                     Name = name,
                     ParentTermIds = new List<int>{
@@ -92,64 +95,84 @@ internal sealed class BoundCountryMigrator(
                 },
             };
 
-            yield return new NewBoundCountry {
-                Id = null,
-                PublisherId = reader.GetInt32("access_role_id"),
-                CreatedDateTime = reader.GetDateTime("created_date_time"),
-                ChangedDateTime = reader.GetDateTime("changed_date_time"),
-                Title = name,
-                OwnerId = Constants.OWNER_GEOGRAPHY,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = reader.GetInt32("node_status_id"),
-                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                        SubgroupId = null,
-                        UrlId = id
-                    },
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id < 33163 ? id : null
-                    }
+            yield return new BoundCountry.BoundCountryToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                NodeTypeId = 14,
-                Description = "",
-                Terms = vocabularyNames,
-                BindingCountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                    TenantId = Constants.PPL,
-                    UrlId = reader.GetInt32("binding_country_id")
-                }),
-                Name = name,
-                ISO3166_2_Code = GetISO3166Code2ForCountry(reader.GetInt32("id")),
-                CountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest() {
-                    TenantId = Constants.PPL,
-                    UrlId = reader.GetInt32("binding_country_id")
-                }),
-                FileIdFlag = null,
-                FileIdTileImage = null,
-                HagueStatusId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                    TenantId = Constants.PPL,
-                    UrlId = 41215
-                }),
-                ResidencyRequirements = null,
-                AgeRequirements = null,
-                HealthRequirements = null,
-                IncomeRequirements = null,
-                MarriageRequirements = null,
-                OtherRequirements = null,
-                SubdivisionTypeId = subdivisionType,
-                TermIds = new List<int>(),
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = reader.GetInt32("access_role_id"),
+                    CreatedDateTime = reader.GetDateTime("created_date_time"),
+                    ChangedDateTime = reader.GetDateTime("changed_date_time"),
+                    Title = name,
+                    OwnerId = Constants.OWNER_GEOGRAPHY,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    {
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.PPL,
+                            PublicationStatusId = reader.GetInt32("node_status_id"),
+                            UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
+                            SubgroupId = null,
+                            UrlId = id
+                        },
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.CPCT,
+                            PublicationStatusId = 2,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id < 33163 ? id : null
+                        }
+                    },
+                    NodeTypeId = 14,
+                    TermIds = new List<int>(),
+                },
+                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                    Description = "",
+                    Terms = vocabularyNames,
+                    FileIdTileImage = null,
+                },
+                PoliticalEntityDetails = new PoliticalEntityDetails {
+                    FileIdFlag = null,
+                },
+                CountryDetails = new CountryDetails {
+                    Name = name,
+                    HagueStatusId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+                        TenantId = Constants.PPL,
+                        UrlId = 41215
+                    }),
+                    ResidencyRequirements = null,
+                    AgeRequirements = null,
+                    HealthRequirements = null,
+                    IncomeRequirements = null,
+                    MarriageRequirements = null,
+                    OtherRequirements = null,
+                },
+                SubdivisionDetails = new SubdivisionDetails {
+                    Name = name,
+                    CountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest() {
+                        TenantId = Constants.PPL,
+                        UrlId = reader.GetInt32("binding_country_id")
+                    }),
+                    SubdivisionTypeId = subdivisionType,
+                },
+                ISOCodedSubdivisionDetails = new ISOCodedSubdivisionDetails {
+                    ISO3166_2_Code = GetISO3166Code2ForCountry(reader.GetInt32("id")),
+                },
+                BoundCountryDetails = new BoundCountryDetails {
+                    BindingCountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+                        TenantId = Constants.PPL,
+                        UrlId = reader.GetInt32("binding_country_id")
+                    }),
+                },
             };
-
         }
         await reader.CloseAsync();
     }

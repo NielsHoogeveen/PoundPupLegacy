@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Updaters;
 
-using Request = ImmediatelyIdentifiableInterOrganizationalRelation;
+using Request = InterOrganizationalRelation.InterOrganizationalRelationToUpdate;
 
 internal sealed class InterOrganizationalRelationUpdaterFactory : DatabaseUpdaterFactory<Request>
 {
@@ -38,17 +38,17 @@ internal sealed class InterOrganizationalRelationUpdaterFactory : DatabaseUpdate
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new List<ParameterValue> {
-            ParameterValue.Create(NodeId, request.Id),
-            ParameterValue.Create(Title, request.Title),
+            ParameterValue.Create(NodeId, request.IdentificationForUpdate.Id),
+            ParameterValue.Create(Title, request.NodeDetails.Title),
             ParameterValue.Create(OrganizationIdFrom, request.OrganizationIdFrom),
             ParameterValue.Create(OrganizationIdTo, request.OrganizationIdTo),
-            ParameterValue.Create(GeographicalEntityId, request.GeographicalEntityId),
-            ParameterValue.Create(InterOrganizationalRelationTypeId, request.InterOrganizationalRelationTypeId),
-            ParameterValue.Create(DateRange, request.DateRange),
-            ParameterValue.Create(DocumentIdProof, request.DocumentIdProof),
-            ParameterValue.Create(Description, request.Description),
-            ParameterValue.Create(MoneyInvolved, request.MoneyInvolved),
-            ParameterValue.Create(NumberOfChildrenInvolved, request.NumberOfChildrenInvolved),
+            ParameterValue.Create(GeographicalEntityId, request.InterOrganizationalRelationDetails.GeographicalEntityId),
+            ParameterValue.Create(InterOrganizationalRelationTypeId, request.InterOrganizationalRelationDetails.InterOrganizationalRelationTypeId),
+            ParameterValue.Create(DateRange, request.InterOrganizationalRelationDetails.DateRange),
+            ParameterValue.Create(DocumentIdProof, request.InterOrganizationalRelationDetails.DocumentIdProof),
+            ParameterValue.Create(Description, request.InterOrganizationalRelationDetails.Description),
+            ParameterValue.Create(MoneyInvolved, request.InterOrganizationalRelationDetails.MoneyInvolved),
+            ParameterValue.Create(NumberOfChildrenInvolved, request.InterOrganizationalRelationDetails.NumberOfChildrenInvolved),
         };
     }
 }

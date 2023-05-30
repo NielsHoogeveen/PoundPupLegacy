@@ -5,7 +5,9 @@ public sealed record BasicNodeType : NewNodeType, NodeTypeToAdd
     public static BasicNodeType Create(int id, string name, string description, bool authorSpecific)
     {
         return new BasicNodeType {
-            Id = id,
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = id,
+            },
             Name = name,
             Description = description,
             AuthorSpecific = authorSpecific

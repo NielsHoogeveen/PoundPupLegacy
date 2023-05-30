@@ -3,7 +3,7 @@
 internal sealed class HagueStatusMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    IEntityCreatorFactory<EventuallyIdentifiableHagueStatus> hagueStatusCreatorFactory
+    IEntityCreatorFactory<HagueStatus.HagueStatusToCreate> hagueStatusCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "Hague statuses";
@@ -15,7 +15,7 @@ internal sealed class HagueStatusMigrator(
         await hagueStatusCreator.CreateAsync(ReadHagueStatuses(nodeIdReader));
     }
 
-    private async IAsyncEnumerable<HagueStatusToCreate> ReadHagueStatuses(
+    private async IAsyncEnumerable<HagueStatus.HagueStatusToCreate> ReadHagueStatuses(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
@@ -52,34 +52,44 @@ internal sealed class HagueStatusMigrator(
                 {
                     new NewTermForNewNameable
                     {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null,
+                        },
                         VocabularyId = vocabularyId,
                         Name = name,
                         ParentTermIds = new List<int>(),
                     }
                 };
 
-            yield return new HagueStatusToCreate {
-                Id = null,
-                PublisherId = reader.GetInt32("access_role_id"),
-                CreatedDateTime = reader.GetDateTime("created_date_time"),
-                ChangedDateTime = reader.GetDateTime("changed_date_time"),
-                Title = name,
-                OwnerId = Constants.OWNER_PARTIES,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
+            yield return new HagueStatus.HagueStatusToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
+                },
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = reader.GetInt32("access_role_id"),
+                    CreatedDateTime = reader.GetDateTime("created_date_time"),
+                    ChangedDateTime = reader.GetDateTime("changed_date_time"),
+                    Title = name,
+                    OwnerId = Constants.OWNER_PARTIES,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
                 {
-                    new NewTenantNodeForNewNode
+                    new TenantNode.TenantNodeToCreateForNewNode
                     {
-                        Id = null,
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
                         TenantId = Constants.PPL,
                         PublicationStatusId = reader.GetInt32("node_status_id"),
                         UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
                         SubgroupId = null,
                         UrlId = id
                     },
-                    new NewTenantNodeForNewNode
+                    new TenantNode.TenantNodeToCreateForNewNode
                     {
-                        Id = null,
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
@@ -87,13 +97,15 @@ internal sealed class HagueStatusMigrator(
                         UrlId = id < 33163 ? id : null
                     }
                 },
-                NodeTypeId = 8,
-                Description = "",
-                FileIdTileImage = null,
-                Terms = vocabularyNames,
-                TermIds = new List<int>(),
+                    NodeTypeId = 8,
+                    TermIds = new List<int>(),
+                },
+                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                    Description = "",
+                    FileIdTileImage = null,
+                    Terms = vocabularyNames,
+                },
             };
-
         }
         await reader.CloseAsync();
     }

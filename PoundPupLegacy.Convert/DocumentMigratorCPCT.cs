@@ -7,8 +7,8 @@ internal sealed class DocumentMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameableIdRequest, int> termReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForExistingNode> tenantNodeReaderByUrlIdFactory,
-    IEntityCreatorFactory<EventuallyIdentifiableDocument> documentCreatorFactory
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.TenantNodeToCreateForExistingNode> tenantNodeReaderByUrlIdFactory,
+    IEntityCreatorFactory<Document.DocumentToCreate> documentCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
     nodeIdReaderFactory, 
@@ -29,17 +29,17 @@ internal sealed class DocumentMigratorCPCT(
     private async IAsyncEnumerable<(int, int)> GetDocumentablesWithStatus(
         IEnumerable<int> documentableIds,
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, NewTenantNodeForExistingNode> tenantNodeReader)
+        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode.TenantNodeToCreateForExistingNode> tenantNodeReader)
     {
         foreach (var urlId in documentableIds) {
             yield return await GetNodeId(urlId, nodeIdReader, tenantNodeReader);
         }
     }
 
-    private async IAsyncEnumerable<NewDocument> ReadDocuments(
+    private async IAsyncEnumerable<Document.DocumentToCreate> ReadDocuments(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameableIdRequest, int> termReader,
-        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, NewTenantNodeForExistingNode> tenantNodeReader)
+        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode.TenantNodeToCreateForExistingNode> tenantNodeReader)
     {
 
 
@@ -123,11 +123,13 @@ internal sealed class DocumentMigratorCPCT(
 
             var documentable = await GetDocumentablesWithStatus(documentableIds, nodeIdReader, tenantNodeReader).ToListAsync();
 
-            var tenantNodes = new List<NewTenantNodeForNewNode>
+            var tenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
                 {
-                    new NewTenantNodeForNewNode
+                    new TenantNode.TenantNodeToCreateForNewNode
                     {
-                        Id = null,
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
@@ -137,8 +139,10 @@ internal sealed class DocumentMigratorCPCT(
                 };
 
             if (documentable.All(x => x.Item2 == 1) && !text.ToLower().Contains("arun dohle") && !text.ToLower().Contains("roelie post") && !text.ToLower().Contains("againstchildtrafficking.org")) {
-                tenantNodes.Add(new NewTenantNodeForNewNode {
-                    Id = null,
+                tenantNodes.Add(new TenantNode.TenantNodeToCreateForNewNode {
+                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                        Id = null
+                    },
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
                     UrlPath = null,
@@ -154,29 +158,36 @@ internal sealed class DocumentMigratorCPCT(
                 });
                 termIds.Add(termId);
             }
-            yield return new NewDocument {
-                Id = null,
-                PublisherId = reader.GetInt32("user_id"),
-                CreatedDateTime = reader.GetDateTime("created"),
-                ChangedDateTime = reader.GetDateTime("changed"),
-                Title = reader.GetString("title"),
-                OwnerId = Constants.OWNER_DOCUMENTATION,
-                AuthoringStatusId = 1,
-                TenantNodes = tenantNodes,
-                NodeTypeId = reader.GetInt16("node_type_id"),
-                Published = publicationDate,
-                SourceUrl = reader.IsDBNull("source_url") ? null : reader.GetString("source_url"),
-                Text = TextToHtml(text),
-                Teaser = TextToTeaser(text),
-                DocumentTypeId = reader.IsDBNull("document_type_id")
+            yield return new Document.DocumentToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
+                },
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = reader.GetInt32("user_id"),
+                    CreatedDateTime = reader.GetDateTime("created"),
+                    ChangedDateTime = reader.GetDateTime("changed"),
+                    Title = reader.GetString("title"),
+                    OwnerId = Constants.OWNER_DOCUMENTATION,
+                    AuthoringStatusId = 1,
+                    TenantNodes = tenantNodes,
+                    NodeTypeId = reader.GetInt16("node_type_id"),
+                    TermIds = termIds,
+                },
+                SimpleTextNodeDetails = new SimpleTextNodeDetails {
+                    Text = TextToHtml(text),
+                    Teaser = TextToTeaser(text),
+                },
+                DocumentDetails = new DocumentDetails {
+                    Published = publicationDate,
+                    SourceUrl = reader.IsDBNull("source_url") ? null : reader.GetString("source_url"),
+                    DocumentTypeId = reader.IsDBNull("document_type_id")
                     ? null
                     : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                         TenantId = Constants.CPCT,
                         UrlId = reader.GetInt32("document_type_id")
                     }),
-                TermIds = termIds,
+                },
             };
-
         }
         await reader.CloseAsync();
     }

@@ -82,7 +82,6 @@ public abstract record InterOrganizationalRelation: Node
     public sealed record InterOrganizationalRelationToCreateForNewOrganizationTo : InterOrganizationalRelation, NodeToCreate
     {
         public required int OrganizationIdFrom { get; init; }
-        public required int InterOrganizationalRelationTypeId { get; init; }
         public InterOrganizationalRelationToCreateForExistingParticipants ResolveOrganizationTo(int organizationIdTo)
         {
             return new InterOrganizationalRelationToCreateForExistingParticipants {

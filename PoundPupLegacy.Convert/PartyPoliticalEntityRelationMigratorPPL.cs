@@ -3,7 +3,7 @@
 internal sealed class PartyPoliticalEntityRelationMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderByUrlIdFactory,
-    IEntityCreatorFactory<EventuallyIdentifiablePartyPoliticalEntityRelationForExistingParty> partyPoliticalEntityRelationCreatorFactory
+    IEntityCreatorFactory<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForExistingParty> partyPoliticalEntityRelationCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "party political enitity relation";
@@ -15,7 +15,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorPPL(
         await partyPoliticalEntityRelationCreator.CreateAsync(ReadPartyPoliticalEntityRelations(nodeIdReader));
     }
 
-    private async IAsyncEnumerable<PartyPoliticalEntityRelationToCreateForExistingParty> ReadPartyPoliticalEntityRelations(
+    private async IAsyncEnumerable<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForExistingParty> ReadPartyPoliticalEntityRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
     )
     {
@@ -108,50 +108,59 @@ internal sealed class PartyPoliticalEntityRelationMigratorPPL(
                 UrlId = reader.GetInt32("nameable_id")
             });
 
-            yield return new PartyPoliticalEntityRelationToCreateForExistingParty {
-                Id = null,
-                PublisherId = reader.GetInt32("user_id"),
-                CreatedDateTime = reader.GetDateTime("created_date_time"),
-                ChangedDateTime = reader.GetDateTime("changed_date_time"),
-                Title = reader.GetString("title"),
-                OwnerId = Constants.PPL,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = reader.GetInt32("status"),
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id
-                    },
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id < 33163 ? id : null
-                    }
+            yield return new PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForExistingParty {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                NodeTypeId = 49,
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = reader.GetInt32("user_id"),
+                    CreatedDateTime = reader.GetDateTime("created_date_time"),
+                    ChangedDateTime = reader.GetDateTime("changed_date_time"),
+                    Title = reader.GetString("title"),
+                    OwnerId = Constants.PPL,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    {
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.PPL,
+                            PublicationStatusId = reader.GetInt32("status"),
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id
+                        },
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.CPCT,
+                            PublicationStatusId = 2,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id < 33163 ? id : null
+                        }
+                    },
+                    NodeTypeId = 49,
+                    TermIds = new List<int>(),
+                },
                 PartyId = partyId,
-                PoliticalEntityId = politicalEntityId,
-                PartyPoliticalEntityRelationTypeId = partyPpoliticalEntityTypeId,
-                DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null : reader.GetDateTime("end_date")),
-                DocumentIdProof = reader.IsDBNull("document_id_proof")
+                PartyPoliticalEntityRelationDetails = new PartyPoliticalEntityRelationDetails {
+                    PoliticalEntityId = politicalEntityId,
+                    PartyPoliticalEntityRelationTypeId = partyPpoliticalEntityTypeId,
+                    DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null : reader.GetDateTime("end_date")),
+                    DocumentIdProof = reader.IsDBNull("document_id_proof")
                     ? null
                     : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                         TenantId = Constants.PPL,
                         UrlId = reader.GetInt32("document_id_proof")
                     }),
-                TermIds = new List<int>(),
+                },
             };
         }
         await reader.CloseAsync();
     }
-
 }

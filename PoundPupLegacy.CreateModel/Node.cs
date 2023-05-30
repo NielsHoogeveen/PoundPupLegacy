@@ -29,7 +29,7 @@ public abstract record NodeDetails{
         public required DateTime CreatedDateTime { get; init; }
         public required int OwnerId { get; init; }
         public required int NodeTypeId { get; init; }
-        public required List<NewTenantNodeForNewNode> TenantNodes { get; init; }
+        public required List<TenantNode.TenantNodeToCreateForNewNode> TenantNodes { get; init; }
         public required List<int> TermIds { get; init; }
         public override T Match<T>(Func<NodeDetailsForCreate, T> create, Func<NodeDetailsForUpdate, T> update)
         {
@@ -42,8 +42,8 @@ public abstract record NodeDetails{
     }
     public sealed record NodeDetailsForUpdate : NodeDetails
     {
-        public required List<NewTenantNodeForExistingNode> TenantNodesToAdd { get; init; }
-        public required List<ExistingTenantNode> TenantNodesToUpdate { get; init; }
+        public required List<TenantNode.TenantNodeToCreateForExistingNode> TenantNodesToAdd { get; init; }
+        public required List<TenantNode.TenantNodeToUpdate> TenantNodesToUpdate { get; init; }
         public required List<TenantNodeToDelete> TenantNodesToRemove { get; init; }
         public required List<NodeTermToAdd> NodeTermsToAdd { get; init; }
         public required List<NodeTermToRemove> NodeTermsToRemove { get; init; }

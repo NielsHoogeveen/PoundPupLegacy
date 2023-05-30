@@ -5,7 +5,7 @@ internal sealed class ChildPlacementTypeMigrator(
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreatorFactory<EventuallyIdentifiableChildPlacementType> childPlacementTypeCreatorFactory
+    IEntityCreatorFactory<ChildPlacementType.ChildPlacementTypeToCreate> childPlacementTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "child placement types";
@@ -19,7 +19,7 @@ internal sealed class ChildPlacementTypeMigrator(
         await childPlacementTypeCreator.CreateAsync(ReadChildPlacementTypes(nodeIdReader,termIdReader,fileIdReaderByTenantFileId));
     }
 
-    private async IAsyncEnumerable<NewChildPlacementType> ReadChildPlacementTypes(
+    private async IAsyncEnumerable<ChildPlacementType.ChildPlacementTypeToCreate> ReadChildPlacementTypes(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)
@@ -87,6 +87,9 @@ internal sealed class ChildPlacementTypeMigrator(
             {
                 new NewTermForNewNameable
                 {
+                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                        Id = null,
+                    },
                     VocabularyId = vocabularyIdChildPlacementType,
                     Name = name,
                     ParentTermIds = new List<int>(),
@@ -101,55 +104,66 @@ internal sealed class ChildPlacementTypeMigrator(
                     }));
                 }
                 vocabularyNames.Add(new NewTermForNewNameable {
+                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                        Id = null,
+                    },
                     VocabularyId = vocabularyIdTopics,
                     Name = topicName,
                     ParentTermIds = parentTermIds
                 });
             }
 
-            yield return new NewChildPlacementType {
-                Id = null,
-                PublisherId = reader.GetInt32("access_role_id"),
-                CreatedDateTime = reader.GetDateTime("created_date_time"),
-                ChangedDateTime = reader.GetDateTime("changed_date_time"),
-                Title = name,
-                OwnerId = Constants.OWNER_CASES,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = reader.GetInt32("node_status_id"),
-                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                        SubgroupId = null,
-                        UrlId = id
-                    },
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id < 33163 ? id : null
-                    }
+            yield return new ChildPlacementType.ChildPlacementTypeToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                NodeTypeId = reader.GetInt32("node_type_id"),
-                Description = reader.GetString("description"),
-                FileIdTileImage = reader.IsDBNull("file_id_tile_image")
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = reader.GetInt32("access_role_id"),
+                    CreatedDateTime = reader.GetDateTime("created_date_time"),
+                    ChangedDateTime = reader.GetDateTime("changed_date_time"),
+                    Title = name,
+                    OwnerId = Constants.OWNER_CASES,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    {
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.PPL,
+                            PublicationStatusId = reader.GetInt32("node_status_id"),
+                            UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
+                            SubgroupId = null,
+                            UrlId = id
+                        },
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.CPCT,
+                            PublicationStatusId = 2,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id < 33163 ? id : null
+                        }
+                    },
+                    NodeTypeId = reader.GetInt32("node_type_id"),
+                    TermIds = new List<int>(),
+                },
+                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                    Description = reader.GetString("description"),
+                    FileIdTileImage = reader.IsDBNull("file_id_tile_image")
                     ? null
                     : await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileIdRequest {
                         TenantId = Constants.PPL,
                         TenantFileId = reader.GetInt32("file_id_tile_image")
                     }),
-                Terms = vocabularyNames,
-                TermIds = new List<int>(),
+                    Terms = vocabularyNames,
+                },
             };
-
         }
         await reader.CloseAsync();
     }
-
 }

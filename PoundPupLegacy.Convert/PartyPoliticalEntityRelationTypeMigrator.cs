@@ -4,7 +4,7 @@ internal sealed class PartyPoliticalEntityRelationTypeMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreatorFactory<EventuallyIdentifiablePartyPoliticalEntityRelationType> partyPoliticalEntityRelationTypeCreatorFactory
+    IEntityCreatorFactory<PartyPoliticalEntityRelationType.PartyPoliticalEntityRelationTypeToCreate> partyPoliticalEntityRelationTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "political entity relation types";
@@ -16,7 +16,7 @@ internal sealed class PartyPoliticalEntityRelationTypeMigrator(
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await partyPoliticalEntityRelationTypeCreator.CreateAsync(ReadPoliticalEntityRelationTypes(nodeIdReader, fileIdReaderByTenantFileId));
     }
-    private async IAsyncEnumerable<NewPartyPoliticalEntityRelationType> ReadPoliticalEntityRelationTypes(
+    private async IAsyncEnumerable<PartyPoliticalEntityRelationType.PartyPoliticalEntityRelationTypeToCreate> ReadPoliticalEntityRelationTypes(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId
     )
@@ -61,54 +61,68 @@ internal sealed class PartyPoliticalEntityRelationTypeMigrator(
             {
                 new NewTermForNewNameable
                 {
+                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                        Id = null,
+                    },
                     VocabularyId = vocabularyId,
                     Name = name,
                     ParentTermIds = new List<int>(),
                 }
             };
 
-            yield return new NewPartyPoliticalEntityRelationType {
-                Id = null,
-                PublisherId = reader.GetInt32("access_role_id"),
-                CreatedDateTime = reader.GetDateTime("created_date_time"),
-                ChangedDateTime = reader.GetDateTime("changed_date_time"),
-                Title = name,
-                OwnerId = Constants.OWNER_PARTIES,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = reader.GetInt32("node_status_id"),
-                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                        SubgroupId = null,
-                        UrlId = id
-                    },
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id < 33163 ? id : null
-                    }
+            yield return new PartyPoliticalEntityRelationType.PartyPoliticalEntityRelationTypeToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                NodeTypeId = 3,
-                Description = reader.GetString("description"),
-                FileIdTileImage = reader.IsDBNull("file_id_tile_image")
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = reader.GetInt32("access_role_id"),
+                    CreatedDateTime = reader.GetDateTime("created_date_time"),
+                    ChangedDateTime = reader.GetDateTime("changed_date_time"),
+                    Title = name,
+                    OwnerId = Constants.OWNER_PARTIES,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    {
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.PPL,
+                            PublicationStatusId = reader.GetInt32("node_status_id"),
+                            UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
+                            SubgroupId = null,
+                            UrlId = id
+                        },
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.CPCT,
+                            PublicationStatusId = 2,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id < 33163 ? id : null
+                        }
+                    },
+                    NodeTypeId = 3,
+                    TermIds = new List<int>(),
+                },
+                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                    Description = reader.GetString("description"),
+                    FileIdTileImage = reader.IsDBNull("file_id_tile_image")
                     ? null
                     : await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileIdRequest {
                         TenantId = Constants.PPL,
                         TenantFileId = reader.GetInt32("file_id_tile_image")
                     }),
-                HasConcreteSubtype = reader.GetBoolean("has_concrete_subtype"),
-                Terms = vocabularyNames,
-                TermIds = new List<int>(),
+                    Terms = vocabularyNames,
+                },
+                PartyPoliticalEntityRelationTypeDetails = new PartyPoliticalEntityRelationTypeDetails { 
+                    HasConcreteSubtype = reader.GetBoolean("has_concrete_subtype"),
+                },
             };
-
         }
         await reader.CloseAsync();
     }

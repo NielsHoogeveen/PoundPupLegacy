@@ -15,8 +15,7 @@ public static class InterPersonalRelationExtentions{
             PersonFrom = personListItem,
             PersonTo = null,
             InterPersonalRelationType = interPersonalRelationType,
-            NewTenantNodeDetails = TenantNodeDetails.NewTenantNodeDetails.EmptyInstance,
-            NodeDetails = NodeDetails.EmptyInstance("inter personal relation", ownerId, publisherId),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(46, "inter personal relation", ownerId, publisherId),
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }
@@ -26,8 +25,7 @@ public static class InterPersonalRelationExtentions{
             PersonFrom = null,
             PersonTo = personListItem,
             InterPersonalRelationType = interPersonalRelationType,
-            NewTenantNodeDetails = TenantNodeDetails.NewTenantNodeDetails.EmptyInstance,
-            NodeDetails = NodeDetails.EmptyInstance("inter personal relation", ownerId, publisherId),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(46, "inter personal relation", ownerId, publisherId),
             RelationDetails = RelationDetails.EmptyInstance,
         };
 
@@ -38,8 +36,7 @@ public static class InterPersonalRelationExtentions{
             PersonFrom = personName,
             PersonTo = null,
             InterPersonalRelationType = interPersonalRelationType,
-            NewTenantNodeDetails = TenantNodeDetails.NewTenantNodeDetails.EmptyInstance,
-            NodeDetails = NodeDetails.EmptyInstance("inter personal relation", ownerId, publisherId),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(46, "inter personal relation", ownerId, publisherId),
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }
@@ -49,8 +46,7 @@ public static class InterPersonalRelationExtentions{
             PersonFrom = null,
             PersonTo = personName,
             InterPersonalRelationType = interPersonalRelationType,
-            NewTenantNodeDetails = TenantNodeDetails.NewTenantNodeDetails.EmptyInstance,
-            NodeDetails = NodeDetails.EmptyInstance("inter personal relation", ownerId, publisherId),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(46, "inter personal relation", ownerId, publisherId),
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }
@@ -64,8 +60,7 @@ public abstract record InterPersonalRelation : Relation
     }
     public abstract void SetName(string name);
     public required RelationDetails RelationDetails { get; init; }
-    public required NodeDetails NodeDetails { get; init; }
-    public abstract TenantNodeDetails TenantNodeDetails { get; }
+    public abstract NodeDetails NodeDetails { get; }
     public required InterPersonalRelationTypeListItem InterPersonalRelationType { get; set; }
     public abstract string PersonFromName { get; }
     public abstract string PersonToName { get; }
@@ -114,8 +109,8 @@ public abstract record InterPersonalRelation : Relation
 
                 public sealed record NewInterPersonalNewFromRelation : NewIncompleteInterPersonalRelationFrom, NewNode
                 {
-                    public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
-                    public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
+                    public override NodeDetails NodeDetails => NodeDetailsForCreate;
+                    public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
                     public required PersonName PersonFrom { get; set; }
                     public sealed override void SetName(string name)
                     {
@@ -129,8 +124,7 @@ public abstract record InterPersonalRelation : Relation
                             PersonFrom = PersonTo,
                             PersonTo = PersonFrom,
                             InterPersonalRelationType = InterPersonalRelationType,
-                            NewTenantNodeDetails = NewTenantNodeDetails,
-                            NodeDetails = NodeDetails,
+                            NodeDetailsForCreate = NodeDetailsForCreate,
                             RelationDetails = RelationDetails,
                         };
                     }
@@ -140,8 +134,7 @@ public abstract record InterPersonalRelation : Relation
                             PersonFrom = PersonFrom,
                             PersonTo = organizationListItemTo,
                             InterPersonalRelationType = InterPersonalRelationType,
-                            NewTenantNodeDetails = NewTenantNodeDetails,
-                            NodeDetails = NodeDetails,
+                            NodeDetailsForCreate = NodeDetailsForCreate,
                             RelationDetails = RelationDetails,
                         };
                     }
@@ -149,9 +142,8 @@ public abstract record InterPersonalRelation : Relation
 
                 public sealed record NewInterPersonalExistingFromRelation : NewIncompleteInterPersonalRelationFrom, NewNode
                 {
-                    public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
-                    public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
-
+                    public override NodeDetails NodeDetails => NodeDetailsForCreate;
+                    public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
                     public required PersonListItem PersonFrom { get; set; }
                     public sealed override void SetName(string name)
                     {
@@ -165,8 +157,7 @@ public abstract record InterPersonalRelation : Relation
                             PersonFrom = PersonTo,
                             PersonTo = PersonFrom,
                             InterPersonalRelationType = InterPersonalRelationType,
-                            NewTenantNodeDetails = NewTenantNodeDetails,
-                            NodeDetails = NodeDetails,
+                            NodeDetailsForCreate = NodeDetailsForCreate,
                             RelationDetails = RelationDetails,
                         };
                     }
@@ -177,8 +168,7 @@ public abstract record InterPersonalRelation : Relation
                             PersonFrom = PersonFrom,
                             PersonTo = organizationListItemTo,
                             InterPersonalRelationType = InterPersonalRelationType,
-                            NewTenantNodeDetails = NewTenantNodeDetails,
-                            NodeDetails = NodeDetails,
+                            NodeDetailsForCreate = NodeDetailsForCreate,
                             RelationDetails = RelationDetails,
                         };
                     }
@@ -215,9 +205,8 @@ public abstract record InterPersonalRelation : Relation
 
             public sealed record CompletedNewInterPersonalNewFromRelation : CompletedInterPersonalRelationFrom, NewNode
             {
-                public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
-                public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
-
+                public override NodeDetails NodeDetails => NodeDetailsForCreate;
+                public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
                 public required PersonName PersonFrom { get; set; }
 
                 public sealed override void SetName(string name)
@@ -233,8 +222,7 @@ public abstract record InterPersonalRelation : Relation
                         PersonFrom = PersonTo,
                         PersonTo = PersonFrom,
                         InterPersonalRelationType = InterPersonalRelationType,
-                        NewTenantNodeDetails = NewTenantNodeDetails,
-                        NodeDetails = NodeDetails,
+                        NodeDetailsForCreate = NodeDetailsForCreate,
                         RelationDetails = RelationDetails,
                     };
                 }
@@ -255,8 +243,8 @@ public abstract record InterPersonalRelation : Relation
 
                 public sealed record ExistingInterPersonalRelationFrom : ResolvedInterPersonalRelationFrom, ExistingNode
                 {
-                    public override TenantNodeDetails TenantNodeDetails => ExistingTenantNodeDetails;
-                    public required TenantNodeDetails.ExistingTenantNodeDetails ExistingTenantNodeDetails { get; init; }
+                    public override NodeDetails NodeDetails => NodeDetailsForUpdate;
+                    public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
                     public required NodeIdentification NodeIdentification { get; init; }
 
                     public sealed override ExistingInterPersonalRelationTo SwapFromAndTo()
@@ -265,8 +253,7 @@ public abstract record InterPersonalRelation : Relation
                             PersonFrom = PersonTo,
                             PersonTo = PersonFrom,
                             InterPersonalRelationType = InterPersonalRelationType,
-                            ExistingTenantNodeDetails = ExistingTenantNodeDetails,
-                            NodeDetails = NodeDetails,
+                            NodeDetailsForUpdate = NodeDetailsForUpdate,
                             RelationDetails = RelationDetails,
                             NodeIdentification = NodeIdentification,
                         };
@@ -275,17 +262,15 @@ public abstract record InterPersonalRelation : Relation
 
                 public sealed record NewInterPersonalExistingRelationFrom : ResolvedInterPersonalRelationFrom, NewNode
                 {
-                    public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
-                    public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
-
+                    public override NodeDetails NodeDetails => NodeDetailsForCreate;
+                    public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
                     public sealed override NewInterPersonalExistingRelationTo SwapFromAndTo()
                     {
                         return new NewInterPersonalExistingRelationTo {
                             PersonFrom = PersonTo,
                             PersonTo = PersonFrom,
                             InterPersonalRelationType = InterPersonalRelationType,
-                            NewTenantNodeDetails = NewTenantNodeDetails,
-                            NodeDetails = NodeDetails,
+                            NodeDetailsForCreate = NodeDetailsForCreate,
                             RelationDetails = RelationDetails,
                         };
                     }
@@ -337,9 +322,8 @@ public abstract record InterPersonalRelation : Relation
                 }
                 public sealed record NewInterPersonalExistingToRelation : NewIncompleteInterPersonalRelationTo, NewNode
                 {
-                    public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
-                    public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
-
+                    public override NodeDetails NodeDetails => NodeDetailsForCreate;
+                    public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
                     public required PersonListItem PersonTo { get; set; }
                     public sealed override void SetName(string name)
                     {
@@ -353,8 +337,7 @@ public abstract record InterPersonalRelation : Relation
                             PersonFrom = PersonTo,
                             PersonTo = PersonFrom,
                             InterPersonalRelationType = InterPersonalRelationType,
-                            NewTenantNodeDetails = NewTenantNodeDetails,
-                            NodeDetails = NodeDetails,
+                            NodeDetailsForCreate = NodeDetailsForCreate,
                             RelationDetails = RelationDetails,
                         };
                     }
@@ -365,8 +348,7 @@ public abstract record InterPersonalRelation : Relation
                             PersonFrom = organizationListItemFrom,
                             PersonTo = PersonTo,
                             InterPersonalRelationType = InterPersonalRelationType,
-                            NewTenantNodeDetails = NewTenantNodeDetails,
-                            NodeDetails = NodeDetails,
+                            NodeDetailsForCreate = NodeDetailsForCreate,
                             RelationDetails = RelationDetails,
                         };
                     }
@@ -374,9 +356,8 @@ public abstract record InterPersonalRelation : Relation
 
                 public sealed record NewInterPersonalNewToRelation : NewIncompleteInterPersonalRelationTo, NewNode
                 {
-                    public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
-                    public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
-
+                    public override NodeDetails NodeDetails => NodeDetailsForCreate;
+                    public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
                     public required PersonName PersonTo { get; set; }
                     public sealed override void SetName(string name)
                     {
@@ -391,8 +372,7 @@ public abstract record InterPersonalRelation : Relation
                             PersonFrom = PersonTo,
                             PersonTo = PersonFrom,
                             InterPersonalRelationType = InterPersonalRelationType,
-                            NewTenantNodeDetails = NewTenantNodeDetails,
-                            NodeDetails = NodeDetails,
+                            NodeDetailsForCreate = NodeDetailsForCreate,
                             RelationDetails = RelationDetails,
                         };
                     }
@@ -402,8 +382,7 @@ public abstract record InterPersonalRelation : Relation
                             PersonFrom = organizationListItemFrom,
                             PersonTo = PersonTo,
                             InterPersonalRelationType = InterPersonalRelationType,
-                            NewTenantNodeDetails = NewTenantNodeDetails,
-                            NodeDetails = NodeDetails,
+                            NodeDetailsForCreate = NodeDetailsForCreate,
                             RelationDetails = RelationDetails,
                         };
                     }
@@ -440,9 +419,8 @@ public abstract record InterPersonalRelation : Relation
 
             public sealed record CompletedNewInterPersonalNewToRelation : CompletedInterPersonalRelationTo, NewNode
             {
-                public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
-                public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
-
+                public override NodeDetails NodeDetails => NodeDetailsForCreate;
+                public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
                 public required PersonName PersonTo { get; set; }
 
                 public sealed override void SetName(string name)
@@ -458,9 +436,8 @@ public abstract record InterPersonalRelation : Relation
                         PersonFrom = PersonTo,
                         PersonTo = PersonFrom,
                         InterPersonalRelationType = InterPersonalRelationType,
-                        NewTenantNodeDetails = NewTenantNodeDetails,
-                        NodeDetails = NodeDetails,
                         RelationDetails = RelationDetails,
+                        NodeDetailsForCreate = NodeDetailsForCreate,
                     };
                 }
             }
@@ -481,8 +458,8 @@ public abstract record InterPersonalRelation : Relation
 
                 public sealed record ExistingInterPersonalRelationTo : ResolvedInterPersonalRelationTo, ExistingNode
                 {
-                    public override TenantNodeDetails TenantNodeDetails => ExistingTenantNodeDetails;
-                    public required TenantNodeDetails.ExistingTenantNodeDetails ExistingTenantNodeDetails { get; init; }
+                    public override NodeDetails NodeDetails => NodeDetailsForUpdate;
+                    public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
                     public required NodeIdentification NodeIdentification { get; init; }
 
                     public sealed override ExistingInterPersonalRelationFrom SwapFromAndTo()
@@ -491,27 +468,25 @@ public abstract record InterPersonalRelation : Relation
                             PersonFrom = PersonTo,
                             PersonTo = PersonFrom,
                             InterPersonalRelationType = InterPersonalRelationType,
-                            ExistingTenantNodeDetails = ExistingTenantNodeDetails,
-                            NodeDetails = NodeDetails,
                             RelationDetails = RelationDetails,
-                            NodeIdentification = NodeIdentification
+                            NodeIdentification = NodeIdentification,
+                            NodeDetailsForUpdate = NodeDetailsForUpdate,
                         };
                     }
                 }
 
                 public sealed record NewInterPersonalExistingRelationTo : ResolvedInterPersonalRelationTo, NewNode
                 {
-                    public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
-                    public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
+                    public override NodeDetails NodeDetails => NodeDetailsForCreate;
+                    public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
                     public sealed override NewInterPersonalExistingRelationFrom SwapFromAndTo()
                     {
                         return new NewInterPersonalExistingRelationFrom {
                             PersonFrom = PersonTo,
                             PersonTo = PersonFrom,
                             InterPersonalRelationType = InterPersonalRelationType,
-                            NewTenantNodeDetails = NewTenantNodeDetails,
-                            NodeDetails = NodeDetails,
                             RelationDetails = RelationDetails,
+                            NodeDetailsForCreate = NodeDetailsForCreate,
                         };
                     }
                 }

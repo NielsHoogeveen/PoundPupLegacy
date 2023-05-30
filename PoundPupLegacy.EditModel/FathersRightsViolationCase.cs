@@ -13,13 +13,13 @@ public abstract record FathersRightsViolationCase : Case, ResolvedNode
     public abstract void Match(Action<ExistingFathersRightsViolationCase> existingItem, Action<NewFathersRightsViolationCase> newItem);
     public required CaseDetails CaseDetails { get; init; }
     public required NameableDetails NameableDetails { get; init; }
-    public required NodeDetails NodeDetails { get; init; }
     public abstract LocatableDetails LocatableDetails { get; }
-    public abstract TenantNodeDetails TenantNodeDetails { get; }
+    public abstract NodeDetails NodeDetails { get; }
 
     public sealed record ExistingFathersRightsViolationCase : FathersRightsViolationCase, ExistingNode
     {
-        public override TenantNodeDetails TenantNodeDetails => ExistingTenantNodeDetails;
+        public override NodeDetails NodeDetails => NodeDetailsForUpdate;
+        public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
         public required TenantNodeDetails.ExistingTenantNodeDetails ExistingTenantNodeDetails { get; init; }
         public override LocatableDetails LocatableDetails => ExistingLocatableDetails;
         public required LocatableDetails.ExistingLocatableDetails ExistingLocatableDetails { get; init; }
@@ -36,7 +36,8 @@ public abstract record FathersRightsViolationCase : Case, ResolvedNode
     }
     public sealed record NewFathersRightsViolationCase : FathersRightsViolationCase, ResolvedNewNode
     {
-        public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
+        public override NodeDetails NodeDetails => NodeDetailsForCreate;
+        public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
         public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
         public override LocatableDetails LocatableDetails => NewLocatableDetails;
         public required LocatableDetails.NewLocatableDetails NewLocatableDetails { get; init; }

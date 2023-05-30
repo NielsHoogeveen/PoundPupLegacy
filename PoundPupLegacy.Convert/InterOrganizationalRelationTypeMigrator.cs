@@ -4,7 +4,7 @@ internal sealed class InterOrganizationalRelationTypeMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreatorFactory<EventuallyIdentifiableInterOrganizationalRelationType> interOrganizationalRelationTypeCreatorFactory
+    IEntityCreatorFactory<InterOrganizationalRelationType.InterOrganizationalRelationTypeToCreate> interOrganizationalRelationTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "inter-organization relation types";
@@ -16,7 +16,7 @@ internal sealed class InterOrganizationalRelationTypeMigrator(
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await interOrganizationalRelationTypeCreator.CreateAsync(ReadInterOrganizationalRelationTypes(nodeIdReader, fileIdReaderByTenantFileId));
     }
-    private async IAsyncEnumerable<NewInterOrganizationalRelationType> ReadInterOrganizationalRelationTypes(
+    private async IAsyncEnumerable<InterOrganizationalRelationType.InterOrganizationalRelationTypeToCreate> ReadInterOrganizationalRelationTypes(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId)
     {
@@ -62,53 +62,67 @@ internal sealed class InterOrganizationalRelationTypeMigrator(
             {
                 new NewTermForNewNameable
                 {
+                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                        Id = null,
+                    },
                     VocabularyId = vocabularyId,
                     Name = name,
                     ParentTermIds = new List<int>(),
                 }
             };
-            yield return new NewInterOrganizationalRelationType {
-                Id = null,
-                PublisherId = reader.GetInt32("access_role_id"),
-                CreatedDateTime = reader.GetDateTime("created_date_time"),
-                ChangedDateTime = reader.GetDateTime("changed_date_time"),
-                Title = name,
-                OwnerId = Constants.OWNER_PARTIES,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = reader.GetInt32("node_status_id"),
-                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                        SubgroupId = null,
-                        UrlId = id
-                    },
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id < 33163 ? id : null
-                    }
+            yield return new InterOrganizationalRelationType.InterOrganizationalRelationTypeToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                NodeTypeId = 2,
-                Description = reader.GetString("description"),
-                FileIdTileImage = reader.IsDBNull("file_id_tile_image")
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = reader.GetInt32("access_role_id"),
+                    CreatedDateTime = reader.GetDateTime("created_date_time"),
+                    ChangedDateTime = reader.GetDateTime("changed_date_time"),
+                    Title = name,
+                    OwnerId = Constants.OWNER_PARTIES,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    {
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.PPL,
+                            PublicationStatusId = reader.GetInt32("node_status_id"),
+                            UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
+                            SubgroupId = null,
+                            UrlId = id
+                        },
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.CPCT,
+                            PublicationStatusId = 2,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id < 33163 ? id : null
+                        }
+                    },
+                    NodeTypeId = 2,
+                    TermIds = new List<int>(),
+                },
+                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                    Description = reader.GetString("description"),
+                    FileIdTileImage = reader.IsDBNull("file_id_tile_image")
                     ? null
                     : await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileIdRequest {
                         TenantId = Constants.PPL,
                         TenantFileId = reader.GetInt32("file_id_tile_image")
                     }),
-                Terms = vocabularyNames,
-                IsSymmetric = reader.GetBoolean("is_symmetric"),
-                TermIds = new List<int>(),
+                    Terms = vocabularyNames,
+                },
+                EndoRelationTypeDetails = new EndoRelationTypeDetails { 
+                    IsSymmetric = reader.GetBoolean("is_symmetric"),
+                }
             };
-
         }
         await reader.CloseAsync();
     }

@@ -64,7 +64,7 @@ internal abstract class NodeEditServiceBase<TViewModelEntity, TResolvedViewModel
             await using var updater = await creatorFactory.CreateAsync(connection);
             var nodeToCreate = Map(node);
             await updater.CreateAsync(nodeToCreate);
-            return nodeToCreate.Id!.Value;
+            return nodeToCreate.IdentificationForCreate.Id!.Value;
         });
     }
     protected async Task<int> SaveExistingAsync(TExistingViewModel node)

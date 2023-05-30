@@ -96,7 +96,7 @@ public abstract record PersonDetails
         public required List<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForNewParty> PartyPoliticalEntityRelationsToCreate { get; init; }
         public required List<PersonOrganizationRelation.PersonOrganizationRelationToCreateForNewPerson> PersonOrganizationRelationToCreate { get; init; }
 
-        public required List<ProfessionalRoleToCreate> ProfessionalRolesToCreate { get; init; }
+        public required List<ProfessionalRoleToCreateForNewPerson> ProfessionalRolesToCreate { get; init; }
         public override T Match<T>(Func<PersonDetailsForCreate, T> create, Func<PersonDetailsForUpdate, T> update)
         {
             return create(this);
@@ -117,7 +117,7 @@ public abstract record PersonDetails
         public required List<InterPersonalRelation.InterPersonalRelationToUpdate> InterPersonalRelationToUpdates { get; init; }
         public required List<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToUpdate> PartyPoliticalEntityRelationToUpdates { get; init; }
         public required List<PersonOrganizationRelation.PersonOrganizationRelationToUpdate> PersonOrganizationRelationToUpdates { get; init; }
-        public required List<ProfessionalRoleToCreate> ProfessionalRolesToCreate { get; init; }
+        public required List<ProfessionalRoleToCreateForNewPerson> ProfessionalRolesToCreate { get; init; }
         public override T Match<T>(Func<PersonDetailsForCreate, T> create, Func<PersonDetailsForUpdate, T> update)
         {
             return update(this);

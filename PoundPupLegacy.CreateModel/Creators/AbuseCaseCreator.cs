@@ -12,7 +12,7 @@ public class AbuseCaseCreatorFactory(
     LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
-    IEntityCreatorFactory<CaseNewCasePartiesToUpdate> caseCaseTypeCreatorFactory,
+    IEntityCreatorFactory<CaseExistingCasePartiesToCreate> caseCaseTypeCreatorFactory,
     IEntityCreatorFactory<AbuseCaseTypeOfAbuse> abuseCaseTypeOfAbuseCreatorFactory,
     IEntityCreatorFactory<AbuseCaseTypeOfAbuser> abuseCaseTypeOfAbuserCreatorFactory
 ) : IEntityCreatorFactory<AbuseCase.AbuseCaseToCreate>
@@ -42,7 +42,7 @@ public class AbuseCaseCreator(
     NodeDetailsCreator nodeDetailsCreator,
     TermCreator nameableDetailsCreator,
     LocatableDetailsCreator locatableDetailsCreator,
-    IEntityCreator<CaseNewCasePartiesToUpdate> caseCaseTypeCreator,
+    IEntityCreator<CaseExistingCasePartiesToCreate> caseCaseTypeCreator,
     IEntityCreator<AbuseCaseTypeOfAbuse> abuseCaseTypeOfAbuseCreator,
     IEntityCreator<AbuseCaseTypeOfAbuser> abuseCaseTypeOfAbuserCreator
 ) : CaseCreator<AbuseCase.AbuseCaseToCreate>

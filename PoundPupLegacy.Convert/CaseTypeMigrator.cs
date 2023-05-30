@@ -24,16 +24,33 @@ internal sealed class CaseTypeMigrator(
         await using var editNodeActionCreator = await editNodeActionCreatorFactory.CreateAsync(_postgresConnection);
         await caseTypeCreator.CreateAsync(GetCaseTypes(nodeIdReader));
         await viewNodeTypeListActionCreator.CreateAsync(GetViewNodeTypeListActions(actionIdReader));
-        await createNodeActionCreator.CreateAsync(GetCaseTypes(nodeIdReader).Select(x => new CreateNodeAction { Id = null, NodeTypeId = x.Id!.Value }));
-        await deleteNodeActionCreator.CreateAsync(GetCaseTypes(nodeIdReader).Select(x => new DeleteNodeAction { Id = null, NodeTypeId = x.Id!.Value }));
-        await editNodeActionCreator.CreateAsync(GetCaseTypes(nodeIdReader).Select(x => new EditNodeAction { Id = null, NodeTypeId = x.Id!.Value }));
+        await createNodeActionCreator.CreateAsync(GetCaseTypes(nodeIdReader).Select(x => new CreateNodeAction { 
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = null,
+            },
+            NodeTypeId = x.IdentificationForCreate.Id!.Value 
+        }));
+        await deleteNodeActionCreator.CreateAsync(GetCaseTypes(nodeIdReader).Select(x => new DeleteNodeAction { 
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = null,
+            },
+            NodeTypeId = x.IdentificationForCreate.Id!.Value 
+        }));
+        await editNodeActionCreator.CreateAsync(GetCaseTypes(nodeIdReader).Select(x => new EditNodeAction { 
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = null,
+            },
+            NodeTypeId = x.IdentificationForCreate.Id!.Value }
+        ));
     }
     internal async IAsyncEnumerable<CaseType> GetCaseTypes(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
         yield return new CaseType {
-            Id = Constants.ABUSE_CASE,
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = Constants.ABUSE_CASE,
+            },
             AuthorSpecific = false,
             Name = "abuse case",
             Description = "Abuse case of a child that has been placed by court",
@@ -74,7 +91,9 @@ internal sealed class CaseTypeMigrator(
             }
         };
         yield return new CaseType {
-            Id = Constants.CHILD_TRAFFICKING_CASE,
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = Constants.CHILD_TRAFFICKING_CASE,
+            },
             AuthorSpecific = false,
             Name = "child trafficking case",
             Description = "Trafficking case of children to be adopted",
@@ -100,7 +119,9 @@ internal sealed class CaseTypeMigrator(
             }
         };
         yield return new CaseType {
-            Id = Constants.COERCED_ADOPTION_CASE,
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = Constants.COERCED_ADOPTION_CASE,
+            },
             AuthorSpecific = false,
             Name = "coerced adoption case",
             Description = "Adoption that involved coercion",
@@ -116,7 +137,9 @@ internal sealed class CaseTypeMigrator(
             }
         };
         yield return new CaseType {
-            Id = Constants.DEPORTATION_CASE,
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = Constants.DEPORTATION_CASE,
+            },
             AuthorSpecific = false,
             Name = "deportation case",
             Description = "Adoptees deported to country of origin",
@@ -125,7 +148,9 @@ internal sealed class CaseTypeMigrator(
             CaseRelationTypeIds = new List<int>()
         };
         yield return new CaseType {
-            Id = Constants.FATHERS_RIGHTS_VIOLATION_CASE,
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = Constants.FATHERS_RIGHTS_VIOLATION_CASE,
+            },
             AuthorSpecific = false,
             Name = "father's rights violation case",
             Description = "Adoptions where the rights of the biological father were violated",
@@ -141,7 +166,9 @@ internal sealed class CaseTypeMigrator(
             }
         };
         yield return new CaseType {
-            Id = Constants.WRONGFUL_MEDICATION_CASE,
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = Constants.WRONGFUL_MEDICATION_CASE,
+            },
             AuthorSpecific = false,
             Name = "wrongful medication case",
             Description = "Child placement situation where wrongful medication is present",
@@ -157,7 +184,9 @@ internal sealed class CaseTypeMigrator(
             }
         };
         yield return new CaseType {
-            Id = Constants.WRONGFUL_REMOVAL_CASE,
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = Constants.WRONGFUL_REMOVAL_CASE,
+            },
             AuthorSpecific = false,
             Name = "wrongful removal case",
             Description = "Children wrongfully removed from their family",
@@ -173,7 +202,9 @@ internal sealed class CaseTypeMigrator(
             }
         };
         yield return new CaseType {
-            Id = Constants.DISRUPTED_PLACEMENT_CASE,
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = Constants.DISRUPTED_PLACEMENT_CASE,
+            },
             AuthorSpecific = false,
             Name = "disrupted placement case",
             Description = "A situation where the placement of a child was reverted",

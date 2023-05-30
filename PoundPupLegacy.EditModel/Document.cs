@@ -13,14 +13,13 @@ public abstract record Document : SimpleTextNode, ResolvedNode
     public abstract T Match<T>(Func<ExistingDocument, T> existingItem, Func<NewDocument, T> newItem);
     public abstract void Match(Action<ExistingDocument> existingItem, Action<NewDocument> newItem);
     public required SimpleTextNodeDetails SimpleTextNodeDetails { get; init; }
-    public required NodeDetails NodeDetails { get; init; }
     public required DocumentDetails DocumentDetails { get; init; }
-    public abstract TenantNodeDetails TenantNodeDetails { get; }
+    public abstract NodeDetails NodeDetails { get; }
 
     public sealed record ExistingDocument : Document, ExistingNode
     {
-        public override TenantNodeDetails TenantNodeDetails => ExistingTenantNodeDetails;
-        public required TenantNodeDetails.ExistingTenantNodeDetails ExistingTenantNodeDetails { get; init; }
+        public override NodeDetails NodeDetails => NodeDetailsForUpdate;
+        public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
         public required NodeIdentification NodeIdentification { get; init; }
         public override T Match<T>(Func<ExistingDocument, T> existingItem, Func<NewDocument, T> newItem)
         {
@@ -33,8 +32,8 @@ public abstract record Document : SimpleTextNode, ResolvedNode
     }
     public sealed record NewDocument : Document, ResolvedNewNode
     {
-        public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
-        public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
+        public override NodeDetails NodeDetails => NodeDetailsForCreate;
+        public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
         public override T Match<T>(Func<ExistingDocument, T> existingItem, Func<NewDocument, T> newItem)
         {
             return newItem(this);

@@ -3,8 +3,8 @@
 internal sealed class PersonMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForExistingNode> tenantNodeReaderByUrlIdFactory,
-    IEntityCreatorFactory<EventuallyIdentifiablePerson> personCreatorFactory
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.TenantNodeToCreateForExistingNode> tenantNodeReaderByUrlIdFactory,
+    IEntityCreatorFactory<Person.PersonToCreate> personCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
     nodeIdReaderFactory, 
@@ -19,7 +19,7 @@ internal sealed class PersonMigratorCPCT(
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await personCreator.CreateAsync(ReadPersons(nodeIdReader));
     }
-    private async IAsyncEnumerable<NewPerson> ReadPersons(
+    private async IAsyncEnumerable<Person.PersonToCreate> ReadPersons(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
     )
     {
@@ -92,66 +92,82 @@ internal sealed class PersonMigratorCPCT(
 
             var vocabularyNames = new List<NewTermForNewNameable> {
                 new NewTermForNewNameable {
+                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                        Id = null,
+                    },
                     VocabularyId = vocabularyId,
                     Name = title,
                     ParentTermIds = new List<int>(),
                 }
             };
 
-            yield return new NewPerson {
-                Id = null,
-                PublisherId = reader.GetInt32("access_role_id"),
-                CreatedDateTime = reader.GetDateTime("created_date_time"),
-                ChangedDateTime = reader.GetDateTime("changed_date_time"),
-                Title = title,
-                OwnerId = Constants.OWNER_PARTIES,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = null
-                    },
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id
-                    }
+            yield return new Person.PersonToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                NodeTypeId = 24,
-                Description = "",
-                FileIdTileImage = null,
-                Terms = vocabularyNames,
-                DateOfBirth = null,
-                DateOfDeath = null,
-                FileIdPortrait = null,
-                FirstName = null,
-                LastName = null,
-                MiddleName = null,
-                FullName = null,
-                GovtrackId = null,
-                Bioguide = null,
-                Suffix = null,
-                ProfessionalRoles = new List<EventuallyIdentifiableProfessionalRoleForNewPerson>(),
-                PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewPerson>(),
-                TermIds = new List<int>(),
-                Locations = new List<EventuallyIdentifiableLocation>(),
-                PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
-                InterPersonalRelationsToAddFrom = new List<EventuallyIdentifiableInterPersonalRelationForNewPersonFrom>(),
-                InterPersonalRelationsToAddTo = new List<EventuallyIdentifiableInterPersonalRelationForNewPersonTo>(),
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = reader.GetInt32("access_role_id"),
+                    CreatedDateTime = reader.GetDateTime("created_date_time"),
+                    ChangedDateTime = reader.GetDateTime("changed_date_time"),
+                    Title = title,
+                    OwnerId = Constants.OWNER_PARTIES,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    {
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.PPL,
+                            PublicationStatusId = 1,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = null
+                        },
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.CPCT,
+                            PublicationStatusId = 2,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id
+                        }
+                    },
+                    NodeTypeId = 24,
+                    TermIds = new List<int>(),
+                },
+                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                    Description = "",
+                    FileIdTileImage = null,
+                    Terms = vocabularyNames,
+                },
+                LocatableDetailsForCreate = new LocatableDetails.LocatableDetailsForCreate {
+                    Locations = new List<EventuallyIdentifiableLocation>(),
+                },
+                PersonDetailsForCreate = new PersonDetails.PersonDetailsForCreate {
+                    DateOfBirth = null,
+                    DateOfDeath = null,
+                    FileIdPortrait = null,
+                    FirstName = null,
+                    LastName = null,
+                    MiddleName = null,
+                    FullName = null,
+                    GovtrackId = null,
+                    Bioguide = null,
+                    Suffix = null,
+                    InterPersonalRelationsToCreateFrom = new List<InterPersonalRelation.InterPersonalRelationToCreateForNewPersonFrom>(),
+                    InterPersonalRelationsToCreateTo = new List<InterPersonalRelation.InterPersonalRelationToCreateForNewPersonTo>(),
+                    PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForNewParty>(),
+                    PersonOrganizationRelationToCreate = new List<PersonOrganizationRelation.PersonOrganizationRelationToCreateForNewPerson>(),
+                    ProfessionalRolesToCreate = new List<ProfessionalRoleToCreateForNewPerson>(),
+                },
             };
 
         }
         await reader.CloseAsync();
     }
-
 }

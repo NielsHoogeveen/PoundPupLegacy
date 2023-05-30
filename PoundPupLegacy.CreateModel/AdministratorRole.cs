@@ -2,7 +2,9 @@
 
 public sealed record AdministratorRole : UserRole
 {
-    public required int? Id { get; set; }
+    public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
+    public Identification Identification => IdentificationForCreate;
+
     public required int? UserGroupId { get; set; }
     public string Name => "Administrator";
 }

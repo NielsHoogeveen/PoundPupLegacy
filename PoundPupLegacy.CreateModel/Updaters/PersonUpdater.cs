@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Updaters;
 
-using Request = ImmediatelyIdentifiablePerson;
+using Request = Person.PersonToUpdate;
 
 internal sealed class PersonChangerFactory(
     IDatabaseUpdaterFactory<Request> databaseUpdaterFactory,
@@ -59,19 +59,19 @@ internal sealed class PersonUpdaterFactory : DatabaseUpdaterFactory<Request>
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new List<ParameterValue> {
-            ParameterValue.Create(NodeId, request.Id),
-            ParameterValue.Create(Title, request.Title),
-            ParameterValue.Create(Description, request.Description),
-            ParameterValue.Create(DateOfBirth, request.DateOfBirth),
-            ParameterValue.Create(DateOfDeath, request.DateOfDeath),
-            ParameterValue.Create(FileIdPortrait, request.FileIdPortrait),
-            ParameterValue.Create(GovtrackId, request.GovtrackId),
-            ParameterValue.Create(FirstName, request.FirstName),
-            ParameterValue.Create(MiddleName, request.MiddleName),
-            ParameterValue.Create(LastName, request.LastName),
-            ParameterValue.Create(Suffix, request.Suffix),
-            ParameterValue.Create(FullName, request.FullName),
-            ParameterValue.Create(Bioguide, request.Bioguide),
+            ParameterValue.Create(NodeId, request.IdentificationForUpdate.Id),
+            ParameterValue.Create(Title, request.NodeDetails.Title),
+            ParameterValue.Create(Description, request.NameableDetails.Description),
+            ParameterValue.Create(DateOfBirth, request.PersonDetails.DateOfBirth),
+            ParameterValue.Create(DateOfDeath, request.PersonDetails.DateOfDeath),
+            ParameterValue.Create(FileIdPortrait, request.PersonDetails.FileIdPortrait),
+            ParameterValue.Create(GovtrackId, request.PersonDetails.GovtrackId),
+            ParameterValue.Create(FirstName, request.PersonDetails.FirstName),
+            ParameterValue.Create(MiddleName, request.PersonDetails.MiddleName),
+            ParameterValue.Create(LastName, request.PersonDetails.LastName),
+            ParameterValue.Create(Suffix, request.PersonDetails.Suffix),
+            ParameterValue.Create(FullName, request.PersonDetails.FullName),
+            ParameterValue.Create(Bioguide, request.PersonDetails.Bioguide),
         };
     }
 }

@@ -104,7 +104,7 @@
             switch (Node) {
                 case NewNode n:
                     foreach (var tenant in n.NodeDetails.Tenants) {
-                        var tenantNode = n.TenantNodeDetails.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);
+                        var tenantNode = n.NodeDetailsForCreate.TenantNodeDetails.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);
                         tenant.TenantNode = tenantNode;
                     }
                     break;

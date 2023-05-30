@@ -8,23 +8,18 @@ public partial class NewDiscussionJsonContext : JsonSerializerContext { }
 public abstract record Discussion : SimpleTextNode, ResolvedNode
 {
     public required SimpleTextNodeDetails SimpleTextNodeDetails { get; init; }
-
-    public required NodeDetails NodeDetails { get; init; }
-
-    public abstract TenantNodeDetails TenantNodeDetails { get; }
-
+    public abstract NodeDetails NodeDetails { get; }
     public sealed record ExistingDiscussion : Discussion, ExistingNode
     {
-        public override TenantNodeDetails TenantNodeDetails => ExistingTenantNodeDetails;
-        public required TenantNodeDetails.ExistingTenantNodeDetails ExistingTenantNodeDetails { get; init; }
+        public override NodeDetails NodeDetails => NodeDetailsForUpdate;
+        public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
         public required NodeIdentification NodeIdentification { get; init; }
     }
 
     public sealed record NewDiscussion : Discussion, ResolvedNewNode
     {
-        public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
-        public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
-
+        public override NodeDetails NodeDetails => NodeDetailsForCreate;
+        public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
     }
 
 }

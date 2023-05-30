@@ -3,12 +3,12 @@
 internal sealed class SubdivisionTypeMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    IEntityCreatorFactory<EventuallyIdentifiableSubdivisionType> subdivisionTypeCreatorFactory
+    IEntityCreatorFactory<SubdivisionType.SubdivisionTypeToCreate> subdivisionTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "subdivision types";
 
-    private static async IAsyncEnumerable<NewSubdivisionType> GetSubdivisionTypes(
+    private static async IAsyncEnumerable<SubdivisionType.SubdivisionTypeToCreate> GetSubdivisionTypes(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
     )
     {
@@ -102,50 +102,63 @@ internal sealed class SubdivisionTypeMigrator(
         });
 
         foreach (var name in names) {
-            yield return new NewSubdivisionType {
-                Id = null,
-                PublisherId = 1,
-                CreatedDateTime = DateTime.Now,
-                ChangedDateTime = DateTime.Now,
-                Title = name,
-                OwnerId = Constants.OWNER_GEOGRAPHY,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = null
-                    },
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = null
-                    }
+            yield return new SubdivisionType.SubdivisionTypeToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                NodeTypeId = 51,
-                Description = "",
-                FileIdTileImage = null,
-                Terms = new List<NewTermForNewNameable>
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = 1,
+                    CreatedDateTime = DateTime.Now,
+                    ChangedDateTime = DateTime.Now,
+                    Title = name,
+                    OwnerId = Constants.OWNER_GEOGRAPHY,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    {
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.PPL,
+                            PublicationStatusId = 1,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = null
+                        },
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.CPCT,
+                            PublicationStatusId = 2,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = null
+                        }
+                    },
+                    NodeTypeId = 51,
+                    TermIds = new List<int>(),
+                },
+                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                    Description = "",
+                    FileIdTileImage = null,
+                    Terms = new List<NewTermForNewNameable>
                 {
                     new NewTermForNewNameable
                     {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null,
+                        },
                         VocabularyId = vocabularyId,
                         Name = name,
                         ParentTermIds = new List<int>(),
                     },
                 },
-                TermIds = new List<int>(),
+                }
+                
             };
-
         }
     }
     protected override async Task MigrateImpl()

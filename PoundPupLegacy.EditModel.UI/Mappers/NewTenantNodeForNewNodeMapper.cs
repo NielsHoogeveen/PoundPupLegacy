@@ -1,13 +1,14 @@
-﻿using PoundPupLegacy.CreateModel;
-namespace PoundPupLegacy.EditModel.UI.Mappers;
+﻿namespace PoundPupLegacy.EditModel.UI.Mappers;
 
-internal class NewTenantNodeForNewNodeMapper : IEnumerableMapper<TenantNode.NewTenantNodeForNewNode, NewTenantNodeForNewNode>
+internal class NewTenantNodeForNewNodeMapper : IEnumerableMapper<TenantNode.NewTenantNodeForNewNode, CreateModel.TenantNode.TenantNodeToCreateForNewNode>
 {
-    public IEnumerable<NewTenantNodeForNewNode> Map(IEnumerable<TenantNode.NewTenantNodeForNewNode> source)
+    public IEnumerable<CreateModel.TenantNode.TenantNodeToCreateForNewNode> Map(IEnumerable<TenantNode.NewTenantNodeForNewNode> source)
     {
         foreach(var  tenantNode in source) {
-            yield return new NewTenantNodeForNewNode {
-                Id = null,
+            yield return new CreateModel.TenantNode.TenantNodeToCreateForNewNode {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null,
+                },
                 PublicationStatusId = tenantNode.PublicationStatusId,
                 TenantId = tenantNode.TenantId,
                 UrlId = null,

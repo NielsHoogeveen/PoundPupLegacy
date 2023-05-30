@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.EditModel;
+﻿using static PoundPupLegacy.EditModel.NodeDetails;
+
+namespace PoundPupLegacy.EditModel;
 
 [JsonSerializable(typeof(ExistingInterOrganizationalRelationFrom))]
 public partial class ExistingInterOrganizationalRelationFromJsonContext : JsonSerializerContext { }
@@ -13,9 +15,8 @@ public static class InterOrganizationalRelationExtentions
             OrganizationFrom = organizationListItem,
             OrganizationTo = null,
             InterOrganizationalRelationDetails = InterOrganizationalRelationDetails.EmptyInstance(interOrganizationalRelationType),
-            NodeDetails = NodeDetails.EmptyInstance("inter organizational relation", ownerId, publisherId),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(47, "inter organizational relation", ownerId, publisherId),
             RelationDetails = RelationDetails.EmptyInstance,
-            NewTenantNodeDetails = TenantNodeDetails.NewTenantNodeDetails.EmptyInstance,
         };
     }
     public static NewInterOrganizationalNewFromRelation GetNewInterOrganizationalRelationFrom(this OrganizationName organizationName, InterOrganizationalRelationTypeListItem interOrganizationalRelationType, int ownerId, int publisherId)
@@ -24,9 +25,8 @@ public static class InterOrganizationalRelationExtentions
             OrganizationFrom = organizationName,
             OrganizationTo = null,
             InterOrganizationalRelationDetails = InterOrganizationalRelationDetails.EmptyInstance(interOrganizationalRelationType),
-            NodeDetails = NodeDetails.EmptyInstance("inter organizational relation", ownerId, publisherId),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(47, "inter organizational relation", ownerId, publisherId),
             RelationDetails = RelationDetails.EmptyInstance,
-            NewTenantNodeDetails = TenantNodeDetails.NewTenantNodeDetails.EmptyInstance,
         };
     }
     public static NewInterOrganizationalExistingToRelation GetNewInterOrganizationalRelationTo(this OrganizationListItem organizationListItem, InterOrganizationalRelationTypeListItem interOrganizationalRelationType, int ownerId, int publisherId)
@@ -35,9 +35,8 @@ public static class InterOrganizationalRelationExtentions
             OrganizationFrom = null,
             OrganizationTo = organizationListItem,
             InterOrganizationalRelationDetails = InterOrganizationalRelationDetails.EmptyInstance(interOrganizationalRelationType),
-            NodeDetails = NodeDetails.EmptyInstance("inter organizational relation", ownerId, publisherId),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(47, "inter organizational relation", ownerId, publisherId),
             RelationDetails = RelationDetails.EmptyInstance,
-            NewTenantNodeDetails = TenantNodeDetails.NewTenantNodeDetails.EmptyInstance,
         };
 
     }
@@ -47,9 +46,8 @@ public static class InterOrganizationalRelationExtentions
             OrganizationFrom = null,
             OrganizationTo = organizationName,
             InterOrganizationalRelationDetails = InterOrganizationalRelationDetails.EmptyInstance(interOrganizationalRelationType),
-            NodeDetails = NodeDetails.EmptyInstance("inter organizational relation", ownerId, publisherId),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(47, "inter organizational relation", ownerId, publisherId),
             RelationDetails = RelationDetails.EmptyInstance,
-            NewTenantNodeDetails = TenantNodeDetails.NewTenantNodeDetails.EmptyInstance,
         };
     }
 }
@@ -60,8 +58,7 @@ public abstract record InterOrganizationalRelation : Relation
     }
     public abstract void SetName(string name);
     public required RelationDetails RelationDetails { get; init; }
-    public required NodeDetails NodeDetails { get; init; }
-    public abstract TenantNodeDetails TenantNodeDetails { get; }
+    public abstract NodeDetails NodeDetails { get; }
     public required InterOrganizationalRelationDetails InterOrganizationalRelationDetails { get; init; }
     public abstract string OrganizationFromName { get; }
     public abstract string OrganizationToName { get; }
@@ -110,8 +107,8 @@ public abstract record InterOrganizationalRelation : Relation
 
                 public sealed record NewInterOrganizationalNewFromRelation : NewIncompleteInterOrganizationalRelationFrom, NewNode
                 {
-                    public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
-                    public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
+                    public override NodeDetails NodeDetails => NodeDetailsForCreate;
+                    public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
                     public required OrganizationName OrganizationFrom { get; set; }
 
                     public sealed override void SetName(string name)
@@ -125,9 +122,8 @@ public abstract record InterOrganizationalRelation : Relation
                         return new NewInterOrganizationalNewToRelation {
                             OrganizationFrom = OrganizationTo,
                             OrganizationTo = OrganizationFrom,
-                            NewTenantNodeDetails = NewTenantNodeDetails,
                             InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
-                            NodeDetails = NodeDetails,
+                            NodeDetailsForCreate = NodeDetailsForCreate,
                             RelationDetails = RelationDetails,
                         };
                     }
@@ -136,9 +132,8 @@ public abstract record InterOrganizationalRelation : Relation
                         return new CompletedNewInterOrganizationalNewFromRelation {
                             OrganizationFrom = OrganizationFrom,
                             OrganizationTo = organizationListItemTo,
-                            NewTenantNodeDetails = NewTenantNodeDetails,
                             InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
-                            NodeDetails = NodeDetails,
+                            NodeDetailsForCreate = NodeDetailsForCreate,
                             RelationDetails = RelationDetails,
                         };
                     }
@@ -146,9 +141,8 @@ public abstract record InterOrganizationalRelation : Relation
 
                 public sealed record NewInterOrganizationalExistingFromRelation : NewIncompleteInterOrganizationalRelationFrom, NewNode
                 {
-                    public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
-                    public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
-
+                    public override NodeDetails NodeDetails => NodeDetailsForCreate;
+                    public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
                     public required OrganizationListItem OrganizationFrom { get; set; }
                     public sealed override void SetName(string name)
                     {
@@ -161,9 +155,8 @@ public abstract record InterOrganizationalRelation : Relation
                         return new NewInterOrganizationalExistingToRelation {
                             OrganizationFrom = OrganizationTo,
                             OrganizationTo = OrganizationFrom,
-                            NewTenantNodeDetails = NewTenantNodeDetails,
                             InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
-                            NodeDetails = NodeDetails,
+                            NodeDetailsForCreate = NodeDetailsForCreate,
                             RelationDetails = RelationDetails,
                         };
                     }
@@ -173,9 +166,8 @@ public abstract record InterOrganizationalRelation : Relation
                         return new NewInterOrganizationalExistingRelationFrom {
                             OrganizationFrom = OrganizationFrom,
                             OrganizationTo = organizationListItemTo,
-                            NewTenantNodeDetails = NewTenantNodeDetails,
                             InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
-                            NodeDetails = NodeDetails,
+                            NodeDetailsForCreate = NodeDetailsForCreate,
                             RelationDetails = RelationDetails,
                         };
                     }
@@ -210,9 +202,8 @@ public abstract record InterOrganizationalRelation : Relation
 
             public sealed record CompletedNewInterOrganizationalNewFromRelation : CompletedInterOrganizationalRelationFrom, NewNode
             {
-                public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
-                public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
-
+                public override NodeDetails NodeDetails => NodeDetailsForCreate;
+                public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
                 public required OrganizationName OrganizationFrom { get; set; }
                 
                 public sealed override void SetName(string name)
@@ -227,9 +218,8 @@ public abstract record InterOrganizationalRelation : Relation
                     return new CompletedNewInterOrganizationalNewToRelation {
                         OrganizationFrom = OrganizationTo,
                         OrganizationTo = OrganizationFrom,
-                        NewTenantNodeDetails = NewTenantNodeDetails,
                         InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
-                        NodeDetails = NodeDetails,
+                        NodeDetailsForCreate = NodeDetailsForCreate,
                         RelationDetails = RelationDetails,
                     };
                 }
@@ -250,8 +240,8 @@ public abstract record InterOrganizationalRelation : Relation
 
                 public sealed record ExistingInterOrganizationalRelationFrom : ResolvedInterOrganizationalRelationFrom, ExistingNode
                 {
-                    public override TenantNodeDetails TenantNodeDetails => ExistingTenantNodeDetails;
-                    public required TenantNodeDetails.ExistingTenantNodeDetails ExistingTenantNodeDetails { get; init; }
+                    public override NodeDetails NodeDetails => NodeDetailsForUpdate;
+                    public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
                     public required NodeIdentification NodeIdentification { get; init; }
 
                     public sealed override ExistingInterOrganizationalRelationTo SwapFromAndTo()
@@ -259,9 +249,8 @@ public abstract record InterOrganizationalRelation : Relation
                         return new ExistingInterOrganizationalRelationTo {
                             OrganizationFrom = OrganizationTo,
                             OrganizationTo = OrganizationFrom,
-                            ExistingTenantNodeDetails = ExistingTenantNodeDetails,
                             InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
-                            NodeDetails = NodeDetails,
+                            NodeDetailsForUpdate = NodeDetailsForUpdate,
                             RelationDetails = RelationDetails,
                             NodeIdentification = NodeIdentification,
                         };
@@ -270,16 +259,15 @@ public abstract record InterOrganizationalRelation : Relation
 
                 public sealed record NewInterOrganizationalExistingRelationFrom : ResolvedInterOrganizationalRelationFrom, NewNode
                 {
-                    public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
-                    public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
+                    public override NodeDetails NodeDetails => NodeDetailsForCreate;
+                    public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
                     public sealed override NewInterOrganizationalExistingRelationTo SwapFromAndTo()
                     {
                         return new NewInterOrganizationalExistingRelationTo {
                             OrganizationFrom = OrganizationTo,
                             OrganizationTo = OrganizationFrom,
-                            NewTenantNodeDetails = NewTenantNodeDetails,
                             InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
-                            NodeDetails = NodeDetails,
+                            NodeDetailsForCreate = NodeDetailsForCreate,
                             RelationDetails = RelationDetails,
                         };
                     }
@@ -331,8 +319,8 @@ public abstract record InterOrganizationalRelation : Relation
                 }
                 public sealed record NewInterOrganizationalExistingToRelation : NewIncompleteInterOrganizationalRelationTo, NewNode
                 {
-                    public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
-                    public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
+                    public override NodeDetails NodeDetails => NodeDetailsForCreate;
+                    public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
                     public required OrganizationListItem OrganizationTo { get; set; }
                     public sealed override void SetName(string name)
                     {
@@ -346,9 +334,8 @@ public abstract record InterOrganizationalRelation : Relation
                         return new NewInterOrganizationalExistingFromRelation {
                             OrganizationFrom = OrganizationTo,
                             OrganizationTo = OrganizationFrom,
-                            NewTenantNodeDetails = NewTenantNodeDetails,
                             InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
-                            NodeDetails = NodeDetails,
+                            NodeDetailsForCreate = NodeDetailsForCreate,
                             RelationDetails = RelationDetails,
                         };
                     }
@@ -358,9 +345,8 @@ public abstract record InterOrganizationalRelation : Relation
                         return new NewInterOrganizationalExistingRelationTo {
                             OrganizationFrom = organizationListItemFrom,
                             OrganizationTo = OrganizationTo,
-                            NewTenantNodeDetails = NewTenantNodeDetails,
                             InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
-                            NodeDetails = NodeDetails,
+                            NodeDetailsForCreate = NodeDetailsForCreate,
                             RelationDetails = RelationDetails,
                         };
                     }
@@ -368,9 +354,8 @@ public abstract record InterOrganizationalRelation : Relation
 
                 public sealed record NewInterOrganizationalNewToRelation : NewIncompleteInterOrganizationalRelationTo, NewNode
                 {
-                    public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
-                    public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
-
+                    public override NodeDetails NodeDetails => NodeDetailsForCreate;
+                    public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
                     public required OrganizationName OrganizationTo { get; set; }
                     public sealed override void SetName(string name)
                     {
@@ -384,9 +369,8 @@ public abstract record InterOrganizationalRelation : Relation
                         return new NewInterOrganizationalNewFromRelation {
                             OrganizationFrom = OrganizationTo,
                             OrganizationTo = OrganizationFrom,
-                            NewTenantNodeDetails = NewTenantNodeDetails,
                             InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
-                            NodeDetails = NodeDetails,
+                            NodeDetailsForCreate = NodeDetailsForCreate,
                             RelationDetails = RelationDetails,
                         };
                     }
@@ -395,9 +379,8 @@ public abstract record InterOrganizationalRelation : Relation
                         return new CompletedNewInterOrganizationalNewToRelation {
                             OrganizationFrom = organizationListItemFrom,
                             OrganizationTo = OrganizationTo,
-                            NewTenantNodeDetails = NewTenantNodeDetails,
                             InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
-                            NodeDetails = NodeDetails,
+                            NodeDetailsForCreate = NodeDetailsForCreate,
                             RelationDetails = RelationDetails,
                         };
                     }
@@ -431,9 +414,8 @@ public abstract record InterOrganizationalRelation : Relation
             }
             public sealed record CompletedNewInterOrganizationalNewToRelation : CompletedInterOrganizationalRelationTo, NewNode
             {
-                public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
-                public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
-
+                public override NodeDetails NodeDetails => NodeDetailsForCreate;
+                public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
                 public required OrganizationName OrganizationTo { get; set; }
 
                 public sealed override void SetName(string name)
@@ -448,10 +430,9 @@ public abstract record InterOrganizationalRelation : Relation
                     return new CompletedNewInterOrganizationalNewFromRelation {
                         OrganizationFrom = OrganizationTo,
                         OrganizationTo = OrganizationFrom,
-                        NewTenantNodeDetails = NewTenantNodeDetails,
                         InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
-                        NodeDetails = NodeDetails,
                         RelationDetails = RelationDetails,
+                        NodeDetailsForCreate = NodeDetailsForCreate
                     };
                 }
             }
@@ -472,36 +453,35 @@ public abstract record InterOrganizationalRelation : Relation
 
                 public sealed record ExistingInterOrganizationalRelationTo : ResolvedInterOrganizationalRelationTo, ExistingNode
                 {
-                    public override TenantNodeDetails TenantNodeDetails => ExistingTenantNodeDetails;
-                    public required TenantNodeDetails.ExistingTenantNodeDetails ExistingTenantNodeDetails { get; init; }
+                    public override NodeDetails NodeDetails => NodeDetailsForUpdate;
+                    public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
                     public required NodeIdentification NodeIdentification { get; init; }
                     public sealed override ExistingInterOrganizationalRelationFrom SwapFromAndTo()
                     {
                         return new ExistingInterOrganizationalRelationFrom {
                             OrganizationFrom = OrganizationTo,
                             OrganizationTo = OrganizationFrom,
-                            ExistingTenantNodeDetails = ExistingTenantNodeDetails,
                             InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
-                            NodeDetails = NodeDetails,
                             NodeIdentification = NodeIdentification,
                             RelationDetails = RelationDetails,
+                            NodeDetailsForUpdate = NodeDetailsForUpdate
                         };
                     }
                 }
 
                 public sealed record NewInterOrganizationalExistingRelationTo : ResolvedInterOrganizationalRelationTo, NewNode
                 {
-                    public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
-                    public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
+                    public override NodeDetails NodeDetails => NodeDetailsForCreate;
+                    public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+
                     public sealed override NewInterOrganizationalExistingRelationFrom SwapFromAndTo()
                     {
                         return new NewInterOrganizationalExistingRelationFrom {
                             OrganizationFrom = OrganizationTo,
                             OrganizationTo = OrganizationFrom,
-                            NewTenantNodeDetails = NewTenantNodeDetails,
                             InterOrganizationalRelationDetails = InterOrganizationalRelationDetails,
-                            NodeDetails = NodeDetails,
                             RelationDetails = RelationDetails,
+                            NodeDetailsForCreate = NodeDetailsForCreate
                         };
                     }
                 }

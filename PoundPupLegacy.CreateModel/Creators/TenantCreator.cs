@@ -39,13 +39,13 @@ internal class TenantCreator(
         await base.ProcessAsync(element);
 
         var accessRole = element.AccessRoleNotLoggedIn;
-        accessRole.UserGroupId = element.Id!.Value;
+        accessRole.UserGroupId = element.IdentificationForCreate.Id!.Value;
         await principalInserter.InsertAsync(accessRole);
         await userRoleInserter.InsertAsync(accessRole);
         await accessRoleInserter.InsertAsync(accessRole);
 
         var administratorRole = element.AdministratorRole;
-        administratorRole.UserGroupId = element.Id.Value;
+        administratorRole.UserGroupId = element.IdentificationForCreate.Id.Value;
         await principalInserter.InsertAsync(administratorRole);
         await userRoleInserter.InsertAsync(administratorRole);
         await administratorRoleInserter.InsertAsync(administratorRole);

@@ -11,7 +11,7 @@ internal sealed class ChildTraffickingCaseCreatorFactory(
     LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory,
-    IEntityCreatorFactory<CaseNewCasePartiesToUpdate> caseCaseTypeCreatorFactory
+    IEntityCreatorFactory<CaseExistingCasePartiesToCreate> caseCaseTypeCreatorFactory
 ) : IEntityCreatorFactory<ChildTraffickingCase.ChildTraffickingCaseToCreate>
 {
     public async Task<IEntityCreator<ChildTraffickingCase.ChildTraffickingCaseToCreate>> CreateAsync(IDbConnection connection) =>

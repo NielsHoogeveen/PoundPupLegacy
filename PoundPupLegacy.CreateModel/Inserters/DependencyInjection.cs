@@ -11,7 +11,7 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<AbuseCaseTypeOfAbuser>, AbuseCaseTypeOfAbuserInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<AccessRole>, AccessRoleInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<AccessRolePrivilege>, AccessRolePrivilegeInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<ActToCreate>, ActInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<Act.ActToCreate>, ActInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<Action>, ActionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<ActionMenuItem>, ActionMenuItemInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<AdministratorRole>, AdministratorRoleInserterFactory>();
@@ -41,7 +41,7 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<CollectiveUser>, CollectiveUserInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<Comment>, CommentInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<CongressionalTermToCreate>, CongressionalTermInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<CongressionalTermPoliticalPartyAffiliation.CongressionalTermPoliticalPartyAffiliationToCreate>, CongressionalTermPoliticalPartyAffiliationInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<CongressionalTermPoliticalPartyAffiliation.CongressionalTermPoliticalPartyAffiliationToCreateForExistingTerm>, CongressionalTermPoliticalPartyAffiliationInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<ContentSharingGroup>, ContentSharingGroupInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<CountryAndFirstAndBottomLevelSubdivision.CountryAndFirstAndBottomLevelSubdivisionToCreate>, CountryAndFirstAndBottomLevelSubdivisionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<CountryAndFirstAndSecondLevelSubdivision.CountryAndFirstAndSecondLevelSubdivisionToCreate>, CountryAndFirstAndSecondLevelSubdivisionInserterFactory>();
@@ -86,7 +86,7 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<LocatableToCreate>, LocatableInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<LocationToCreate>, LocationInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<LocationLocatable>, LocationLocatableInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<MemberOfCongressToCreate>, MemberOfCongressInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<MemberOfCongressToCreateForExistingPerson>, MemberOfCongressInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<MenuItem>, MenuItemInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<MultiQuestionPoll.MultiQuestionPollToCreate>, MultiQuestionPollInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<MultiQuestionPollPollQuestion>, MultiQuestionPollPollQuestionInserterFactory>();
@@ -114,12 +114,12 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<PollStatus>, PollStatusInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<PollVote>, PollVoteInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<Principal>, PrincipalInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<ProfessionalRoleToCreate>, ProfessionalRoleInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<ProfessionalRoleToCreateForExistingPerson>, ProfessionalRoleInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<Profession.ProfessionToCreate>, ProfessionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<Publisher>, PublisherInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<PublicationStatus>, PublicationStatusInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<PublishingUserGroup>, PublishingUserGroupInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<Representative.RepresentativeToCreate>, RepresentativeInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<Representative.RepresentativeToCreateForExistingPerson>, RepresentativeInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<RepresentativeHouseBillAction>, RepresentativeHouseBillActionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<Review.ReviewToCreate>, ReviewInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<SearchableToCreate>, SearchableInserterFactory>();
@@ -127,7 +127,7 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<SecondLevelSubdivisionToCreate>, SecondLevelSubdivisionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<SenateBill.SenateBillToCreate>, SenateBillInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<SenateTerm.SenateTermToCreate>, SenateTermInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<Senator.SenatorToCreate>, SenatorInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<Senator.SenatorToCreateForExistingPerson>, SenatorInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<SenatorSenateBillAction>, SenatorSenateBillActionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<SimpleTextNodeToCreate>, SimpleTextNodeInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<SingleQuestionPoll.SingleQuestionPollToCreate>, SingleQuestionPollInserterFactory>();

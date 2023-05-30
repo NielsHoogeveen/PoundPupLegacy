@@ -8,9 +8,16 @@ public sealed record SystemGroup : UserGroup, Owner
 
     public AdministratorRole AdministratorRole => new AdministratorRole {
         UserGroupId = 0,
-        Id = 21
+        IdentificationForCreate = new Identification.IdentificationForCreate {
+            Id = Constants.SYSTEM_ADMINISTRATOR,
+        },
     };
     public required Vocabulary.VocabularyToCreate VocabularyTagging { get; init; }
+    public required Identification.IdentificationForCreate IdentificationForCreate {
+        get => new Identification.IdentificationForCreate { Id = Constants.OWNER_SYSTEM };
+        init {
+        }
+    } 
+    public Identification Identification => IdentificationForCreate;
 
-    public int? Id { get; set; } = Constants.OWNER_SYSTEM;
 }

@@ -8,7 +8,9 @@ internal class LocationsToAddMapper : IEnumerableMapper<Location.ExistingLocatio
     {
         foreach (var location in source) {
             yield return new CreateModel.LocationToCreate {
-                Id = null,
+                IdentificationForCreate = new Identification.IdentificationForCreate { 
+                    Id = null,
+                },
                 Additional = location.Addition,
                 City = location.City,
                 CountryId = location.CountryId,

@@ -7,12 +7,12 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<NameableIdReaderByTermNameRequest, int> termReaderByNameFactory,
-    IEntityCreatorFactory<EventuallyIdentifiableCountryAndFirstAndSecondLevelSubdivision> countryAndFirstAndSecondLevelSubdivisionCreatorFactory
+    IEntityCreatorFactory<CountryAndFirstAndSecondLevelSubdivision.CountryAndFirstAndSecondLevelSubdivisionToCreate> countryAndFirstAndSecondLevelSubdivisionCreatorFactory
 ) : CountryMigrator(databaseConnections)
 {
     protected override string Name => "countries that are both first and second level subdivisions";
 
-    private async IAsyncEnumerable<NewCountryAndFirstAndSecondLevelSubdivision> GetRegionSubdivisionCountries(
+    private async IAsyncEnumerable<CountryAndFirstAndSecondLevelSubdivision.CountryAndFirstAndSecondLevelSubdivisionToCreate> GetRegionSubdivisionCountries(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
         IMandatorySingleItemDatabaseReader<NameableIdReaderByTermNameRequest, int> termReaderByName
@@ -31,97 +31,127 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             Name = "Overseas collectivity"
         }));
 
-        yield return new NewCountryAndFirstAndSecondLevelSubdivision {
-            Id = null,
-            Title = "Saint Barthélemy",
-            Name = "Saint Barthélemy",
-            OwnerId = Constants.OWNER_GEOGRAPHY,
-            AuthoringStatusId = 1,
-            TenantNodes = new List<NewTenantNodeForNewNode>
-            {
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = Constants.PPL,
-                    PublicationStatusId = 1,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.SAINT_BARTH
-                },
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = Constants.CPCT,
-                    PublicationStatusId = 2,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.SAINT_BARTH
-                }
+        yield return new CountryAndFirstAndSecondLevelSubdivision.CountryAndFirstAndSecondLevelSubdivisionToCreate {
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = null
             },
-            NodeTypeId = 16,
-            CreatedDateTime = DateTime.Now,
-            ChangedDateTime = DateTime.Now,
-            PublisherId = 1,
-            Description = "",
-            Terms = new List<NewTermForNewNameable>
-            {
-                new NewTermForNewNameable
+            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                Title = "Saint Barthélemy",
+                OwnerId = Constants.OWNER_GEOGRAPHY,
+                AuthoringStatusId = 1,
+                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
                 {
-                    VocabularyId = vocabularyIdTopics,
-                    Name = "Saint Barthélemy",
-                    ParentTermIds = new List<int> {
-                        await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
-                            Name = "Caribbean",
-                            VocabularyId = vocabularyIdTopics
-                        })
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = Constants.PPL,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = Constants.SAINT_BARTH
+                    },
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = Constants.SAINT_BARTH
+                    }
+                },
+                NodeTypeId = 16,
+                CreatedDateTime = DateTime.Now,
+                ChangedDateTime = DateTime.Now,
+                PublisherId = 1,
+                TermIds = new List<int>(),
+            },
+            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                Description = "",
+                Terms = new List<NewTermForNewNameable>
+                {
+                    new NewTermForNewNameable
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null,
+                        },
+                        VocabularyId = vocabularyIdTopics,
+                        Name = "Saint Barthélemy",
+                        ParentTermIds = new List<int> {
+                            await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                                Name = "Caribbean",
+                                VocabularyId = vocabularyIdTopics
+                            })
+                        },
                     },
                 },
+                FileIdTileImage = null,
             },
-            SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                TenantId = Constants.PPL,
-                UrlId = 3808
-            }),
-            CountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                TenantId = Constants.PPL,
-                UrlId = 4018
-            }),
-            ISO3166_1_Code = "BL",
-            ISO3166_2_Code = "FR-BL",
-            FileIdFlag = null,
-            FileIdTileImage = null,
-            HagueStatusId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                TenantId = Constants.PPL,
-                UrlId = 41213
-            }),
-            ResidencyRequirements = null,
-            AgeRequirements = null,
-            HealthRequirements = null,
-            IncomeRequirements = null,
-            MarriageRequirements = null,
-            OtherRequirements = null,
-            SubdivisionTypeId = subdivisionTypeId,
-            TermIds = new List<int>(),
+            PoliticalEntityDetails = new PoliticalEntityDetails {
+                FileIdFlag = null,
+            },
+            CountryDetails = new CountryDetails {
+                Name = "Saint Barthélemy",
+                HagueStatusId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+                    TenantId = Constants.PPL,
+                    UrlId = 41213
+                }),
+                ResidencyRequirements = null,
+                AgeRequirements = null,
+                HealthRequirements = null,
+                IncomeRequirements = null,
+                MarriageRequirements = null,
+                OtherRequirements = null,
+            },
+            SubdivisionDetails = new SubdivisionDetails {
+                Name = "Saint Barthélemy",
+                CountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+                    TenantId = Constants.PPL,
+                    UrlId = 4018
+                }),
+                SubdivisionTypeId = subdivisionTypeId,
+            },
+            ISOCodedSubdivisionDetails = new ISOCodedSubdivisionDetails {
+                ISO3166_2_Code = "FR-BL",
+            },
+            TopLevelCountryDetails = new TopLevelCountryDetails {
+                SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+                    TenantId = Constants.PPL,
+                    UrlId = 3808
+                }),
+                ISO3166_1_Code = "BL",
+            },
         };
-        yield return new NewCountryAndFirstAndSecondLevelSubdivision {
-            Id = null,
-            Title = "Saint Martin",
-            Name = "Saint Martin",
-            OwnerId = Constants.OWNER_GEOGRAPHY,
-            AuthoringStatusId = 1,
-            TenantNodes = new List<NewTenantNodeForNewNode>
+        yield return new CountryAndFirstAndSecondLevelSubdivision.CountryAndFirstAndSecondLevelSubdivisionToCreate {
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = null
+            },
+            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                Title = "Saint Martin",
+                OwnerId = Constants.OWNER_GEOGRAPHY,
+                AuthoringStatusId = 1,
+                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
                 {
-                    new NewTenantNodeForNewNode
+                    new TenantNode.TenantNodeToCreateForNewNode
                     {
-                        Id = null,
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
                         TenantId = Constants.PPL,
                         PublicationStatusId = 1,
                         UrlPath = null,
                         SubgroupId = null,
                         UrlId = Constants.SAINT_MARTIN
                     },
-                    new NewTenantNodeForNewNode
+                    new TenantNode.TenantNodeToCreateForNewNode
                     {
-                        Id = null,
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
@@ -129,15 +159,21 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
                         UrlId = Constants.SAINT_MARTIN
                     }
                 },
-            NodeTypeId = 16,
-            CreatedDateTime = DateTime.Now,
-            ChangedDateTime = DateTime.Now,
-            PublisherId = 1,
-            Description = "",
-            Terms = new List<NewTermForNewNameable>
+                NodeTypeId = 16,
+                CreatedDateTime = DateTime.Now,
+                ChangedDateTime = DateTime.Now,
+                PublisherId = 1,
+                TermIds = new List<int>(),
+            },
+            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                Description = "",
+                Terms = new List<NewTermForNewNameable>
                 {
                     new NewTermForNewNameable
                     {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null,
+                        },
                         VocabularyId = vocabularyIdTopics,
                         Name = "Saint Martin",
                         ParentTermIds = new List<int>{
@@ -148,51 +184,69 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
                         },
                     },
                 },
-            SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                TenantId = Constants.PPL,
-                UrlId = 3809
-            }),
-            CountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                TenantId = Constants.PPL,
-                UrlId = 4018
-            }),
-            ISO3166_1_Code = "MF",
-            ISO3166_2_Code = "FR-MF",
-            FileIdFlag = null,
-            FileIdTileImage = null,
-            HagueStatusId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                TenantId = Constants.PPL,
-                UrlId = 41213
-            }),
-            ResidencyRequirements = null,
-            AgeRequirements = null,
-            HealthRequirements = null,
-            IncomeRequirements = null,
-            MarriageRequirements = null,
-            OtherRequirements = null,
-            SubdivisionTypeId = subdivisionTypeId,
-            TermIds = new List<int>(),
+                FileIdTileImage = null,
+            },
+            PoliticalEntityDetails = new PoliticalEntityDetails {
+                FileIdFlag = null,
+            },
+            CountryDetails = new CountryDetails {
+                Name = "Saint Martin",
+                HagueStatusId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+                    TenantId = Constants.PPL,
+                    UrlId = 41213
+                }),
+                ResidencyRequirements = null,
+                AgeRequirements = null,
+                HealthRequirements = null,
+                IncomeRequirements = null,
+                MarriageRequirements = null,
+                OtherRequirements = null,
+            },
+            SubdivisionDetails = new SubdivisionDetails {
+                Name = "Saint Martin",
+                CountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+                    TenantId = Constants.PPL,
+                    UrlId = 4018
+                }),
+                SubdivisionTypeId = subdivisionTypeId,
+            },
+            ISOCodedSubdivisionDetails = new ISOCodedSubdivisionDetails {
+                ISO3166_2_Code = "FR-MF",
+            },
+            TopLevelCountryDetails = new TopLevelCountryDetails {
+                SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+                    TenantId = Constants.PPL,
+                    UrlId = 3809
+                }),
+                ISO3166_1_Code = "MF",
+            },
         };
-        yield return new NewCountryAndFirstAndSecondLevelSubdivision {
-            Id = null,
-            Title = "French Southern Territories",
-            Name = "French Southern Territories",
-            OwnerId = Constants.OWNER_GEOGRAPHY,
-            AuthoringStatusId = 1,
-            TenantNodes = new List<NewTenantNodeForNewNode>
+        yield return new CountryAndFirstAndSecondLevelSubdivision.CountryAndFirstAndSecondLevelSubdivisionToCreate {
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = null
+            },
+            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                Title = "French Southern Territories",
+                OwnerId = Constants.OWNER_GEOGRAPHY,
+                AuthoringStatusId = 1,
+                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
                 {
-                    new NewTenantNodeForNewNode
+                    new TenantNode.TenantNodeToCreateForNewNode
                     {
-                        Id = null,
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
                         TenantId = Constants.PPL,
                         PublicationStatusId = 1,
                         UrlPath = null,
                         SubgroupId = null,
                         UrlId = Constants.FRENCH_SOUTHERN_TERRITORIES
                     },
-                    new NewTenantNodeForNewNode
+                    new TenantNode.TenantNodeToCreateForNewNode
                     {
-                        Id = null,
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
@@ -200,15 +254,21 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
                         UrlId = Constants.FRENCH_SOUTHERN_TERRITORIES
                     }
                 },
-            NodeTypeId = 15,
-            CreatedDateTime = DateTime.Now,
-            ChangedDateTime = DateTime.Now,
-            PublisherId = 1,
-            Description = "",
-            Terms = new List<NewTermForNewNameable>
+                NodeTypeId = 15,
+                CreatedDateTime = DateTime.Now,
+                ChangedDateTime = DateTime.Now,
+                PublisherId = 1,
+                TermIds = new List<int>(),
+            },
+            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                Description = "",
+                Terms = new List<NewTermForNewNameable>
                 {
                     new NewTermForNewNameable
                     {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null,
+                        },
                         VocabularyId = vocabularyIdTopics,
                         Name = "French Southern Territories",
                         ParentTermIds = new List<int>{
@@ -219,30 +279,42 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
                         },
                     },
                 },
-            SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                TenantId = Constants.PPL,
-                UrlId = 3828
-            }),
-            CountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                TenantId = Constants.PPL,
-                UrlId = 4018
-            }),
-            ISO3166_1_Code = "TF",
-            ISO3166_2_Code = "FR-TF",
-            FileIdFlag = null,
-            FileIdTileImage = null,
-            HagueStatusId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                TenantId = Constants.PPL,
-                UrlId = 41213
-            }),
-            ResidencyRequirements = null,
-            AgeRequirements = null,
-            HealthRequirements = null,
-            IncomeRequirements = null,
-            MarriageRequirements = null,
-            OtherRequirements = null,
-            SubdivisionTypeId = subdivisionTypeId,
-            TermIds = new List<int>(),
+                FileIdTileImage = null,
+            },
+            PoliticalEntityDetails = new PoliticalEntityDetails {
+                FileIdFlag = null,
+            },
+            CountryDetails = new CountryDetails {
+                Name = "French Southern Territories",
+                HagueStatusId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+                    TenantId = Constants.PPL,
+                    UrlId = 41213
+                }),
+                ResidencyRequirements = null,
+                AgeRequirements = null,
+                HealthRequirements = null,
+                IncomeRequirements = null,
+                MarriageRequirements = null,
+                OtherRequirements = null,
+            },
+            SubdivisionDetails = new SubdivisionDetails {
+                Name = "French Southern Territories",
+                CountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+                    TenantId = Constants.PPL,
+                    UrlId = 4018
+                }),
+                SubdivisionTypeId = subdivisionTypeId,
+            },
+            TopLevelCountryDetails = new TopLevelCountryDetails {
+                ISO3166_1_Code = "TF",
+                SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+                    TenantId = Constants.PPL,
+                    UrlId = 3828
+                }),
+            },
+            ISOCodedSubdivisionDetails = new ISOCodedSubdivisionDetails {
+                ISO3166_2_Code = "FR-TF",
+            }
         };
     }
 
@@ -263,7 +335,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             termReaderByName
         ));
     }
-    private async IAsyncEnumerable<NewCountryAndFirstAndSecondLevelSubdivision> ReadCountryAndFirstAndSecondLevelSubdivision(
+    private async IAsyncEnumerable<CountryAndFirstAndSecondLevelSubdivision.CountryAndFirstAndSecondLevelSubdivisionToCreate> ReadCountryAndFirstAndSecondLevelSubdivision(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
         IMandatorySingleItemDatabaseReader<NameableIdReaderByTermNameRequest, int> termReaderByName
@@ -331,6 +403,9 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             {
                 new NewTermForNewNameable
                 {
+                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                        Id = null,
+                    },
                     VocabularyId = vocabularyIdTopics,
                     Name = name,
                     ParentTermIds = new List<int>{
@@ -343,66 +418,87 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             };
 
 
-            yield return new NewCountryAndFirstAndSecondLevelSubdivision {
-                Id = null,
-                PublisherId = reader.GetInt32("access_role_id"),
-                CreatedDateTime = reader.GetDateTime("created_date_time"),
-                ChangedDateTime = reader.GetDateTime("changed_date_time"),
-                Title = name,
-                Name = name,
-                OwnerId = Constants.OWNER_GEOGRAPHY,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = reader.GetInt32("node_status_id"),
-                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                        SubgroupId = null,
-                        UrlId = id
-                    },
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id < 33163 ? id : null
-                    }
+            yield return new CountryAndFirstAndSecondLevelSubdivision.CountryAndFirstAndSecondLevelSubdivisionToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                NodeTypeId = 16,
-                Description = "",
-                Terms = vocabularyNames,
-                SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                    TenantId = Constants.PPL,
-                    UrlId = reader.GetInt32("second_level_region_id")
-                }),
-                ISO3166_1_Code = id == 3847 ? "NE" :
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = reader.GetInt32("access_role_id"),
+                    CreatedDateTime = reader.GetDateTime("created_date_time"),
+                    ChangedDateTime = reader.GetDateTime("changed_date_time"),
+                    Title = name,
+                    OwnerId = Constants.OWNER_GEOGRAPHY,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    {
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.PPL,
+                            PublicationStatusId = reader.GetInt32("node_status_id"),
+                            UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
+                            SubgroupId = null,
+                            UrlId = id
+                        },
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.CPCT,
+                            PublicationStatusId = 2,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id < 33163 ? id : null
+                        }
+                    },
+                    NodeTypeId = 16,
+                    TermIds = new List<int>(),
+                },
+                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                    Description = "",
+                    Terms = vocabularyNames,
+                    FileIdTileImage = null,
+                },
+                PoliticalEntityDetails = new PoliticalEntityDetails {
+                    FileIdFlag = null,
+                },
+                CountryDetails = new CountryDetails {
+                    Name = name,
+                    HagueStatusId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+                        TenantId = Constants.PPL,
+                        UrlId = 41213
+                    }),
+                    ResidencyRequirements = null,
+                    AgeRequirements = null,
+                    HealthRequirements = null,
+                    IncomeRequirements = null,
+                    MarriageRequirements = null,
+                    OtherRequirements = null,
+                },
+                SubdivisionDetails = new SubdivisionDetails {
+                    Name = name,
+                    CountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+                        TenantId = Constants.PPL,
+                        UrlId = GetSupervisingCountryId(id)
+                    }),
+                    SubdivisionTypeId = subdivisionTypeId,
+                },
+                TopLevelCountryDetails = new TopLevelCountryDetails {
+                    SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+                        TenantId = Constants.PPL,
+                        UrlId = reader.GetInt32("second_level_region_id")
+                    }),
+                    ISO3166_1_Code = id == 3847 ? "NE" :
                                  id == 4010 ? "RS" :
                                  id == 4014 ? "XK" :
                                  reader.GetString("iso_3166_code"),
-                ISO3166_2_Code = GetISO3166Code2ForCountry(id),
-                CountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                    TenantId = Constants.PPL,
-                    UrlId = GetSupervisingCountryId(id)
-                }),
-                FileIdFlag = null,
-                FileIdTileImage = null,
-                HagueStatusId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                    TenantId = Constants.PPL,
-                    UrlId = 41213
-                }),
-                ResidencyRequirements = null,
-                AgeRequirements = null,
-                HealthRequirements = null,
-                IncomeRequirements = null,
-                MarriageRequirements = null,
-                OtherRequirements = null,
-                SubdivisionTypeId = subdivisionTypeId,
-                TermIds = new List<int>(),
+                },
+                ISOCodedSubdivisionDetails = new ISOCodedSubdivisionDetails {
+                    ISO3166_2_Code = GetISO3166Code2ForCountry(id),
+                }
             };
         }
         await reader.CloseAsync();

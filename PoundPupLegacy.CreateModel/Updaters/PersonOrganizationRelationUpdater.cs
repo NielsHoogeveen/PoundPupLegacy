@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Updaters;
 
-using Request = ImmediatelyIdentifiablePersonOrganizationRelation;
+using Request = PersonOrganizationRelation.PersonOrganizationRelationToUpdate;
 
 internal sealed class PersonOrganizationRelationUpdaterFactory : DatabaseUpdaterFactory<Request>
 {
@@ -34,15 +34,15 @@ internal sealed class PersonOrganizationRelationUpdaterFactory : DatabaseUpdater
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new List<ParameterValue> {
-            ParameterValue.Create(NodeId, request.Id),
-            ParameterValue.Create(Title, request.Title),
+            ParameterValue.Create(NodeId, request.IdentificationForUpdate.Id),
+            ParameterValue.Create(Title, request.NodeDetails.Title),
             ParameterValue.Create(PersonId, request.PersonId),
             ParameterValue.Create(OrganizationId, request.OrganizationId),
-            ParameterValue.Create(GeographicalEntityId, request.GeographicalEntityId),
-            ParameterValue.Create(DateRange, request.DateRange),
-            ParameterValue.Create(PersonOrganizationRelationTypeId, request.PersonOrganizationRelationTypeId),
-            ParameterValue.Create(DocumentIdProof, request.DocumentIdProof),
-            ParameterValue.Create(Description, request.Description)
+            ParameterValue.Create(GeographicalEntityId, request.PersonOrganizationRelationDetails.GeographicalEntityId),
+            ParameterValue.Create(DateRange, request.PersonOrganizationRelationDetails.DateRange),
+            ParameterValue.Create(PersonOrganizationRelationTypeId, request.PersonOrganizationRelationDetails.PersonOrganizationRelationTypeId),
+            ParameterValue.Create(DocumentIdProof, request.PersonOrganizationRelationDetails.DocumentIdProof),
+            ParameterValue.Create(Description, request.PersonOrganizationRelationDetails.Description)
         };
     }
 }

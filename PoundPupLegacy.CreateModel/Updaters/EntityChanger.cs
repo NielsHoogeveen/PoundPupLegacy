@@ -8,9 +8,9 @@ public interface IEntityUpdater<T>
 }
 
 public class NodeDetailsChangerFactory(
-    IDatabaseUpdaterFactory<ImmediatelyIdentifiableTenantNode> tenantNodeUpdaterFactory,
+    IDatabaseUpdaterFactory<TenantNode.TenantNodeToUpdate> tenantNodeUpdaterFactory,
     IDatabaseDeleterFactory<TenantNodeToDelete> tenantNodeDeleterFactory,
-    IDatabaseInserterFactory<NewTenantNodeForExistingNode> tenantNodeInserterFactory,
+    IDatabaseInserterFactory<TenantNode.TenantNodeToCreateForExistingNode> tenantNodeInserterFactory,
     IDatabaseInserterFactory<NodeTermToAdd> nodeTermInserterFactory,
     IDatabaseDeleterFactory<NodeTermToRemove> nodeTermDeleterFactory
 )
@@ -28,9 +28,9 @@ public class NodeDetailsChangerFactory(
 }
 
 public class NodeDetailsChanger(
-    IDatabaseUpdater<ImmediatelyIdentifiableTenantNode> tenantNodeUpdater,
+    IDatabaseUpdater<TenantNode.TenantNodeToUpdate> tenantNodeUpdater,
     IDatabaseDeleter<TenantNodeToDelete> tenantNodeDeleter,
-    IDatabaseInserter<NewTenantNodeForExistingNode> tenantNodeInserter,
+    IDatabaseInserter<TenantNode.TenantNodeToCreateForExistingNode> tenantNodeInserter,
     IDatabaseInserter<NodeTermToAdd> nodeTermInserter,
     IDatabaseDeleter<NodeTermToRemove> nodeTermDeleter
 ) : IAsyncDisposable
@@ -38,19 +38,19 @@ public class NodeDetailsChanger(
 
     public async Task Process(NodeToUpdate node)
     {
-        foreach (var newNodeTerms in node.NodeTermsToAdd) {
+        foreach (var newNodeTerms in node.NodeDetailsForUpdate.NodeTermsToAdd) {
             await nodeTermInserter.InsertAsync(newNodeTerms);
         }
-        foreach (var nodeTermsToRemove in node.NodeTermsToRemove) {
+        foreach (var nodeTermsToRemove in node.NodeDetailsForUpdate.NodeTermsToRemove) {
             await nodeTermDeleter.DeleteAsync(nodeTermsToRemove);
         }
-        foreach (var tenantNodeToUpdate in node.TenantNodesToUpdate) {
+        foreach (var tenantNodeToUpdate in node.NodeDetailsForUpdate.TenantNodesToUpdate) {
             await tenantNodeUpdater.UpdateAsync(tenantNodeToUpdate);
         }
-        foreach (var newTenentNode in node.TenantNodesToAdd) {
+        foreach (var newTenentNode in node.NodeDetailsForUpdate.TenantNodesToAdd) {
             await tenantNodeInserter.InsertAsync(newTenentNode);
         }
-        foreach (var tenantNodeToRemove in node.TenantNodesToRemove) {
+        foreach (var tenantNodeToRemove in node.NodeDetailsForUpdate.TenantNodesToRemove) {
             await tenantNodeDeleter.DeleteAsync(tenantNodeToRemove);
         }
     }

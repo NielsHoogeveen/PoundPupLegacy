@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Updaters;
 
-using Request = ImmediatelyIdentifiablePartyPoliticalEntityRelation;
+using Request = PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToUpdate;
 
 internal sealed class PartyPoliticalEntityRelationUpdaterFactory : DatabaseUpdaterFactory<Request>
 {
@@ -30,13 +30,13 @@ internal sealed class PartyPoliticalEntityRelationUpdaterFactory : DatabaseUpdat
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new List<ParameterValue> {
-            ParameterValue.Create(NodeId, request.Id),
-            ParameterValue.Create(Title, request.Title),
+            ParameterValue.Create(NodeId, request.IdentificationForUpdate.Id),
+            ParameterValue.Create(Title, request.NodeDetails.Title),
             ParameterValue.Create(PartyId, request.PartyId),
-            ParameterValue.Create(PoliticalEntityId, request.PoliticalEntityId),
-            ParameterValue.Create(PartyPoliticalEntityRelationTypeId, request.PartyPoliticalEntityRelationTypeId),
-            ParameterValue.Create(DateRange, request.DateRange),
-            ParameterValue.Create(DocumentIdProof,request.DocumentIdProof),
+            ParameterValue.Create(PoliticalEntityId, request.PartyPoliticalEntityRelationDetails.PoliticalEntityId),
+            ParameterValue.Create(PartyPoliticalEntityRelationTypeId, request.PartyPoliticalEntityRelationDetails.PartyPoliticalEntityRelationTypeId),
+            ParameterValue.Create(DateRange, request.PartyPoliticalEntityRelationDetails.DateRange),
+            ParameterValue.Create(DocumentIdProof,request.PartyPoliticalEntityRelationDetails.DocumentIdProof),
         };
     }
 }

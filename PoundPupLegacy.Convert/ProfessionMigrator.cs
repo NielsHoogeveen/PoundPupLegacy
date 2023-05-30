@@ -4,7 +4,7 @@ internal sealed class ProfessionMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileIdFactory,
-    IEntityCreatorFactory<EventuallyIdentifiableProfession> professionCreatorFactory
+    IEntityCreatorFactory<Profession.ProfessionToCreate> professionCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "professions";
@@ -16,7 +16,7 @@ internal sealed class ProfessionMigrator(
         await using var nodeIdReader = await nodeIdReaderFactory.CreateAsync(_postgresConnection);
         await professionCreator.CreateAsync(ReadProfessions(nodeIdReader, fileIdReaderByTenantFileId));
     }
-    private async IAsyncEnumerable<NewProfession> ReadProfessions(
+    private async IAsyncEnumerable<Profession.ProfessionToCreate> ReadProfessions(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<FileIdReaderByTenantFileIdRequest, int> fileIdReaderByTenantFileId
     )
@@ -91,6 +91,9 @@ internal sealed class ProfessionMigrator(
             {
                 new NewTermForNewNameable
                 {
+                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                        Id = null,
+                    },
                     VocabularyId = professionVocabularyId,
                     Name = name,
                     ParentTermIds = new List<int>(),
@@ -98,77 +101,99 @@ internal sealed class ProfessionMigrator(
             };
             if (topicName != null) {
                 vocabularyNames.Add(new NewTermForNewNameable {
+                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                        Id = null,
+                    },
                     VocabularyId = topicsVocabularyId,
                     Name = topicName,
                     ParentTermIds = new List<int>()
                 });
             }
 
-            yield return new NewProfession {
-                Id = null,
-                PublisherId = reader.GetInt32("access_role_id"),
-                CreatedDateTime = reader.GetDateTime("created_date_time"),
-                ChangedDateTime = reader.GetDateTime("changed_date_time"),
-                Title = name,
-                OwnerId = Constants.OWNER_PARTIES,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = 1,
-                        PublicationStatusId = reader.GetInt32("node_status_id"),
-                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                        SubgroupId = null,
-                        UrlId = id
-                    },
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id < 33163 ? id : null
-                    }
+            yield return new Profession.ProfessionToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                NodeTypeId = 6,
-                Description = reader.GetString("description"),
-                FileIdTileImage = reader.IsDBNull("file_id_tile_image")
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = reader.GetInt32("access_role_id"),
+                    CreatedDateTime = reader.GetDateTime("created_date_time"),
+                    ChangedDateTime = reader.GetDateTime("changed_date_time"),
+                    Title = name,
+                    OwnerId = Constants.OWNER_PARTIES,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    {
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = 1,
+                            PublicationStatusId = reader.GetInt32("node_status_id"),
+                            UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
+                            SubgroupId = null,
+                            UrlId = id
+                        },
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.CPCT,
+                            PublicationStatusId = 2,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id < 33163 ? id : null
+                        }
+                    },
+                    NodeTypeId = 6,
+                    TermIds = new List<int>(),
+                },
+                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                    Description = reader.GetString("description"),
+                    FileIdTileImage = reader.IsDBNull("file_id_tile_image")
                     ? null
                     : await fileIdReaderByTenantFileId.ReadAsync(new FileIdReaderByTenantFileIdRequest {
                         TenantId = Constants.PPL,
                         TenantFileId = reader.GetInt32("file_id_tile_image")
                     }),
-                Terms = vocabularyNames,
-                HasConcreteSubtype = reader.GetBoolean("has_concrete_subtype"),
-                TermIds = new List<int>(),
+                    Terms = vocabularyNames,
+                },
+                ProfessionDetails = new ProfessionDetails {
+                    HasConcreteSubtype = reader.GetBoolean("has_concrete_subtype"),
+                },
             };
         }
         reader.Close();
-        yield return new NewProfession {
-            Id = null,
-            PublisherId = 1,
-            CreatedDateTime = DateTime.Now,
-            ChangedDateTime = DateTime.Now,
-            Title = "Senator",
-            OwnerId = Constants.OWNER_PARTIES,
-            AuthoringStatusId = 1,
-            TenantNodes = new List<NewTenantNodeForNewNode>
+        yield return new Profession.ProfessionToCreate {
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = null
+            },
+            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                PublisherId = 1,
+                CreatedDateTime = DateTime.Now,
+                ChangedDateTime = DateTime.Now,
+                Title = "Senator",
+                OwnerId = Constants.OWNER_PARTIES,
+                AuthoringStatusId = 1,
+                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
                 {
-                    new NewTenantNodeForNewNode
+                    new TenantNode.TenantNodeToCreateForNewNode
                     {
-                        Id = null,
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
                         TenantId = Constants.PPL,
                         PublicationStatusId = 1,
                         UrlPath = null,
                         SubgroupId = null,
                         UrlId = null
                     },
-                    new NewTenantNodeForNewNode
+                    new TenantNode.TenantNodeToCreateForNewNode
                     {
-                        Id = null,
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
@@ -176,43 +201,58 @@ internal sealed class ProfessionMigrator(
                         UrlId = null
                     }
                 },
-            NodeTypeId = 6,
-            Description = "",
-            FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameable>
-            {
-                new NewTermForNewNameable
-                {
-                    VocabularyId = professionVocabularyId,
-                    Name = "Senator",
-                    ParentTermIds = new List<int>(),
-                }
+                NodeTypeId = 6,
+                TermIds = new List<int>(),
             },
-            HasConcreteSubtype = true,
-            TermIds = new List<int>(),
-        };
-        yield return new NewProfession {
-            Id = null,
-            PublisherId = 1,
-            CreatedDateTime = DateTime.Now,
-            ChangedDateTime = DateTime.Now,
-            Title = "Representative",
-            OwnerId = Constants.OWNER_PARTIES,
-            AuthoringStatusId = 1,
-            TenantNodes = new List<NewTenantNodeForNewNode>
+            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                Description = "",
+                FileIdTileImage = null,
+                Terms = new List<NewTermForNewNameable>
                 {
-                    new NewTenantNodeForNewNode
+                    new NewTermForNewNameable
                     {
-                        Id = null,
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null,
+                        },
+                        VocabularyId = professionVocabularyId,
+                        Name = "Senator",
+                        ParentTermIds = new List<int>(),
+                    }
+                },
+            },
+            ProfessionDetails = new ProfessionDetails {
+                HasConcreteSubtype = true,
+            },
+        };
+        yield return new Profession.ProfessionToCreate {
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = null
+            },
+            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                PublisherId = 1,
+                CreatedDateTime = DateTime.Now,
+                ChangedDateTime = DateTime.Now,
+                Title = "Representative",
+                OwnerId = Constants.OWNER_PARTIES,
+                AuthoringStatusId = 1,
+                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                {
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
                         TenantId = Constants.PPL,
                         PublicationStatusId = 1,
                         UrlPath = null,
                         SubgroupId = null,
                         UrlId = null
                     },
-                    new NewTenantNodeForNewNode
+                    new TenantNode.TenantNodeToCreateForNewNode
                     {
-                        Id = null,
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
@@ -220,21 +260,28 @@ internal sealed class ProfessionMigrator(
                         UrlId = null
                     }
                 },
-            NodeTypeId = 6,
-            Description = "",
-            FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameable>
-            {
-                new NewTermForNewNameable
-                {
-                    VocabularyId = professionVocabularyId,
-                    Name = "Representative",
-                    ParentTermIds = new List<int>(),
-                }
+                NodeTypeId = 6,
+                TermIds = new List<int>(),
             },
-            HasConcreteSubtype = true,
-            TermIds = new List<int>(),
+            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                Description = "",
+                FileIdTileImage = null,
+                Terms = new List<NewTermForNewNameable>
+                {
+                    new NewTermForNewNameable
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null,
+                        },
+                        VocabularyId = professionVocabularyId,
+                        Name = "Representative",
+                        ParentTermIds = new List<int>(),
+                    }
+                },
+            },
+            ProfessionDetails = new ProfessionDetails {
+                HasConcreteSubtype = true,
+            }
         };
-
     }
 }

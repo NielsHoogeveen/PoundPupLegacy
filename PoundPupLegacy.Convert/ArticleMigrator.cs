@@ -2,7 +2,7 @@
 
 internal sealed class ArticleMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreatorFactory<EventuallyIdentifiableDocument> documentCreatorFactory
+    IEntityCreatorFactory<Document.DocumentToCreate> documentCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "documents (articles)";
@@ -12,7 +12,7 @@ internal sealed class ArticleMigrator(
         await using var documentCreator = await documentCreatorFactory.CreateAsync(_postgresConnection);
         await documentCreator.CreateAsync(ReadArticles());
     }
-    private async IAsyncEnumerable<NewDocument> ReadArticles()
+    private async IAsyncEnumerable<Document.DocumentToCreate> ReadArticles()
     {
 
         var sql = $"""
@@ -37,33 +37,43 @@ internal sealed class ArticleMigrator(
         var reader = await readCommand.ExecuteReaderAsync();
 
         while (await reader.ReadAsync()) {
-            yield return new NewDocument {
-                Id = null,
-                PublisherId = reader.GetInt32("user_id"),
-                CreatedDateTime = reader.GetDateTime("created"),
-                ChangedDateTime = reader.GetDateTime("changed"),
-                Title = reader.GetString("title"),
-                OwnerId = Constants.PPL,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = 1,
-                        PublicationStatusId = reader.GetInt32("status"),
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = reader.GetInt32("id")
-                    }
+            yield return new Document.DocumentToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                NodeTypeId = 10,
-                Published = null,
-                SourceUrl = null,
-                DocumentTypeId = null,
-                Text = TextToHtml(reader.GetString("text")),
-                Teaser = TextToTeaser(reader.GetString("text")),
-                TermIds = new List<int>(),
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = reader.GetInt32("user_id"),
+                    CreatedDateTime = reader.GetDateTime("created"),
+                    ChangedDateTime = reader.GetDateTime("changed"),
+                    Title = reader.GetString("title"),
+                    OwnerId = Constants.PPL,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    {
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = 1,
+                            PublicationStatusId = reader.GetInt32("status"),
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = reader.GetInt32("id")
+                        }
+                    },
+                    NodeTypeId = 10,
+                    TermIds = new List<int>(),
+                },
+                SimpleTextNodeDetails = new SimpleTextNodeDetails {
+                    Text = TextToHtml(reader.GetString("text")),
+                    Teaser = TextToTeaser(reader.GetString("text")),
+                },
+                DocumentDetails = new DocumentDetails {
+                    Published = null,
+                    SourceUrl = null,
+                    DocumentTypeId = null,
+                },
             };
         }
         await reader.CloseAsync();

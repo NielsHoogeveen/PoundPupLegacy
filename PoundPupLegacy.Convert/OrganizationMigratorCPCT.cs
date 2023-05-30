@@ -1,13 +1,11 @@
-﻿using PoundPupLegacy.CreateModel.Creators;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class OrganizationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForExistingNode> tenantNodeReaderByUrlIdFactory,
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.TenantNodeToCreateForExistingNode> tenantNodeReaderByUrlIdFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameableIdRequest, int> termIdReaderByNameableIdFactory,
-    IEntityCreatorFactory<EventuallyIdentifiableOrganization> organizationCreatorFactory
+    IEntityCreatorFactory<Organization> organizationCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
     nodeIdReaderFactory, 
@@ -24,7 +22,7 @@ internal sealed class OrganizationMigratorCPCT(
         await organizationCreator.CreateAsync(ReadOrganizations(nodeIdReader, termIdReaderByNameableId));
     }
 
-    private async IAsyncEnumerable<NewBasicOrganization> ReadOrganizations(
+    private async IAsyncEnumerable<BasicOrganization.BasicOrganizationToCreate> ReadOrganizations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameableIdRequest, int> termIdReaderByNameableId
     )
@@ -221,6 +219,9 @@ internal sealed class OrganizationMigratorCPCT(
             }
             var vocabularyNames = new List<NewTermForNewNameable> {
                 new NewTermForNewNameable {
+                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                        Id = null,
+                    },
                     VocabularyId = vocabularyId,
                     Name = name,
                     ParentTermIds = await GetTermNamesForOrganizationsTypes(organizationOrganizationTypeIds).ToListAsync(),
@@ -230,11 +231,13 @@ internal sealed class OrganizationMigratorCPCT(
             var id = reader.GetInt32("id");
 
 
-            var tenantNodes = new List<NewTenantNodeForNewNode>
+            var tenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
             {
-                    new NewTenantNodeForNewNode
+                    new TenantNode.TenantNodeToCreateForNewNode
                     {
-                        Id = null,
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
@@ -246,8 +249,10 @@ internal sealed class OrganizationMigratorCPCT(
             var toSkipForPPL = new List<int> { 34447, 42413, 46479, 48178, 39305, 45402, 46671, 33634, 48051 };
 
             if (!organizationOrganizationTypeIds.Contains(miscellaneous) && !toSkipForPPL.Contains(id)) {
-                tenantNodes.Add(new NewTenantNodeForNewNode {
-                    Id = null,
+                tenantNodes.Add(new TenantNode.TenantNodeToCreateForNewNode {
+                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                        Id = null
+                    },
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
                     UrlPath = null,
@@ -256,32 +261,41 @@ internal sealed class OrganizationMigratorCPCT(
                 });
             }
 
-            yield return new NewBasicOrganization {
-                Id = null,
-                PublisherId = reader.GetInt32("access_role_id"),
-                CreatedDateTime = reader.GetDateTime("created_date_time"),
-                ChangedDateTime = reader.GetDateTime("changed_date_time"),
-                Title = reader.GetString("title"),
-                OwnerId = Constants.OWNER_PARTIES,
-                AuthoringStatusId = 1,
-                TenantNodes = tenantNodes,
-                NodeTypeId = reader.GetInt16("node_type_id"),
-                WebsiteUrl = reader.IsDBNull("website_url") ? null : reader.GetString("website_url"),
-                EmailAddress = reader.IsDBNull("email_address") ? null : reader.GetString("email_address"),
-                Description = reader.IsDBNull("description") ? "" : reader.GetString("description"),
-                Established = reader.IsDBNull("established") ? null : (new DateTimeRange(reader.GetDateTime("established").Date, reader.GetDateTime("established").Date.AddDays(1).AddMilliseconds(-1))).ToFuzzyDate(),
-                Terminated = reader.IsDBNull("terminated") ? null : (new DateTimeRange(reader.GetDateTime("terminated").Date, reader.GetDateTime("terminated").Date.AddDays(1).AddMilliseconds(-1))).ToFuzzyDate(),
-                FileIdTileImage = null,
-                Terms = vocabularyNames,
-                OrganizationTypeIds = organizationOrganizationTypeIds,
-                TermIds = new List<int>(),
-                Locations = new List<EventuallyIdentifiableLocation>(),
-                PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
-                PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewOrganization>(),
-                InterOrganizationalRelationsToAddFrom = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationFrom>(),
-                InterOrganizationalRelationsToAddTo = new List<EventuallyIdentifiableInterOrganizationalRelationForNewOrganizationTo>(),
+            yield return new BasicOrganization.BasicOrganizationToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
+                },
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = reader.GetInt32("access_role_id"),
+                    CreatedDateTime = reader.GetDateTime("created_date_time"),
+                    ChangedDateTime = reader.GetDateTime("changed_date_time"),
+                    Title = reader.GetString("title"),
+                    OwnerId = Constants.OWNER_PARTIES,
+                    AuthoringStatusId = 1,
+                    TenantNodes = tenantNodes,
+                    NodeTypeId = reader.GetInt16("node_type_id"),
+                    TermIds = new List<int>(),
+                },
+                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                    Description = reader.IsDBNull("description") ? "" : reader.GetString("description"),
+                    FileIdTileImage = null,
+                    Terms = vocabularyNames,
+                },
+                LocatableDetailsForCreate = new LocatableDetails.LocatableDetailsForCreate {
+                    Locations = new List<EventuallyIdentifiableLocation>(),
+                },
+                OrganizationDetailsForCreate = new OrganizationDetails.OrganizationDetailsForCreate {
+                    WebsiteUrl = reader.IsDBNull("website_url") ? null : reader.GetString("website_url"),
+                    EmailAddress = reader.IsDBNull("email_address") ? null : reader.GetString("email_address"),
+                    Established = reader.IsDBNull("established") ? null : (new DateTimeRange(reader.GetDateTime("established").Date, reader.GetDateTime("established").Date.AddDays(1).AddMilliseconds(-1))).ToFuzzyDate(),
+                    Terminated = reader.IsDBNull("terminated") ? null : (new DateTimeRange(reader.GetDateTime("terminated").Date, reader.GetDateTime("terminated").Date.AddDays(1).AddMilliseconds(-1))).ToFuzzyDate(),
+                    OrganizationTypeIds = organizationOrganizationTypeIds,
+                    InterOrganizationalRelationsFrom = new List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationFrom>(),
+                    InterOrganizationalRelationsTo = new List<InterOrganizationalRelation.InterOrganizationalRelationToCreateForNewOrganizationTo>(),
+                    PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForNewParty>(),
+                    PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.PersonOrganizationRelationToCreateForNewOrganization>()
+                },
             };
-
         }
         await reader.CloseAsync();
     }

@@ -2,7 +2,7 @@
 
 internal sealed class PageMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreatorFactory<EventuallyIdentifiablePage> pageCreatorFactory
+    IEntityCreatorFactory<Page.PageToCreate> pageCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "pages";
@@ -12,7 +12,7 @@ internal sealed class PageMigrator(
         await using var pageCreator = await pageCreatorFactory.CreateAsync(_postgresConnection);
         await pageCreator.CreateAsync(ReadPages());
     }
-    private async IAsyncEnumerable<EventuallyIdentifiablePage> ReadPages()
+    private async IAsyncEnumerable<Page.PageToCreate> ReadPages()
     {
 
         var sql = $"""
@@ -41,31 +41,38 @@ internal sealed class PageMigrator(
 
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
-            yield return new NewPage {
-                Id = null,
-                PublisherId = reader.GetInt32("user_id"),
-                CreatedDateTime = reader.GetDateTime("created"),
-                ChangedDateTime = reader.GetDateTime("changed"),
-                Title = reader.GetString("title"),
-                OwnerId = Constants.PPL,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = 1,
-                        PublicationStatusId = reader.GetInt32("status"),
-                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                        SubgroupId = null,
-                        UrlId = id
-                    }
+            yield return new Page.PageToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-
-                NodeTypeId = 42,
-                Text = TextToHtml(reader.GetString("text")),
-                Teaser = TextToTeaser(reader.GetString("text")),
-                TermIds = new List<int>(),
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = reader.GetInt32("user_id"),
+                    CreatedDateTime = reader.GetDateTime("created"),
+                    ChangedDateTime = reader.GetDateTime("changed"),
+                    Title = reader.GetString("title"),
+                    OwnerId = Constants.PPL,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    {
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = 1,
+                            PublicationStatusId = reader.GetInt32("status"),
+                            UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
+                            SubgroupId = null,
+                            UrlId = id
+                        }
+                    },
+                    NodeTypeId = 42,
+                    TermIds = new List<int>(),
+                },
+                SimpleTextNodeDetails = new SimpleTextNodeDetails {
+                    Text = TextToHtml(reader.GetString("text")),
+                    Teaser = TextToTeaser(reader.GetString("text")),
+                },
             };
         }
         await reader.CloseAsync();

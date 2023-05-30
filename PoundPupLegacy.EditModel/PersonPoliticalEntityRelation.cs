@@ -11,8 +11,7 @@ public static class PersonPoliticalEntityRelationExtensions
             Person = personListItem,
             PersonPoliticalEntityRelationType = relationType,        
             RelationDetails = RelationDetails.EmptyInstance,
-            NodeDetails = NodeDetails.EmptyInstance("person political entity relation", ownerId, publisherId),
-            NewTenantNodeDetails = TenantNodeDetails.NewTenantNodeDetails.EmptyInstance,
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(49, "person political entity relation", ownerId, publisherId),
             PoliticalEntity = null
         };
     }
@@ -22,8 +21,7 @@ public static class PersonPoliticalEntityRelationExtensions
             Person = personName,
             PersonPoliticalEntityRelationType = relationType,        
             RelationDetails = RelationDetails.EmptyInstance,
-            NodeDetails = NodeDetails.EmptyInstance("person political entity relation", ownerId, publisherId),
-            NewTenantNodeDetails = TenantNodeDetails.NewTenantNodeDetails.EmptyInstance,
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(49, "person political entity relation", ownerId, publisherId),
             PoliticalEntity = null
         };
     }
@@ -34,8 +32,7 @@ public abstract record PersonPoliticalEntityRelation : Relation
     private PersonPoliticalEntityRelation() { }
 
     public required RelationDetails RelationDetails { get; init; }
-    public required NodeDetails NodeDetails { get; init; }
-    public abstract TenantNodeDetails TenantNodeDetails { get; }
+    public abstract NodeDetails NodeDetails { get; }
     public required PersonPoliticalEntityRelationTypeListItem PersonPoliticalEntityRelationType { get; set; }
 
     [RequireNamedArgs]
@@ -68,8 +65,8 @@ public abstract record PersonPoliticalEntityRelation : Relation
         }
         public sealed record NewPersonPoliticalEntityRelationNewPerson : IncompletePersonPoliticalEntityRelation, NewNode
         {
-            public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
-            public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
+            public override NodeDetails NodeDetails => NodeDetailsForCreate;
+            public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
 
             public override T Match<T>(
                 Func<NewPersonPoliticalEntityRelationNewPerson, T> newPersonPoliticalEntityRelationNewPerson,
@@ -91,8 +88,7 @@ public abstract record PersonPoliticalEntityRelation : Relation
                 return new CompletedNewPersonPoliticalEntityRelationNewPerson {
                     Person = Person,
                     PoliticalEntity = politicalEntity,
-                    NewTenantNodeDetails  = NewTenantNodeDetails,
-                    NodeDetails = NodeDetails,
+                    NodeDetailsForCreate = NodeDetailsForCreate,
                     PersonPoliticalEntityRelationType = PersonPoliticalEntityRelationType,
                     RelationDetails = RelationDetails
                 };
@@ -100,9 +96,8 @@ public abstract record PersonPoliticalEntityRelation : Relation
         }
         public sealed record NewPersonPoliticalEntityRelationExistingPerson : IncompletePersonPoliticalEntityRelation, NewNode
         {
-            public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
-            public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
-
+            public override NodeDetails NodeDetails => NodeDetailsForCreate;
+            public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
             public override T Match<T>(
                 Func<NewPersonPoliticalEntityRelationNewPerson, T> newPersonPoliticalEntityRelationNewPerson,
                 Func<NewPersonPoliticalEntityRelationExistingPerson, T> newPersonPoliticalEntityRelationExistingPerson,
@@ -123,8 +118,7 @@ public abstract record PersonPoliticalEntityRelation : Relation
                 return new CompletedNewPersonPoliticalEntityRelationExistingPerson {
                     Person = Person,
                     PoliticalEntity = politicalEntity,
-                    NewTenantNodeDetails = NewTenantNodeDetails,
-                    NodeDetails = NodeDetails,
+                    NodeDetailsForCreate = NodeDetailsForCreate,
                     PersonPoliticalEntityRelationType = PersonPoliticalEntityRelationType,
                     RelationDetails = RelationDetails
                 };
@@ -150,8 +144,8 @@ public abstract record PersonPoliticalEntityRelation : Relation
             private ResolvedPersonPoliticalEntityRelation() { }
             public sealed record ExistingPersonPoliticalEntityRelation : ResolvedPersonPoliticalEntityRelation, ExistingNode
             {
-                public override TenantNodeDetails TenantNodeDetails => ExistingTenantNodeDetails;
-                public required TenantNodeDetails.ExistingTenantNodeDetails ExistingTenantNodeDetails { get; init; }
+                public override NodeDetails NodeDetails => NodeDetailsForUpdate;
+                public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
                 public required NodeIdentification NodeIdentification { get; init; }
                 public override T Match<T>(
                     Func<NewPersonPoliticalEntityRelationNewPerson, T> newPersonPoliticalEntityRelationNewPerson,
@@ -174,8 +168,8 @@ public abstract record PersonPoliticalEntityRelation : Relation
             }
             public sealed record CompletedNewPersonPoliticalEntityRelationExistingPerson : ResolvedPersonPoliticalEntityRelation, NewNode
             {
-                public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
-                public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
+                public override NodeDetails NodeDetails => NodeDetailsForCreate;
+                public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
 
                 public override T Match<T>(
                     Func<NewPersonPoliticalEntityRelationNewPerson, T> newPersonPoliticalEntityRelationNewPerson,
@@ -198,9 +192,8 @@ public abstract record PersonPoliticalEntityRelation : Relation
         }
         public sealed record CompletedNewPersonPoliticalEntityRelationNewPerson : CompletedPersonPoliticalEntityRelation, NewNode
         {
-            public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
-            public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
-
+            public override NodeDetails NodeDetails => NodeDetailsForCreate;
+            public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
             public override T Match<T>(
                 Func<NewPersonPoliticalEntityRelationNewPerson, T> newPersonPoliticalEntityRelationNewPerson,
                 Func<NewPersonPoliticalEntityRelationExistingPerson, T> newPersonPoliticalEntityRelationExistingPerson,

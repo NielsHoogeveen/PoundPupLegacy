@@ -3,8 +3,8 @@
 internal sealed class PersonOrganizationRelationMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, NewTenantNodeForExistingNode> tenantNodeReaderByUrlIdFactory,
-    IEntityCreatorFactory<EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants> personOrganizationRelationCreatorFactory
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.TenantNodeToCreateForExistingNode> tenantNodeReaderByUrlIdFactory,
+    IEntityCreatorFactory<PersonOrganizationRelation.PersonOrganizationRelationToCreateForExistingParticipants> personOrganizationRelationCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
     nodeIdReaderFactory, 
@@ -21,9 +21,9 @@ internal sealed class PersonOrganizationRelationMigratorCPCT(
         await personOrganizationRelationCreator.CreateAsync(ReadPersonOrganizationRelations(nodeIdReader, tenantNodeReaderByUrlId));
     }
 
-    private async IAsyncEnumerable<EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants> ReadPersonOrganizationRelations(
+    private async IAsyncEnumerable<PersonOrganizationRelation.PersonOrganizationRelationToCreateForExistingParticipants> ReadPersonOrganizationRelations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
-        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, NewTenantNodeForExistingNode> tenantNodeReaderByUrlId
+        ISingleItemDatabaseReader<TenantNodeReaderByUrlIdRequest, TenantNode.TenantNodeToCreateForExistingNode> tenantNodeReaderByUrlId
     )
     {
 
@@ -103,11 +103,13 @@ internal sealed class PersonOrganizationRelationMigratorCPCT(
                 TenantId = Constants.PPL
             });
 
-            var tenantNodes = new List<NewTenantNodeForNewNode>
+            var tenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
                 {
-                    new NewTenantNodeForNewNode
+                    new TenantNode.TenantNodeToCreateForNewNode
                     {
-                        Id = null,
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
                         TenantId = Constants.CPCT,
                         PublicationStatusId = 2,
                         UrlPath = null,
@@ -116,8 +118,10 @@ internal sealed class PersonOrganizationRelationMigratorCPCT(
                     }
                 };
             if (personPublicationStatusId == 1 && organizationPublicationStatusId == 1) {
-                tenantNodes.Add(new NewTenantNodeForNewNode {
-                    Id = null,
+                tenantNodes.Add(new TenantNode.TenantNodeToCreateForNewNode {
+                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                        Id = null
+                    },
                     TenantId = Constants.PPL,
                     PublicationStatusId = 1,
                     UrlPath = null,
@@ -125,27 +129,32 @@ internal sealed class PersonOrganizationRelationMigratorCPCT(
                     UrlId = null
                 });
             }
-            yield return new PersonOrganizationRelationToCreateForExistingParticipants {
-                Id = null,
-                PublisherId = reader.GetInt32("user_id"),
-                CreatedDateTime = reader.GetDateTime("created_date_time"),
-                ChangedDateTime = reader.GetDateTime("changed_date_time"),
-                Title = reader.GetString("title"),
-                OwnerId = Constants.OWNER_PARTIES,
-                AuthoringStatusId = 1,
-                TenantNodes = tenantNodes,
-                NodeTypeId = 48,
+            yield return new PersonOrganizationRelation.PersonOrganizationRelationToCreateForExistingParticipants {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
+                },
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = reader.GetInt32("user_id"),
+                    CreatedDateTime = reader.GetDateTime("created_date_time"),
+                    ChangedDateTime = reader.GetDateTime("changed_date_time"),
+                    Title = reader.GetString("title"),
+                    OwnerId = Constants.OWNER_PARTIES,
+                    AuthoringStatusId = 1,
+                    TenantNodes = tenantNodes,
+                    NodeTypeId = 48,
+                    TermIds = new List<int>(),
+                },
                 PersonId = personId,
                 OrganizationId = organizationId,
-                GeographicalEntityId = null,
-                PersonOrganizationRelationTypeId = personOrganizationRelationTypeId,
-                DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null : reader.GetDateTime("end_date")),
-                DocumentIdProof = null,
-                Description = reader.IsDBNull("description") ? null : reader.GetString("description"),
-                TermIds = new List<int>(),
+                PersonOrganizationRelationDetails = new PersonOrganizationRelationDetails {
+                    GeographicalEntityId = null,
+                    PersonOrganizationRelationTypeId = personOrganizationRelationTypeId,
+                    DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null : reader.GetDateTime("end_date")),
+                    DocumentIdProof = null,
+                    Description = reader.IsDBNull("description") ? null : reader.GetString("description"),
+                },
             };
         }
         await reader.CloseAsync();
     }
-
 }

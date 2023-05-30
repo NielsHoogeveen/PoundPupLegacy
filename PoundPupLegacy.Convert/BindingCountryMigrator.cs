@@ -4,7 +4,7 @@ internal sealed class BindingCountryMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
-        IEntityCreatorFactory<EventuallyIdentifiableBindingCountry> bindingCountryCreatorFactory
+        IEntityCreatorFactory<BindingCountry.BindingCountryToCreate> bindingCountryCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "binding countries";
@@ -16,7 +16,7 @@ internal sealed class BindingCountryMigrator(
         await using var bindingCountryCreator = await bindingCountryCreatorFactory.CreateAsync(_postgresConnection);
         await bindingCountryCreator.CreateAsync(ReadBindingCountries(nodeIdReader, termIdReader));
     }
-    private async IAsyncEnumerable<NewBindingCountry> ReadBindingCountries(
+    private async IAsyncEnumerable<BindingCountry.BindingCountryToCreate> ReadBindingCountries(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader)
     {
@@ -64,6 +64,9 @@ internal sealed class BindingCountryMigrator(
                 {
                     new NewTermForNewNameable
                     {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null,
+                        },
                         VocabularyId = vocabularyId,
                         Name = name,
                         ParentTermIds = new List<int>{
@@ -75,63 +78,76 @@ internal sealed class BindingCountryMigrator(
                     },
                 };
 
-            var country = new NewBindingCountry {
-                Id = null,
-                PublisherId = reader.GetInt32("access_role_id"),
-                CreatedDateTime = reader.GetDateTime("created_date_time"),
-                ChangedDateTime = reader.GetDateTime("changed_date_time"),
-                Title = name,
-                OwnerId = Constants.OWNER_GEOGRAPHY,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = reader.GetInt32("node_status_id"),
-                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                        SubgroupId = null,
-                        UrlId = id
-                    },
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id < 33163 ? id : null
-                    }
+            var country = new BindingCountry.BindingCountryToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                NodeTypeId = 20,
-                Description = "",
-                Terms = vocabularyNames,
-                Name = name,
-                SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                    UrlId = reader.GetInt32("second_level_region_id"),
-                    TenantId = Constants.PPL,
-                }),
-                ISO3166_1_Code = reader.GetString("iso_3166_1_code"),
-                FileIdFlag = null,
-                FileIdTileImage = null,
-                HagueStatusId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                    UrlId = 41215,
-                    TenantId = Constants.PPL,
-                }),
-                ResidencyRequirements = null,
-                AgeRequirements = null,
-                HealthRequirements = null,
-                IncomeRequirements = null,
-                MarriageRequirements = null,
-                OtherRequirements = null,
-                TermIds = new List<int>(),
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = reader.GetInt32("access_role_id"),
+                    CreatedDateTime = reader.GetDateTime("created_date_time"),
+                    ChangedDateTime = reader.GetDateTime("changed_date_time"),
+                    Title = name,
+                    OwnerId = Constants.OWNER_GEOGRAPHY,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    {
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.PPL,
+                            PublicationStatusId = reader.GetInt32("node_status_id"),
+                            UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
+                            SubgroupId = null,
+                            UrlId = id
+                        },
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.CPCT,
+                            PublicationStatusId = 2,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id < 33163 ? id : null
+                        }
+                    },
+                    NodeTypeId = 20,
+                    TermIds = new List<int>(),
+                },
+                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                    Description = "",
+                    Terms = vocabularyNames,
+                    FileIdTileImage = null,
+                },
+                PoliticalEntityDetails = new PoliticalEntityDetails {
+                    FileIdFlag = null,
+                },
+                CountryDetails = new CountryDetails {
+                    Name = name,
+                    HagueStatusId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+                        UrlId = 41215,
+                        TenantId = Constants.PPL,
+                    }),
+                    ResidencyRequirements = null,
+                    AgeRequirements = null,
+                    HealthRequirements = null,
+                    IncomeRequirements = null,
+                    MarriageRequirements = null,
+                    OtherRequirements = null,
+                },
+                TopLevelCountryDetails = new TopLevelCountryDetails {
+                    SecondLevelRegionId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+                        UrlId = reader.GetInt32("second_level_region_id"),
+                        TenantId = Constants.PPL,
+                    }),
+                    ISO3166_1_Code = reader.GetString("iso_3166_1_code"),
+                },
             };
             yield return country;
-
         }
         await reader.CloseAsync();
     }
-
-
 }

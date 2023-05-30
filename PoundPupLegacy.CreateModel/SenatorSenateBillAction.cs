@@ -9,7 +9,7 @@ public sealed record SenatorSenateBillAction : NodeToCreate
 }
 
 
-public abstract record SenatorSenateBillActionDetails
+public sealed record SenatorSenateBillActionDetails
 {
     public required int SenatorId { get; init; }
     public required int SenateBillId { get; init; }

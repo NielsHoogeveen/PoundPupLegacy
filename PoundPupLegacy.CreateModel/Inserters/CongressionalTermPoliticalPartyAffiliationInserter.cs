@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = CongressionalTermPoliticalPartyAffiliation.CongressionalTermPoliticalPartyAffiliationToCreate;
+using Request = CongressionalTermPoliticalPartyAffiliation.CongressionalTermPoliticalPartyAffiliationToCreateForExistingTerm;
 internal sealed class CongressionalTermPoliticalPartyAffiliationInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
     private static readonly NullCheckingIntegerDatabaseParameter CongressionalTermId = new() { Name = "congressional_term_id" };
@@ -12,7 +12,7 @@ internal sealed class CongressionalTermPoliticalPartyAffiliationInserterFactory 
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(CongressionalTermId, request.CongressionalTermPoliticalPartyAffiliationDetails.CongressionalTermId),
+            ParameterValue.Create(CongressionalTermId, request.CongressionalTermPoliticalPartyAffiliationDetailsResolved.CongressionalTermId),
             ParameterValue.Create(UnitedStatesPoliticalPartyAffiliationId, request.CongressionalTermPoliticalPartyAffiliationDetails.PoliticalPartyAffiliationId),
             ParameterValue.Create(DateRange, request.CongressionalTermPoliticalPartyAffiliationDetails.DateTimeRange),
         };

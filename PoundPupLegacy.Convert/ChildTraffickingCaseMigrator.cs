@@ -4,7 +4,7 @@ internal sealed class ChildTraffickingCaseMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
         IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
-        IEntityCreatorFactory<EventuallyIdentifiableChildTraffickingCase> childTraffickingCaseCreatorFactory
+        IEntityCreatorFactory<ChildTraffickingCase.ChildTraffickingCaseToCreate> childTraffickingCaseCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "child trafficking cases";
@@ -16,7 +16,7 @@ internal sealed class ChildTraffickingCaseMigrator(
         await using var childTraffickingCaseCreator = await childTraffickingCaseCreatorFactory.CreateAsync(_postgresConnection);
         await childTraffickingCaseCreator.CreateAsync(ReadChildTraffickingCases(nodeIdReader,termIdReader));
     }
-    private async IAsyncEnumerable<NewChildTraffickingCase> ReadChildTraffickingCases(
+    private async IAsyncEnumerable<ChildTraffickingCase.ChildTraffickingCaseToCreate> ReadChildTraffickingCases(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader)
     {
@@ -66,57 +66,75 @@ internal sealed class ChildTraffickingCaseMigrator(
 
             var vocabularyNames = new List<NewTermForNewNameable> {
                 new NewTermForNewNameable {
+                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                        Id = null,
+                    },
                     VocabularyId = vocabularyId,
                     Name = name,
                     ParentTermIds = parentTermIds,
                 }
             };
 
-            var country = new NewChildTraffickingCase {
-                Id = null,
-                PublisherId = reader.GetInt32("user_id"),
-                CreatedDateTime = reader.GetDateTime("created"),
-                ChangedDateTime = reader.GetDateTime("changed"),
-                Title = name,
-                OwnerId = Constants.OWNER_CASES,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = reader.GetInt32("status"),
-                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                        SubgroupId = null,
-                        UrlId = id
-                    },
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id < 33163 ? id : null
-                    }
+            var country = new ChildTraffickingCase.ChildTraffickingCaseToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                NodeTypeId = reader.GetInt32("node_type_id"),
-                Terms = vocabularyNames,
-                Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date"))?.ToFuzzyDate(),
-                Description = reader.GetString("description"),
-                NumberOfChildrenInvolved = reader.IsDBNull("number_of_children_involved") ? null : reader.GetInt32("number_of_children_involved"),
-                CountryIdFrom = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                    TenantId = Constants.PPL,
-                    UrlId = reader.GetInt32("country_id_from")
-                }),
-                FileIdTileImage = null,
-                TermIds = new List<int>(),
-                Locations = new List<EventuallyIdentifiableLocation>(),
-                CaseParties = new List<NewCaseNewCaseParties>(),
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = reader.GetInt32("user_id"),
+                    CreatedDateTime = reader.GetDateTime("created"),
+                    ChangedDateTime = reader.GetDateTime("changed"),
+                    Title = name,
+                    OwnerId = Constants.OWNER_CASES,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    {
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.PPL,
+                            PublicationStatusId = reader.GetInt32("status"),
+                            UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
+                            SubgroupId = null,
+                            UrlId = id
+                        },
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.CPCT,
+                            PublicationStatusId = 2,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id < 33163 ? id : null
+                        }
+                    },
+                    NodeTypeId = reader.GetInt32("node_type_id"),
+                    TermIds = new List<int>(),
+                },
+                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                    Terms = vocabularyNames,
+                    Description = reader.GetString("description"),
+                    FileIdTileImage = null,
+                },
+                LocatableDetailsForCreate = new LocatableDetails.LocatableDetailsForCreate {
+                    Locations = new List<EventuallyIdentifiableLocation>(),
+                },
+                CaseDetailsForCreate = new CaseDetails.CaseDetailsForCreate {
+                    Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date"))?.ToFuzzyDate(),
+                    CaseParties = new List<NewCaseNewCaseParties>(),
+                },
+                ChildTraffickingCaseDetails = new ChildTraffickingCaseDetails {
+                    NumberOfChildrenInvolved = reader.IsDBNull("number_of_children_involved") ? null : reader.GetInt32("number_of_children_involved"),
+                    CountryIdFrom = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+                        TenantId = Constants.PPL,
+                        UrlId = reader.GetInt32("country_id_from")
+                    }),
+                },
             };
             yield return country;
-
         }
         await reader.CloseAsync();
     }

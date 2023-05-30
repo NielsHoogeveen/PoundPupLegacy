@@ -11,7 +11,7 @@ internal sealed class PersonCreatorFactory(
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory,
     LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
-    IEntityCreatorFactory<ResolvedProfessionalRoleToCreate> professionalRoleCreatorFactory,
+    IEntityCreatorFactory<ProfessionalRoleToCreateForExistingPerson> professionalRoleCreatorFactory,
     IEntityCreatorFactory<PersonOrganizationRelation.PersonOrganizationRelationToCreateForExistingParticipants> personOrganizationRelationCreatorFactory,
     IEntityCreatorFactory<InterPersonalRelation.InterPersonalRelationToCreateForExistingParticipants> interPersonalRelationCreatorFactory,
     IEntityCreatorFactory<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForExistingParty> partyPoliticalRelationCreatorFactory
@@ -45,7 +45,7 @@ internal sealed class PersonCreator(
     NodeDetailsCreator nodeDetailsCreator,
     TermCreator nameableDetailsCreator,
     LocatableDetailsCreator locatableDetailsCreator,
-    IEntityCreator<ResolvedProfessionalRoleToCreate> professionalRoleCreator,
+    IEntityCreator<ProfessionalRoleToCreateForExistingPerson> professionalRoleCreator,
     IEntityCreator<PersonOrganizationRelation.PersonOrganizationRelationToCreateForExistingParticipants> personOrganizationRelationCreator,
     IEntityCreator<InterPersonalRelation.InterPersonalRelationToCreateForExistingParticipants> interPersonalRelationCreator,
     IEntityCreator<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForExistingParty> partyPoliticalRelationCreator

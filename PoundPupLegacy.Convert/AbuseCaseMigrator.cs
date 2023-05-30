@@ -1,8 +1,10 @@
-﻿namespace PoundPupLegacy.Convert;
+﻿using PoundPupLegacy.CreateModel;
+
+namespace PoundPupLegacy.Convert;
 
 internal sealed class AbuseCaseMigrator(
     IDatabaseConnections databaseConnections,
-    IEntityCreatorFactory<EventuallyIdentifiableAbuseCase> abuseCaseCreatorFactory,
+    IEntityCreatorFactory<AbuseCase.AbuseCaseToCreate> abuseCaseCreatorFactory,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory
 ) : MigratorPPL(databaseConnections)
@@ -17,7 +19,7 @@ internal sealed class AbuseCaseMigrator(
         await using var abuseCaseCreator = await abuseCaseCreatorFactory.CreateAsync(_postgresConnection);
         await abuseCaseCreator.CreateAsync(ReadAbuseCases(nodeIdReader, termIdReader));
     }
-    private async IAsyncEnumerable<NewAbuseCase> ReadAbuseCases(
+    private async IAsyncEnumerable<AbuseCase.AbuseCaseToCreate> ReadAbuseCases(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader
         )
@@ -150,61 +152,81 @@ internal sealed class AbuseCaseMigrator(
             }
             
             vocabularyNames.Add(new NewTermForNewNameable {
+                IdentificationForCreate = new Identification.IdentificationForCreate { 
+                    Id = null,
+                },
                 VocabularyId = vocabularyId,
                 Name = topicName,
                 ParentTermIds = topicParentIds,
             });
 
-            var country = new NewAbuseCase {
-                Id = null,
-                PublisherId = reader.GetInt32("access_role_id"),
-                CreatedDateTime = reader.GetDateTime("created_date_time"),
-                ChangedDateTime = reader.GetDateTime("changed_date_time"),
-                Title = name,
-                TypeOfAbuseIds = new List<int>(),
-                TypeOfAbuserIds = new List<int>(),
-                OwnerId = Constants.OWNER_CASES,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = reader.GetInt32("node_status_id"),
-                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                        SubgroupId = null,
-                        UrlId = id
-                    },
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id < 33163 ? id : null
-                    }
+            var country = new AbuseCase.AbuseCaseToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                NodeTypeId = reader.GetInt32("node_type_id"),
-                Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date"))?.ToFuzzyDate(),
-                Description = reader.GetString("description"),
-                FileIdTileImage = null,
-                ChildPlacementTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                    TenantId = Constants.PPL,
-                    UrlId = reader.GetInt32("child_placement_type_id")
-                }),
-                FamilySizeId = reader.IsDBNull("family_size_id") ? null : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                    TenantId = Constants.PPL,
-                    UrlId = reader.GetInt32("family_size_id")
-                }),
-                HomeschoolingInvolved = reader.IsDBNull("home_schooling_involved") ? null : reader.GetBoolean("home_schooling_involved"),
-                FundamentalFaithInvolved = reader.IsDBNull("fundamental_faith_involved") ? null : reader.GetBoolean("fundamental_faith_involved"),
-                DisabilitiesInvolved = reader.IsDBNull("disabilities_involved") ? null : reader.GetBoolean("disabilities_involved"),
-                Terms = vocabularyNames,
-                TermIds = new List<int>(),
-                Locations = new List<EventuallyIdentifiableLocation>(),
-                CaseParties = new List<NewCaseNewCaseParties>(),
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate{
+                    PublisherId = reader.GetInt32("access_role_id"),
+                    CreatedDateTime = reader.GetDateTime("created_date_time"),
+                    ChangedDateTime = reader.GetDateTime("changed_date_time"),
+                    Title = name,
+                    OwnerId = Constants.OWNER_CASES,
+                    AuthoringStatusId = 1,
+                    NodeTypeId = reader.GetInt32("node_type_id"),
+                    TermIds = new List<int>(),
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    {
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.PPL,
+                            PublicationStatusId = reader.GetInt32("node_status_id"),
+                            UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
+                            SubgroupId = null,
+                            UrlId = id
+                        },
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.CPCT,
+                            PublicationStatusId = 2,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id < 33163 ? id : null
+                        }
+
+                    },
+                },
+                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                    Description = reader.GetString("description"),
+                    FileIdTileImage = null,
+                    Terms = vocabularyNames,
+                },
+                LocatableDetailsForCreate = new LocatableDetails.LocatableDetailsForCreate {
+                    Locations = new List<EventuallyIdentifiableLocation>(),
+                },
+                CaseDetailsForCreate = new CaseDetails.CaseDetailsForCreate {
+                    Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date"))?.ToFuzzyDate(),
+                    CaseParties = new List<NewCaseNewCaseParties>(),
+                },
+                AbuseCaseDetails = new AbuseCaseDetails {
+                    TypeOfAbuseIds = new List<int>(),
+                    TypeOfAbuserIds = new List<int>(),
+                    ChildPlacementTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+                        TenantId = Constants.PPL,
+                        UrlId = reader.GetInt32("child_placement_type_id")
+                    }),
+                    FamilySizeId = reader.IsDBNull("family_size_id") ? null : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+                        TenantId = Constants.PPL,
+                        UrlId = reader.GetInt32("family_size_id")
+                    }),
+                    HomeschoolingInvolved = reader.IsDBNull("home_schooling_involved") ? null : reader.GetBoolean("home_schooling_involved"),
+                    FundamentalFaithInvolved = reader.IsDBNull("fundamental_faith_involved") ? null : reader.GetBoolean("fundamental_faith_involved"),
+                    DisabilitiesInvolved = reader.IsDBNull("disabilities_involved") ? null : reader.GetBoolean("disabilities_involved"),
+                },
             };
             yield return country;
 

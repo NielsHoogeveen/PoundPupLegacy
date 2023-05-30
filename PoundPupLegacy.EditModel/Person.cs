@@ -12,9 +12,8 @@ public abstract record Person : Locatable, ResolvedNode
     public abstract T Match<T>(Func<ExistingPerson, T> existingItem, Func<NewPerson, T> newItem);
     public abstract void Match(Action<ExistingPerson> existingItem, Action<NewPerson> newItem);
     public required NameableDetails NameableDetails { get; init; }
-    public required NodeDetails NodeDetails { get; init; }
     public abstract LocatableDetails LocatableDetails { get; }
-    public abstract TenantNodeDetails TenantNodeDetails { get; }
+    public abstract NodeDetails NodeDetails { get; }
     public abstract IEnumerable<CompletedPersonPoliticalEntityRelation> PersonPoliticalEntityRelations { get; }
     public required List<PersonPoliticalEntityRelationTypeListItem> PersonPoliticalEntityRelationTypes { get; init; }
     public abstract IEnumerable<CompletedInterPersonalRelationFrom> InterPersonalRelationsFrom { get; }
@@ -24,8 +23,8 @@ public abstract record Person : Locatable, ResolvedNode
     public required List<PersonOrganizationRelationTypeListItem> PersonOrganizationRelationTypes { get; init; }
     public sealed record ExistingPerson : Person, ExistingNode, ExistingLocatable
     {
-        public override TenantNodeDetails TenantNodeDetails => ExistingTenantNodeDetails;
-        public required TenantNodeDetails.ExistingTenantNodeDetails ExistingTenantNodeDetails { get; init; }
+        public override NodeDetails NodeDetails => NodeDetailsForUpdate;
+        public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
         public override LocatableDetails LocatableDetails => ExistingLocatableDetails;
         public required LocatableDetails.ExistingLocatableDetails ExistingLocatableDetails { get; init; }
         public required NodeIdentification NodeIdentification { get; init; }
@@ -120,8 +119,8 @@ public abstract record Person : Locatable, ResolvedNode
     }
     public sealed record NewPerson : Person, NewLocatable, ResolvedNewNode
     {
-        public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
-        public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
+        public override NodeDetails NodeDetails => NodeDetailsForCreate;
+        public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
         public override LocatableDetails LocatableDetails => NewLocatableDetails;
         public required LocatableDetails.NewLocatableDetails NewLocatableDetails { get; init; }
         public override IEnumerable<CompletedPersonPoliticalEntityRelation> PersonPoliticalEntityRelations => NewPersonPoliticalEntityRelations;

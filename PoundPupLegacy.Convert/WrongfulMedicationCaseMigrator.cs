@@ -4,7 +4,7 @@ internal sealed class WrongfulMedicationCaseMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
-    IEntityCreatorFactory<EventuallyIdentifiableWrongfulMedicationCase> wrongfulMedicationCaseCreatorFactory
+    IEntityCreatorFactory<WrongfulMedicationCase.WrongfulMedicationCaseToCreate> wrongfulMedicationCaseCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "wrongful medication cases";
@@ -16,7 +16,7 @@ internal sealed class WrongfulMedicationCaseMigrator(
         await using var termIdReader = await termIdReaderFactory.CreateAsync(_postgresConnection);
         await wrongfulMedicationCaseCreator.CreateAsync(ReadWrongfulMedicationCases(nodeIdReader,termIdReader));
     }
-    private async IAsyncEnumerable<NewWrongfulMedicationCase> ReadWrongfulMedicationCases(
+    private async IAsyncEnumerable<WrongfulMedicationCase.WrongfulMedicationCaseToCreate> ReadWrongfulMedicationCases(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader
     )
@@ -61,49 +61,66 @@ internal sealed class WrongfulMedicationCaseMigrator(
             var title = reader.GetString("title");
             var vocabularyNames = new List<NewTermForNewNameable> {
                 new NewTermForNewNameable {
+                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                        Id = id,
+                    },
                     VocabularyId = vocabularyId,
                     Name = title,
                     ParentTermIds = parentTermIds,
                 }
             };
 
-            var country = new NewWrongfulMedicationCase {
-                Id = null,
-                PublisherId = reader.GetInt32("user_id"),
-                CreatedDateTime = reader.GetDateTime("created"),
-                ChangedDateTime = reader.GetDateTime("changed"),
-                Title = reader.GetString("title"),
-                OwnerId = Constants.OWNER_CASES,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = reader.GetInt32("status"),
-                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                        SubgroupId = null,
-                        UrlId = id
-                    },
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id < 33163 ? id : null
-                    }
+            var country = new WrongfulMedicationCase.WrongfulMedicationCaseToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                NodeTypeId = reader.GetInt32("node_type_id"),
-                Terms = vocabularyNames,
-                Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date"))?.ToFuzzyDate(),
-                Description = reader.GetString("description"),
-                FileIdTileImage = null,
-                TermIds = new List<int>(),
-                Locations = new List<EventuallyIdentifiableLocation>(),
-                CaseParties = new List<NewCaseNewCaseParties>(),
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = reader.GetInt32("user_id"),
+                    CreatedDateTime = reader.GetDateTime("created"),
+                    ChangedDateTime = reader.GetDateTime("changed"),
+                    Title = reader.GetString("title"),
+                    OwnerId = Constants.OWNER_CASES,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    {
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.PPL,
+                            PublicationStatusId = reader.GetInt32("status"),
+                            UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
+                            SubgroupId = null,
+                            UrlId = id
+                        },
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.CPCT,
+                            PublicationStatusId = 2,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id < 33163 ? id : null
+                        }
+                    },
+                    NodeTypeId = reader.GetInt32("node_type_id"),
+                    TermIds = new List<int>(),
+                },
+                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                    Terms = vocabularyNames,
+                    Description = reader.GetString("description"),
+                    FileIdTileImage = null,
+                },
+                LocatableDetailsForCreate = new LocatableDetails.LocatableDetailsForCreate {
+                    Locations = new List<EventuallyIdentifiableLocation>(),
+                },
+                CaseDetailsForCreate = new CaseDetails.CaseDetailsForCreate {
+                    Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date"))?.ToFuzzyDate(),
+                    CaseParties = new List<NewCaseNewCaseParties>(),
+                },
             };
             yield return country;
 

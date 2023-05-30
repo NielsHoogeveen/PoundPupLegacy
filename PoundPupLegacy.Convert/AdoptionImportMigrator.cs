@@ -4,7 +4,7 @@ internal sealed class AdoptionImportMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<NodeReaderByUrlIdRequest, NodeTitle> nodeReaderFactory,
-    IEntityCreatorFactory<EventuallyIdentifiableInterCountryRelation> interCountryRelationCreatorFactory
+    IEntityCreatorFactory<InterCountryRelation.InterCountryRelationToCreate> interCountryRelationCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
 
@@ -109,7 +109,7 @@ internal sealed class AdoptionImportMigrator(
         await cmd.ExecuteNonQueryAsync();
     }
 
-    private async Task<NewInterCountryRelation> GetInterCountryRelation(
+    private async Task<InterCountryRelation.InterCountryRelationToCreate> GetInterCountryRelation(
         int countryIdFrom,
         int countryIdTo,
         int year, int numberOfChildren,
@@ -128,44 +128,51 @@ internal sealed class AdoptionImportMigrator(
 
         var title = $"Adoption exports from {nodeFrom.Title} to {nodeTo.Title} in {year}";
 
-        return new NewInterCountryRelation {
+        return new InterCountryRelation.InterCountryRelationToCreate {
             //The relation is about imports so the relation from is the receiving party
             //and relation to is the sending party
             //even though the children go from the sending party to the receiving party
-            CountryIdFrom = nodeTo.Id,
-            CountryIdTo = nodeFrom.Id,
-            DateTimeRange = GetDateTimeRange(countryIdTo, year),
-            Title = title,
-            OwnerId = Constants.OWNER_GEOGRAPHY,
-            AuthoringStatusId = 1,
-            PublisherId = 1,
-            ChangedDateTime = DateTime.Now,
-            CreatedDateTime = DateTime.Now,
-            DocumentIdProof = null,
-            Id = null,
-            InterCountryRelationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                UrlId = Constants.ADOPTION_IMPORT,
-                TenantId = Constants.PPL
-            }),
-            NodeTypeId = 50,
-            MoneyInvolved = 0,
-            NumberOfChildrenInvolved = numberOfChildren,
-            TenantNodes = new List<NewTenantNodeForNewNode>
-            {
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = 1,
-                    PublicationStatusId = 1,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = null
-                }
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = null
             },
-            TermIds = new List<int>(),
+            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                Title = title,
+                OwnerId = Constants.OWNER_GEOGRAPHY,
+                AuthoringStatusId = 1,
+                PublisherId = 1,
+                ChangedDateTime = DateTime.Now,
+                CreatedDateTime = DateTime.Now,
+                NodeTypeId = 50,
+                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>{
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = null
+                    }
+                },
+                TermIds = new List<int>(),
+            },
+            InterCountryRelationDetails = new InterCountryRelationDetails {
+                CountryIdFrom = nodeTo.Id,
+                CountryIdTo = nodeFrom.Id,
+                DateTimeRange = GetDateTimeRange(countryIdTo, year),
+                DocumentIdProof = null,
+                InterCountryRelationTypeId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+                    UrlId = Constants.ADOPTION_IMPORT,
+                    TenantId = Constants.PPL
+                }),
+                MoneyInvolved = 0,
+                NumberOfChildrenInvolved = numberOfChildren,
+            }
         };
     }
-    private async IAsyncEnumerable<NewInterCountryRelation> ReadAdoptionExportYears(
+    private async IAsyncEnumerable<InterCountryRelation.InterCountryRelationToCreate> ReadAdoptionExportYears(
         IMandatorySingleItemDatabaseReader<NodeReaderByUrlIdRequest, NodeTitle> nodeReader,
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {

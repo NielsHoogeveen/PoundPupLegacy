@@ -11,7 +11,7 @@ public abstract record SingleQuestionPoll : PollQuestion, Poll
     public abstract T Match<T>(Func<SingleQuestionPollToCreate, T> create, Func<SingleQuestionPollToUpdate, T> update);
     public abstract void Match(Action<SingleQuestionPollToCreate> create, Action<SingleQuestionPollToUpdate> update);
 
-    public sealed record SingleQuestionPollToCreate : SingleQuestionPoll, PollQuestionToCreate
+    public sealed record SingleQuestionPollToCreate : SingleQuestionPoll, PollQuestionToCreate, PollToCreate
     {
         public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
         public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
@@ -28,7 +28,7 @@ public abstract record SingleQuestionPoll : PollQuestion, Poll
             create(this);
         }
     }
-    public sealed record SingleQuestionPollToUpdate : SingleQuestionPoll, PollQuestionToUpdate
+    public sealed record SingleQuestionPollToUpdate : SingleQuestionPoll, PollQuestionToUpdate, PollToUpdate
     {
         public override Identification Identification => IdentificationForUpdate;
 

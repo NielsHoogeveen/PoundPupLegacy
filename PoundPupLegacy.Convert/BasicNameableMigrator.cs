@@ -4,7 +4,7 @@ internal sealed class BasicNameableMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int> termIdReaderFactory,
-    IEntityCreatorFactory<EventuallyIdentifiableBasicNameable> basicNameableCreatorFactory
+    IEntityCreatorFactory<BasicNameable.BasicNameableToCreate> basicNameableCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "basic nameables";
@@ -16,7 +16,7 @@ internal sealed class BasicNameableMigrator(
         await using var termIdReader = await termIdReaderFactory.CreateAsync(_postgresConnection);
         await basicNameableCreator.CreateAsync(ReadBasicNameables(nodeIdReader,termIdReader));
     }
-    private async IAsyncEnumerable<NewBasicNameable> ReadBasicNameables(
+    private async IAsyncEnumerable<BasicNameable.BasicNameableToCreate> ReadBasicNameables(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader)
     {
@@ -98,39 +98,50 @@ internal sealed class BasicNameableMigrator(
 
         var reader = await readCommand.ExecuteReaderAsync();
 
-        yield return new NewBasicNameable {
-            Id = null,
-            PublisherId = 1,
-            CreatedDateTime = DateTime.Now,
-            ChangedDateTime = DateTime.Now,
-            Title = "organizations",
-            OwnerId = 1,
-            AuthoringStatusId = 1,
-            TenantNodes = new List<NewTenantNodeForNewNode>
-            {
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = 1,
-                    PublicationStatusId = 1,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = null
-                }
+        yield return new BasicNameable.BasicNameableToCreate {
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = null
             },
-            NodeTypeId = 41,
-            Description = "",
-            FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameable>
-            {
-                new NewTermForNewNameable
+            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                PublisherId = 1,
+                CreatedDateTime = DateTime.Now,
+                ChangedDateTime = DateTime.Now,
+                Title = "organizations",
+                OwnerId = 1,
+                AuthoringStatusId = 1,
+                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
                 {
-                    VocabularyId = vocabularyId,
-                    Name = "organizations",
-                    ParentTermIds = new List<int>(),
-                }
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = null
+                    }
+                },
+                NodeTypeId = 41,
+                TermIds = new List<int>(),
             },
-            TermIds = new List<int>(),
+            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                Description = "",
+                FileIdTileImage = null,
+                Terms = new List<NewTermForNewNameable>
+                {
+                    new NewTermForNewNameable
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null,
+                        },
+                        VocabularyId = vocabularyId,
+                        Name = "organizations",
+                        ParentTermIds = new List<int>(),
+                    }
+                },
+            },
         };
 
         while (await reader.ReadAsync()) {
@@ -150,158 +161,202 @@ internal sealed class BasicNameableMigrator(
                 {
                     new NewTermForNewNameable
                     {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null,
+                        },
                         VocabularyId = vocabularyId,
                         Name = name,
                         ParentTermIds = topicParentIds,
                     }
                 };
 
-            yield return new NewBasicNameable {
-                Id = null,
-                PublisherId = reader.GetInt32("user_id"),
-                CreatedDateTime = reader.GetDateTime("created"),
-                ChangedDateTime = reader.GetDateTime("changed"),
-                Title = name,
-                OwnerId = 1,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = 1,
-                        PublicationStatusId = reader.GetInt32("status"),
-                        UrlPath = reader.IsDBNull("url_path") ? null: reader.GetString("url_path"),
-                        SubgroupId = null,
-                        UrlId = id
-                    }
+            yield return new BasicNameable.BasicNameableToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                NodeTypeId = reader.GetInt32("node_type_id"),
-                Description = reader.GetString("description"),
-                FileIdTileImage = null,
-                Terms = vocabularyNames,
-                TermIds = new List<int>(),
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = reader.GetInt32("user_id"),
+                    CreatedDateTime = reader.GetDateTime("created"),
+                    ChangedDateTime = reader.GetDateTime("changed"),
+                    Title = name,
+                    OwnerId = 1,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    {
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = 1,
+                            PublicationStatusId = reader.GetInt32("status"),
+                            UrlPath = reader.IsDBNull("url_path") ? null: reader.GetString("url_path"),
+                            SubgroupId = null,
+                            UrlId = id
+                        }
+                    },
+                    NodeTypeId = reader.GetInt32("node_type_id"),
+                    TermIds = new List<int>(),
+                },
+                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                    Description = reader.GetString("description"),
+                    FileIdTileImage = null,
+                    Terms = vocabularyNames,
+                },
             };
 
         }
         await reader.CloseAsync();
 
-        yield return new NewBasicNameable {
-            Id = null,
-            PublisherId = 1,
-            CreatedDateTime = DateTime.Now,
-            ChangedDateTime = DateTime.Now,
-            Title = "US senate bill",
-            OwnerId = 1,
-            AuthoringStatusId = 1,
-            TenantNodes = new List<NewTenantNodeForNewNode>
-            {
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = 1,
-                    PublicationStatusId = 1,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = null
-                }
+        yield return new BasicNameable.BasicNameableToCreate {
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = null
             },
-            NodeTypeId = 41,
-            Description = "",
-            FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameable>
-            {
-                new NewTermForNewNameable
+            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                PublisherId = 1,
+                CreatedDateTime = DateTime.Now,
+                ChangedDateTime = DateTime.Now,
+                Title = "US senate bill",
+                OwnerId = 1,
+                AuthoringStatusId = 1,
+                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
                 {
-                    VocabularyId = vocabularyId,
-                    Name = "US senate bill",
-                    ParentTermIds = new List<int>{
-                        await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
-                            Name = "United States Congress",
-                            VocabularyId = vocabularyId
-                        })
-                    },
-                }
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = null
+                    }
+                },
+                NodeTypeId = 41,
+                TermIds = new List<int>(),
             },
-            TermIds = new List<int>(),
+            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                Description = "",
+                FileIdTileImage = null,
+                Terms = new List<NewTermForNewNameable>
+                {
+                    new NewTermForNewNameable
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null,
+                        },
+                        VocabularyId = vocabularyId,
+                        Name = "US senate bill",
+                        ParentTermIds = new List<int>{
+                            await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                                Name = "United States Congress",
+                                VocabularyId = vocabularyId
+                            })
+                        },
+                    }
+                },
+            },
         };
-        yield return new NewBasicNameable {
-            Id = null,
-            PublisherId = 1,
-            CreatedDateTime = DateTime.Now,
-            ChangedDateTime = DateTime.Now,
-            Title = "US house bill",
-            OwnerId = 1,
-            AuthoringStatusId = 1,
-            TenantNodes = new List<NewTenantNodeForNewNode>
-            {
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = 1,
-                    PublicationStatusId = 1,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = null
-                }
+        yield return new BasicNameable.BasicNameableToCreate {
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = null
             },
-            NodeTypeId = 41,
-            Description = "",
-            FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameable>
-            {
-                new NewTermForNewNameable
+            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                PublisherId = 1,
+                CreatedDateTime = DateTime.Now,
+                ChangedDateTime = DateTime.Now,
+                Title = "US house bill",
+                OwnerId = 1,
+                AuthoringStatusId = 1,
+                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
                 {
-                    VocabularyId = vocabularyId,
-                    Name = "US house bill",
-                    ParentTermIds = new List<int>{
-                        await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
-                            Name = "United States Congress",
-                            VocabularyId = vocabularyId
-                        })
-                    },
-                }
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = null
+                    }
+                },
+                NodeTypeId = 41,
+                TermIds = new List<int>(),
             },
-            TermIds = new List<int>(),
+            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                Description = "",
+                FileIdTileImage = null,
+                Terms = new List<NewTermForNewNameable>
+                {
+                    new NewTermForNewNameable
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null,
+                        },
+                        VocabularyId = vocabularyId,
+                        Name = "US house bill",
+                        ParentTermIds = new List<int>{
+                            await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                                Name = "United States Congress",
+                                VocabularyId = vocabularyId
+                            })
+                        },
+                    }
+                },
+            },
         };
-        yield return new NewBasicNameable {
-            Id = null,
-            PublisherId = 1,
-            CreatedDateTime = DateTime.Now,
-            ChangedDateTime = DateTime.Now,
-            Title = "US act",
-            OwnerId = 1,
-            AuthoringStatusId = 1,
-            TenantNodes = new List<NewTenantNodeForNewNode>
-            {
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = 1,
-                    PublicationStatusId = 1,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = null
-                }
+        yield return new BasicNameable.BasicNameableToCreate {
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = null
             },
-            NodeTypeId = 41,
-            Description = "",
-            FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameable>
-            {
-                new NewTermForNewNameable
+            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                PublisherId = 1,
+                CreatedDateTime = DateTime.Now,
+                ChangedDateTime = DateTime.Now,
+                Title = "US act",
+                OwnerId = 1,
+                AuthoringStatusId = 1,
+                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
                 {
-                    VocabularyId = vocabularyId,
-                    Name = "US act",
-                    ParentTermIds = new List<int>{
-                        await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
-                            Name = "United States Congress",
-                            VocabularyId = vocabularyId
-                        })
-                    },
-                }
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = 1,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = null
+                    }
+                },
+                NodeTypeId = 41,
+                TermIds = new List<int>(),
             },
-            TermIds = new List<int>(),
+            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                Description = "",
+                FileIdTileImage = null,
+                Terms = new List<NewTermForNewNameable>
+                {
+                    new NewTermForNewNameable
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null,
+                        },
+                        VocabularyId = vocabularyId,
+                        Name = "US act",
+                        ParentTermIds = new List<int>{
+                            await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                                Name = "United States Congress",
+                                VocabularyId = vocabularyId
+                            })
+                        },
+                    }
+                },
+            },
         };
     }
 }

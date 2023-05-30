@@ -6,37 +6,37 @@ public static class DependencyInjection
 {
     public static void AddCreateModelUpdaters(this IServiceCollection services)
     {
-        services.AddTransient<IEntityChangerFactory<ImmediatelyIdentifiableAbuseCase>, AbuseCaseChangerFactory>();
-        services.AddTransient<IEntityChangerFactory<ImmediatelyIdentifiableChildTraffickingCase>, ChildTraffickingCaseChangerFactory>();
-        services.AddTransient<IEntityChangerFactory<ImmediatelyIdentifiableCoercedAdoptionCase>, CoercedAdoptionCaseChangerFactory>();
-        services.AddTransient<IEntityChangerFactory<ImmediatelyIdentifiableDeportationCase>, DeportationCaseChangerFactory>();
-        services.AddTransient<IEntityChangerFactory<ImmediatelyIdentifiableDisruptedPlacementCase>, DisruptedPlacementCaseChangerFactory>();
-        services.AddTransient<IEntityChangerFactory<ImmediatelyIdentifiableFathersRightsViolationCase>, FathersRightsViolationCaseChangerFactory>();
-        services.AddTransient<IEntityChangerFactory<ImmediatelyIdentifiableDocument>, DocumentChangerFactory>();
-        services.AddTransient<IEntityChangerFactory<ImmediatelyIdentifiableOrganization>, OrganizationChangerFactory>();
-        services.AddTransient<IEntityChangerFactory<ImmediatelyIdentifiablePerson>, PersonChangerFactory>();
+        services.AddTransient<IEntityChangerFactory<AbuseCase.AbuseCaseToUpdate>, AbuseCaseChangerFactory>();
+        services.AddTransient<IEntityChangerFactory<ChildTraffickingCase.ChildTraffickingCaseToUpdate>, ChildTraffickingCaseChangerFactory>();
+        services.AddTransient<IEntityChangerFactory<CoercedAdoptionCase.CoercedAdoptionCaseToUpdate>, CoercedAdoptionCaseChangerFactory>();
+        services.AddTransient<IEntityChangerFactory<DeportationCase.DeportationCaseToUpdate>, DeportationCaseChangerFactory>();
+        services.AddTransient<IEntityChangerFactory<DisruptedPlacementCase.DisruptedPlacementCaseToUpdate>, DisruptedPlacementCaseChangerFactory>();
+        services.AddTransient<IEntityChangerFactory<FathersRightsViolationCase.FathersRightsViolationCaseToUpdate>, FathersRightsViolationCaseChangerFactory>();
+        services.AddTransient<IEntityChangerFactory<Document.DocumentToUpdate>, DocumentChangerFactory>();
+        services.AddTransient<IEntityChangerFactory<OrganizationToUpdate>, OrganizationChangerFactory>();
+        services.AddTransient<IEntityChangerFactory<Person.PersonToUpdate>, PersonChangerFactory>();
         services.AddTransient<IEntityChangerFactory<SimpleTextNodeToUpdate>, SimpleTextNodeChangerFactory>();
-        services.AddTransient<IEntityChangerFactory<ImmediatelyIdentifiableWrongfulMedicationCase>, WrongfulMedicationCaseChangerFactory>();
-        services.AddTransient<IEntityChangerFactory<ImmediatelyIdentifiableWrongfulRemovalCase>, WrongfulRemovalCaseChangerFactory>();
+        services.AddTransient<IEntityChangerFactory<WrongfulMedicationCase.WrongfulMedicationCaseToUpdate>, WrongfulMedicationCaseChangerFactory>();
+        services.AddTransient<IEntityChangerFactory<WrongfulRemovalCase.WrongfulRemovalCaseToUpdate>, WrongfulRemovalCaseChangerFactory>();
 
-        services.AddTransient<IDatabaseUpdaterFactory<ImmediatelyIdentifiableAbuseCase>, AbuseCaseUpdaterFactory>();
-        services.AddTransient<IDatabaseUpdaterFactory<ImmediatelyIdentifiableChildTraffickingCase>, ChildTraffickingCaseUpdaterFactory>();
-        services.AddTransient<IDatabaseUpdaterFactory<ImmediatelyIdentifiableCoercedAdoptionCase>, CoercedAdoptionCaseUpdaterFactory>();
-        services.AddTransient<IDatabaseUpdaterFactory<ImmediatelyIdentifiableDeportationCase>, DeportationCaseUpdaterFactory>();
-        services.AddTransient<IDatabaseUpdaterFactory<ImmediatelyIdentifiableDisruptedPlacementCase>, DisruptedPlacementCaseUpdaterFactory>();
-        services.AddTransient<IDatabaseUpdaterFactory<ImmediatelyIdentifiableFathersRightsViolationCase>, FathersRightsViolationCaseUpdaterFactory>();
-        services.AddTransient<IDatabaseUpdaterFactory<ImmediatelyIdentifiableDocument>, DocumentUpdaterFactory>();
+        services.AddTransient<IDatabaseUpdaterFactory<AbuseCase.AbuseCaseToUpdate>, AbuseCaseUpdaterFactory>();
+        services.AddTransient<IDatabaseUpdaterFactory<ChildTraffickingCase.ChildTraffickingCaseToUpdate>, ChildTraffickingCaseUpdaterFactory>();
+        services.AddTransient<IDatabaseUpdaterFactory<CoercedAdoptionCase.CoercedAdoptionCaseToUpdate>, CoercedAdoptionCaseUpdaterFactory>();
+        services.AddTransient<IDatabaseUpdaterFactory<DeportationCase.DeportationCaseToUpdate>, DeportationCaseUpdaterFactory>();
+        services.AddTransient<IDatabaseUpdaterFactory<DisruptedPlacementCase.DisruptedPlacementCaseToUpdate>, DisruptedPlacementCaseUpdaterFactory>();
+        services.AddTransient<IDatabaseUpdaterFactory<FathersRightsViolationCase.FathersRightsViolationCaseToUpdate>, FathersRightsViolationCaseUpdaterFactory>();
+        services.AddTransient<IDatabaseUpdaterFactory<Document.DocumentToUpdate>, DocumentUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<LocationUpdaterRequest>, LocationUpdaterFactory>();
-        services.AddTransient<IDatabaseUpdaterFactory<ImmediatelyIdentifiableInterOrganizationalRelation>, InterOrganizationalRelationUpdaterFactory>();
-        services.AddTransient<IDatabaseUpdaterFactory<ImmediatelyIdentifiableInterPersonalRelation>, InterPersonalRelationUpdaterFactory>();
+        services.AddTransient<IDatabaseUpdaterFactory<InterOrganizationalRelation.InterOrganizationalRelationToUpdate>, InterOrganizationalRelationUpdaterFactory>();
+        services.AddTransient<IDatabaseUpdaterFactory<InterPersonalRelation.InterPersonalRelationToUpdate>, InterPersonalRelationUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<NodeUnpublishRequest>, NodeUnpublishFactory>();
-        services.AddTransient<IDatabaseUpdaterFactory<ImmediatelyIdentifiableOrganization>, OrganizationUpdaterFactory>();
-        services.AddTransient<IDatabaseUpdaterFactory<ImmediatelyIdentifiablePartyPoliticalEntityRelation>, PartyPoliticalEntityRelationUpdaterFactory>();
-        services.AddTransient<IDatabaseUpdaterFactory<ImmediatelyIdentifiablePersonOrganizationRelation>, PersonOrganizationRelationUpdaterFactory>();
-        services.AddTransient<IDatabaseUpdaterFactory<ImmediatelyIdentifiablePerson>, PersonUpdaterFactory>();
+        services.AddTransient<IDatabaseUpdaterFactory<OrganizationToUpdate>, OrganizationUpdaterFactory>();
+        services.AddTransient<IDatabaseUpdaterFactory<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToUpdate>, PartyPoliticalEntityRelationUpdaterFactory>();
+        services.AddTransient<IDatabaseUpdaterFactory<PersonOrganizationRelation.PersonOrganizationRelationToUpdate>, PersonOrganizationRelationUpdaterFactory>();
+        services.AddTransient<IDatabaseUpdaterFactory<Person.PersonToUpdate>, PersonUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<SimpleTextNodeToUpdate>, SimpleTextNodeUpdaterFactory>();
-        services.AddTransient<IDatabaseUpdaterFactory<ImmediatelyIdentifiableTenantNode>, TenantNodeUpdaterFactory>();
-        services.AddTransient<IDatabaseUpdaterFactory<ImmediatelyIdentifiableWrongfulMedicationCase>, WrongfulMedicationCaseUpdaterFactory>();
-        services.AddTransient<IDatabaseUpdaterFactory<ImmediatelyIdentifiableWrongfulRemovalCase>, WrongfulRemovalCaseUpdaterFactory>();
+        services.AddTransient<IDatabaseUpdaterFactory<TenantNode.TenantNodeToUpdate>, TenantNodeUpdaterFactory>();
+        services.AddTransient<IDatabaseUpdaterFactory<WrongfulMedicationCase.WrongfulMedicationCaseToUpdate>, WrongfulMedicationCaseUpdaterFactory>();
+        services.AddTransient<IDatabaseUpdaterFactory<WrongfulRemovalCase.WrongfulRemovalCaseToUpdate>, WrongfulRemovalCaseUpdaterFactory>();
     }
 }

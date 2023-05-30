@@ -3,7 +3,7 @@
 internal class CaseCaseRelationsMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        IEntityCreatorFactory<CaseNewCasePartiesToUpdate> caseCasePartiesCreatorFactory
+        IEntityCreatorFactory<CaseExistingCasePartiesToCreate> caseCasePartiesCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "case case relation";
@@ -28,7 +28,7 @@ internal class CaseCaseRelationsMigrator(
         await caseCasePartiesCreator.CreateAsync(ReadWrongfulRemovalCaseAuthorityParties(nodeIdReader));
         await caseCasePartiesCreator.CreateAsync(ReadWrongfulMedicationCaseAuthorityParties(nodeIdReader));
     }
-    private async IAsyncEnumerable<CaseNewCasePartiesToUpdate> ReadCaseCaseRelations(
+    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadCaseCaseRelations(
         string sql,
         int casePartyTypeId,
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
@@ -60,13 +60,15 @@ internal class CaseCaseRelationsMigrator(
                 }));
             }
 
-            yield return new CaseNewCasePartiesToUpdate {
+            yield return new CaseExistingCasePartiesToCreate {
                 CaseId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     UrlId = id,
                     TenantId = Constants.PPL
                 }),
-                CaseParties = new CasePartiesToCreate {
-                    Id = null,
+                CaseParties = new CaseParties.CasePartiesToCreate {
+                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                        Id = null
+                    },
                     Organizations = reader.IsDBNull("organizations_text") ? null : reader.GetString("organizations_text"),
                     Persons = reader.IsDBNull("persons_text") ? null : reader.GetString("persons_text"),
                     OrganizationIds = organizationIds,
@@ -79,7 +81,7 @@ internal class CaseCaseRelationsMigrator(
         await reader.CloseAsync();
 
     }
-    private async IAsyncEnumerable<CaseNewCasePartiesToUpdate> ReadAbuseCaseHomestudyParties(
+    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadAbuseCaseHomestudyParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -132,7 +134,7 @@ internal class CaseCaseRelationsMigrator(
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseNewCasePartiesToUpdate> ReadAbuseCasePlacementParties(
+    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadAbuseCasePlacementParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -186,7 +188,7 @@ internal class CaseCaseRelationsMigrator(
         }
     }
 
-    private async IAsyncEnumerable<CaseNewCasePartiesToUpdate> ReadAbuseCasePostPlacementParties(
+    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadAbuseCasePostPlacementParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -239,7 +241,7 @@ internal class CaseCaseRelationsMigrator(
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseNewCasePartiesToUpdate> ReadAbuseCaseFacilitatorParties(
+    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadAbuseCaseFacilitatorParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -294,7 +296,7 @@ internal class CaseCaseRelationsMigrator(
         }
     }
 
-    private async IAsyncEnumerable<CaseNewCasePartiesToUpdate> ReadAbuseCaseInstitutionParties(
+    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadAbuseCaseInstitutionParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -347,7 +349,7 @@ internal class CaseCaseRelationsMigrator(
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseNewCasePartiesToUpdate> ReadAbuseCaseTherapyParties(
+    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadAbuseCaseTherapyParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -386,7 +388,7 @@ internal class CaseCaseRelationsMigrator(
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseNewCasePartiesToUpdate> ReadChildTraffickingCasePlacementParties(
+    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadChildTraffickingCasePlacementParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -441,7 +443,7 @@ internal class CaseCaseRelationsMigrator(
         }
     }
 
-    private async IAsyncEnumerable<CaseNewCasePartiesToUpdate> ReadChildTraffickingCaseFacilitatorParties(
+    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadChildTraffickingCaseFacilitatorParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
@@ -497,7 +499,7 @@ internal class CaseCaseRelationsMigrator(
         }
     }
 
-    private async IAsyncEnumerable<CaseNewCasePartiesToUpdate> ReadChildTraffickingCaseOrphanageParties(
+    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadChildTraffickingCaseOrphanageParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -552,7 +554,7 @@ internal class CaseCaseRelationsMigrator(
         }
     }
 
-    private async IAsyncEnumerable<CaseNewCasePartiesToUpdate> ReadDisruptedPlacementCasePlacementParties(
+    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadDisruptedPlacementCasePlacementParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -604,7 +606,7 @@ internal class CaseCaseRelationsMigrator(
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseNewCasePartiesToUpdate> ReadDisruptedPlacementCaseFacilitatorParties(
+    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadDisruptedPlacementCaseFacilitatorParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -658,7 +660,7 @@ internal class CaseCaseRelationsMigrator(
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseNewCasePartiesToUpdate> ReadCoercedAdoptionCasePlacementParties(
+    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadCoercedAdoptionCasePlacementParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -712,7 +714,7 @@ internal class CaseCaseRelationsMigrator(
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseNewCasePartiesToUpdate> ReadFathersRightsViolationCasePlacementParties(
+    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadFathersRightsViolationCasePlacementParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -764,7 +766,7 @@ internal class CaseCaseRelationsMigrator(
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseNewCasePartiesToUpdate> ReadWrongfulRemovalCaseAuthorityParties(
+    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadWrongfulRemovalCaseAuthorityParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -803,7 +805,7 @@ internal class CaseCaseRelationsMigrator(
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseNewCasePartiesToUpdate> ReadWrongfulMedicationCaseAuthorityParties(
+    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadWrongfulMedicationCaseAuthorityParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""

@@ -14,7 +14,7 @@ internal sealed class CaseCasePartiesInserterFactory : BasicDatabaseInserterFact
     {
         return new ParameterValue[] {
             ParameterValue.Create(CaseId, request.CaseId),
-            ParameterValue.Create(CasePartiesId, request.CaseParties?.Id),
+            ParameterValue.Create(CasePartiesId, request.CaseParties.IdentificationForCreate?.Id),
             ParameterValue.Create(CasePartyTypeId, request.CasePartyTypeId)
         };
     }

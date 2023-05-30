@@ -9,12 +9,12 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
     IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int> vocabularyIdReaderByOwnerAndNameFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermNameReaderByNameableIdRequest, string> termReaderByNameableIdFactory,
     IMandatorySingleItemDatabaseReaderFactory<NameableIdReaderByTermNameRequest, int> termReaderByNameFactory,
-    IEntityCreatorFactory<EventuallyIdentifiableInformalIntermediateLevelSubdivision> informalIntermediateLevelSubdivisionCreatorFactory
+    IEntityCreatorFactory<InformalIntermediateLevelSubdivision.InformalIntermediateLevelSubdivisionToCreate> informalIntermediateLevelSubdivisionCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "informal intermediate level subdivisions";
 
-    private async IAsyncEnumerable<NewInformalIntermediateLevelSubdivision> ReadInformalIntermediateLevelSubdivisionCsv(
+    private async IAsyncEnumerable<InformalIntermediateLevelSubdivision.InformalIntermediateLevelSubdivisionToCreate> ReadInformalIntermediateLevelSubdivisionCsv(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
         IMandatorySingleItemDatabaseReader<TermNameReaderByNameableIdRequest, string> termReaderByNameableId,
@@ -43,59 +43,75 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
                 NameableId = countryId,
                 VocabularyId = vocabularyIdTopics
             }));
-            yield return new NewInformalIntermediateLevelSubdivision {
-                Id = null,
-                CreatedDateTime = DateTime.Parse(parts[1]),
-                ChangedDateTime = DateTime.Parse(parts[2]),
-                Terms = new List<NewTermForNewNameable>
-                {
-                    new NewTermForNewNameable
+            yield return new InformalIntermediateLevelSubdivision.InformalIntermediateLevelSubdivisionToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
+                },
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    CreatedDateTime = DateTime.Parse(parts[1]),
+                    ChangedDateTime = DateTime.Parse(parts[2]),
+                    Title = title,
+                    NodeTypeId = int.Parse(parts[4]),
+                    OwnerId = Constants.OWNER_GEOGRAPHY,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
                     {
-                        VocabularyId = vocabularyIdTopics,
-                        Name = title,
-                        ParentTermIds = new List<int> {
-                            await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
-                                Name = countryName ,
-                                VocabularyId = vocabularyIdTopics
-                            })
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.PPL,
+                            PublicationStatusId = int.Parse(parts[5]),
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id
                         },
-                    }
-                },
-                Description = "",
-                FileIdTileImage = null,
-                NodeTypeId = int.Parse(parts[4]),
-                OwnerId = Constants.OWNER_GEOGRAPHY,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = int.Parse(parts[5]),
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.CPCT,
+                            PublicationStatusId = 2,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id < 33163 ? id : null
+                        }
                     },
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id < 33163 ? id : null
-                    }
+                    PublisherId = int.Parse(parts[6]),
+                    TermIds = new List<int>(),
                 },
-                PublisherId = int.Parse(parts[6]),
-                CountryId = countryId,
-                Title = title,
-                Name = parts[9],
-                SubdivisionTypeId = (await termReaderByName.ReadAsync(new NameableIdReaderByTermNameRequest {
-                    Name = "Region",
-                    VocabularyId = vocabularyIdSubdivisionType
-                })),
-                TermIds = new List<int>(),
+                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                    Terms = new List<NewTermForNewNameable>
+                    {
+                        new NewTermForNewNameable
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null,
+                            },
+                            VocabularyId = vocabularyIdTopics,
+                            Name = title,
+                            ParentTermIds = new List<int> {
+                                await termIdReader.ReadAsync(new TermIdReaderByNameRequest {
+                                    Name = countryName ,
+                                    VocabularyId = vocabularyIdTopics
+                                })
+                            },
+                        }
+                    },
+                    Description = "",
+                    FileIdTileImage = null,
+                },
+                SubdivisionDetails = new SubdivisionDetails {
+                    CountryId = countryId,
+                    Name = parts[9],
+                    SubdivisionTypeId = (await termReaderByName.ReadAsync(new NameableIdReaderByTermNameRequest {
+                        Name = "Region",
+                        VocabularyId = vocabularyIdSubdivisionType
+                    })),
+                }
+                
             };
         }
     }
@@ -121,7 +137,7 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
             termReaderByName
         ));
     }
-    private async IAsyncEnumerable<NewInformalIntermediateLevelSubdivision> ReadInformalIntermediateLevelSubdivisions(
+    private async IAsyncEnumerable<InformalIntermediateLevelSubdivision.InformalIntermediateLevelSubdivisionToCreate> ReadInformalIntermediateLevelSubdivisions(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<TermIdReaderByNameRequest, int> termIdReader,
         IMandatorySingleItemDatabaseReader<NameableIdReaderByTermNameRequest, int> termReaderByName
@@ -174,55 +190,70 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
             {
                 new NewTermForNewNameable
                 {
+                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                        Id = null,
+                    },
                     VocabularyId = vocabularyIdTopics,
                     Name = title,
                     ParentTermIds = parentTermIds
                 }
             };
 
-            yield return new NewInformalIntermediateLevelSubdivision {
-                Id = null,
-                PublisherId = reader.GetInt32("access_role_id"),
-                CreatedDateTime = reader.GetDateTime("created_date_time"),
-                ChangedDateTime = reader.GetDateTime("changed_date_time"),
-                Title = title,
-                OwnerId = Constants.OWNER_GEOGRAPHY,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = reader.GetInt32("node_status_id"),
-                        UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
-                        SubgroupId = null,
-                        UrlId = id
-                    },
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id
-                    }
+            yield return new InformalIntermediateLevelSubdivision.InformalIntermediateLevelSubdivisionToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                NodeTypeId = 18,
-                CountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
-                    TenantId = Constants.PPL,
-                    UrlId = reader.GetInt32("country_id")
-                }),
-                Name = reader.GetString("title"),
-                Terms = vocabularyNames,
-                Description = "",
-                FileIdTileImage = null,
-                SubdivisionTypeId = (await termReaderByName.ReadAsync(new NameableIdReaderByTermNameRequest {
-                    Name = "Region",
-                    VocabularyId = vocabularyIdSubdivision
-                })),
-                TermIds = new List<int>(),
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = reader.GetInt32("access_role_id"),
+                    CreatedDateTime = reader.GetDateTime("created_date_time"),
+                    ChangedDateTime = reader.GetDateTime("changed_date_time"),
+                    Title = title,
+                    OwnerId = Constants.OWNER_GEOGRAPHY,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    {
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.PPL,
+                            PublicationStatusId = reader.GetInt32("node_status_id"),
+                            UrlPath = reader.IsDBNull("url_path") ? null : reader.GetString("url_path"),
+                            SubgroupId = null,
+                            UrlId = id
+                        },
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.CPCT,
+                            PublicationStatusId = 2,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id
+                        }
+                    },
+                    NodeTypeId = 18,
+                    TermIds = new List<int>(),
+                },
+                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                    Terms = vocabularyNames,
+                    Description = "",
+                    FileIdTileImage = null,
+                },
+                SubdivisionDetails = new SubdivisionDetails {
+                    Name = reader.GetString("title"),
+                    CountryId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
+                        TenantId = Constants.PPL,
+                        UrlId = reader.GetInt32("country_id")
+                    }),
+                    SubdivisionTypeId = (await termReaderByName.ReadAsync(new NameableIdReaderByTermNameRequest {
+                        Name = "Region",
+                        VocabularyId = vocabularyIdSubdivision
+                    })),
+                }
             };
         }
         await reader.CloseAsync();

@@ -2,7 +2,7 @@
 
 internal sealed class BlogPostMigrator(
         IDatabaseConnections databaseConnections,
-        IEntityCreatorFactory<EventuallyIdentifiableBlogPost> blogPostCreatorFactory
+        IEntityCreatorFactory<BlogPost.BlogPostToCreate> blogPostCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "blog posts";
@@ -12,7 +12,7 @@ internal sealed class BlogPostMigrator(
         await using var blogPostCreator = await blogPostCreatorFactory.CreateAsync(_postgresConnection);
         await blogPostCreator.CreateAsync(ReadBlogPosts());
     }
-    private async IAsyncEnumerable<NewBlogPost> ReadBlogPosts()
+    private async IAsyncEnumerable<BlogPost.BlogPostToCreate> ReadBlogPosts()
     {
 
         var sql = $"""
@@ -38,30 +38,38 @@ internal sealed class BlogPostMigrator(
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var text = ReplacePHPCode(id, reader.GetString("text"));
-            var discussion = new NewBlogPost {
-                Id = null,
-                PublisherId = reader.GetInt32("user_id"),
-                CreatedDateTime = reader.GetDateTime("created"),
-                ChangedDateTime = reader.GetDateTime("changed"),
-                Title = reader.GetString("title"),
-                OwnerId = Constants.PPL,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = 1,
-                        PublicationStatusId = reader.GetInt32("status"),
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id
-                    }
+            var discussion = new BlogPost.BlogPostToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                NodeTypeId = 35,
-                Text = TextToHtml(text),
-                Teaser = TextToTeaser(text),
-                TermIds = new List<int>(),
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = reader.GetInt32("user_id"),
+                    CreatedDateTime = reader.GetDateTime("created"),
+                    ChangedDateTime = reader.GetDateTime("changed"),
+                    Title = reader.GetString("title"),
+                    OwnerId = Constants.PPL,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    {
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = 1,
+                            PublicationStatusId = reader.GetInt32("status"),
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id
+                        }
+                    },
+                    NodeTypeId = 35,
+                    TermIds = new List<int>(),
+                },
+                SimpleTextNodeDetails = new SimpleTextNodeDetails {
+                    Text = TextToHtml(text),
+                    Teaser = TextToTeaser(text),
+                }
             };
             yield return discussion;
 

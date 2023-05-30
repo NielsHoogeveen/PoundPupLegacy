@@ -3,7 +3,7 @@
 internal sealed class CasePartyTypeMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    IEntityCreatorFactory<EventuallyIdentifiableCasePartyType> casePartyTypeCreatorFactory
+    IEntityCreatorFactory<CasePartyType.CasePartyTypeToCreate> casePartyTypeCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "case relation types";
@@ -14,7 +14,7 @@ internal sealed class CasePartyTypeMigrator(
         await casePartyTypeCreator.CreateAsync(GetCaseRelationTypes(nodeIdReader));
     }
 
-    internal static async IAsyncEnumerable<NewCasePartyType> GetCaseRelationTypes(
+    internal static async IAsyncEnumerable<CasePartyType.CasePartyTypeToCreate> GetCaseRelationTypes(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var vocabularyId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
@@ -24,306 +24,398 @@ internal sealed class CasePartyTypeMigrator(
 
         await Task.CompletedTask;
         var now = DateTime.Now;
-        yield return new NewCasePartyType {
-            Id = null,
-            PublisherId = 2,
-            CreatedDateTime = now,
-            ChangedDateTime = now,
-            Title = Constants.HOMESTUDY_CASE_TYPE_NAME,
-            OwnerId = Constants.OWNER_CASES,
-            AuthoringStatusId = 1,
-            TenantNodes = new List<NewTenantNodeForNewNode>
-            {
-                new NewTenantNodeForNewNode
+        yield return new CasePartyType.CasePartyTypeToCreate {
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = null
+            },
+            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                PublisherId = 2,
+                CreatedDateTime = now,
+                ChangedDateTime = now,
+                Title = Constants.HOMESTUDY_CASE_TYPE_NAME,
+                OwnerId = Constants.OWNER_CASES,
+                AuthoringStatusId = 1,
+                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
                 {
-                    Id = null,
-                    TenantId = Constants.PPL,
-                    PublicationStatusId = 1,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.HOMESTUDY_CASE_TYPE
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = Constants.PPL,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = Constants.HOMESTUDY_CASE_TYPE
+                    },
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = Constants.HOMESTUDY_CASE_TYPE
+                    }
                 },
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = Constants.CPCT,
-                    PublicationStatusId = 2,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.HOMESTUDY_CASE_TYPE
-                }
+                NodeTypeId = 1,
+                TermIds = new List<int>(),
             },
-            NodeTypeId = 1,
-            Description = "",
-            FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameable>
-            {
-                new NewTermForNewNameable
+            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                Description = "",
+                FileIdTileImage = null,
+                Terms = new List<NewTermForNewNameable>
                 {
-                    VocabularyId = vocabularyId,
-                    Name = Constants.HOMESTUDY_CASE_TYPE_NAME,
-                    ParentTermIds = new List<int>(),
-                }
+                    new NewTermForNewNameable
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null,
+                        },
+                        VocabularyId = vocabularyId,
+                        Name = Constants.HOMESTUDY_CASE_TYPE_NAME,
+                        ParentTermIds = new List<int>(),
+                    }
+                },
             },
-            TermIds = new List<int>(),
+            
         };
-        yield return new NewCasePartyType {
-            Id = null,
-            PublisherId = 2,
-            CreatedDateTime = now,
-            ChangedDateTime = now,
-            Title = Constants.PLACEMENT_CASE_TYPE_NAME,
-            OwnerId = Constants.OWNER_CASES,
-            AuthoringStatusId = 1,
-            TenantNodes = new List<NewTenantNodeForNewNode>
-            {
-                new NewTenantNodeForNewNode
+        yield return new CasePartyType.CasePartyTypeToCreate {
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = null
+            },
+            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                PublisherId = 2,
+                CreatedDateTime = now,
+                ChangedDateTime = now,
+                Title = Constants.PLACEMENT_CASE_TYPE_NAME,
+                OwnerId = Constants.OWNER_CASES,
+                AuthoringStatusId = 1,
+                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
                 {
-                    Id = null,
-                    TenantId = Constants.PPL,
-                    PublicationStatusId = 1,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.PLACEMENT_CASE_TYPE
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = Constants.PPL,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = Constants.PLACEMENT_CASE_TYPE
+                    },
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = Constants.PLACEMENT_CASE_TYPE
+                    }
                 },
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = Constants.CPCT,
-                    PublicationStatusId = 2,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.PLACEMENT_CASE_TYPE
-                }
+                NodeTypeId = 1,
+                TermIds = new List<int>(),
             },
-            NodeTypeId = 1,
-            Description = "",
-            FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameable>
-            {
-                new NewTermForNewNameable
+            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                Description = "",
+                FileIdTileImage = null,
+                Terms = new List<NewTermForNewNameable>
                 {
-                    VocabularyId = vocabularyId,
-                    Name = Constants.PLACEMENT_CASE_TYPE_NAME,
-                    ParentTermIds = new List<int>(),
-                }
+                    new NewTermForNewNameable
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null,
+                        },
+                        VocabularyId = vocabularyId,
+                        Name = Constants.PLACEMENT_CASE_TYPE_NAME,
+                        ParentTermIds = new List<int>(),
+                    }
+                },
             },
-            TermIds = new List<int>(),
         };
-        yield return new NewCasePartyType {
-            Id = null,
-            PublisherId = 2,
-            CreatedDateTime = now,
-            ChangedDateTime = now,
-            Title = Constants.POSTPLACEMENT_CASE_TYPE_NAME,
-            OwnerId = Constants.OWNER_CASES,
-            AuthoringStatusId = 1,
-            TenantNodes = new List<NewTenantNodeForNewNode>
-            {
-                new NewTenantNodeForNewNode
+        yield return new CasePartyType.CasePartyTypeToCreate {
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = null
+            },
+            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                PublisherId = 2,
+                CreatedDateTime = now,
+                ChangedDateTime = now,
+                Title = Constants.POSTPLACEMENT_CASE_TYPE_NAME,
+                OwnerId = Constants.OWNER_CASES,
+                AuthoringStatusId = 1,
+                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
                 {
-                    Id = null,
-                    TenantId = Constants.PPL,
-                    PublicationStatusId = 1,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.POSTPLACEMENT_CASE_TYPE
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = Constants.PPL,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = Constants.POSTPLACEMENT_CASE_TYPE
+                    },
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = Constants.POSTPLACEMENT_CASE_TYPE
+                    }
                 },
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = Constants.CPCT,
-                    PublicationStatusId = 2,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.POSTPLACEMENT_CASE_TYPE
-                }
+                NodeTypeId = 1,
+                TermIds = new List<int>(),
             },
-            NodeTypeId = 1,
-            Description = "",
-            FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameable>
-            {
-                new NewTermForNewNameable
+            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                Description = "",
+                FileIdTileImage = null,
+                Terms = new List<NewTermForNewNameable>
                 {
-                    VocabularyId = vocabularyId,
-                    Name = Constants.POSTPLACEMENT_CASE_TYPE_NAME,
-                    ParentTermIds = new List<int>(),
-                }
+                    new NewTermForNewNameable
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null,
+                        },
+                        VocabularyId = vocabularyId,
+                        Name = Constants.POSTPLACEMENT_CASE_TYPE_NAME,
+                        ParentTermIds = new List<int>(),
+                    }
+                },
             },
-            TermIds = new List<int>(),
         };
-        yield return new NewCasePartyType {
-            Id = null,
-            PublisherId = 2,
-            CreatedDateTime = now,
-            ChangedDateTime = now,
-            Title = Constants.FACILITATION_CASE_TYPE_NAME,
-            OwnerId = Constants.OWNER_CASES,
-            AuthoringStatusId = 1,
-            TenantNodes = new List<NewTenantNodeForNewNode>
-            {
-                new NewTenantNodeForNewNode
+        yield return new CasePartyType.CasePartyTypeToCreate {
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = null
+            },
+            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                PublisherId = 2,
+                CreatedDateTime = now,
+                ChangedDateTime = now,
+                Title = Constants.FACILITATION_CASE_TYPE_NAME,
+                OwnerId = Constants.OWNER_CASES,
+                AuthoringStatusId = 1,
+                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
                 {
-                    Id = null,
-                    TenantId = Constants.PPL,
-                    PublicationStatusId = 1,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.FACILITATION_CASE_TYPE
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = Constants.PPL,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = Constants.FACILITATION_CASE_TYPE
+                    },
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = Constants.FACILITATION_CASE_TYPE
+                    }
                 },
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = Constants.CPCT,
-                    PublicationStatusId = 2,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.FACILITATION_CASE_TYPE
-                }
+                NodeTypeId = 1,
+                TermIds = new List<int>(),
             },
-            NodeTypeId = 1,
-            Description = "",
-            FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameable>
-            {
-                new NewTermForNewNameable
+            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                Description = "",
+                FileIdTileImage = null,
+                Terms = new List<NewTermForNewNameable>
                 {
-                    VocabularyId = vocabularyId,
-                    Name = Constants.FACILITATION_CASE_TYPE_NAME,
-                    ParentTermIds = new List<int>(),
-                }
+                    new NewTermForNewNameable
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null,
+                        },
+                        VocabularyId = vocabularyId,
+                        Name = Constants.FACILITATION_CASE_TYPE_NAME,
+                        ParentTermIds = new List<int>(),
+                    }
+                },
             },
-            TermIds = new List<int>(),
         };
-        yield return new NewCasePartyType {
-            Id = null,
-            PublisherId = 2,
-            CreatedDateTime = now,
-            ChangedDateTime = now,
-            Title = Constants.INSTITUTION_CASE_TYPE_NAME,
-            OwnerId = Constants.OWNER_CASES,
-            AuthoringStatusId = 1,
-            TenantNodes = new List<NewTenantNodeForNewNode>
-            {
-                new NewTenantNodeForNewNode
+        yield return new CasePartyType.CasePartyTypeToCreate {
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = null
+            },
+            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                PublisherId = 2,
+                CreatedDateTime = now,
+                ChangedDateTime = now,
+                Title = Constants.INSTITUTION_CASE_TYPE_NAME,
+                OwnerId = Constants.OWNER_CASES,
+                AuthoringStatusId = 1,
+                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
                 {
-                    Id = null,
-                    TenantId = Constants.PPL,
-                    PublicationStatusId = 1,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.INSTITUTION_CASE_TYPE
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = Constants.PPL,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = Constants.INSTITUTION_CASE_TYPE
+                    },
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = Constants.INSTITUTION_CASE_TYPE
+                    }
                 },
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = Constants.CPCT,
-                    PublicationStatusId = 2,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.INSTITUTION_CASE_TYPE
-                }
+                NodeTypeId = 1,
+                TermIds = new List<int>(),
             },
-            NodeTypeId = 1,
-            Description = "",
-            FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameable>
-            {
-                new NewTermForNewNameable
+            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                Description = "",
+                FileIdTileImage = null,
+                Terms = new List<NewTermForNewNameable>
                 {
-                    VocabularyId = vocabularyId,
-                    Name = Constants.INSTITUTION_CASE_TYPE_NAME,
-                    ParentTermIds = new List<int>(),
-                }
+                    new NewTermForNewNameable
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null,
+                        },
+                        VocabularyId = vocabularyId,
+                        Name = Constants.INSTITUTION_CASE_TYPE_NAME,
+                        ParentTermIds = new List<int>(),
+                    }
+                },
             },
-            TermIds = new List<int>(),
         };
-        yield return new NewCasePartyType {
-            Id = null,
-            PublisherId = 2,
-            CreatedDateTime = now,
-            ChangedDateTime = now,
-            Title = Constants.THERAPY_CASE_TYPE_NAME,
-            OwnerId = Constants.OWNER_CASES,
-            AuthoringStatusId = 1,
-            TenantNodes = new List<NewTenantNodeForNewNode>
-            {
-                new NewTenantNodeForNewNode
+        yield return new CasePartyType.CasePartyTypeToCreate {
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = null
+            },
+            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                PublisherId = 2,
+                CreatedDateTime = now,
+                ChangedDateTime = now,
+                Title = Constants.THERAPY_CASE_TYPE_NAME,
+                OwnerId = Constants.OWNER_CASES,
+                AuthoringStatusId = 1,
+                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
                 {
-                    Id = null,
-                    TenantId = Constants.PPL,
-                    PublicationStatusId = 1,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.THERAPY_CASE_TYPE
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = Constants.PPL,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = Constants.THERAPY_CASE_TYPE
+                    },
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = Constants.THERAPY_CASE_TYPE
+                    }
                 },
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = Constants.CPCT,
-                    PublicationStatusId = 2,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.THERAPY_CASE_TYPE
-                }
+                NodeTypeId = 1,
+                TermIds = new List<int>(),
             },
-            NodeTypeId = 1,
-            Description = "",
-            FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameable>
-            {
-                new NewTermForNewNameable
+            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                Description = "",
+                FileIdTileImage = null,
+                Terms = new List<NewTermForNewNameable>
                 {
-                    VocabularyId = vocabularyId,
-                    Name = Constants.THERAPY_CASE_TYPE_NAME,
-                    ParentTermIds = new List<int>(),
-                }
+                    new NewTermForNewNameable
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null,
+                        },
+                        VocabularyId = vocabularyId,
+                        Name = Constants.THERAPY_CASE_TYPE_NAME,
+                        ParentTermIds = new List<int>(),
+                    }
+                },
             },
-            TermIds = new List<int>(),
         };
-        yield return new NewCasePartyType {
-            Id = null,
-            PublisherId = 2,
-            CreatedDateTime = now,
-            ChangedDateTime = now,
-            Title = Constants.AUTHORITIES_CASE_TYPE_NAME,
-            OwnerId = Constants.OWNER_CASES,
-            AuthoringStatusId = 1,
-            TenantNodes = new List<NewTenantNodeForNewNode>
-            {
-                new NewTenantNodeForNewNode
+        yield return new CasePartyType.CasePartyTypeToCreate {
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = null
+            },
+            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                PublisherId = 2,
+                CreatedDateTime = now,
+                ChangedDateTime = now,
+                Title = Constants.AUTHORITIES_CASE_TYPE_NAME,
+                OwnerId = Constants.OWNER_CASES,
+                AuthoringStatusId = 1,
+                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
                 {
-                    Id = null,
-                    TenantId = Constants.PPL,
-                    PublicationStatusId = 1,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.AUTHORITIES_CASE_TYPE
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = Constants.PPL,
+                        PublicationStatusId = 1,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = Constants.AUTHORITIES_CASE_TYPE
+                    },
+                    new TenantNode.TenantNodeToCreateForNewNode
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        TenantId = Constants.CPCT,
+                        PublicationStatusId = 2,
+                        UrlPath = null,
+                        SubgroupId = null,
+                        UrlId = Constants.AUTHORITIES_CASE_TYPE
+                    }
                 },
-                new NewTenantNodeForNewNode
-                {
-                    Id = null,
-                    TenantId = Constants.CPCT,
-                    PublicationStatusId = 2,
-                    UrlPath = null,
-                    SubgroupId = null,
-                    UrlId = Constants.AUTHORITIES_CASE_TYPE
-                }
+                NodeTypeId = 1,
+                TermIds = new List<int>(),
             },
-            NodeTypeId = 1,
-            Description = "",
-            FileIdTileImage = null,
-            Terms = new List<NewTermForNewNameable>
-            {
-                new NewTermForNewNameable
+            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                Description = "",
+                FileIdTileImage = null,
+                Terms = new List<NewTermForNewNameable>
                 {
-                    VocabularyId = vocabularyId,
-                    Name = Constants.AUTHORITIES_CASE_TYPE_NAME,
-                    ParentTermIds = new List<int>(),
-                }
+                    new NewTermForNewNameable
+                    {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null,
+                        },
+                        VocabularyId = vocabularyId,
+                        Name = Constants.AUTHORITIES_CASE_TYPE_NAME,
+                        ParentTermIds = new List<int>(),
+                    }
+                },
             },
-            TermIds = new List<int>(),
         };
     }
 }

@@ -15,10 +15,9 @@ public abstract record Organization : Locatable, ResolvedNode
     public abstract T Match<T>(Func<ExistingOrganization, T> existingItem, Func<NewOrganization, T> newItem);
     public abstract void Match(Action<ExistingOrganization> existingItem, Action<NewOrganization> newItem);
     public required NameableDetails NameableDetails { get; init; }
-    public required NodeDetails NodeDetails { get; init; }
     public required OrganizationDetails OrganizationDetails { get; init; }
     public abstract LocatableDetails LocatableDetails { get; }
-    public abstract TenantNodeDetails TenantNodeDetails { get; }
+    public abstract NodeDetails NodeDetails { get; }
     public abstract IEnumerable<CompletedPersonOrganizationRelationForOrganization> PersonOrganizationRelations { get; }
     public required List<PersonOrganizationRelationTypeListItem> PersonOrganizationRelationTypes { get; init; }
     public abstract IEnumerable<CompletedOrganizationPoliticalEntityRelation> OrganizationPoliticalEntityRelations { get; }
@@ -27,8 +26,8 @@ public abstract record Organization : Locatable, ResolvedNode
     public abstract IEnumerable<CompletedInterOrganizationalRelationTo> InterOrganizationalRelationsTo { get; }
     public sealed record ExistingOrganization : Organization, ExistingLocatable
     {
-        public override TenantNodeDetails TenantNodeDetails => ExistingTenantNodeDetails;
-        public required TenantNodeDetails.ExistingTenantNodeDetails ExistingTenantNodeDetails { get; init; }
+        public override NodeDetails NodeDetails => NodeDetailsForUpdate;
+        public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
         public override LocatableDetails LocatableDetails => ExistingLocatableDetails;
         public required LocatableDetails.ExistingLocatableDetails ExistingLocatableDetails { get; init; }
         public required NodeIdentification NodeIdentification { get; init; }
@@ -123,8 +122,8 @@ public abstract record Organization : Locatable, ResolvedNode
     }
     public sealed record NewOrganization : Organization, NewLocatable, ResolvedNewNode
     {
-        public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
-        public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
+        public override NodeDetails NodeDetails => NodeDetailsForCreate;
+        public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
         public override LocatableDetails LocatableDetails => NewLocatableDetails;
         public required LocatableDetails.NewLocatableDetails NewLocatableDetails { get; init; }
         public override IEnumerable<CompletedOrganizationPoliticalEntityRelation> OrganizationPoliticalEntityRelations => NewOrganizationPoliticalEntityRelations;

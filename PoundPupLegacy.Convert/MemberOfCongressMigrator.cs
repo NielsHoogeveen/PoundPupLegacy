@@ -118,11 +118,11 @@ public sealed record StoredTerm
 internal class MemberOfCongressMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        IEntityCreatorFactory<EventuallyIdentifiablePerson> personCreatorFactory,
+        IEntityCreatorFactory<Person.PersonToCreate> personCreatorFactory,
         IEntityCreatorFactory<File> fileCreatorFactory,
         IEntityCreatorFactory<NodeFile> nodeFileCreatorFactory,
-        IEntityCreatorFactory<EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants> personOrganizationRelationCreatorFactory,
-        IEntityCreatorFactory<EventuallyIdentifiableProfessionalRoleForExistingPerson> professionalRoleCreatorFactory
+        IEntityCreatorFactory<PersonOrganizationRelation.PersonOrganizationRelationToCreateForExistingParticipants> personOrganizationRelationCreatorFactory,
+        IEntityCreatorFactory<ProfessionalRole> professionalRoleCreatorFactory
 
     ) : MigratorPPL(databaseConnections)
 {
@@ -282,7 +282,7 @@ internal class MemberOfCongressMigrator(
         });
     }
 
-    private async IAsyncEnumerable<NewPerson> GetMembersOfCongressAsync(
+    private async IAsyncEnumerable<Person.PersonToCreate> GetMembersOfCongressAsync(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
@@ -403,54 +403,32 @@ internal class MemberOfCongressMigrator(
 
                 var name = memberOfCongress.name.official_full is null ? $"{memberOfCongress.name.first} {memberOfCongress.name.middle} {memberOfCongress.name.last} {memberOfCongress.name.suffix}".Replace("  ", " ") : memberOfCongress.name.official_full;
 
-                
-
                 int GetPoliticalPartyAffiliationId(string party)
                 {
                     return politicalPartyAffiliations!.First(x => x.Item1 == party.ToLower()).Item2;
                 }
 
-                List<NewCongressionalTermPoliticalPartyAffiliation> GetPartyAffiliations(Term term)
+                List<CongressionalTermPoliticalPartyAffiliation.CongressionalTermPoliticalPartyAffiliationToCreateForNewTerm> GetPartyAffiliations(Term term)
                 {
                     if (term.party_affiliations == null) {
-                        return new List<NewCongressionalTermPoliticalPartyAffiliation> {
-                            new NewCongressionalTermPoliticalPartyAffiliation {
-                                Id = null,
-                                PublisherId = 2,
-                                CreatedDateTime = DateTime.Now,
-                                ChangedDateTime = DateTime.Now,
-                                Title = $"{name} is {term.party} from {term.start.ToString("dd MMMM yyyy")} to {term.end.ToString("dd MMMM yyyy")}",
-                                OwnerId = Constants.OWNER_PARTIES,
-                                AuthoringStatusId = 1,
-                                TenantNodes = new List<NewTenantNodeForNewNode> {
-                                    new NewTenantNodeForNewNode {
-                                        Id = null,
-                                        TenantId = 1,
-                                        PublicationStatusId = 1,
-                                        UrlPath = null,
-                                        SubgroupId = null,
-                                        UrlId = null
-                                    }
+                        return new List<CongressionalTermPoliticalPartyAffiliation.CongressionalTermPoliticalPartyAffiliationToCreateForNewTerm> {
+                            new CongressionalTermPoliticalPartyAffiliation.CongressionalTermPoliticalPartyAffiliationToCreateForNewTerm {
+                                IdentificationForCreate = new Identification.IdentificationForCreate {
+                                    Id = null
                                 },
-                                NodeTypeId = 64,
-                                PoliticalPartyAffiliationId = GetPoliticalPartyAffiliationId(term.party),
-                                CongressionalTermId = null,
-                                DateTimeRange = new DateTimeRange(term.start, term.end),
-                                TermIds = new List<int>(),
-                            }
-                        };
-                    }
-                    return term.party_affiliations.Select(party_affiliations => new NewCongressionalTermPoliticalPartyAffiliation {
-                        Id = null,
-                        PublisherId = 2,
-                        CreatedDateTime = DateTime.Now,
-                        ChangedDateTime = DateTime.Now,
-                        Title = $"{name} is {term.party} from {term.start.ToString("dd MMMM yyyy")} to {term.end.ToString("dd MMMM yyyy")}",
-                        OwnerId = Constants.OWNER_PARTIES,
-                        AuthoringStatusId = 1,
-                        TenantNodes = new List<NewTenantNodeForNewNode> {
-                                        new NewTenantNodeForNewNode {
-                                            Id = null,
+                                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate{
+                                    PublisherId = 2,
+                                    CreatedDateTime = DateTime.Now,
+                                    ChangedDateTime = DateTime.Now,
+                                    Title = $"{name} is {term.party} from {term.start.ToString("dd MMMM yyyy")} to {term.end.ToString("dd MMMM yyyy")}",
+                                    OwnerId = Constants.OWNER_PARTIES,
+                                    AuthoringStatusId = 1,
+                                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                                    {
+                                        new TenantNode.TenantNodeToCreateForNewNode {
+                                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                                Id = null
+                                            },
                                             TenantId = 1,
                                             PublicationStatusId = 1,
                                             UrlPath = null,
@@ -458,11 +436,46 @@ internal class MemberOfCongressMigrator(
                                             UrlId = null
                                         }
                                     },
-                        NodeTypeId = 64,
-                        PoliticalPartyAffiliationId = GetPoliticalPartyAffiliationId(party_affiliations.party),
-                        CongressionalTermId = null,
-                        DateTimeRange = new DateTimeRange(party_affiliations.start, party_affiliations.end),
-                        TermIds = new List<int>(),
+                                    NodeTypeId = 64,
+                                    TermIds = new List<int>(),
+                                },
+                                CongressionalTermPoliticalPartyAffiliationDetailsUnresolved = new CongressionalTermPoliticalPartyAffiliationDetails.CongressionalTermPoliticalPartyAffiliationDetailsUnresolved {
+                                    PoliticalPartyAffiliationId = GetPoliticalPartyAffiliationId(term.party),
+                                    DateTimeRange = new DateTimeRange(term.start, term.end),
+                                },
+                            }
+                        };
+                    }
+                    return term.party_affiliations.Select(party_affiliations => new CongressionalTermPoliticalPartyAffiliation.CongressionalTermPoliticalPartyAffiliationToCreateForNewTerm {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
+                        },
+                        NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                            PublisherId = 2,
+                            CreatedDateTime = DateTime.Now,
+                            ChangedDateTime = DateTime.Now,
+                            Title = $"{name} is {term.party} from {term.start.ToString("dd MMMM yyyy")} to {term.end.ToString("dd MMMM yyyy")}",
+                            OwnerId = Constants.OWNER_PARTIES,
+                            AuthoringStatusId = 1,
+                            TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode> {
+                                new TenantNode.TenantNodeToCreateForNewNode {
+                                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                                        Id = null
+                                    },
+                                    TenantId = 1,
+                                    PublicationStatusId = 1,
+                                    UrlPath = null,
+                                    SubgroupId = null,
+                                    UrlId = null
+                                }
+                            },
+                            NodeTypeId = 64,
+                            TermIds = new List<int>(),
+                        },
+                        CongressionalTermPoliticalPartyAffiliationDetailsUnresolved = new CongressionalTermPoliticalPartyAffiliationDetails.CongressionalTermPoliticalPartyAffiliationDetailsUnresolved {
+                            PoliticalPartyAffiliationId = GetPoliticalPartyAffiliationId(party_affiliations.party),
+                            DateTimeRange = new DateTimeRange(party_affiliations.start, party_affiliations.end),
+                        },
                     }
                     ).ToList();
                 }
@@ -472,56 +485,27 @@ internal class MemberOfCongressMigrator(
                     return states!.First(x => x.Item1 == $"US-{term.state}").Item2;
                 }
 
-                List<NewSenateTerm> GetSenateTerms()
+                List<SenateTerm.SenateTermToCreate> GetSenateTerms()
                 {
                     return memberOfCongress.terms.Where(x => x.type == "sen").Select(term => {
                         var subdivisionId = GetStateId(term);
                         var partyAffiliations = GetPartyAffiliations(term);
-                        var senateTerm = new NewSenateTerm {
-                            Id = null,
-                            PublisherId = 2,
-                            CreatedDateTime = DateTime.Now,
-                            ChangedDateTime = DateTime.Now,
-                            Title = $"{name} is senator",
-                            OwnerId = Constants.OWNER_PARTIES,
-                            AuthoringStatusId = 1,
-                            TenantNodes = new List<NewTenantNodeForNewNode> {
-                                new NewTenantNodeForNewNode {
-                                    Id = null,
-                                    TenantId = 1,
-                                    PublicationStatusId = 1,
-                                    UrlPath = null,
-                                    SubgroupId = null,
-                                    UrlId = null
-                                }
+                        var senateTerm = new SenateTerm.SenateTermToCreate {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
                             },
-                            NodeTypeId = 65,
-                            SenatorId = null,
-                            DateTimeRange = new DateTimeRange(term.start, term.end),
-                            SubdivisionId = subdivisionId,
-                            PartyAffiliations = partyAffiliations,
-                            TermIds = new List<int>(),
-                        };
-                        return senateTerm;
-                    }).ToList();
-                }
-                List<NewHouseTerm> GetHouseTerms()
-                {
-                    return memberOfCongress.terms.Where(x => x.type == "rep").Select(term => {
-                        var subdivisionId = GetStateId(term);
-                        var partyAffiliations = GetPartyAffiliations(term);
-
-                        var houseTerm = new NewHouseTerm {
-                            Id = null,
-                            PublisherId = 2,
-                            CreatedDateTime = DateTime.Now,
-                            ChangedDateTime = DateTime.Now,
-                            Title = $"{name} is representative",
-                            OwnerId = Constants.OWNER_PARTIES,
-                            AuthoringStatusId = 1,
-                            TenantNodes = new List<NewTenantNodeForNewNode> {
-                                    new NewTenantNodeForNewNode {
-                                        Id = null,
+                            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                                PublisherId = 2,
+                                CreatedDateTime = DateTime.Now,
+                                ChangedDateTime = DateTime.Now,
+                                Title = $"{name} is senator",
+                                OwnerId = Constants.OWNER_PARTIES,
+                                AuthoringStatusId = 1,
+                                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode> {
+                                    new TenantNode.TenantNodeToCreateForNewNode {
+                                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                                            Id = null
+                                        },
                                         TenantId = 1,
                                         PublicationStatusId = 1,
                                         UrlPath = null,
@@ -529,38 +513,101 @@ internal class MemberOfCongressMigrator(
                                         UrlId = null
                                     }
                                 },
-                            NodeTypeId = 65,
-                            RepresentativeId = null,
-                            District = term.district,
-                            DateTimeRange = new DateTimeRange(term.start, term.end),
-                            SubdivisionId = subdivisionId,
-                            PartyAffiliations = partyAffiliations,
-                            TermIds = new List<int>(),
+                                NodeTypeId = 65,
+                                TermIds = new List<int>(),
+                            },
+                            CongressionalTermDetailsForCreate = new CongressionalTermDetails.CongressionalTermDetailsForCreate { 
+                                PartyAffiliations = partyAffiliations
+                            },
+                            SenateTermDetails = new SenateTermDetails {
+                                SenatorId = null,
+                                DateTimeRange = new DateTimeRange(term.start, term.end),
+                                SubdivisionId = subdivisionId,
+                            },
+                        };
+                        return senateTerm;
+                    }).ToList();
+                }
+                List<HouseTerm.HouseTermToCreate> GetHouseTerms()
+                {
+                    return memberOfCongress.terms.Where(x => x.type == "rep").Select(term => {
+                        var subdivisionId = GetStateId(term);
+                        var partyAffiliations = GetPartyAffiliations(term);
+
+                        var houseTerm = new HouseTerm.HouseTermToCreate {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                                PublisherId = 2,
+                                CreatedDateTime = DateTime.Now,
+                                ChangedDateTime = DateTime.Now,
+                                Title = $"{name} is representative",
+                                OwnerId = Constants.OWNER_PARTIES,
+                                AuthoringStatusId = 1,
+                                TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode> {
+                                    new TenantNode.TenantNodeToCreateForNewNode {
+                                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                                            Id = null
+                                        },
+                                        TenantId = 1,
+                                        PublicationStatusId = 1,
+                                        UrlPath = null,
+                                        SubgroupId = null,
+                                        UrlId = null
+                                    }
+                                },
+                                NodeTypeId = 65,
+                                TermIds = new List<int>(),
+                            },
+                            CongressionalTermDetailsForCreate = new CongressionalTermDetails.CongressionalTermDetailsForCreate {
+                                PartyAffiliations = partyAffiliations,
+                            },
+                            HouseTermDetails = new HouseTermDetails {
+                                RepresentativeId = null,
+                                District = term.district,
+                                DateTimeRange = new DateTimeRange(term.start, term.end),
+                                SubdivisionId = subdivisionId,
+                            },
                         };
                         return houseTerm;
                     }).ToList();
 
                 }
-                var professionalRolesExistingPerson = new List<EventuallyIdentifiableProfessionalRoleForExistingPerson>();
-                var professionalRolesNewPerson = new List<EventuallyIdentifiableProfessionalRoleForNewPerson>();
+                var professionalRolesExistingPerson = new List<ProfessionalRoleToCreateForExistingPerson>();
+                var professionalRolesNewPerson = new List<ProfessionalRoleToCreateForNewPerson>();
 
                 if (memberOfCongress.node_id.HasValue) {
                     if (isSenator) {
-                        professionalRolesExistingPerson.Add(new NewSenatorAsExistingPerson {
-                            Id = null,
-                            PersonId = memberOfCongress.node_id.Value,
-                            DateTimeRange = null,
-                            ProfessionId = senatorRoleId,
-                            SenateTerms = GetSenateTerms()
+                        professionalRolesExistingPerson.Add(new Senator.SenatorToCreateForExistingPerson {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null,
+                            },
+                            ProfessionalRoleDetailsForCreate = new ProfessionalRoleDetails.ProfessionalRoleDetailsForCreateOfExistingPerson {
+                                Id = null,
+                                DateTimeRange = null,
+                                ProfessionId = senatorRoleId,
+                                PersonId = memberOfCongress.node_id.Value,
+                            },
+                            SenatorDetailsToCreate = new SenatorDetails.SenatorDetailsForCreate {
+                                SenateTermToCreate = GetSenateTerms(),
+                            },
                         });
                     }
                     if (isRepresentative) {
-                        professionalRolesExistingPerson.Add(new NewRepresentativeAsExistingPerson {
-                            Id = null,
-                            PersonId = memberOfCongress.node_id.Value,
-                            DateTimeRange = null,
-                            ProfessionId = repRoleId,
-                            HouseTerms = GetHouseTerms(),
+                        professionalRolesExistingPerson.Add(new Representative.RepresentativeToCreateForExistingPerson {
+                            IdentificationForCreate = new Identification.IdentificationForCreate { 
+                                Id = null
+                            },
+                            ProfessionalRoleDetailsForCreate = new ProfessionalRoleDetails.ProfessionalRoleDetailsForCreateOfExistingPerson {
+                                Id = null,
+                                PersonId = memberOfCongress.node_id.Value,
+                                DateTimeRange = null,
+                                ProfessionId = repRoleId,
+                            },
+                            RepresentativeDetailsToCreate = new RepresentativeDetails.RepresentativeDetailsForCreate { 
+                                HouseTermToCreate = GetHouseTerms(),
+                            },
                         });
                     }
                     updateCommand.Parameters["first_name"].Value = memberOfCongress.name.first is null ? DBNull.Value : memberOfCongress.name.first;
@@ -579,76 +626,106 @@ internal class MemberOfCongressMigrator(
                 else {
 
                     if (isSenator) {
-                        professionalRolesNewPerson.Add(new NewSenatorAsNewPerson {
-                            Id = null,
-                            DateTimeRange = null,
-                            ProfessionId = senatorRoleId,
-                            SenateTerms = GetSenateTerms(),
+                        professionalRolesNewPerson.Add(new Senator.SenatorToCreateForNewPerson {
+                            ProfessionalRoleDetailsForCreate = new ProfessionalRoleDetails.ProfessionalRoleDetailsForCreateOfNewPerson 
+                            {
+                                Id  = null,
+                                DateTimeRange = null,
+                                ProfessionId = senatorRoleId,
+                            },
+                            SenatorDetailsForCreate = new SenatorDetails.SenatorDetailsForCreate {
+                                SenateTermToCreate = GetSenateTerms(),
+                            },
+                            IdentificationForCreate = new Identification.IdentificationForCreate { 
+                                Id = null
+                            },
                         });
                     }
                     if (isRepresentative) {
-                        professionalRolesNewPerson.Add(new NewRepresentativeAsNewPerson {
-                            Id = null,
-                            DateTimeRange = null,
-                            ProfessionId = repRoleId,
-                            HouseTerms = GetHouseTerms(),
-                        });
+                        professionalRolesNewPerson.Add(new Representative.BasticProfessionalRoleToCreateForNewPerson {
+                            IdentificationForCreate = new Identification.IdentificationForCreate { 
+                                Id = null
+                            },
+                            ProfessionalRoleDetailsForCreate = new ProfessionalRoleDetails.ProfessionalRoleDetailsForCreateOfNewPerson{
+                                Id = null,
+                                DateTimeRange = null,
+                                ProfessionId = repRoleId,
+                            },
+                            RepresentativeDetailsForCreate = new RepresentativeDetails.RepresentativeDetailsForCreate {
+                                HouseTermToCreate = GetHouseTerms(),
+                            },
+                        });;
                     }
 
                     var terms = memberOfCongress.terms.Select(x => (x.start, x.end, x.party)).GroupBy(x => x.party).ToList();
 
-                    var relations = new List<PersonOrganizationRelationToCreateForNewPerson>();
+                    var relations = new List<PersonOrganizationRelation.PersonOrganizationRelationToCreateForExistingParticipants>();
                     if (terms.Count == 1) {
 
                     }
                     var title = memberOfCongress.name.official_full is null ? $"{memberOfCongress.name.first} {memberOfCongress.name.middle} {memberOfCongress.name.last} {memberOfCongress.name.suffix}".Replace("  ", " ") : memberOfCongress.name.official_full;
                     var vocabularyNames = new List<NewTermForNewNameable> {
                         new NewTermForNewNameable {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
                             VocabularyId = vocabularyId,
                             Name = title,
                             ParentTermIds = new List<int>(),
                         }
                     };
 
-                    yield return new NewPerson {
-                        Id = null,
-                        PublisherId = 2,
-                        CreatedDateTime = DateTime.Now,
-                        ChangedDateTime = DateTime.Now,
-                        Title = title,
-                        OwnerId = Constants.OWNER_PARTIES,
-                        AuthoringStatusId = 1,
-                        TenantNodes = new List<NewTenantNodeForNewNode> {
-                            new NewTenantNodeForNewNode {
-                                Id = null,
-                                TenantId = 1,
-                                PublicationStatusId = 1,
-                                UrlPath = null,
-                                SubgroupId = null,
-                                UrlId = null
-                            }
+                    yield return new Person.PersonToCreate {
+                        IdentificationForCreate = new Identification.IdentificationForCreate {
+                            Id = null
                         },
-                        NodeTypeId = 24,
-                        Description = "",
-                        FileIdTileImage = null,
-                        Terms = vocabularyNames,
-                        DateOfBirth = memberOfCongress.bio.birthday,
-                        DateOfDeath = null,
-                        FileIdPortrait = null,
-                        FirstName = memberOfCongress.name.first,
-                        LastName = memberOfCongress.name.last,
-                        MiddleName = memberOfCongress.name.middle,
-                        FullName = memberOfCongress.name.official_full,
-                        GovtrackId = memberOfCongress.id.govtrack,
-                        Suffix = memberOfCongress.name.suffix,
-                        ProfessionalRoles = professionalRolesNewPerson,
-                        Bioguide = memberOfCongress.id.bioguide,
-                        PersonOrganizationRelations = new List<EventuallyIdentifiablePersonOrganizationRelationForNewPerson>(),
-                        TermIds = new List<int>(),
-                        Locations = new List<EventuallyIdentifiableLocation>(),
-                        PartyPoliticalEntityRelations = new List<EventuallyIdentifiablePartyPoliticalEntityRelationForNewParty>(),
-                        InterPersonalRelationsToAddFrom = new List<EventuallyIdentifiableInterPersonalRelationForNewPersonFrom>(),
-                        InterPersonalRelationsToAddTo = new List<EventuallyIdentifiableInterPersonalRelationForNewPersonTo>(),
+                        NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                            PublisherId = 2,
+                            CreatedDateTime = DateTime.Now,
+                            ChangedDateTime = DateTime.Now,
+                            Title = title,
+                            OwnerId = Constants.OWNER_PARTIES,
+                            AuthoringStatusId = 1,
+                            TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode> {
+                                new TenantNode.TenantNodeToCreateForNewNode {
+                                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                                        Id = null
+                                    },
+                                    TenantId = 1,
+                                    PublicationStatusId = 1,
+                                    UrlPath = null,
+                                    SubgroupId = null,
+                                    UrlId = null
+                                }
+                            },
+                            NodeTypeId = 24,
+                            TermIds = new List<int>(),
+                        },
+                        NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                            Description = "",
+                            FileIdTileImage = null,
+                            Terms = vocabularyNames,
+                        },
+                        LocatableDetailsForCreate = new LocatableDetails.LocatableDetailsForCreate {
+                            Locations = new List<EventuallyIdentifiableLocation>(),
+                        },
+                        PersonDetailsForCreate = new PersonDetails.PersonDetailsForCreate {
+                            DateOfBirth = memberOfCongress.bio.birthday,
+                            DateOfDeath = null,
+                            FileIdPortrait = null,
+                            FirstName = memberOfCongress.name.first,
+                            LastName = memberOfCongress.name.last,
+                            MiddleName = memberOfCongress.name.middle,
+                            FullName = memberOfCongress.name.official_full,
+                            GovtrackId = memberOfCongress.id.govtrack,
+                            Suffix = memberOfCongress.name.suffix,
+                            Bioguide = memberOfCongress.id.bioguide,
+                            ProfessionalRolesToCreate = professionalRolesNewPerson,
+                            InterPersonalRelationsToCreateFrom = new List<InterPersonalRelation.InterPersonalRelationToCreateForNewPersonFrom>(),
+                            InterPersonalRelationsToCreateTo = new List<InterPersonalRelation.InterPersonalRelationToCreateForNewPersonTo>(),
+                            PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.PartyPoliticalEntityRelationToCreateForNewParty>(),
+                            PersonOrganizationRelationToCreate = new List<PersonOrganizationRelation.PersonOrganizationRelationToCreateForNewPerson>(),
+                        },
                     };
                 }
             }
@@ -696,7 +773,9 @@ internal class MemberOfCongressMigrator(
             var file = new FileInfo(fileNameSource);
             if (file.Exists) {
                 yield return new File {
-                    Id = null,
+                    IdentificationForCreate = new Identification.IdentificationForCreate {
+                        Id = null,
+                    },
                     Path = $"files/members_of_congress/{reader.GetString(1)}.jpg",
                     Name = $"{reader.GetString(1)}.jpg",
                     MimeType = "image/jpeg",
@@ -799,7 +878,7 @@ internal class MemberOfCongressMigrator(
         }
     }
 
-    private async IAsyncEnumerable<EventuallyIdentifiablePersonOrganizationRelationForExistingParticipants> GetPartyMembership()
+    private async IAsyncEnumerable<PersonOrganizationRelation.PersonOrganizationRelationToCreateForExistingParticipants> GetPartyMembership()
     {
 
         var sql = $"""
@@ -923,44 +1002,54 @@ internal class MemberOfCongressMigrator(
 
 
             var now = DateTime.Now;
-            yield return new PersonOrganizationRelationToCreateForExistingParticipants {
-                Id = null,
-                PublisherId = 2,
-                CreatedDateTime = now,
-                ChangedDateTime = now,
-                Title = reader.GetString("title"),
-                OwnerId = Constants.OWNER_PARTIES,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = 1,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = null
-                    },
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = null
-                    }
+            yield return new PersonOrganizationRelation.PersonOrganizationRelationToCreateForExistingParticipants{
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                NodeTypeId = 48,
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = 2,
+                    CreatedDateTime = now,
+                    ChangedDateTime = now,
+                    Title = reader.GetString("title"),
+                    OwnerId = Constants.OWNER_PARTIES,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    {
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = 1,
+                            PublicationStatusId = 1,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = null
+                        },
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.CPCT,
+                            PublicationStatusId = 2,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = null
+                        }
+                    },
+                    NodeTypeId = 48,
+                    TermIds = new List<int>(),
+                },
                 PersonId = reader.GetInt32("person_id"),
                 OrganizationId = reader.GetInt32("organization_id"),
-                GeographicalEntityId = null,
-                PersonOrganizationRelationTypeId = reader.GetInt32("person_organization_relation_type_id"),
-                DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null : reader.GetDateTime("end_date")),
-                DocumentIdProof = null,
-                Description = null,
-                TermIds = new List<int>(),
+                PersonOrganizationRelationDetails = new PersonOrganizationRelationDetails {
+                    GeographicalEntityId = null,
+                    PersonOrganizationRelationTypeId = reader.GetInt32("person_organization_relation_type_id"),
+                    DateRange = new DateTimeRange(reader.IsDBNull("start_date") ? null : reader.GetDateTime("start_date"), reader.IsDBNull("end_date") ? null : reader.GetDateTime("end_date")),
+                    DocumentIdProof = null,
+                    Description = null,
+                },
             };
         }
         await reader.CloseAsync();

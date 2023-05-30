@@ -11,8 +11,7 @@ public static class OrganizationPoliticalEntityRelationExtension
             Organization = organizationListItem,
             OrganizationPoliticalEntityRelationType = relationType,
             PoliticalEntity = null,
-            NewTenantNodeDetails = TenantNodeDetails.NewTenantNodeDetails.EmptyInstance,
-            NodeDetails = NodeDetails.EmptyInstance("organization political entity relation", ownerId, publishedId),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(49, "organization political entity relation", ownerId, publishedId),
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }
@@ -22,8 +21,7 @@ public static class OrganizationPoliticalEntityRelationExtension
             Organization = organizationName,
             OrganizationPoliticalEntityRelationType = relationType,
             PoliticalEntity = null,
-            NewTenantNodeDetails = TenantNodeDetails.NewTenantNodeDetails.EmptyInstance,
-            NodeDetails = NodeDetails.EmptyInstance("organization political entity relation", ownerId, publishedId),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(49, "organization political entity relation", ownerId, publishedId),
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }
@@ -47,8 +45,7 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
         Func<CompletedOrganizationPoliticalEntityRelation, T> completedOrganizationPoliticalEntityRelation
      );
     public required RelationDetails RelationDetails { get; init; }
-    public required NodeDetails NodeDetails { get; init; }
-    public abstract TenantNodeDetails TenantNodeDetails { get; }
+    public abstract NodeDetails NodeDetails { get; }
     public required OrganizationPoliticalEntityRelationTypeListItem OrganizationPoliticalEntityRelationType { get; set; }
 
     public abstract OrganizationItem? OrganizationItem { get; }
@@ -68,9 +65,8 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
         public abstract CompletedOrganizationPoliticalEntityRelation GetCompletedRelation(PoliticalEntityListItem politicalEntity);
         public sealed record NewOrganizationPoliticalEntityRelationNewOrganization : IncompleteOrganizationPoliticalEntityRelation, NewNode
         {
-            public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
-            public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
-
+            public override NodeDetails NodeDetails => NodeDetailsForCreate;
+            public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
             public override T Match<T>(
                 Func<NewOrganizationPoliticalEntityRelationNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
                 Func<NewOrganizationPoliticalEntityRelationExistingOrganization, T> newOrganizationPoliticalEntityRelationExistingOrganization,
@@ -91,8 +87,7 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
                 return new CompletedNewOrganizationPoliticalEntityRelationNewOrganization {
                     Organization = Organization,
                     PoliticalEntity = politicalEntity,
-                    NewTenantNodeDetails = NewTenantNodeDetails,
-                    NodeDetails = NodeDetails,
+                    NodeDetailsForCreate = NodeDetailsForCreate,
                     OrganizationPoliticalEntityRelationType = OrganizationPoliticalEntityRelationType,
                     RelationDetails = RelationDetails
                 };
@@ -100,9 +95,8 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
         }
         public sealed record NewOrganizationPoliticalEntityRelationExistingOrganization : IncompleteOrganizationPoliticalEntityRelation, NewNode
         {
-            public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
-            public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
-
+            public override NodeDetails NodeDetails => NodeDetailsForCreate;
+            public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
             public override T Match<T>(
                 Func<NewOrganizationPoliticalEntityRelationNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
                 Func<NewOrganizationPoliticalEntityRelationExistingOrganization, T> newOrganizationPoliticalEntityRelationExistingOrganization,
@@ -123,8 +117,7 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
                 return new CompletedNewOrganizationPoliticalEntityRelationExistingOrganization {
                     Organization = Organization,
                     PoliticalEntity = politicalEntity,
-                    NewTenantNodeDetails = NewTenantNodeDetails,
-                    NodeDetails = NodeDetails,
+                    NodeDetailsForCreate = NodeDetailsForCreate,
                     OrganizationPoliticalEntityRelationType = OrganizationPoliticalEntityRelationType,
                     RelationDetails = RelationDetails
                 };
@@ -150,8 +143,8 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
             private ResolvedOrganizationPoliticalEntityRelation() { }
             public sealed record ExistingOrganizationPoliticalEntityRelation : ResolvedOrganizationPoliticalEntityRelation, ExistingNode
             {
-                public override TenantNodeDetails TenantNodeDetails => ExistingTenantNodeDetails;
-                public required TenantNodeDetails.ExistingTenantNodeDetails ExistingTenantNodeDetails { get; init; }
+                public override NodeDetails NodeDetails => NodeDetailsForUpdate;
+                public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
                 public required NodeIdentification NodeIdentification { get; init; }
 
                 public override T Match<T>(
@@ -173,8 +166,8 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
             }
             public sealed record CompletedNewOrganizationPoliticalEntityRelationExistingOrganization : ResolvedOrganizationPoliticalEntityRelation, NewNode
             {
-                public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
-                public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
+                public override NodeDetails NodeDetails => NodeDetailsForCreate;
+                public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
 
                 public override T Match<T>(
                     Func<NewOrganizationPoliticalEntityRelationNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
@@ -198,9 +191,8 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
         }
         public sealed record CompletedNewOrganizationPoliticalEntityRelationNewOrganization : CompletedOrganizationPoliticalEntityRelation, NewNode
         {
-            public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
-            public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
-
+            public override NodeDetails NodeDetails => NodeDetailsForCreate;
+            public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
             public override T Match<T>(
                 Func<NewOrganizationPoliticalEntityRelationNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
                 Func<NewOrganizationPoliticalEntityRelationExistingOrganization, T> newOrganizationPoliticalEntityRelationExistingOrganization,

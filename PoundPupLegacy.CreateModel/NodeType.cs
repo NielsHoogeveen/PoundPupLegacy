@@ -11,7 +11,8 @@ public interface NodeType: IRequest
 }
 public abstract record NewNodeType: NodeTypeToAdd
 {
-    public required int? Id { get; set; }
+    public required Identification.IdentificationForCreate IdentificationForCreate { get; init; }
+    public Identification Identification => IdentificationForCreate;
     public required string Name { get; init; }
     public required string Description { get; init; }
     public required bool AuthorSpecific { get; init; }

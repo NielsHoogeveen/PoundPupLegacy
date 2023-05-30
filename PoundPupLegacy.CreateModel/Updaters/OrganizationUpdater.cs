@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Updaters;
 
-using Request = ImmediatelyIdentifiableOrganization;
+using Request = OrganizationToUpdate;
 internal sealed class OrganizationChangerFactory(
     IDatabaseUpdaterFactory<Request> databaseUpdaterFactory,
     NodeDetailsChangerFactory nodeDetailsChangerFactory) : IEntityChangerFactory<Request>
@@ -44,13 +44,13 @@ internal sealed class OrganizationUpdaterFactory : DatabaseUpdaterFactory<Reques
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new List<ParameterValue> {
-            ParameterValue.Create(NodeId, request.Id),
-            ParameterValue.Create(Title, request.Title),
-            ParameterValue.Create(Description, request.Description),
-            ParameterValue.Create(WebsiteUrl, request.WebsiteUrl),
-            ParameterValue.Create(EmailAddress, request.EmailAddress),
-            ParameterValue.Create(Established, request.Established),
-            ParameterValue.Create(Terminated, request.Terminated)
+            ParameterValue.Create(NodeId, request.IdentificationForUpdate.Id),
+            ParameterValue.Create(Title, request.NodeDetails.Title),
+            ParameterValue.Create(Description, request.NameableDetails.Description),
+            ParameterValue.Create(WebsiteUrl, request.OrganizationDetails.WebsiteUrl),
+            ParameterValue.Create(EmailAddress, request.OrganizationDetails.EmailAddress),
+            ParameterValue.Create(Established, request.OrganizationDetails.Established),
+            ParameterValue.Create(Terminated, request.OrganizationDetails.Terminated)
         };
     }
 }

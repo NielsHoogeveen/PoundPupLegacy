@@ -21,32 +21,45 @@ internal sealed class UserMigrator(
     {
         await Task.CompletedTask;
         yield return new AccessRole {
-            Id = Constants.PPL_MEMBER,
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = Constants.PPL_MEMBER,
+            },
             Name = "Member",
             UserGroupId = Constants.PPL,
         };
         yield return new AccessRole {
-            Id = Constants.PPL_EDITOR,
+            IdentificationForCreate = new Identification.IdentificationForCreate 
+            {
+                Id = Constants.PPL_EDITOR,
+            },
             Name = "Editor",
             UserGroupId = Constants.PPL,
         };
         yield return new AccessRole {
-            Id = Constants.CPCT_MEMBER,
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = Constants.CPCT_MEMBER,
+            },
             Name = "Member",
             UserGroupId = Constants.CPCT,
         };
         yield return new AccessRole {
-            Id = Constants.CPCT_EDITOR,
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = Constants.CPCT_EDITOR,
+            },
             Name = "Editor",
             UserGroupId = Constants.CPCT,
         };
         yield return new AccessRole {
-            Id = Constants.ADULT_AFTERMATH_MEMBER,
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = Constants.ADULT_AFTERMATH_MEMBER,
+            },
             Name = "Member",
             UserGroupId = Constants.ADULT_AFTERMATH,
         };
         yield return new AccessRole {
-            Id = Constants.ADULT_AFTERMATH_EDITOR,
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = Constants.ADULT_AFTERMATH_EDITOR,
+            },
             Name = "Editor",
             UserGroupId = Constants.ADULT_AFTERMATH,
         };
@@ -55,17 +68,23 @@ internal sealed class UserMigrator(
     {
         await Task.CompletedTask;
         yield return new Tenant {
-            Id = Constants.PPL,
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = Constants.PPL,
+            },
             DomainName = "poundpuplegacy.org",
             Name = "Pound Pup Legacy",
             Description = "",
             AccessRoleNotLoggedIn = new AccessRole {
-                Id = Constants.PPL_EVERYONE,
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = Constants.PPL_EVERYONE,
+                },
                 Name = "Everyone",
                 UserGroupId = null,
             },
             AdministratorRole = new AdministratorRole {
-                Id = Constants.PPL_ADMINISTRATOR,
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = Constants.PPL_ADMINISTRATOR,
+                },
                 UserGroupId = null,
             },
             PublicationStatusIdDefault = 1,
@@ -89,17 +108,23 @@ internal sealed class UserMigrator(
             """
         };
         yield return new Tenant {
-            Id = Constants.CPCT,
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = Constants.CPCT,
+            },
             DomainName = "cpctresearch.info",
             Name = "CPCT Research",
             Description = "",
             AccessRoleNotLoggedIn = new AccessRole {
-                Id = Constants.CPCT_EVERYONE,
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = Constants.CPCT_EVERYONE,
+                },
                 Name = "Everyone",
                 UserGroupId = null,
             },
             AdministratorRole = new AdministratorRole {
-                Id = Constants.CPCT_ADMINISTRATOR,
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = Constants.CPCT_ADMINISTRATOR,
+                },
                 UserGroupId = null,
             },
             PublicationStatusIdDefault = 2,
@@ -116,38 +141,54 @@ internal sealed class UserMigrator(
     {
         await Task.CompletedTask;
         yield return new ContentSharingGroup {
-            Id = Constants.OWNER_GEOGRAPHY,
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = Constants.OWNER_GEOGRAPHY,
+            },
             Name = "Geographical Entities",
             Description = "",
             AdministratorRole = new AdministratorRole {
-                Id = Constants.GEOGRAPHY_ADMINISTRATOR,
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = Constants.GEOGRAPHY_ADMINISTRATOR,
+                },
                 UserGroupId = null
             }
         };
         yield return new ContentSharingGroup {
-            Id = Constants.OWNER_PARTIES,
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = Constants.OWNER_PARTIES,
+            },
             Name = "Parties",
             Description = "",
             AdministratorRole = new AdministratorRole {
-                Id = Constants.PARTIES_ADMINISTRATOR,
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = Constants.PARTIES_ADMINISTRATOR,
+                },
                 UserGroupId = null
             }
         };
         yield return new ContentSharingGroup {
-            Id = Constants.OWNER_CASES,
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = Constants.OWNER_CASES,
+            },
             Name = "Cases",
             Description = "",
             AdministratorRole = new AdministratorRole {
-                Id = Constants.CASES_ADMINISTRATOR,
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = Constants.CASES_ADMINISTRATOR,
+                },
                 UserGroupId = null
             }
         };
         yield return new ContentSharingGroup {
-            Id = Constants.OWNER_DOCUMENTATION,
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = Constants.OWNER_DOCUMENTATION,
+            },
             Name = "Documentation",
             Description = "",
             AdministratorRole = new AdministratorRole {
-                Id = Constants.DOCUMENTATION_ADMINISTRATOR,
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = Constants.DOCUMENTATION_ADMINISTRATOR,
+                },
                 UserGroupId = null
             }
         };
@@ -157,7 +198,9 @@ internal sealed class UserMigrator(
     {
         await Task.CompletedTask;
         yield return new Collective {
-            Id = Constants.COLLECTIVE_NIELS_KERRY,
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = Constants.COLLECTIVE_NIELS_KERRY,
+            },
             Name = "Kerry and Niels"
         };
     }
@@ -178,11 +221,18 @@ internal sealed class UserMigrator(
     {
         await Task.CompletedTask;
         yield return new Subgroup {
-            Id = Constants.ADULT_AFTERMATH,
+            IdentificationForCreate = new Identification.IdentificationForCreate {
+                Id = Constants.ADULT_AFTERMATH,
+            },
             Name = "Adult Aftermath",
             Description = "Group for private discusssions",
             TenantId = Constants.PPL,
-            AdministratorRole = new AdministratorRole { Id = Constants.ADULT_AFTERMATH_ADMINSTRATOR, UserGroupId = null },
+            AdministratorRole = new AdministratorRole {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = Constants.ADULT_AFTERMATH_ADMINSTRATOR,
+                },
+                UserGroupId = null 
+            },
             PublicationStatusIdDefault = 2
         };
     }
@@ -263,43 +313,56 @@ internal sealed class UserMigrator(
         await tenantCreator.CreateAsync(GetTenants());
         await userCreator.CreateAsync(ReadUsers());
         await systemGroupCreator.CreateAsync(new SystemGroup {
-            VocabularyTagging = new VocabularyToCreate {
-                Id = null,
-                Name = Constants.VOCABULARY_TOPICS,
-                PublisherId = 1,
-                CreatedDateTime = DateTime.Now,
-                ChangedDateTime = DateTime.Now,
-                Title = Constants.VOCABULARY_TOPICS,
-                OwnerId = Constants.OWNER_SYSTEM,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>()
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.PPL,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = Constants.VOCABULARY_ID_TOPICS
-                    },
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 1,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = Constants.VOCABULARY_ID_TOPICS
-                    }
-
+            IdentificationForCreate = new Identification.IdentificationForCreate { 
+                Id = null 
+            },
+            VocabularyTagging = new Vocabulary.VocabularyToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                NodeTypeId = Constants.VOCABULARY,
-                Description = "",
-                TermIds = new List<int>(),
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = 1,
+                    CreatedDateTime = DateTime.Now,
+                    ChangedDateTime = DateTime.Now,
+                    Title = Constants.VOCABULARY_TOPICS,
+                    OwnerId = Constants.OWNER_SYSTEM,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>()
+                    {
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.PPL,
+                            PublicationStatusId = 1,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = Constants.VOCABULARY_ID_TOPICS
+                        },
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.CPCT,
+                            PublicationStatusId = 1,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = Constants.VOCABULARY_ID_TOPICS
+                        }
+
+                    },
+                    NodeTypeId = Constants.VOCABULARY,
+                    TermIds = new List<int>(),
+                },
+                VocabularyDetails = new VocabularyDetails {
+                    Description = "",
+                    Name = Constants.VOCABULARY_TOPICS,
+                    OwnerId = Constants.OWNER_SYSTEM,
+                }
             }
         });
-
         await using var contentSharingGroupCreator = await contentSharingGroupCreatorFactory.CreateAsync(_postgresConnection);
         await using var subgroupCreator = await subgroupCreatorFactory.CreateAsync(_postgresConnection);
         await using var accessRoleCreator = await accessRoleCreatorFactory.CreateAsync(_postgresConnection);
@@ -314,8 +377,8 @@ internal sealed class UserMigrator(
         await collectiveCreator.CreateAsync(GetCollectives());
         await collectiveUserCreator.CreateAsync(GetCollectiveUsers());
         await userGroupUserRoleUserCreator.CreateAsync(GetUserGroupUserRoleUsers());
-        await userGroupUserRoleUserCreator.CreateAsync(ReadUsers().Select(x => new UserGroupUserRoleUser { UserGroupId = Constants.PPL, UserRoleId = Constants.PPL_MEMBER, UserId = (int)x.Id! }));
-        await userGroupUserRoleUserCreator.CreateAsync(ReadUsers().Select(x => new UserGroupUserRoleUser { UserGroupId = Constants.PPL, UserRoleId = Constants.PPL_EVERYONE, UserId = (int)x.Id! }));
+        await userGroupUserRoleUserCreator.CreateAsync(ReadUsers().Select(x => new UserGroupUserRoleUser { UserGroupId = Constants.PPL, UserRoleId = Constants.PPL_MEMBER, UserId = (int)x.IdentificationForCreate.Id! }));
+        await userGroupUserRoleUserCreator.CreateAsync(ReadUsers().Select(x => new UserGroupUserRoleUser { UserGroupId = Constants.PPL, UserRoleId = Constants.PPL_EVERYONE, UserId = (int)x.IdentificationForCreate.Id! }));
         await userGroupUserRoleUserCreator.CreateAsync(new List<int> { 137, 136, 135, 134, 131, 2, 1 }.Select(x => new UserGroupUserRoleUser { UserGroupId = Constants.CPCT, UserRoleId = Constants.CPCT_MEMBER, UserId = x }).ToAsyncEnumerable());
         await userGroupUserRoleUserCreator.CreateAsync(ReadAdultAftermathMembers());
 
@@ -383,7 +446,9 @@ internal sealed class UserMigrator(
             var relationToChildPlacement = reader.IsDBNull("relation_to_child_placement") ? "Other" : reader.GetString("relation_to_child_placement");
             var avatar = reader.IsDBNull("avatar") ? null : reader.GetString("avatar") == "" ? null : reader.GetString("avatar");
             yield return new User {
-                Id = reader.GetInt32("id"),
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = reader.GetInt32("id"),
+                },
                 Name = reader.GetString("name"),
                 CreatedDateTime = reader.GetDateTime("created"),
                 AboutMe = aboutMe == "(NULL)" ? null : aboutMe,

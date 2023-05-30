@@ -1,11 +1,9 @@
-﻿using PoundPupLegacy.CreateModel.Creators;
-
-namespace PoundPupLegacy.Convert;
+﻿namespace PoundPupLegacy.Convert;
 
 internal sealed class DocumentMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    IEntityCreatorFactory<EventuallyIdentifiableDocument> documentCreatorFactory
+    IEntityCreatorFactory<Document.DocumentToCreate> documentCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "documents ppl";
@@ -17,7 +15,7 @@ internal sealed class DocumentMigratorPPL(
         await documentCreator.CreateAsync(ReadDocuments(nodeIdReader));
     }
 
-    private async IAsyncEnumerable<NewDocument> ReadDocuments(
+    private async IAsyncEnumerable<Document.DocumentToCreate> ReadDocuments(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
@@ -237,51 +235,61 @@ internal sealed class DocumentMigratorPPL(
         while (await reader.ReadAsync()) {
             var publicationDate = StringToDateTimeRange(reader.IsDBNull("publication_date") ? null : reader.GetString("publication_date"))?.ToFuzzyDate();
             var id = reader.GetInt32("id");
-            yield return new NewDocument {
-                Id = null,
-                PublisherId = reader.GetInt32("user_id"),
-                CreatedDateTime = reader.GetDateTime("created"),
-                ChangedDateTime = reader.GetDateTime("changed"),
-                Title = reader.GetString("title"),
-                OwnerId = Constants.OWNER_DOCUMENTATION,
-                AuthoringStatusId = 1,
-                TenantNodes = new List<NewTenantNodeForNewNode>
-                {
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = 1,
-                        PublicationStatusId = reader.GetInt32("status"),
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id
-                    },
-                    new NewTenantNodeForNewNode
-                    {
-                        Id = null,
-                        TenantId = Constants.CPCT,
-                        PublicationStatusId = 2,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        UrlId = id < 33163 ? id : null
-                    }
+            yield return new Document.DocumentToCreate {
+                IdentificationForCreate = new Identification.IdentificationForCreate {
+                    Id = null
                 },
-                NodeTypeId = reader.GetInt16("node_type_id"),
-                Published = publicationDate,
-                SourceUrl = reader.IsDBNull("source_url") ? null : reader.GetString("source_url"),
-                Text = TextToHtml(reader.GetString("text")),
-                Teaser = TextToTeaser(reader.GetString("text")),
-                DocumentTypeId = reader.IsDBNull("document_type_id")
+                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    PublisherId = reader.GetInt32("user_id"),
+                    CreatedDateTime = reader.GetDateTime("created"),
+                    ChangedDateTime = reader.GetDateTime("changed"),
+                    Title = reader.GetString("title"),
+                    OwnerId = Constants.OWNER_DOCUMENTATION,
+                    AuthoringStatusId = 1,
+                    TenantNodes = new List<TenantNode.TenantNodeToCreateForNewNode>
+                    {
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = 1,
+                            PublicationStatusId = reader.GetInt32("status"),
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id
+                        },
+                        new TenantNode.TenantNodeToCreateForNewNode
+                        {
+                            IdentificationForCreate = new Identification.IdentificationForCreate {
+                                Id = null
+                            },
+                            TenantId = Constants.CPCT,
+                            PublicationStatusId = 2,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            UrlId = id < 33163 ? id : null
+                        }
+                    },
+                    NodeTypeId = reader.GetInt16("node_type_id"),
+                    TermIds = new List<int>(),
+                },
+                SimpleTextNodeDetails = new SimpleTextNodeDetails {
+                    Text = TextToHtml(reader.GetString("text")),
+                    Teaser = TextToTeaser(reader.GetString("text")),
+                },
+                DocumentDetails = new DocumentDetails {
+                    Published = publicationDate,
+                    SourceUrl = reader.IsDBNull("source_url") ? null : reader.GetString("source_url"),
+                    DocumentTypeId = reader.IsDBNull("document_type_id")
                     ? null
                     : await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                         UrlId = reader.GetInt32("document_type_id"),
                         TenantId = Constants.PPL,
                     }),
-                TermIds = new List<int>(),
+                }
             };
-
         }
         await reader.CloseAsync();
     }
-
 }

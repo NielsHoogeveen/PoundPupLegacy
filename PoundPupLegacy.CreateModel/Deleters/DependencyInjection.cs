@@ -8,7 +8,7 @@ public static class DependencyInjection
     {
         services.AddTransient<IDatabaseDeleterFactory<FileDeleterRequest>, FileDeleterFactory>();
         services.AddTransient<IDatabaseDeleterFactory<NodeTermToRemove>, NodeTermDeleterFactory>();
-        services.AddTransient<IDatabaseDeleterFactory<ImmediatelyIdentifiableTenantNode>, TenantNodeDeleterFactory>();
+        services.AddTransient<IDatabaseDeleterFactory<TenantNodeToDelete>, TenantNodeDeleterFactory>();
         services.AddTransient<IDatabaseDeleterFactory<LocationToDelete>, LocationDeleterFactory>();
         services.AddTransient<IDatabaseDeleterFactory<OrganizationOrganizationTypeDeleterRequest>, OrganizationOrganizationTypeDeleterFactory>();
     }
