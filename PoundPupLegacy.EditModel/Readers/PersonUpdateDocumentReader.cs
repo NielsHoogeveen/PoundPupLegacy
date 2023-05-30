@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.EditModel.Readers;
 
-internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentReaderFactory<Person.ExistingPerson>
+internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentReaderFactory<Person.ToUpdate>
 {
     public override string Sql => string.Format(SQL, "tn");
 

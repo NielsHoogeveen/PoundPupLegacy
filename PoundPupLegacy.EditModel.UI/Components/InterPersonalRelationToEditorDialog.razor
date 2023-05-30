@@ -94,7 +94,7 @@
         }
     }
 
-    public CompletedInterPersonalRelationTo? GetValidRelation()
+    public InterPersonalRelation.To.Complete? GetValidRelation()
     {
         validationMessageStore?.Clear();
         bool hasErrors = false;
@@ -105,9 +105,9 @@
         }
         if (hasErrors)
             return null;
-        return RelationContext.RelationToEdit.Match<CompletedInterPersonalRelationTo>(
+        return RelationContext.RelationToEdit.Match<InterPersonalRelation.To.Complete>(
             incompleteInterPersonalRelationTo: x => x.GetCompletedRelation(RelationContext.RelationToEdit.PersonItemFrom!),
-            completedInterPersonalRelationTo: x => x with { PersonFrom = RelationContext.RelationToEdit.PersonItemFrom! }
+            completedInterPersonalRelationTo: x => (x with { PersonFrom = RelationContext.RelationToEdit.PersonItemFrom! })
         );
     }
 }

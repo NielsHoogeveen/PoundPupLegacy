@@ -43,10 +43,10 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public List<CompletedInterPersonalRelationFrom> RelationsFrom { get; set; } = default!;
+    public List<InterPersonalRelation.From.Complete> RelationsFrom { get; set; } = default!;
     [Parameter]
     [EditorRequired]
-    public List<CompletedInterPersonalRelationTo> RelationsTo { get; set; } = default!;
+    public List<InterPersonalRelation.To.Complete> RelationsTo { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
@@ -58,9 +58,9 @@
 
     private RelationContext? relationContext = null;
 
-    private InterPersonalRelationsListEditor<CompletedInterPersonalRelationFrom>? interPersonalRelationsFromEditor;
+    private InterPersonalRelationsListEditor<InterPersonalRelation.From.Complete>? interPersonalRelationsFromEditor;
 
-    private InterPersonalRelationsListEditor<CompletedInterPersonalRelationTo>? interPersonalRelationsToEditor;
+    private InterPersonalRelationsListEditor<InterPersonalRelation.To.Complete>? interPersonalRelationsToEditor;
 
     private InterPersonalRelationFromEditorDialog? dialogFrom;
 
@@ -80,7 +80,7 @@
         public abstract record RelationContextFrom : RelationContext
         {
             private RelationContextFrom() { }
-            public required InterPersonalRelationFrom RelationToEdit { get; init; }
+            public required InterPersonalRelation.From RelationToEdit { get; init; }
 
             public abstract override RelationContextTo Swap();
 
@@ -118,7 +118,7 @@
 
             public sealed record RelationContextFromEditTo : RelationContextFrom
             {
-                public required CompletedInterPersonalRelationTo CompletedRelationToRemove { get; init; }
+                public required InterPersonalRelation.To.Complete CompletedRelationToRemove { get; init; }
 
                 public override RelationContextTo Swap()
                 {
@@ -139,7 +139,7 @@
             }
             public sealed record RelationContextFromEditFrom : RelationContextFrom
             {
-                public required CompletedInterPersonalRelationFrom CompletedRelationToRemove { get; init; }
+                public required InterPersonalRelation.From.Complete CompletedRelationToRemove { get; init; }
                 public override RelationContextTo Swap()
                 {
                     return new RelationContextTo.RelationContextToEditFrom {
@@ -160,7 +160,7 @@
         public abstract record RelationContextTo : RelationContext
         {
             private RelationContextTo() { }
-            public required InterPersonalRelationTo RelationToEdit { get; init; }
+            public required InterPersonalRelation.To RelationToEdit { get; init; }
 
             public abstract override RelationContextFrom Swap();
 
@@ -198,7 +198,7 @@
 
             public sealed record RelationContextToEditTo : RelationContextTo
             {
-                public required CompletedInterPersonalRelationTo CompletedRelationToRemove { get; init; }
+                public required InterPersonalRelation.To.Complete CompletedRelationToRemove { get; init; }
                 public override RelationContextFrom Swap()
                 {
                     return new RelationContextFrom.RelationContextFromEditTo {
@@ -217,7 +217,7 @@
             }
             public sealed record RelationContextToEditFrom : RelationContextTo
             {
-                public required CompletedInterPersonalRelationFrom CompletedRelationToRemove { get; init; }
+                public required InterPersonalRelation.From.Complete CompletedRelationToRemove { get; init; }
                 public override RelationContextFrom Swap()
                 {
                     return new RelationContextFrom.RelationContextFromEditFrom {
@@ -247,9 +247,9 @@
     }
     private void AddRelationFrom()
     {
-        var relationToEdit = PersonItem.Match<IncompleteInterPersonalRelationFrom>(
-            personListItem: li => li.GetNewInterPersonalRelationFrom(RelationTypes.First(), TenantId, UserId),
-            personName: nm => nm.GetNewInterPersonalRelationFrom(RelationTypes.First(), TenantId, UserId)
+        var relationToEdit = PersonItem.Match<InterPersonalRelation.From.Incomplete>(
+            personListItem: li => li.GetNewInterPersonalRelationFrom(RelationTypes.First<InterPersonalRelationTypeListItem>(), TenantId, UserId),
+            personName: nm => nm.GetNewInterPersonalRelationFrom(RelationTypes.First<InterPersonalRelationTypeListItem>(), TenantId, UserId)
         );
         relationContext = new RelationContext.RelationContextFrom.RelationContextFromNew {
                 RelationToEdit = relationToEdit
@@ -258,9 +258,9 @@
     }
     private void AddRelationTo()
     {
-        var relationToEdit = PersonItem.Match<IncompleteInterPersonalRelationTo>(
-            personListItem: li => li.GetNewInterPersonalRelationTo(RelationTypes.First(), TenantId, UserId),
-            personName: nm => nm.GetNewInterPersonalRelationTo(RelationTypes.First(), TenantId, UserId)
+        var relationToEdit = PersonItem.Match<InterPersonalRelation.To.Incomplete>(
+            personListItem: li => li.GetNewInterPersonalRelationTo(RelationTypes.First<InterPersonalRelationTypeListItem>(), TenantId, UserId),
+            personName: nm => nm.GetNewInterPersonalRelationTo(RelationTypes.First<InterPersonalRelationTypeListItem>(), TenantId, UserId)
         );
 
         relationContext = new RelationContext.RelationContextTo.RelationContextToNew {
@@ -269,7 +269,7 @@
         StateHasChanged();
     }
 
-    private void EditRelationFrom(CompletedInterPersonalRelationFrom relation)
+    private void EditRelationFrom(InterPersonalRelation.From.Complete relation)
     {
         relationContext = new RelationContext.RelationContextFrom.RelationContextFromEditFrom {
             RelationToEdit = relation,
@@ -277,7 +277,7 @@
         };
         StateHasChanged();
     }
-    private void EditRelationTo(CompletedInterPersonalRelationTo relation)
+    private void EditRelationTo(InterPersonalRelation.To.Complete relation)
     {
         relationContext = new RelationContext.RelationContextTo.RelationContextToEditTo {
             RelationToEdit = relation,

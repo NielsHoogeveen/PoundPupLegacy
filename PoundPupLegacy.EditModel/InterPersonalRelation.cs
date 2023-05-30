@@ -1,17 +1,15 @@
-﻿using static PoundPupLegacy.EditModel.TenantNodeDetails;
+﻿namespace PoundPupLegacy.EditModel;
 
-namespace PoundPupLegacy.EditModel;
-
-[JsonSerializable(typeof(ExistingInterPersonalRelationFrom))]
+[JsonSerializable(typeof(InterPersonalRelation.From.Complete.Resolved.ToUpdate))]
 public partial class ExistingInterPersonalRelationFromJsonContext : JsonSerializerContext { }
 
-[JsonSerializable(typeof(ExistingInterPersonalRelationTo))]
+[JsonSerializable(typeof(InterPersonalRelation.To.Complete.Resolved.ToUpdate))]
 public partial class ExistingInterPersonalRelationToJsonContext : JsonSerializerContext { }
 
 public static class InterPersonalRelationExtentions{
-    public static NewInterPersonalExistingFromRelation GetNewInterPersonalRelationFrom(this PersonListItem personListItem, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId)
+    public static InterPersonalRelation.From.Incomplete.New.ToCreateForExistingPerson GetNewInterPersonalRelationFrom(this PersonListItem personListItem, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId)
     {
-        return new NewInterPersonalExistingFromRelation {
+        return new InterPersonalRelation.From.Incomplete.New.ToCreateForExistingPerson {
             PersonFrom = personListItem,
             PersonTo = null,
             InterPersonalRelationType = interPersonalRelationType,
@@ -19,9 +17,9 @@ public static class InterPersonalRelationExtentions{
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }
-    public static NewInterPersonalExistingToRelation GetNewInterPersonalRelationTo(this PersonListItem personListItem, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId)
+    public static InterPersonalRelation.To.Incomplete.New.ToCreateForExistingPerson GetNewInterPersonalRelationTo(this PersonListItem personListItem, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId)
     {
-        return new NewInterPersonalExistingToRelation {
+        return new InterPersonalRelation.To.Incomplete.New.ToCreateForExistingPerson {
             PersonFrom = null,
             PersonTo = personListItem,
             InterPersonalRelationType = interPersonalRelationType,
@@ -30,9 +28,9 @@ public static class InterPersonalRelationExtentions{
         };
 
     }
-    public static NewInterPersonalNewFromRelation GetNewInterPersonalRelationFrom(this PersonName personName, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId)
+    public static InterPersonalRelation.From.Incomplete.New.ToCreateForNewPerson GetNewInterPersonalRelationFrom(this PersonName personName, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId)
     {
-        return new NewInterPersonalNewFromRelation {
+        return new InterPersonalRelation.From.Incomplete.New.ToCreateForNewPerson {
             PersonFrom = personName,
             PersonTo = null,
             InterPersonalRelationType = interPersonalRelationType,
@@ -40,9 +38,9 @@ public static class InterPersonalRelationExtentions{
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }
-    public static NewInterPersonalNewToRelation GetNewInterPersonalRelationTo(this PersonName personName, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId)
+    public static InterPersonalRelation.To.Incomplete.New.ToCreateForNewPerson GetNewInterPersonalRelationTo(this PersonName personName, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId)
     {
-        return new NewInterPersonalNewToRelation {
+        return new InterPersonalRelation.To.Incomplete.New.ToCreateForNewPerson {
             PersonFrom = null,
             PersonTo = personName,
             InterPersonalRelationType = interPersonalRelationType,
@@ -65,30 +63,30 @@ public abstract record InterPersonalRelation : Relation
     public abstract string PersonFromName { get; }
     public abstract string PersonToName { get; }
     public abstract RelationSide RelationSideThisPerson { get; }
-    public abstract record InterPersonalRelationFrom : InterPersonalRelation
+    public abstract record From : InterPersonalRelation
     {
-        private InterPersonalRelationFrom() { }
+        private From() { }
         public sealed override RelationSide RelationSideThisPerson => RelationSide.From;
-        public abstract InterPersonalRelationTo SwapFromAndTo();
+        public abstract To SwapFromAndTo();
         public abstract PersonItem? PersonItemFrom { get; }
         public abstract PersonListItem? PersonItemTo { get; set; }
 
         public abstract T Match<T>(
-            Func<IncompleteInterPersonalRelationFrom, T> incompleteInterPersonalRelationFrom,
-            Func<CompletedInterPersonalRelationFrom, T> completedInterPersonalRelationFrom
+            Func<Incomplete, T> incompleteInterPersonalRelationFrom,
+            Func<Complete, T> completedInterPersonalRelationFrom
             );
-        public abstract record IncompleteInterPersonalRelationFrom : InterPersonalRelationFrom
+        public abstract record Incomplete : From
         {
-            private IncompleteInterPersonalRelationFrom() { }
+            private Incomplete() { }
             public sealed override T Match<T>(
-                Func<IncompleteInterPersonalRelationFrom, T> incompleteInterPersonalRelationFrom,
-                Func<CompletedInterPersonalRelationFrom, T> completedInterPersonalRelationFrom
+                Func<Incomplete, T> incompleteInterPersonalRelationFrom,
+                Func<Complete, T> completedInterPersonalRelationFrom
             )
             {
                 return incompleteInterPersonalRelationFrom(this);
             }
-            public abstract CompletedInterPersonalRelationFrom GetCompletedRelation(PersonListItem organizationListItemFrom);
-            public abstract record NewIncompleteInterPersonalRelationFrom : IncompleteInterPersonalRelationFrom
+            public abstract Complete GetCompletedRelation(PersonListItem organizationListItemFrom);
+            public abstract record New : Incomplete
             {
                 public required PersonListItem? PersonTo { get; set; }
 
@@ -107,7 +105,7 @@ public abstract record InterPersonalRelation : Relation
                 }
                 public sealed override string PersonToName => PersonTo is null ? "" : PersonTo.Name;
 
-                public sealed record NewInterPersonalNewFromRelation : NewIncompleteInterPersonalRelationFrom, NewNode
+                public sealed record ToCreateForNewPerson : New, NewNode
                 {
                     public override NodeDetails NodeDetails => NodeDetailsForCreate;
                     public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
@@ -118,9 +116,9 @@ public abstract record InterPersonalRelation : Relation
                     }
                     public sealed override string PersonFromName => PersonFrom.Name;
                     public sealed override PersonItem? PersonItemFrom => PersonFrom;
-                    public sealed override NewInterPersonalNewToRelation SwapFromAndTo()
+                    public sealed override To.Incomplete.New.ToCreateForNewPerson SwapFromAndTo()
                     {
-                        return new NewInterPersonalNewToRelation {
+                        return new To.Incomplete.New.ToCreateForNewPerson {
                             PersonFrom = PersonTo,
                             PersonTo = PersonFrom,
                             InterPersonalRelationType = InterPersonalRelationType,
@@ -128,9 +126,9 @@ public abstract record InterPersonalRelation : Relation
                             RelationDetails = RelationDetails,
                         };
                     }
-                    public sealed override CompletedInterPersonalRelationFrom GetCompletedRelation(PersonListItem organizationListItemTo)
+                    public sealed override Complete GetCompletedRelation(PersonListItem organizationListItemTo)
                     {
-                        return new CompletedNewInterPersonalNewFromRelation {
+                        return new Complete.ToCreateForNewPerson {
                             PersonFrom = PersonFrom,
                             PersonTo = organizationListItemTo,
                             InterPersonalRelationType = InterPersonalRelationType,
@@ -140,7 +138,7 @@ public abstract record InterPersonalRelation : Relation
                     }
                 }
 
-                public sealed record NewInterPersonalExistingFromRelation : NewIncompleteInterPersonalRelationFrom, NewNode
+                public sealed record ToCreateForExistingPerson : New, NewNode
                 {
                     public override NodeDetails NodeDetails => NodeDetailsForCreate;
                     public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
@@ -151,9 +149,9 @@ public abstract record InterPersonalRelation : Relation
                     }
                     public sealed override string PersonFromName => PersonFrom.Name;
                     public sealed override PersonItem? PersonItemFrom => PersonFrom;
-                    public sealed override NewInterPersonalExistingToRelation SwapFromAndTo()
+                    public sealed override To.Incomplete.New.ToCreateForExistingPerson SwapFromAndTo()
                     {
-                        return new NewInterPersonalExistingToRelation {
+                        return new To.Incomplete.New.ToCreateForExistingPerson {
                             PersonFrom = PersonTo,
                             PersonTo = PersonFrom,
                             InterPersonalRelationType = InterPersonalRelationType,
@@ -162,9 +160,9 @@ public abstract record InterPersonalRelation : Relation
                         };
                     }
 
-                    public sealed override CompletedInterPersonalRelationFrom GetCompletedRelation(PersonListItem organizationListItemTo)
+                    public sealed override Complete GetCompletedRelation(PersonListItem organizationListItemTo)
                     {
-                        return new NewInterPersonalExistingRelationFrom {
+                        return new Complete.Resolved.ToCreate {
                             PersonFrom = PersonFrom,
                             PersonTo = organizationListItemTo,
                             InterPersonalRelationType = InterPersonalRelationType,
@@ -176,14 +174,14 @@ public abstract record InterPersonalRelation : Relation
             }
         }
 
-        public abstract record CompletedInterPersonalRelationFrom : InterPersonalRelationFrom
+        public abstract record Complete : From
         {
             public required PersonListItem PersonTo { get; set; }
 
-            private CompletedInterPersonalRelationFrom() { }
+            private Complete() { }
             public sealed override T Match<T>(
-                Func<IncompleteInterPersonalRelationFrom, T> incompleteInterPersonalRelationFrom,
-                Func<CompletedInterPersonalRelationFrom, T> completedInterPersonalRelationFrom
+                Func<Incomplete, T> incompleteInterPersonalRelationFrom,
+                Func<Complete, T> completedInterPersonalRelationFrom
             )
             {
                 return completedInterPersonalRelationFrom(this);
@@ -203,7 +201,7 @@ public abstract record InterPersonalRelation : Relation
                 }
             }
 
-            public sealed record CompletedNewInterPersonalNewFromRelation : CompletedInterPersonalRelationFrom, NewNode
+            public sealed record ToCreateForNewPerson : Complete, NewNode
             {
                 public override NodeDetails NodeDetails => NodeDetailsForCreate;
                 public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
@@ -216,9 +214,9 @@ public abstract record InterPersonalRelation : Relation
                 public sealed override string PersonFromName => PersonFrom.Name;
                 public sealed override string PersonToName => PersonTo.Name;
                 public sealed override PersonItem? PersonItemFrom => PersonFrom;
-                public sealed override CompletedNewInterPersonalNewToRelation SwapFromAndTo()
+                public sealed override To.Complete.ToCreateNewPerson SwapFromAndTo()
                 {
-                    return new CompletedNewInterPersonalNewToRelation {
+                    return new To.Complete.ToCreateNewPerson {
                         PersonFrom = PersonTo,
                         PersonTo = PersonFrom,
                         InterPersonalRelationType = InterPersonalRelationType,
@@ -228,9 +226,9 @@ public abstract record InterPersonalRelation : Relation
                 }
             }
 
-            public abstract record ResolvedInterPersonalRelationFrom : CompletedInterPersonalRelationFrom
+            public abstract record Resolved : Complete
             {
-                private ResolvedInterPersonalRelationFrom() { }
+                private Resolved() { }
                 public sealed override void SetName(string name)
                 {
                     PersonFrom.Name = name;
@@ -241,15 +239,15 @@ public abstract record InterPersonalRelation : Relation
                 public sealed override string PersonToName => PersonTo.Name;
                 public sealed override PersonItem? PersonItemFrom => PersonFrom;
 
-                public sealed record ExistingInterPersonalRelationFrom : ResolvedInterPersonalRelationFrom, ExistingNode
+                public sealed record ToUpdate : Resolved, ExistingNode
                 {
                     public override NodeDetails NodeDetails => NodeDetailsForUpdate;
                     public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
                     public required NodeIdentification NodeIdentification { get; init; }
 
-                    public sealed override ExistingInterPersonalRelationTo SwapFromAndTo()
+                    public sealed override To.Complete.Resolved.ToUpdate SwapFromAndTo()
                     {
-                        return new ExistingInterPersonalRelationTo {
+                        return new To.Complete.Resolved.ToUpdate {
                             PersonFrom = PersonTo,
                             PersonTo = PersonFrom,
                             InterPersonalRelationType = InterPersonalRelationType,
@@ -260,13 +258,13 @@ public abstract record InterPersonalRelation : Relation
                     }
                 }
 
-                public sealed record NewInterPersonalExistingRelationFrom : ResolvedInterPersonalRelationFrom, NewNode
+                public sealed record ToCreate : Resolved, NewNode
                 {
                     public override NodeDetails NodeDetails => NodeDetailsForCreate;
                     public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-                    public sealed override NewInterPersonalExistingRelationTo SwapFromAndTo()
+                    public sealed override To.Complete.Resolved.ToCreate SwapFromAndTo()
                     {
-                        return new NewInterPersonalExistingRelationTo {
+                        return new To.Complete.Resolved.ToCreate {
                             PersonFrom = PersonTo,
                             PersonTo = PersonFrom,
                             InterPersonalRelationType = InterPersonalRelationType,
@@ -278,33 +276,33 @@ public abstract record InterPersonalRelation : Relation
             }
         }
     }
-    public abstract record InterPersonalRelationTo : InterPersonalRelation
+    public abstract record To : InterPersonalRelation
     {
         public abstract PersonListItem? PersonItemFrom { get; set; }
         public abstract PersonItem? PersonItemTo { get; }
 
-        private InterPersonalRelationTo() { }
+        private To() { }
         public abstract T Match<T>(
-            Func<IncompleteInterPersonalRelationTo, T> incompleteInterPersonalRelationTo,
-            Func<CompletedInterPersonalRelationTo, T> completedInterPersonalRelationTo
+            Func<Incomplete, T> incompleteInterPersonalRelationTo,
+            Func<Complete, T> completedInterPersonalRelationTo
         );
 
-        public abstract InterPersonalRelationFrom SwapFromAndTo();
+        public abstract From SwapFromAndTo();
         public sealed override RelationSide RelationSideThisPerson => RelationSide.To;
-        public abstract record IncompleteInterPersonalRelationTo : InterPersonalRelationTo
+        public abstract record Incomplete : To
         {
-            private IncompleteInterPersonalRelationTo() { }
+            private Incomplete() { }
 
             public sealed override T Match<T>(
-                Func<IncompleteInterPersonalRelationTo, T> incompleteInterPersonalRelationTo,
-                Func<CompletedInterPersonalRelationTo, T> completedInterPersonalRelationTo
+                Func<Incomplete, T> incompleteInterPersonalRelationTo,
+                Func<Complete, T> completedInterPersonalRelationTo
             )
             {
                 return incompleteInterPersonalRelationTo(this);
             }
-            public abstract CompletedInterPersonalRelationTo GetCompletedRelation(PersonListItem organizationListItemFrom);
+            public abstract Complete GetCompletedRelation(PersonListItem organizationListItemFrom);
 
-            public abstract record NewIncompleteInterPersonalRelationTo : IncompleteInterPersonalRelationTo
+            public abstract record New : Incomplete
             {
                 public required PersonListItem? PersonFrom { get; set; }
                 public sealed override string PersonFromName => PersonFrom is null ? "" : PersonFrom.Name;
@@ -320,7 +318,7 @@ public abstract record InterPersonalRelation : Relation
                         organizationItemFrom = value;
                     }
                 }
-                public sealed record NewInterPersonalExistingToRelation : NewIncompleteInterPersonalRelationTo, NewNode
+                public sealed record ToCreateForExistingPerson : New, NewNode
                 {
                     public override NodeDetails NodeDetails => NodeDetailsForCreate;
                     public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
@@ -331,9 +329,9 @@ public abstract record InterPersonalRelation : Relation
                     }
                     public sealed override string PersonToName => PersonTo.Name;
                     public sealed override PersonItem? PersonItemTo => PersonTo;
-                    public sealed override NewInterPersonalExistingFromRelation SwapFromAndTo()
+                    public sealed override From.Incomplete.New.ToCreateForExistingPerson SwapFromAndTo()
                     {
-                        return new NewInterPersonalExistingFromRelation {
+                        return new From.Incomplete.New.ToCreateForExistingPerson {
                             PersonFrom = PersonTo,
                             PersonTo = PersonFrom,
                             InterPersonalRelationType = InterPersonalRelationType,
@@ -342,9 +340,9 @@ public abstract record InterPersonalRelation : Relation
                         };
                     }
 
-                    public sealed override CompletedInterPersonalRelationTo GetCompletedRelation(PersonListItem organizationListItemFrom)
+                    public sealed override Complete GetCompletedRelation(PersonListItem organizationListItemFrom)
                     {
-                        return new NewInterPersonalExistingRelationTo {
+                        return new Complete.Resolved.ToCreate {
                             PersonFrom = organizationListItemFrom,
                             PersonTo = PersonTo,
                             InterPersonalRelationType = InterPersonalRelationType,
@@ -354,7 +352,7 @@ public abstract record InterPersonalRelation : Relation
                     }
                 }
 
-                public sealed record NewInterPersonalNewToRelation : NewIncompleteInterPersonalRelationTo, NewNode
+                public sealed record ToCreateForNewPerson : New, NewNode
                 {
                     public override NodeDetails NodeDetails => NodeDetailsForCreate;
                     public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
@@ -366,9 +364,9 @@ public abstract record InterPersonalRelation : Relation
                     public sealed override string PersonToName => PersonTo.Name;
                     public sealed override PersonItem? PersonItemTo => PersonTo;
 
-                    public sealed override NewInterPersonalNewFromRelation SwapFromAndTo()
+                    public sealed override From.Incomplete.New.ToCreateForNewPerson SwapFromAndTo()
                     {
-                        return new NewInterPersonalNewFromRelation {
+                        return new From.Incomplete.New.ToCreateForNewPerson {
                             PersonFrom = PersonTo,
                             PersonTo = PersonFrom,
                             InterPersonalRelationType = InterPersonalRelationType,
@@ -376,9 +374,9 @@ public abstract record InterPersonalRelation : Relation
                             RelationDetails = RelationDetails,
                         };
                     }
-                    public sealed override CompletedInterPersonalRelationTo GetCompletedRelation(PersonListItem organizationListItemFrom)
+                    public sealed override Complete GetCompletedRelation(PersonListItem organizationListItemFrom)
                     {
-                        return new CompletedNewInterPersonalNewToRelation {
+                        return new Complete.ToCreateNewPerson {
                             PersonFrom = organizationListItemFrom,
                             PersonTo = PersonTo,
                             InterPersonalRelationType = InterPersonalRelationType,
@@ -390,9 +388,9 @@ public abstract record InterPersonalRelation : Relation
             }
         }
 
-        public abstract record CompletedInterPersonalRelationTo : InterPersonalRelationTo
+        public abstract record Complete : To
         {
-            private CompletedInterPersonalRelationTo() { }
+            private Complete() { }
             public required PersonListItem PersonFrom { get; set; }
 
             private PersonListItem? organizationItemFrom = null;
@@ -410,14 +408,14 @@ public abstract record InterPersonalRelation : Relation
             public sealed override string PersonFromName => PersonFrom.Name;
 
             public sealed override T Match<T>(
-                Func<IncompleteInterPersonalRelationTo, T> incompleteInterPersonalRelationTo,
-                Func<CompletedInterPersonalRelationTo, T> completedInterPersonalRelationTo
+                Func<Incomplete, T> incompleteInterPersonalRelationTo,
+                Func<Complete, T> completedInterPersonalRelationTo
             )
             {
                 return completedInterPersonalRelationTo(this);
             }
 
-            public sealed record CompletedNewInterPersonalNewToRelation : CompletedInterPersonalRelationTo, NewNode
+            public sealed record ToCreateNewPerson : Complete, NewNode
             {
                 public override NodeDetails NodeDetails => NodeDetailsForCreate;
                 public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
@@ -430,9 +428,9 @@ public abstract record InterPersonalRelation : Relation
                 public sealed override string PersonToName => PersonTo.Name;
 
                 public sealed override PersonItem? PersonItemTo => PersonTo;
-                public sealed override CompletedNewInterPersonalNewFromRelation SwapFromAndTo()
+                public sealed override From.Complete.ToCreateForNewPerson SwapFromAndTo()
                 {
-                    return new CompletedNewInterPersonalNewFromRelation {
+                    return new From.Complete.ToCreateForNewPerson {
                         PersonFrom = PersonTo,
                         PersonTo = PersonFrom,
                         InterPersonalRelationType = InterPersonalRelationType,
@@ -442,9 +440,9 @@ public abstract record InterPersonalRelation : Relation
                 }
             }
 
-            public abstract record ResolvedInterPersonalRelationTo : CompletedInterPersonalRelationTo
+            public abstract record Resolved : Complete
             {
-                private ResolvedInterPersonalRelationTo() { }
+                private Resolved() { }
                 public required PersonListItem PersonTo { get; set; }
 
                 public sealed override void SetName(string name)
@@ -456,15 +454,15 @@ public abstract record InterPersonalRelation : Relation
 
                 public sealed override PersonItem? PersonItemTo => PersonTo;
 
-                public sealed record ExistingInterPersonalRelationTo : ResolvedInterPersonalRelationTo, ExistingNode
+                public sealed record ToUpdate : Resolved, ExistingNode
                 {
                     public override NodeDetails NodeDetails => NodeDetailsForUpdate;
                     public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
                     public required NodeIdentification NodeIdentification { get; init; }
 
-                    public sealed override ExistingInterPersonalRelationFrom SwapFromAndTo()
+                    public sealed override From.Complete.Resolved.ToUpdate SwapFromAndTo()
                     {
-                        return new ExistingInterPersonalRelationFrom {
+                        return new From.Complete.Resolved.ToUpdate {
                             PersonFrom = PersonTo,
                             PersonTo = PersonFrom,
                             InterPersonalRelationType = InterPersonalRelationType,
@@ -475,13 +473,13 @@ public abstract record InterPersonalRelation : Relation
                     }
                 }
 
-                public sealed record NewInterPersonalExistingRelationTo : ResolvedInterPersonalRelationTo, NewNode
+                public sealed record ToCreate : Resolved, NewNode
                 {
                     public override NodeDetails NodeDetails => NodeDetailsForCreate;
                     public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-                    public sealed override NewInterPersonalExistingRelationFrom SwapFromAndTo()
+                    public sealed override From.Complete.Resolved.ToCreate SwapFromAndTo()
                     {
-                        return new NewInterPersonalExistingRelationFrom {
+                        return new From.Complete.Resolved.ToCreate {
                             PersonFrom = PersonTo,
                             PersonTo = PersonFrom,
                             InterPersonalRelationType = InterPersonalRelationType,
