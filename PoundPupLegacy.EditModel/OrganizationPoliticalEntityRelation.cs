@@ -1,13 +1,13 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(ExistingOrganizationPoliticalEntityRelation))]
+[JsonSerializable(typeof(OrganizationPoliticalEntityRelation.Complete.Resolved.ToUpdate))]
 public partial class ExistingOrganizationPoliticalEntityRelationJsonContext : JsonSerializerContext { }
 
 public static class OrganizationPoliticalEntityRelationExtension
 {
-    public static NewOrganizationPoliticalEntityRelationExistingOrganization GetNewPoliticalEntityRelationOrganization(this OrganizationListItem organizationListItem, OrganizationPoliticalEntityRelationTypeListItem relationType, int ownerId, int publishedId)
+    public static OrganizationPoliticalEntityRelation.Incomplete.ToCreateForExistingOrganization GetNewPoliticalEntityRelationOrganization(this OrganizationListItem organizationListItem, OrganizationPoliticalEntityRelationTypeListItem relationType, int ownerId, int publishedId)
     {
-        return new NewOrganizationPoliticalEntityRelationExistingOrganization {
+        return new OrganizationPoliticalEntityRelation.Incomplete.ToCreateForExistingOrganization {
             Organization = organizationListItem,
             OrganizationPoliticalEntityRelationType = relationType,
             PoliticalEntity = null,
@@ -15,9 +15,9 @@ public static class OrganizationPoliticalEntityRelationExtension
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }
-    public static NewOrganizationPoliticalEntityRelationNewOrganization GetNewPoliticalEntityRelationOrganization(this OrganizationName organizationName, OrganizationPoliticalEntityRelationTypeListItem relationType, int ownerId, int publishedId)
+    public static OrganizationPoliticalEntityRelation.Incomplete.ToCreateForNewOrganization GetNewPoliticalEntityRelationOrganization(this OrganizationName organizationName, OrganizationPoliticalEntityRelationTypeListItem relationType, int ownerId, int publishedId)
     {
-        return new NewOrganizationPoliticalEntityRelationNewOrganization {
+        return new OrganizationPoliticalEntityRelation.Incomplete.ToCreateForNewOrganization {
             Organization = organizationName,
             OrganizationPoliticalEntityRelationType = relationType,
             PoliticalEntity = null,
@@ -32,17 +32,17 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
 
     [RequireNamedArgs]
     public abstract T Match<T>(
-        Func<NewOrganizationPoliticalEntityRelationNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
-        Func<NewOrganizationPoliticalEntityRelationExistingOrganization, T> newOrganizationPoliticalEntityRelationExistingOrganization,
-        Func<ExistingOrganizationPoliticalEntityRelation, T> existingOrganizationPoliticalEntityRelation,
-        Func<CompletedNewOrganizationPoliticalEntityRelationNewOrganization, T> completedNewOrganizationPoliticalEntityRelationNewOrganization,
-        Func<CompletedNewOrganizationPoliticalEntityRelationExistingOrganization, T> completedNewOrganizationPoliticalEntityRelationExistingOrganization
+        Func<Incomplete.ToCreateForNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
+        Func<Incomplete.ToCreateForExistingOrganization, T> newOrganizationPoliticalEntityRelationExistingOrganization,
+        Func<Complete.Resolved.ToUpdate, T> existingOrganizationPoliticalEntityRelation,
+        Func<Complete.ToCreateForNewOrganization, T> completedNewOrganizationPoliticalEntityRelationNewOrganization,
+        Func<Complete.Resolved.ToCreateForExistingOrganization, T> completedNewOrganizationPoliticalEntityRelationExistingOrganization
      );
 
     [RequireNamedArgs]
     public abstract T Match<T>(
-        Func<IncompleteOrganizationPoliticalEntityRelation, T> incompleteOrganizationPoliticalEntityRelation,
-        Func<CompletedOrganizationPoliticalEntityRelation, T> completedOrganizationPoliticalEntityRelation
+        Func<Incomplete, T> incompleteOrganizationPoliticalEntityRelation,
+        Func<Complete, T> completedOrganizationPoliticalEntityRelation
      );
     public required RelationDetails RelationDetails { get; init; }
     public abstract NodeDetails NodeDetails { get; }
@@ -51,28 +51,28 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
     public abstract OrganizationItem? OrganizationItem { get; }
     public abstract PoliticalEntityListItem? PoliticalEntityItem { get; }
 
-    public abstract record IncompleteOrganizationPoliticalEntityRelation : OrganizationPoliticalEntityRelation
+    public abstract record Incomplete : OrganizationPoliticalEntityRelation
     {
-        private IncompleteOrganizationPoliticalEntityRelation() { }
+        private Incomplete() { }
         public override T Match<T>(
-            Func<IncompleteOrganizationPoliticalEntityRelation, T> incompleteOrganizationPoliticalEntityRelation,
-            Func<CompletedOrganizationPoliticalEntityRelation, T> completedOrganizationPoliticalEntityRelation
+            Func<Incomplete, T> incompleteOrganizationPoliticalEntityRelation,
+            Func<Complete, T> completedOrganizationPoliticalEntityRelation
          )
         {
             return incompleteOrganizationPoliticalEntityRelation(this);
         }
 
-        public abstract CompletedOrganizationPoliticalEntityRelation GetCompletedRelation(PoliticalEntityListItem politicalEntity);
-        public sealed record NewOrganizationPoliticalEntityRelationNewOrganization : IncompleteOrganizationPoliticalEntityRelation, NewNode
+        public abstract Complete GetCompletedRelation(PoliticalEntityListItem politicalEntity);
+        public sealed record ToCreateForNewOrganization : Incomplete, NewNode
         {
             public override NodeDetails NodeDetails => NodeDetailsForCreate;
             public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
             public override T Match<T>(
-                Func<NewOrganizationPoliticalEntityRelationNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
-                Func<NewOrganizationPoliticalEntityRelationExistingOrganization, T> newOrganizationPoliticalEntityRelationExistingOrganization,
-                Func<ExistingOrganizationPoliticalEntityRelation, T> existingOrganizationPoliticalEntityRelation,
-                Func<CompletedNewOrganizationPoliticalEntityRelationNewOrganization, T> completedNewOrganizationPoliticalEntityRelationNewOrganization,
-                Func<CompletedNewOrganizationPoliticalEntityRelationExistingOrganization, T> completedNewOrganizationPoliticalEntityRelationExistingOrganization
+                Func<ToCreateForNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
+                Func<ToCreateForExistingOrganization, T> newOrganizationPoliticalEntityRelationExistingOrganization,
+                Func<Complete.Resolved.ToUpdate, T> existingOrganizationPoliticalEntityRelation,
+                Func<Complete.ToCreateForNewOrganization, T> completedNewOrganizationPoliticalEntityRelationNewOrganization,
+                Func<Complete.Resolved.ToCreateForExistingOrganization, T> completedNewOrganizationPoliticalEntityRelationExistingOrganization
              )
             {
                 return newOrganizationPoliticalEntityRelationNewOrganization(this);
@@ -82,9 +82,9 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
             public required PoliticalEntityListItem? PoliticalEntity { get; set; }
             public override OrganizationItem? OrganizationItem => Organization;
             public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
-            public override CompletedOrganizationPoliticalEntityRelation GetCompletedRelation(PoliticalEntityListItem politicalEntity)
+            public override Complete GetCompletedRelation(PoliticalEntityListItem politicalEntity)
             {
-                return new CompletedNewOrganizationPoliticalEntityRelationNewOrganization {
+                return new Complete.ToCreateForNewOrganization {
                     Organization = Organization,
                     PoliticalEntity = politicalEntity,
                     NodeDetailsForCreate = NodeDetailsForCreate,
@@ -93,16 +93,16 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
                 };
             }
         }
-        public sealed record NewOrganizationPoliticalEntityRelationExistingOrganization : IncompleteOrganizationPoliticalEntityRelation, NewNode
+        public sealed record ToCreateForExistingOrganization : Incomplete, NewNode
         {
             public override NodeDetails NodeDetails => NodeDetailsForCreate;
             public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
             public override T Match<T>(
-                Func<NewOrganizationPoliticalEntityRelationNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
-                Func<NewOrganizationPoliticalEntityRelationExistingOrganization, T> newOrganizationPoliticalEntityRelationExistingOrganization,
-                Func<ExistingOrganizationPoliticalEntityRelation, T> existingOrganizationPoliticalEntityRelation,
-                Func<CompletedNewOrganizationPoliticalEntityRelationNewOrganization, T> completedNewOrganizationPoliticalEntityRelationNewOrganization,
-                Func<CompletedNewOrganizationPoliticalEntityRelationExistingOrganization, T> completedNewOrganizationPoliticalEntityRelationExistingOrganization
+                Func<ToCreateForNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
+                Func<ToCreateForExistingOrganization, T> newOrganizationPoliticalEntityRelationExistingOrganization,
+                Func<Complete.Resolved.ToUpdate, T> existingOrganizationPoliticalEntityRelation,
+                Func<Complete.ToCreateForNewOrganization, T> completedNewOrganizationPoliticalEntityRelationNewOrganization,
+                Func<Complete.Resolved.ToCreateForExistingOrganization, T> completedNewOrganizationPoliticalEntityRelationExistingOrganization
              )
             {
                 return newOrganizationPoliticalEntityRelationExistingOrganization(this);
@@ -112,9 +112,9 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
             public required PoliticalEntityListItem? PoliticalEntity { get; set; }
             public override OrganizationItem? OrganizationItem => Organization;
             public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
-            public override CompletedOrganizationPoliticalEntityRelation GetCompletedRelation(PoliticalEntityListItem politicalEntity)
+            public override Complete GetCompletedRelation(PoliticalEntityListItem politicalEntity)
             {
-                return new CompletedNewOrganizationPoliticalEntityRelationExistingOrganization {
+                return new Complete.Resolved.ToCreateForExistingOrganization {
                     Organization = Organization,
                     PoliticalEntity = politicalEntity,
                     NodeDetailsForCreate = NodeDetailsForCreate,
@@ -124,12 +124,12 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
             }
         }
     }
-    public abstract record CompletedOrganizationPoliticalEntityRelation : OrganizationPoliticalEntityRelation
+    public abstract record Complete : OrganizationPoliticalEntityRelation
     {
-        private CompletedOrganizationPoliticalEntityRelation() { }
+        private Complete() { }
         public override T Match<T>(
-            Func<IncompleteOrganizationPoliticalEntityRelation, T> incompleteOrganizationPoliticalEntityRelation,
-            Func<CompletedOrganizationPoliticalEntityRelation, T> completedOrganizationPoliticalEntityRelation
+            Func<Incomplete, T> incompleteOrganizationPoliticalEntityRelation,
+            Func<Complete, T> completedOrganizationPoliticalEntityRelation
          )
         {
             return completedOrganizationPoliticalEntityRelation(this);
@@ -138,21 +138,21 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
         public abstract string OrganizationName { get; }
          
         public abstract string PoliticalEntityName { get; }
-        public abstract record ResolvedOrganizationPoliticalEntityRelation : CompletedOrganizationPoliticalEntityRelation
+        public abstract record Resolved : Complete
         {
-            private ResolvedOrganizationPoliticalEntityRelation() { }
-            public sealed record ExistingOrganizationPoliticalEntityRelation : ResolvedOrganizationPoliticalEntityRelation, ExistingNode
+            private Resolved() { }
+            public sealed record ToUpdate : Resolved, ExistingNode
             {
                 public override NodeDetails NodeDetails => NodeDetailsForUpdate;
                 public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
                 public required NodeIdentification NodeIdentification { get; init; }
 
                 public override T Match<T>(
-                    Func<NewOrganizationPoliticalEntityRelationNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
-                    Func<NewOrganizationPoliticalEntityRelationExistingOrganization, T> newOrganizationPoliticalEntityRelationExistingOrganization,
-                    Func<ExistingOrganizationPoliticalEntityRelation, T> existingOrganizationPoliticalEntityRelation,
-                    Func<CompletedNewOrganizationPoliticalEntityRelationNewOrganization, T> completedNewOrganizationPoliticalEntityRelationNewOrganization,
-                    Func<CompletedNewOrganizationPoliticalEntityRelationExistingOrganization, T> completedNewOrganizationPoliticalEntityRelationExistingOrganization
+                    Func<Incomplete.ToCreateForNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
+                    Func<Incomplete.ToCreateForExistingOrganization, T> newOrganizationPoliticalEntityRelationExistingOrganization,
+                    Func<ToUpdate, T> existingOrganizationPoliticalEntityRelation,
+                    Func<ToCreateForNewOrganization, T> completedNewOrganizationPoliticalEntityRelationNewOrganization,
+                    Func<ToCreateForExistingOrganization, T> completedNewOrganizationPoliticalEntityRelationExistingOrganization
                  )
                 {
                     return existingOrganizationPoliticalEntityRelation(this);
@@ -164,17 +164,17 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
                 public override OrganizationItem? OrganizationItem => Organization;
                 public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
             }
-            public sealed record CompletedNewOrganizationPoliticalEntityRelationExistingOrganization : ResolvedOrganizationPoliticalEntityRelation, NewNode
+            public sealed record ToCreateForExistingOrganization : Resolved, NewNode
             {
                 public override NodeDetails NodeDetails => NodeDetailsForCreate;
                 public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
 
                 public override T Match<T>(
-                    Func<NewOrganizationPoliticalEntityRelationNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
-                    Func<NewOrganizationPoliticalEntityRelationExistingOrganization, T> newOrganizationPoliticalEntityRelationExistingOrganization,
-                    Func<ExistingOrganizationPoliticalEntityRelation, T> existingOrganizationPoliticalEntityRelation,
-                    Func<CompletedNewOrganizationPoliticalEntityRelationNewOrganization, T> completedNewOrganizationPoliticalEntityRelationNewOrganization,
-                    Func<CompletedNewOrganizationPoliticalEntityRelationExistingOrganization, T> completedNewOrganizationPoliticalEntityRelationExistingOrganization
+                    Func<Incomplete.ToCreateForNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
+                    Func<Incomplete.ToCreateForExistingOrganization, T> newOrganizationPoliticalEntityRelationExistingOrganization,
+                    Func<ToUpdate, T> existingOrganizationPoliticalEntityRelation,
+                    Func<ToCreateForNewOrganization, T> completedNewOrganizationPoliticalEntityRelationNewOrganization,
+                    Func<ToCreateForExistingOrganization, T> completedNewOrganizationPoliticalEntityRelationExistingOrganization
                  )
                 {
                     return completedNewOrganizationPoliticalEntityRelationExistingOrganization(this);
@@ -189,16 +189,16 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
                 public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
             }
         }
-        public sealed record CompletedNewOrganizationPoliticalEntityRelationNewOrganization : CompletedOrganizationPoliticalEntityRelation, NewNode
+        public sealed record ToCreateForNewOrganization : Complete, NewNode
         {
             public override NodeDetails NodeDetails => NodeDetailsForCreate;
             public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
             public override T Match<T>(
-                Func<NewOrganizationPoliticalEntityRelationNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
-                Func<NewOrganizationPoliticalEntityRelationExistingOrganization, T> newOrganizationPoliticalEntityRelationExistingOrganization,
-                Func<ExistingOrganizationPoliticalEntityRelation, T> existingOrganizationPoliticalEntityRelation,
-                Func<CompletedNewOrganizationPoliticalEntityRelationNewOrganization, T> completedNewOrganizationPoliticalEntityRelationNewOrganization,
-                Func<CompletedNewOrganizationPoliticalEntityRelationExistingOrganization, T> completedNewOrganizationPoliticalEntityRelationExistingOrganization
+                Func<Incomplete.ToCreateForNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
+                Func<Incomplete.ToCreateForExistingOrganization, T> newOrganizationPoliticalEntityRelationExistingOrganization,
+                Func<Resolved.ToUpdate, T> existingOrganizationPoliticalEntityRelation,
+                Func<ToCreateForNewOrganization, T> completedNewOrganizationPoliticalEntityRelationNewOrganization,
+                Func<Resolved.ToCreateForExistingOrganization, T> completedNewOrganizationPoliticalEntityRelationExistingOrganization
              )
             {
                 return completedNewOrganizationPoliticalEntityRelationNewOrganization(this);

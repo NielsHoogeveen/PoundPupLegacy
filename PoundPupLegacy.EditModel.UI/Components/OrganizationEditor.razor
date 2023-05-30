@@ -50,13 +50,13 @@
 
     public override void OnTitleChange(string title)
     {
-        foreach (var relation in Model.OrganizationPoliticalEntityRelations.OfType<ExistingOrganizationPoliticalEntityRelation>()) {
+        foreach (var relation in Model.OrganizationPoliticalEntityRelations.OfType<OrganizationPoliticalEntityRelation.Complete.Resolved.ToUpdate>()) {
             relation.Organization.Name = title;
         };
-        foreach (var relation in Model.OrganizationPoliticalEntityRelations.OfType<CompletedNewOrganizationPoliticalEntityRelationExistingOrganization>()) {
+        foreach (var relation in Model.OrganizationPoliticalEntityRelations.OfType<OrganizationPoliticalEntityRelation.Complete.Resolved.ToCreateForExistingOrganization>()) {
             relation.Organization.Name = title;
         };
-        foreach (var relation in Model.OrganizationPoliticalEntityRelations.OfType<CompletedNewOrganizationPoliticalEntityRelationNewOrganization>()) {
+        foreach (var relation in Model.OrganizationPoliticalEntityRelations.OfType<OrganizationPoliticalEntityRelation.Complete.ToCreateForNewOrganization>()) {
             relation.Organization.Name = title;
         };
         foreach (var relation in Model.PersonOrganizationRelations.OfType<ExistingPersonOrganizationRelationForOrganization>()) {

@@ -20,6 +20,10 @@ public partial class ExistingOrganizationJsonContext : JsonSerializerContext { }
 [JsonSerializable(typeof(InterOrganizationalRelation.To.Complete), TypeInfoPropertyName = "InterOrganizationalRelationToComplete")]
 [JsonSerializable(typeof(IEnumerable<InterOrganizationalRelation.To.Complete>), TypeInfoPropertyName = "InterOrganizationalRelationEnumerableToComplete")]
 [JsonSerializable(typeof(List<InterOrganizationalRelation.To.Complete>), TypeInfoPropertyName = "InterOrganizationalRelationListToComplete")]
+[JsonSerializable(typeof(OrganizationPoliticalEntityRelation.Complete), TypeInfoPropertyName = "OrganizationPoliticalEntityRelationComplete")]
+[JsonSerializable(typeof(IEnumerable<OrganizationPoliticalEntityRelation.Complete>), TypeInfoPropertyName = "OrganizationPoliticalEntityRelationEnumerableComplete")]
+[JsonSerializable(typeof(List<OrganizationPoliticalEntityRelation.Complete>), TypeInfoPropertyName = "OrganizationPoliticalEntityRelationListComplete")]
+
 public partial class NewOrganizationJsonContext : JsonSerializerContext { }
 
 public abstract record Organization : Locatable, ResolvedNode
@@ -35,7 +39,7 @@ public abstract record Organization : Locatable, ResolvedNode
     public abstract IEnumerable<CompletedPersonOrganizationRelationForOrganization> PersonOrganizationRelations { get; }
     public required List<PersonOrganizationRelationTypeListItem> PersonOrganizationRelationTypes { get; init; }
     [JsonIgnore]
-    public abstract IEnumerable<CompletedOrganizationPoliticalEntityRelation> OrganizationPoliticalEntityRelations { get; }
+    public abstract IEnumerable<OrganizationPoliticalEntityRelation.Complete> OrganizationPoliticalEntityRelations { get; }
     public required List<OrganizationPoliticalEntityRelationTypeListItem> OrganizationPoliticalEntityRelationTypes { get; init; }
 
     [JsonIgnore] 
@@ -50,8 +54,8 @@ public abstract record Organization : Locatable, ResolvedNode
         public override LocatableDetails LocatableDetails => ExistingLocatableDetails;
         public required LocatableDetails.ExistingLocatableDetails ExistingLocatableDetails { get; init; }
         public required NodeIdentification NodeIdentification { get; init; }
-        private List<ExistingOrganizationPoliticalEntityRelation> existingOrganizationPoliticalEntityRelations = new();
-        public List<ExistingOrganizationPoliticalEntityRelation> ExistingOrganizationPoliticalEntityRelations {
+        private List<OrganizationPoliticalEntityRelation.Complete.Resolved.ToUpdate> existingOrganizationPoliticalEntityRelations = new();
+        public List<OrganizationPoliticalEntityRelation.Complete.Resolved.ToUpdate> ExistingOrganizationPoliticalEntityRelations {
             get => existingOrganizationPoliticalEntityRelations;
             init {
                 if (value is not null) {
@@ -60,8 +64,8 @@ public abstract record Organization : Locatable, ResolvedNode
             }
         }
         [JsonIgnore]
-        public override IEnumerable<CompletedOrganizationPoliticalEntityRelation> OrganizationPoliticalEntityRelations => GetOrganizationPoliticalEntityRelations();
-        private IEnumerable<CompletedOrganizationPoliticalEntityRelation> GetOrganizationPoliticalEntityRelations()
+        public override IEnumerable<OrganizationPoliticalEntityRelation.Complete> OrganizationPoliticalEntityRelations => GetOrganizationPoliticalEntityRelations();
+        private IEnumerable<OrganizationPoliticalEntityRelation.Complete> GetOrganizationPoliticalEntityRelations()
         {
             foreach (var elem in ExistingOrganizationPoliticalEntityRelations) {
                 yield return elem;
@@ -131,7 +135,7 @@ public abstract record Organization : Locatable, ResolvedNode
             }
         }
         [JsonIgnore]
-        public List<CompletedOrganizationPoliticalEntityRelation> NewOrganizationPoliticalEntityRelations { get; } = new();
+        public List<OrganizationPoliticalEntityRelation.Complete> NewOrganizationPoliticalEntityRelations { get; } = new();
         [JsonIgnore]
         public List<InterOrganizationalRelation.From.Complete> NewInterOrganizationalRelationsFrom { get; } = new();
         [JsonIgnore]
@@ -154,14 +158,14 @@ public abstract record Organization : Locatable, ResolvedNode
         public override LocatableDetails LocatableDetails => NewLocatableDetails;
         public required LocatableDetails.NewLocatableDetails NewLocatableDetails { get; init; }
         [JsonIgnore]
-        public override IEnumerable<CompletedOrganizationPoliticalEntityRelation> OrganizationPoliticalEntityRelations => NewOrganizationPoliticalEntityRelations;
+        public override IEnumerable<OrganizationPoliticalEntityRelation.Complete> OrganizationPoliticalEntityRelations => NewOrganizationPoliticalEntityRelations;
         [JsonIgnore]
         public override IEnumerable<InterOrganizationalRelation.From.Complete> InterOrganizationalRelationsFrom => NewInterOrganizationalRelationsFrom;
         [JsonIgnore]
         public override IEnumerable<InterOrganizationalRelation.To.Complete> InterOrganizationalRelationsTo => NewInterOrganizationalRelationsTo;
         [JsonIgnore]
         public override IEnumerable<CompletedPersonOrganizationRelationForOrganization> PersonOrganizationRelations => NewPersonOrganizationRelations;
-        public List<CompletedOrganizationPoliticalEntityRelation> NewOrganizationPoliticalEntityRelations { get; } = new();
+        public List<OrganizationPoliticalEntityRelation.Complete> NewOrganizationPoliticalEntityRelations { get; } = new();
         [JsonIgnore]
         public List<InterOrganizationalRelation.From.Complete> NewInterOrganizationalRelationsFrom { get; } = new();
         [JsonIgnore] 
