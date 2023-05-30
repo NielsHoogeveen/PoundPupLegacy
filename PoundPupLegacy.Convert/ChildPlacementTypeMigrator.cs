@@ -117,7 +117,7 @@ internal sealed class ChildPlacementTypeMigrator(
                 Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetails = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.ForCreate {
                     PublisherId = reader.GetInt32("access_role_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),

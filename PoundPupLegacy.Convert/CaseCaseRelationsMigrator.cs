@@ -3,7 +3,7 @@
 internal class CaseCaseRelationsMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-        IEntityCreatorFactory<CaseExistingCasePartiesToCreate> caseCasePartiesCreatorFactory
+        IEntityCreatorFactory<CaseCaseParties.ToCreate.ForExistingCase> caseCasePartiesCreatorFactory
     ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "case case relation";
@@ -28,7 +28,7 @@ internal class CaseCaseRelationsMigrator(
         await caseCasePartiesCreator.CreateAsync(ReadWrongfulRemovalCaseAuthorityParties(nodeIdReader));
         await caseCasePartiesCreator.CreateAsync(ReadWrongfulMedicationCaseAuthorityParties(nodeIdReader));
     }
-    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadCaseCaseRelations(
+    private async IAsyncEnumerable<CaseCaseParties.ToCreate.ForExistingCase> ReadCaseCaseRelations(
         string sql,
         int casePartyTypeId,
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
@@ -60,7 +60,7 @@ internal class CaseCaseRelationsMigrator(
                 }));
             }
 
-            yield return new CaseExistingCasePartiesToCreate {
+            yield return new CaseCaseParties.ToCreate.ForExistingCase {
                 CaseId = await nodeIdReader.ReadAsync(new NodeIdReaderByUrlIdRequest {
                     UrlId = id,
                     TenantId = Constants.PPL
@@ -81,7 +81,7 @@ internal class CaseCaseRelationsMigrator(
         await reader.CloseAsync();
 
     }
-    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadAbuseCaseHomestudyParties(
+    private async IAsyncEnumerable<CaseCaseParties.ToCreate.ForExistingCase> ReadAbuseCaseHomestudyParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -134,7 +134,7 @@ internal class CaseCaseRelationsMigrator(
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadAbuseCasePlacementParties(
+    private async IAsyncEnumerable<CaseCaseParties.ToCreate.ForExistingCase> ReadAbuseCasePlacementParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -188,7 +188,7 @@ internal class CaseCaseRelationsMigrator(
         }
     }
 
-    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadAbuseCasePostPlacementParties(
+    private async IAsyncEnumerable<CaseCaseParties.ToCreate.ForExistingCase> ReadAbuseCasePostPlacementParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -241,7 +241,7 @@ internal class CaseCaseRelationsMigrator(
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadAbuseCaseFacilitatorParties(
+    private async IAsyncEnumerable<CaseCaseParties.ToCreate.ForExistingCase> ReadAbuseCaseFacilitatorParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -296,7 +296,7 @@ internal class CaseCaseRelationsMigrator(
         }
     }
 
-    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadAbuseCaseInstitutionParties(
+    private async IAsyncEnumerable<CaseCaseParties.ToCreate.ForExistingCase> ReadAbuseCaseInstitutionParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -349,7 +349,7 @@ internal class CaseCaseRelationsMigrator(
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadAbuseCaseTherapyParties(
+    private async IAsyncEnumerable<CaseCaseParties.ToCreate.ForExistingCase> ReadAbuseCaseTherapyParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -388,7 +388,7 @@ internal class CaseCaseRelationsMigrator(
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadChildTraffickingCasePlacementParties(
+    private async IAsyncEnumerable<CaseCaseParties.ToCreate.ForExistingCase> ReadChildTraffickingCasePlacementParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -443,7 +443,7 @@ internal class CaseCaseRelationsMigrator(
         }
     }
 
-    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadChildTraffickingCaseFacilitatorParties(
+    private async IAsyncEnumerable<CaseCaseParties.ToCreate.ForExistingCase> ReadChildTraffickingCaseFacilitatorParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
 
@@ -499,7 +499,7 @@ internal class CaseCaseRelationsMigrator(
         }
     }
 
-    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadChildTraffickingCaseOrphanageParties(
+    private async IAsyncEnumerable<CaseCaseParties.ToCreate.ForExistingCase> ReadChildTraffickingCaseOrphanageParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -554,7 +554,7 @@ internal class CaseCaseRelationsMigrator(
         }
     }
 
-    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadDisruptedPlacementCasePlacementParties(
+    private async IAsyncEnumerable<CaseCaseParties.ToCreate.ForExistingCase> ReadDisruptedPlacementCasePlacementParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -606,7 +606,7 @@ internal class CaseCaseRelationsMigrator(
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadDisruptedPlacementCaseFacilitatorParties(
+    private async IAsyncEnumerable<CaseCaseParties.ToCreate.ForExistingCase> ReadDisruptedPlacementCaseFacilitatorParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -660,7 +660,7 @@ internal class CaseCaseRelationsMigrator(
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadCoercedAdoptionCasePlacementParties(
+    private async IAsyncEnumerable<CaseCaseParties.ToCreate.ForExistingCase> ReadCoercedAdoptionCasePlacementParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -714,7 +714,7 @@ internal class CaseCaseRelationsMigrator(
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadFathersRightsViolationCasePlacementParties(
+    private async IAsyncEnumerable<CaseCaseParties.ToCreate.ForExistingCase> ReadFathersRightsViolationCasePlacementParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -766,7 +766,7 @@ internal class CaseCaseRelationsMigrator(
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadWrongfulRemovalCaseAuthorityParties(
+    private async IAsyncEnumerable<CaseCaseParties.ToCreate.ForExistingCase> ReadWrongfulRemovalCaseAuthorityParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""
@@ -805,7 +805,7 @@ internal class CaseCaseRelationsMigrator(
             yield return elem;
         }
     }
-    private async IAsyncEnumerable<CaseExistingCasePartiesToCreate> ReadWrongfulMedicationCaseAuthorityParties(
+    private async IAsyncEnumerable<CaseCaseParties.ToCreate.ForExistingCase> ReadWrongfulMedicationCaseAuthorityParties(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader)
     {
         var sql = $"""

@@ -6,7 +6,7 @@ public abstract record TypeOfAbuser: Nameable
     public sealed record ToCreate : TypeOfAbuser, NameableToCreate
     {
         public required Identification.Possible Identification { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
+        public required NodeDetails.ForCreate NodeDetails { get; init; }
         public required NameableDetails.ForCreate NameableDetails { get; init; }
     }
     public sealed record ToUpdate : TypeOfAbuser, NameableToUpdate

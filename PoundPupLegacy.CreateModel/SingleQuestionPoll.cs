@@ -9,7 +9,7 @@ public abstract record SingleQuestionPoll : PollQuestion, Poll
     public sealed record ToCreate : SingleQuestionPoll, PollQuestionToCreate, PollToCreate
     {
         public required Identification.Possible Identification { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
+        public required NodeDetails.ForCreate NodeDetails { get; init; }
 
     }
     public sealed record ToUpdate : SingleQuestionPoll, PollQuestionToUpdate, PollToUpdate

@@ -79,7 +79,7 @@ internal sealed class ChildTraffickingCaseMigrator(
                 Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetails = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.ForCreate {
                     PublisherId = reader.GetInt32("user_id"),
                     CreatedDateTime = reader.GetDateTime("created"),
                     ChangedDateTime = reader.GetDateTime("changed"),
@@ -124,7 +124,7 @@ internal sealed class ChildTraffickingCaseMigrator(
                 },
                 CaseDetails = new CaseDetails.CaseDetailsForCreate {
                     Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date"))?.ToFuzzyDate(),
-                    CaseParties = new List<NewCaseNewCaseParties>(),
+                    CaseCaseParties = new List<CaseCaseParties.ToCreate.ForNewCase>(),
                 },
                 ChildTraffickingCaseDetails = new ChildTraffickingCaseDetails {
                     NumberOfChildrenInvolved = reader.IsDBNull("number_of_children_involved") ? null : reader.GetInt32("number_of_children_involved"),

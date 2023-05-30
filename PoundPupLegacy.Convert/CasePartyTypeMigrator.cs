@@ -28,7 +28,7 @@ internal sealed class CasePartyTypeMigrator(
             Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetails = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.ForCreate {
                 PublisherId = 2,
                 CreatedDateTime = now,
                 ChangedDateTime = now,
@@ -85,7 +85,7 @@ internal sealed class CasePartyTypeMigrator(
             Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetails = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.ForCreate {
                 PublisherId = 2,
                 CreatedDateTime = now,
                 ChangedDateTime = now,
@@ -141,7 +141,7 @@ internal sealed class CasePartyTypeMigrator(
             Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetails = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.ForCreate {
                 PublisherId = 2,
                 CreatedDateTime = now,
                 ChangedDateTime = now,
@@ -197,7 +197,7 @@ internal sealed class CasePartyTypeMigrator(
             Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetails = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.ForCreate {
                 PublisherId = 2,
                 CreatedDateTime = now,
                 ChangedDateTime = now,
@@ -253,7 +253,7 @@ internal sealed class CasePartyTypeMigrator(
             Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetails = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.ForCreate {
                 PublisherId = 2,
                 CreatedDateTime = now,
                 ChangedDateTime = now,
@@ -309,7 +309,7 @@ internal sealed class CasePartyTypeMigrator(
             Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetails = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.ForCreate {
                 PublisherId = 2,
                 CreatedDateTime = now,
                 ChangedDateTime = now,
@@ -365,7 +365,7 @@ internal sealed class CasePartyTypeMigrator(
             Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetails = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.ForCreate {
                 PublisherId = 2,
                 CreatedDateTime = now,
                 ChangedDateTime = now,

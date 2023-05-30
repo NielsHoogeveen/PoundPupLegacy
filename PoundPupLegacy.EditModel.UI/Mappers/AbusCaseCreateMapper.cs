@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.EditModel.UI.Mappers;
 
 internal class AbusCaseCreateMapper(
-    IMapper<EditModel.NodeDetails.NodeDetailsForCreate, CreateModel.NodeDetails.NodeDetailsForCreate> nodeDetailsMapper,
+    IMapper<EditModel.NodeDetails.NodeDetailsForCreate, CreateModel.NodeDetails.ForCreate> nodeDetailsMapper,
     IMapper<EditModel.NameableDetails, CreateModel.NameableDetails.ForCreate> nameableMapper,
     IMapper<EditModel.LocatableDetails.NewLocatableDetails, CreateModel.LocatableDetails.LocatableDetailsForCreate> locatableMapper,
     IMapper<EditModel.CaseDetails, CreateModel.CaseDetails.CaseDetailsForCreate> caseDetailMapper,

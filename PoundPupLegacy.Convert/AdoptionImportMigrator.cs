@@ -135,7 +135,7 @@ internal sealed class AdoptionImportMigrator(
             Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetails = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.ForCreate {
                 Title = title,
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,

@@ -7,7 +7,7 @@ public abstract record InterOrganizationalRelationType : EndoRelationType
     public sealed record ToCreate : InterOrganizationalRelationType, EndoRelationTypeToCreate
     {
         public required Identification.Possible Identification { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
+        public required NodeDetails.ForCreate NodeDetails { get; init; }
         public required NameableDetails.ForCreate NameableDetails { get; init; }
     }
     public sealed record ToUpdate : InterOrganizationalRelationType, EndoRelationTypeToUpdate

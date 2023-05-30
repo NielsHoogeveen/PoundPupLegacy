@@ -11,7 +11,7 @@ internal sealed class CoercedAdoptionCaseCreatorFactory(
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory,
     LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
-    IEntityCreatorFactory<CaseExistingCasePartiesToCreate> caseCaseTypeCreatorFactory
+    IEntityCreatorFactory<CaseCaseParties.ToCreate.ForExistingCase> caseCaseTypeCreatorFactory
 ) : IEntityCreatorFactory<CoercedAdoptionCase.ToCreate>
 {
     public async Task<IEntityCreator<CoercedAdoptionCase.ToCreate>> CreateAsync(IDbConnection connection) =>

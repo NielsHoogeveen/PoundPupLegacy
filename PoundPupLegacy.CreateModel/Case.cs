@@ -13,32 +13,14 @@ public interface Case: Locatable, Documentable, Nameable
 public abstract record CaseDetails
 {
     public required FuzzyDate? Date { get; init; }
-    public abstract T Match<T>(Func<CaseDetailsForCreate, T> create, Func<CaseDetailsForUpdate, T> update);
-    public abstract void Match(Action<CaseDetailsForCreate> create, Action<CaseDetailsForUpdate> update);
     public sealed record CaseDetailsForCreate : CaseDetails
     {
-        public required List<NewCaseNewCaseParties> CaseParties { get; init; }
-        public override T Match<T>(Func<CaseDetailsForCreate, T> create, Func<CaseDetailsForUpdate, T> update)
-        {
-            return create(this);
-        }
-        public override void Match(Action<CaseDetailsForCreate> create, Action<CaseDetailsForUpdate> update)
-        {
-            create(this);
-        }
+        public required List<CaseCaseParties.ToCreate.ForNewCase> CaseCaseParties { get; init; }
     }
     public sealed record CaseDetailsForUpdate : CaseDetails
     {
-        public required List<CaseExistingCasePartiesToCreate> CasePartiesToUpdate { get; init; }
-        public required List<CaseNewCasePartiesToUpdate> CasePartiesToAdd { get; init; }
-        public override T Match<T>(Func<CaseDetailsForCreate, T> create, Func<CaseDetailsForUpdate, T> update)
-        {
-            return update(this);
-        }
-        public override void Match(Action<CaseDetailsForCreate> create, Action<CaseDetailsForUpdate> update)
-        {
-            update(this);
-        }
+        public required List<CaseCaseParties.ToCreate.ForExistingCase> CasePartiesToAdd { get; init; }
+        public required List<CaseCaseParties.ToUpdate> CasePartiesToUpdate { get; init; }
     }
 }
 

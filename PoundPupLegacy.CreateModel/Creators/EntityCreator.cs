@@ -86,7 +86,7 @@ public class CaseCreator<T>(
     NodeDetailsCreator nodeDetailsCreator,
     TermCreator nameableDetailsCreator,
     LocatableDetailsCreator locatableDetailsCreator,
-    IEntityCreator<CaseExistingCasePartiesToCreate> casePartiesCreator
+    IEntityCreator<CaseCaseParties.ToCreate.ForExistingCase> casePartiesCreator
 ) : LocatableCreator<T>(
     inserters,
     nodeDetailsCreator,
@@ -98,7 +98,7 @@ public class CaseCreator<T>(
     public override async Task ProcessAsync(T element, int id)
     {
         await base.ProcessAsync(element, id);
-        await casePartiesCreator.CreateAsync(element.CaseDetails.CaseParties.Select(x => new CaseExistingCasePartiesToCreate { 
+        await casePartiesCreator.CreateAsync(element.CaseDetails.CaseCaseParties.Select(x => new CaseCaseParties.ToCreate.ForExistingCase { 
             CaseId  = id,
             CaseParties = x.CaseParties,
             CasePartyTypeId = x.CasePartyTypeId

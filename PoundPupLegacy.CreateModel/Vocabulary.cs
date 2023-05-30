@@ -7,7 +7,7 @@ public abstract record Vocabulary : Node
     public sealed record ToCreate : Vocabulary, NodeToCreate
     {
         public required Identification.Possible Identification { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
+        public required NodeDetails.ForCreate NodeDetails { get; init; }
     }
     public sealed record ToUpdate : Vocabulary, NodeToUpdate
     {

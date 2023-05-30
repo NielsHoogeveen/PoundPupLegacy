@@ -35,7 +35,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetails = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.ForCreate {
                 Title = "Saint Barthélemy",
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
@@ -130,7 +130,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetails = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.ForCreate {
                 Title = "Saint Martin",
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
@@ -225,7 +225,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetails = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.ForCreate {
                 Title = "French Southern Territories",
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
@@ -422,7 +422,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
                 Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetails = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.ForCreate {
                     PublisherId = reader.GetInt32("access_role_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),

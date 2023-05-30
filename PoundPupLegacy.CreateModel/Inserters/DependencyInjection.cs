@@ -26,7 +26,7 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<BlogPost.ToCreate>, BlogPostInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<BottomLevelSubdivisionToCreate>, BottomLevelSubdivisionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<BoundCountry.ToCreate>, BoundCountryInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<CaseExistingCasePartiesToCreate>, CaseCasePartiesInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<CaseCaseParties.ToCreate.ForExistingCase>, CaseCasePartiesInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<CaseToCreate>, CaseInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<CaseParties.ToCreate>, CasePartiesInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<CasePartiesOrganization>, CasePartiesOrganizationInserterFactory>();

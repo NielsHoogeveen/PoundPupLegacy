@@ -3,12 +3,12 @@
 internal class NodeDetailsForCreateMapper(
     IEnumerableMapper<Tags, int> termIdsToAddMapper,
     IEnumerableMapper<EditModel.TenantNode.NewTenantNodeForNewNode, CreateModel.TenantNode.ToCreateForNewNode> tenantNodeMapper
-    ) : IMapper<EditModel.NodeDetails.NodeDetailsForCreate, CreateModel.NodeDetails.NodeDetailsForCreate>
+    ) : IMapper<EditModel.NodeDetails.NodeDetailsForCreate, CreateModel.NodeDetails.ForCreate>
 {
-    public CreateModel.NodeDetails.NodeDetailsForCreate Map(EditModel.NodeDetails.NodeDetailsForCreate source)
+    public CreateModel.NodeDetails.ForCreate Map(EditModel.NodeDetails.NodeDetailsForCreate source)
     {
         var now = DateTime.Now;
-        return new CreateModel.NodeDetails.NodeDetailsForCreate {
+        return new CreateModel.NodeDetails.ForCreate {
             AuthoringStatusId = 1,
             ChangedDateTime = now,
             CreatedDateTime = now,

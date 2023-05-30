@@ -11,7 +11,7 @@ internal sealed class DeportationCaseCreatorFactory(
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory,
     LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
-    IEntityCreatorFactory<CaseExistingCasePartiesToCreate> caseCaseTypeCreatorFactory
+    IEntityCreatorFactory<CaseCaseParties.ToCreate.ForExistingCase> caseCaseTypeCreatorFactory
 ) : IEntityCreatorFactory<DeportationCase.ToCreate>
 {
     public async Task<IEntityCreator<DeportationCase.ToCreate>> CreateAsync(IDbConnection connection) =>

@@ -8,7 +8,7 @@ public abstract record PartyPoliticalEntityRelation: Node
     {
         private ToCreate() { }
         public required Identification.Possible Identification { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
+        public required NodeDetails.ForCreate NodeDetails { get; init; }
         public sealed record ForExistingParty : ToCreate
         {
             public required int PartyId { get; init; }

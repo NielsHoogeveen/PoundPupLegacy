@@ -47,7 +47,7 @@ internal sealed class FormalIntermediateLevelSubdivisionMigrator(
                 Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetails = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.ForCreate {
                     Title = title,
                     CreatedDateTime = DateTime.Parse(parts[1]),
                     ChangedDateTime = DateTime.Parse(parts[2]),

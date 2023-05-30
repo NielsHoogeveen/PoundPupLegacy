@@ -132,7 +132,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT(
                 Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetails = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.ForCreate {
                     PublisherId = reader.GetInt32("user_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),

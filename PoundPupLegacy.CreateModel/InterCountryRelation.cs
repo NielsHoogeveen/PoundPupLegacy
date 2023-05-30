@@ -7,7 +7,7 @@ public abstract record InterCountryRelation : Node
     public sealed record ToCreate : InterCountryRelation, NodeToCreate
     {
         public required Identification.Possible Identification { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
+        public required NodeDetails.ForCreate NodeDetails { get; init; }
     }
     public sealed record ToUpdate : InterCountryRelation, NodeToUpdate
     {

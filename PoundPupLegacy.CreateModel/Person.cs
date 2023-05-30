@@ -7,7 +7,7 @@ public abstract record Person : Party
     public sealed record ToCreate : Person, PartyToCreate
     {
         public required Identification.Possible Identification { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
+        public required NodeDetails.ForCreate NodeDetails { get; init; }
         public required NameableDetails.ForCreate NameableDetails { get; init; }
         public required LocatableDetails.LocatableDetailsForCreate LocatableDetails { get; init; }
         public required PersonDetails.ForCreate PersonDetails { get; init; }

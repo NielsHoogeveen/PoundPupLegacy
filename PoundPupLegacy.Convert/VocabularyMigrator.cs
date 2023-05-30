@@ -14,7 +14,7 @@ internal sealed class VocabularyMigrator(
             Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetails = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.ForCreate {
                 PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
@@ -48,7 +48,7 @@ internal sealed class VocabularyMigrator(
             Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetails = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.ForCreate {
                 PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
@@ -82,7 +82,7 @@ internal sealed class VocabularyMigrator(
             Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetails = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.ForCreate {
                 PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
@@ -116,7 +116,7 @@ internal sealed class VocabularyMigrator(
             Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetails = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.ForCreate {
                 PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
@@ -150,7 +150,7 @@ internal sealed class VocabularyMigrator(
             Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetails = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.ForCreate {
                 PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
@@ -184,7 +184,7 @@ internal sealed class VocabularyMigrator(
             Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetails = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.ForCreate {
                 PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
@@ -218,7 +218,7 @@ internal sealed class VocabularyMigrator(
             Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetails = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.ForCreate {
                 PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
@@ -252,7 +252,7 @@ internal sealed class VocabularyMigrator(
             Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetails = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.ForCreate {
                 PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
@@ -286,7 +286,7 @@ internal sealed class VocabularyMigrator(
             Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetails = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.ForCreate {
                 PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
@@ -394,7 +394,7 @@ internal sealed class VocabularyMigrator(
                 Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetails = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.ForCreate {
                     PublisherId = reader.GetInt32("access_role_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),

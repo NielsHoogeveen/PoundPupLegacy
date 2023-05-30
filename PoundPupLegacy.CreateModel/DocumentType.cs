@@ -6,7 +6,7 @@ public abstract record DocumentType : Nameable
     public sealed record ToCreate : DocumentType, NameableToCreate
     {
         public required Identification.Possible Identification { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
+        public required NodeDetails.ForCreate NodeDetails { get; init; }
         public required NameableDetails.ForCreate NameableDetails { get; init; }
     }
     public sealed record ToUpdate : DocumentType, NameableToUpdate

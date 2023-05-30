@@ -8,7 +8,7 @@ public abstract record Document : SimpleTextNode
     public sealed record ToCreate : Document, SimpleTextNodeToCreate
     {
         public required Identification.Possible Identification { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
+        public required NodeDetails.ForCreate NodeDetails { get; init; }
     }
     public sealed record DocumentToUpdate : Document, SimpleTextNodeToUpdate
     {

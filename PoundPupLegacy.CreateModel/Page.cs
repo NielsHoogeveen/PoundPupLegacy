@@ -7,7 +7,7 @@ public abstract record Page : SimpleTextNode
     public sealed record ToCreate : Page, SimpleTextNodeToCreate
     {
         public required Identification.Possible Identification { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
+        public required NodeDetails.ForCreate NodeDetails { get; init; }
     }
     public sealed record ToUpdate : Page, SimpleTextNodeToUpdate
     {

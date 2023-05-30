@@ -49,7 +49,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
             Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetails = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.ForCreate {
                 Title = "Åland",
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
@@ -147,7 +147,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
             Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetails = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.ForCreate {
                 Title = "Curaçao",
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
@@ -245,7 +245,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
             Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetails = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.ForCreate {
                 Title = "Sint Maarten",
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
@@ -343,7 +343,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
             Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetails = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.ForCreate {
                 Title = "United States Minor Outlying Islands",
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
@@ -531,7 +531,7 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                 Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetails = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.ForCreate {
                     PublisherId = reader.GetInt32("access_role_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),

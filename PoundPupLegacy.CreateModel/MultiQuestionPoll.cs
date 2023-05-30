@@ -9,7 +9,7 @@ public abstract record MultiQuestionPoll : SimpleTextNode, Poll
     {
         public required MultiQuestionPollDetailsForCreate MultiQuestionPollDetails { get; init; }
         public required Identification.Possible Identification { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
+        public required NodeDetails.ForCreate NodeDetails { get; init; }
     }
     public sealed record MultiQuestionPollToUpdate : MultiQuestionPoll, SimpleTextNodeToUpdate, PollToUpdate
     {

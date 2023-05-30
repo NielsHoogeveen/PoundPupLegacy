@@ -164,7 +164,7 @@ internal sealed class AbuseCaseMigrator(
                 Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetails = new NodeDetails.NodeDetailsForCreate{
+                NodeDetails = new NodeDetails.ForCreate{
                     PublisherId = reader.GetInt32("access_role_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
@@ -210,7 +210,7 @@ internal sealed class AbuseCaseMigrator(
                 },
                 CaseDetails = new CaseDetails.CaseDetailsForCreate {
                     Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date"))?.ToFuzzyDate(),
-                    CaseParties = new List<NewCaseNewCaseParties>(),
+                    CaseCaseParties = new List<CaseCaseParties.ToCreate.ForNewCase>(),
                 },
                 AbuseCaseDetails = new AbuseCaseDetails {
                     TypeOfAbuseIds = new List<int>(),

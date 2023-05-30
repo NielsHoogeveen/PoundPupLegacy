@@ -28,7 +28,7 @@ internal static class DependencyInjection
         services.AddTransient<IEntityCreatorFactory<BindingCountry.ToCreate>, BindingCountryCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<BlogPost.ToCreate>, BlogPostCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<BoundCountry.ToCreate>, BoundCountryCreatorFactory>();
-        services.AddTransient<IEntityCreatorFactory<CaseExistingCasePartiesToCreate>, CaseCasePartiesCreatorFactory>();
+        services.AddTransient<IEntityCreatorFactory<CaseCaseParties.ToCreate.ForExistingCase>, CaseCasePartiesCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<CasePartyType.ToCreate>, CasePartyTypeCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<CaseType>, CaseTypeCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<CasePartyType.ToCreate>, CasePartyTypeCreatorFactory>();

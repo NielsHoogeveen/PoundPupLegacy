@@ -7,7 +7,7 @@ public abstract record HouseBill : Bill
     public sealed record ToCreate : HouseBill, BillToCreate
     {
         public required Identification.Possible Identification { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
+        public required NodeDetails.ForCreate NodeDetails { get; init; }
         public required NameableDetails.ForCreate NameableDetails { get; init; }
     }
     public sealed record HouseBillToUpdate : HouseBill, BillToUpdate

@@ -9,7 +9,7 @@ public abstract record BindingCountry : TopLevelCountry
     public sealed record ToCreate : BindingCountry, TopLevelCountryToCreate
     {
         public required Identification.Possible Identification { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
+        public required NodeDetails.ForCreate NodeDetails { get; init; }
         public required NameableDetails.ForCreate NameableDetails { get; init; }
     }
     public sealed record ToUpdate : BindingCountry, TopLevelCountryToUpdate

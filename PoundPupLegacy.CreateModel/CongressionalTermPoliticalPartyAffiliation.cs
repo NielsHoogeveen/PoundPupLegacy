@@ -8,14 +8,14 @@ public abstract record CongressionalTermPoliticalPartyAffiliation : Documentable
     {
         public required CongressionalTermPoliticalPartyAffiliationDetails.CongressionalTermPoliticalPartyAffiliationDetailsResolved CongressionalTermPoliticalPartyAffiliationDetails { get; init; }
         public required Identification.Possible Identification { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
+        public required NodeDetails.ForCreate NodeDetails { get; init; }
 
     }
     public sealed record ToCreateForNewTerm : CongressionalTermPoliticalPartyAffiliation, DocumentableToCreate, SearchableToCreate
     {
         public required CongressionalTermPoliticalPartyAffiliationDetails.CongressionalTermPoliticalPartyAffiliationDetailsUnresolved CongressionalTermPoliticalPartyAffiliationDetails { get; init; }
         public required Identification.Possible Identification { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
+        public required NodeDetails.ForCreate NodeDetails { get; init; }
         public ToCreateForExistingTerm ResolveCongressionalTerm(int congressionalTermId)
         {
             return new() {

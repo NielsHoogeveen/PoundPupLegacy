@@ -2,12 +2,12 @@
 
 internal sealed class CaseCasePartiesCreatorFactory(
     IDatabaseInserterFactory<CaseParties.ToCreate> casePartiesInserterFactory,
-    IDatabaseInserterFactory<CaseExistingCasePartiesToCreate> caseCasePartiesInserterFactory,
+    IDatabaseInserterFactory<CaseCaseParties.ToCreate.ForExistingCase> caseCasePartiesInserterFactory,
     IDatabaseInserterFactory<CasePartiesOrganization> casePartiesOrganizationInserterFactory,
     IDatabaseInserterFactory<CasePartiesPerson> casePartiesPersonInserterFactory
-) : IEntityCreatorFactory<CaseExistingCasePartiesToCreate>
+) : IEntityCreatorFactory<CaseCaseParties.ToCreate.ForExistingCase>
 {
-    public async Task<IEntityCreator<CaseExistingCasePartiesToCreate>> CreateAsync(IDbConnection connection) =>
+    public async Task<IEntityCreator<CaseCaseParties.ToCreate.ForExistingCase>> CreateAsync(IDbConnection connection) =>
         new CaseCasePartiesCreator(
             await casePartiesInserterFactory.CreateAsync(connection),
             await caseCasePartiesInserterFactory.CreateAsync(connection),
@@ -18,12 +18,12 @@ internal sealed class CaseCasePartiesCreatorFactory(
 
 public class CaseCasePartiesCreator(
     IDatabaseInserter<CaseParties.ToCreate> casePartiesInserter,
-    IDatabaseInserter<CaseExistingCasePartiesToCreate> caseCasePartiesInserter,
+    IDatabaseInserter<CaseCaseParties.ToCreate.ForExistingCase> caseCasePartiesInserter,
     IDatabaseInserter<CasePartiesOrganization> casePartiesOrganizationInserter,
     IDatabaseInserter<CasePartiesPerson> casePartiesPersonInserter
-) : EntityCreator<CaseExistingCasePartiesToCreate>()
+) : EntityCreator<CaseCaseParties.ToCreate.ForExistingCase>()
 {
-    public override async Task ProcessAsync(CaseExistingCasePartiesToCreate element)
+    public override async Task ProcessAsync(CaseCaseParties.ToCreate.ForExistingCase element)
     {
         await base.ProcessAsync(element);
         await casePartiesInserter.InsertAsync(element.CaseParties);

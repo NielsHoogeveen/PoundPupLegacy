@@ -11,7 +11,7 @@ public abstract record BoundCountry : Country, ISOCodedSubdivision
     public sealed record ToCreate : BoundCountry, CountryToCreate, ISOCodedSubdivisionToCreate
     {
         public required Identification.Possible Identification { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
+        public required NodeDetails.ForCreate NodeDetails { get; init; }
         public required NameableDetails.ForCreate NameableDetails { get; init; }
     }
     public sealed record ToUpdate : BoundCountry, CountryToUpdate, ISOCodedSubdivisionToUpdate

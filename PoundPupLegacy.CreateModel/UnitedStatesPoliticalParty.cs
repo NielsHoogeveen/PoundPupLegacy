@@ -7,7 +7,7 @@ public abstract record UnitedStatesPoliticalParty : Organization
     public sealed record ToCreate : UnitedStatesPoliticalParty, OrganizationToCreate
     {
         public required Identification.Possible Identification { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
+        public required NodeDetails.ForCreate NodeDetails { get; init; }
         public required NameableDetails.ForCreate NameableDetails { get; init; }
         public required LocatableDetails.LocatableDetailsForCreate LocatableDetails { get; init; }
         public required OrganizationDetails.OrganizationDetailsForCreate OrganizationDetails { get; init; }

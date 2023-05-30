@@ -7,7 +7,7 @@ public abstract record DeportationCase : Case
     public sealed record ToCreate : DeportationCase, CaseToCreate
     {
         public required Identification.Possible Identification { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
+        public required NodeDetails.ForCreate NodeDetails { get; init; }
         public required NameableDetails.ForCreate NameableDetails { get; init; }
         public required CaseDetails.CaseDetailsForCreate CaseDetails { get; init; }
         public required LocatableDetails.LocatableDetailsForCreate LocatableDetails { get; init; }

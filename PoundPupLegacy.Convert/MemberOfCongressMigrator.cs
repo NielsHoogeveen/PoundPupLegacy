@@ -416,7 +416,7 @@ internal class MemberOfCongressMigrator(
                                 Identification = new Identification.Possible {
                                     Id = null
                                 },
-                                NodeDetails = new NodeDetails.NodeDetailsForCreate{
+                                NodeDetails = new NodeDetails.ForCreate{
                                     PublisherId = 2,
                                     CreatedDateTime = DateTime.Now,
                                     ChangedDateTime = DateTime.Now,
@@ -450,7 +450,7 @@ internal class MemberOfCongressMigrator(
                         Identification = new Identification.Possible {
                             Id = null
                         },
-                        NodeDetails = new NodeDetails.NodeDetailsForCreate {
+                        NodeDetails = new NodeDetails.ForCreate {
                             PublisherId = 2,
                             CreatedDateTime = DateTime.Now,
                             ChangedDateTime = DateTime.Now,
@@ -494,7 +494,7 @@ internal class MemberOfCongressMigrator(
                             Identification = new Identification.Possible {
                                 Id = null
                             },
-                            NodeDetails = new NodeDetails.NodeDetailsForCreate {
+                            NodeDetails = new NodeDetails.ForCreate {
                                 PublisherId = 2,
                                 CreatedDateTime = DateTime.Now,
                                 ChangedDateTime = DateTime.Now,
@@ -538,7 +538,7 @@ internal class MemberOfCongressMigrator(
                             Identification = new Identification.Possible {
                                 Id = null
                             },
-                            NodeDetails = new NodeDetails.NodeDetailsForCreate {
+                            NodeDetails = new NodeDetails.ForCreate {
                                 PublisherId = 2,
                                 CreatedDateTime = DateTime.Now,
                                 ChangedDateTime = DateTime.Now,
@@ -679,7 +679,7 @@ internal class MemberOfCongressMigrator(
                         Identification = new Identification.Possible {
                             Id = null
                         },
-                        NodeDetails = new NodeDetails.NodeDetailsForCreate {
+                        NodeDetails = new NodeDetails.ForCreate {
                             PublisherId = 2,
                             CreatedDateTime = DateTime.Now,
                             ChangedDateTime = DateTime.Now,
@@ -1006,7 +1006,7 @@ internal class MemberOfCongressMigrator(
                 Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetails = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.ForCreate {
                     PublisherId = 2,
                     CreatedDateTime = now,
                     ChangedDateTime = now,

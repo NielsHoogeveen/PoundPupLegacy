@@ -6,7 +6,7 @@ public abstract record ChildPlacementType : Nameable
     public sealed record ToCreate : ChildPlacementType, NameableToCreate
     {
         public required Identification.Possible Identification { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
+        public required NodeDetails.ForCreate NodeDetails { get; init; }
         public required NameableDetails.ForCreate NameableDetails { get; init; }
     }
     public sealed record ToUpdate : ChildPlacementType, NameableToUpdate

@@ -6,7 +6,7 @@ public abstract record HagueStatus : Nameable
     public sealed record ToCreate : HagueStatus, NameableToCreate
     {
         public required Identification.Possible Identification { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
+        public required NodeDetails.ForCreate NodeDetails { get; init; }
         public required NameableDetails.ForCreate NameableDetails { get; init; }
     }
     public sealed record ToUpdate : HagueStatus, NameableToUpdate

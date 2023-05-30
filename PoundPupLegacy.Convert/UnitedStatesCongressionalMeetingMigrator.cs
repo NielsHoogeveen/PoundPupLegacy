@@ -37,7 +37,7 @@ internal sealed class UnitedStatesCongressionalMeetingMigrator(
                 Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetails = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.ForCreate {
                     CreatedDateTime = DateTime.Now,
                     ChangedDateTime = DateTime.Now,
                     NodeTypeId = 52,

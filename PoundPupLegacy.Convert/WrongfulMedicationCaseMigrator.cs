@@ -74,7 +74,7 @@ internal sealed class WrongfulMedicationCaseMigrator(
                 Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetails = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.ForCreate {
                     PublisherId = reader.GetInt32("user_id"),
                     CreatedDateTime = reader.GetDateTime("created"),
                     ChangedDateTime = reader.GetDateTime("changed"),
@@ -119,7 +119,7 @@ internal sealed class WrongfulMedicationCaseMigrator(
                 },
                 CaseDetails = new CaseDetails.CaseDetailsForCreate {
                     Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date"))?.ToFuzzyDate(),
-                    CaseParties = new List<NewCaseNewCaseParties>(),
+                    CaseCaseParties = new List<CaseCaseParties.ToCreate.ForNewCase>(),
                 },
             };
             yield return country;

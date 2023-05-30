@@ -11,7 +11,7 @@ internal sealed class FathersRightsViolationCaseCreatorFactory(
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     TermCreatorFactory nameableDetailsCreatorFactory,
     LocatableDetailsCreatorFactory locatableDetailsCreatorFactory,
-    IEntityCreatorFactory<CaseExistingCasePartiesToCreate> caseCaseTypeCreatorFactory
+    IEntityCreatorFactory<CaseCaseParties.ToCreate.ForExistingCase> caseCaseTypeCreatorFactory
 ) : IEntityCreatorFactory<FathersRightsViolationCase.ToCreate>
 {
     public async Task<IEntityCreator<FathersRightsViolationCase.ToCreate>> CreateAsync(IDbConnection connection) =>

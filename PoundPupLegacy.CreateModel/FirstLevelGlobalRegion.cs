@@ -8,7 +8,7 @@ public abstract record FirstLevelGlobalRegion : GlobalRegion
     public sealed record ToCreate : FirstLevelGlobalRegion, GlobalRegionToCreate
     {
         public required Identification.Possible Identification { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
+        public required NodeDetails.ForCreate NodeDetails { get; init; }
         public required NameableDetails.ForCreate NameableDetails { get; init; }
     }
     public sealed record ToUpdate : FirstLevelGlobalRegion, GlobalRegionToUpdate
