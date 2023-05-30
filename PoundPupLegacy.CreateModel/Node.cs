@@ -4,16 +4,15 @@ namespace PoundPupLegacy.CreateModel;
 
 public interface NodeToUpdate : Node, CertainlyIdentifiable
 {
-    NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
+    NodeDetails.ForUpdate NodeDetails { get; init; }
 
 }
 public interface NodeToCreate : Node, PossiblyIdentifiable
 {
-    NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+    NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
 }
 public interface Node: Identifiable 
 {
-    NodeDetails NodeDetails { get; }
 }
 
 public abstract record NodeDetails{

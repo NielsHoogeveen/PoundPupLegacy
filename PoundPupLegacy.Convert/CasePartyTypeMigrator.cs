@@ -25,10 +25,10 @@ internal sealed class CasePartyTypeMigrator(
         await Task.CompletedTask;
         var now = DateTime.Now;
         yield return new CasePartyType.ToCreate {
-            IdentificationForCreate = new Identification.Possible {
+            Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.NodeDetailsForCreate {
                 PublisherId = 2,
                 CreatedDateTime = now,
                 ChangedDateTime = now,
@@ -39,7 +39,7 @@ internal sealed class CasePartyTypeMigrator(
                 {
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -50,7 +50,7 @@ internal sealed class CasePartyTypeMigrator(
                     },
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -63,14 +63,14 @@ internal sealed class CasePartyTypeMigrator(
                 NodeTypeId = 1,
                 TermIds = new List<int>(),
             },
-            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+            NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
                 Terms = new List<NewTermForNewNameable>
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -82,10 +82,10 @@ internal sealed class CasePartyTypeMigrator(
             
         };
         yield return new CasePartyType.ToCreate {
-            IdentificationForCreate = new Identification.Possible {
+            Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.NodeDetailsForCreate {
                 PublisherId = 2,
                 CreatedDateTime = now,
                 ChangedDateTime = now,
@@ -96,7 +96,7 @@ internal sealed class CasePartyTypeMigrator(
                 {
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -107,7 +107,7 @@ internal sealed class CasePartyTypeMigrator(
                     },
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -120,14 +120,14 @@ internal sealed class CasePartyTypeMigrator(
                 NodeTypeId = 1,
                 TermIds = new List<int>(),
             },
-            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+            NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
                 Terms = new List<NewTermForNewNameable>
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -138,10 +138,10 @@ internal sealed class CasePartyTypeMigrator(
             },
         };
         yield return new CasePartyType.ToCreate {
-            IdentificationForCreate = new Identification.Possible {
+            Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.NodeDetailsForCreate {
                 PublisherId = 2,
                 CreatedDateTime = now,
                 ChangedDateTime = now,
@@ -152,7 +152,7 @@ internal sealed class CasePartyTypeMigrator(
                 {
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -163,7 +163,7 @@ internal sealed class CasePartyTypeMigrator(
                     },
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -176,14 +176,14 @@ internal sealed class CasePartyTypeMigrator(
                 NodeTypeId = 1,
                 TermIds = new List<int>(),
             },
-            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+            NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
                 Terms = new List<NewTermForNewNameable>
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -194,10 +194,10 @@ internal sealed class CasePartyTypeMigrator(
             },
         };
         yield return new CasePartyType.ToCreate {
-            IdentificationForCreate = new Identification.Possible {
+            Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.NodeDetailsForCreate {
                 PublisherId = 2,
                 CreatedDateTime = now,
                 ChangedDateTime = now,
@@ -208,7 +208,7 @@ internal sealed class CasePartyTypeMigrator(
                 {
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -219,7 +219,7 @@ internal sealed class CasePartyTypeMigrator(
                     },
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -232,14 +232,14 @@ internal sealed class CasePartyTypeMigrator(
                 NodeTypeId = 1,
                 TermIds = new List<int>(),
             },
-            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+            NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
                 Terms = new List<NewTermForNewNameable>
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -250,10 +250,10 @@ internal sealed class CasePartyTypeMigrator(
             },
         };
         yield return new CasePartyType.ToCreate {
-            IdentificationForCreate = new Identification.Possible {
+            Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.NodeDetailsForCreate {
                 PublisherId = 2,
                 CreatedDateTime = now,
                 ChangedDateTime = now,
@@ -264,7 +264,7 @@ internal sealed class CasePartyTypeMigrator(
                 {
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -275,7 +275,7 @@ internal sealed class CasePartyTypeMigrator(
                     },
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -288,14 +288,14 @@ internal sealed class CasePartyTypeMigrator(
                 NodeTypeId = 1,
                 TermIds = new List<int>(),
             },
-            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+            NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
                 Terms = new List<NewTermForNewNameable>
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -306,10 +306,10 @@ internal sealed class CasePartyTypeMigrator(
             },
         };
         yield return new CasePartyType.ToCreate {
-            IdentificationForCreate = new Identification.Possible {
+            Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.NodeDetailsForCreate {
                 PublisherId = 2,
                 CreatedDateTime = now,
                 ChangedDateTime = now,
@@ -320,7 +320,7 @@ internal sealed class CasePartyTypeMigrator(
                 {
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -331,7 +331,7 @@ internal sealed class CasePartyTypeMigrator(
                     },
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -344,14 +344,14 @@ internal sealed class CasePartyTypeMigrator(
                 NodeTypeId = 1,
                 TermIds = new List<int>(),
             },
-            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+            NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
                 Terms = new List<NewTermForNewNameable>
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -362,10 +362,10 @@ internal sealed class CasePartyTypeMigrator(
             },
         };
         yield return new CasePartyType.ToCreate {
-            IdentificationForCreate = new Identification.Possible {
+            Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.NodeDetailsForCreate {
                 PublisherId = 2,
                 CreatedDateTime = now,
                 ChangedDateTime = now,
@@ -376,7 +376,7 @@ internal sealed class CasePartyTypeMigrator(
                 {
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -387,7 +387,7 @@ internal sealed class CasePartyTypeMigrator(
                     },
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -400,14 +400,14 @@ internal sealed class CasePartyTypeMigrator(
                 NodeTypeId = 1,
                 TermIds = new List<int>(),
             },
-            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+            NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
                 Terms = new List<NewTermForNewNameable>
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,

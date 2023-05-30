@@ -4,36 +4,21 @@ public abstract record Person : Party
 {
     private Person() { }
 
-    public abstract LocatableDetails LocatableDetails { get; }
-    public abstract Identification Identification { get; }
-    public abstract NodeDetails NodeDetails { get; }
-    public abstract NameableDetails NameableDetails { get; }
-    public abstract PersonDetails PersonDetails { get; }
     public sealed record ToCreate : Person, PartyToCreate
     {
-        public override Identification Identification => IdentificationForCreate;
-        public override NodeDetails NodeDetails => NodeDetailsForCreate;
-        public override NameableDetails NameableDetails => NameableDetailsForCreate;
-        public override LocatableDetails LocatableDetails => LocatableDetailsForCreate;
-        public override PersonDetails PersonDetails => PersonDetailsForCreate;
-        public required Identification.Possible IdentificationForCreate { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-        public required NameableDetails.NameableDetailsForCreate NameableDetailsForCreate { get; init; }
-        public required LocatableDetails.LocatableDetailsForCreate LocatableDetailsForCreate { get; init; }
-        public required PersonDetails.PersonDetailsForCreate PersonDetailsForCreate { get; init; }
+        public required Identification.Possible Identification { get; init; }
+        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
+        public required NameableDetails.ForCreate NameableDetails { get; init; }
+        public required LocatableDetails.LocatableDetailsForCreate LocatableDetails { get; init; }
+        public required PersonDetails.ForCreate PersonDetails { get; init; }
     }
     public sealed record ToUpdate : Person, PartyToUpdate
     {
-        public required Identification.Certain IdentificationCertain { get; init; }
-        public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
-        public override NameableDetails NameableDetails => NameableDetailsForUpdate;
-        public override Identification Identification => IdentificationCertain;
-        public override NodeDetails NodeDetails => NodeDetailsForUpdate;
-        public override LocatableDetails LocatableDetails => LocatableDetailsForUpdate;
-        public override PersonDetails PersonDetails => PersonDetailsForUpdate;
-        public required NameableDetails.NameableDetailsForUpdate NameableDetailsForUpdate { get; init; }
-        public required LocatableDetails.LocatableDetailsForUpdate LocatableDetailsForUpdate { get; init; }
-        public required PersonDetails.PersonDetailsForUpdate PersonDetailsForUpdate { get; init; }
+        public required Identification.Certain Identification { get; init; }
+        public required NodeDetails.ForUpdate NodeDetails { get; init; }
+        public required NameableDetails.ForUpdate NameableDetails { get; init; }
+        public required LocatableDetails.LocatableDetailsForUpdate LocatableDetails { get; init; }
+        public required PersonDetails.ForUpdate PersonDetails { get; init; }
     }
 }
 public abstract record PersonDetails
@@ -52,10 +37,8 @@ public abstract record PersonDetails
     public abstract IEnumerable<InterPersonalRelation> InterPersonalRelations { get; }
     public abstract IEnumerable<PartyPoliticalEntityRelation> PartyPoliticalEntityRelations { get; }
     public abstract IEnumerable<PersonOrganizationRelation> PersonOrganizationRelations { get; }
-    public abstract T Match<T>(Func<PersonDetailsForCreate, T> create, Func<PersonDetailsForUpdate, T> update);
-    public abstract void Match(Action<PersonDetailsForCreate> create, Action<PersonDetailsForUpdate> update);
 
-    public sealed record PersonDetailsForCreate: PersonDetails
+    public sealed record ForCreate: PersonDetails
     {
         public override IEnumerable<InterPersonalRelation> InterPersonalRelations => GetInterPersonalRelations();
         public override IEnumerable<PartyPoliticalEntityRelation> PartyPoliticalEntityRelations => PartyPoliticalEntityRelationsToCreate;
@@ -75,16 +58,8 @@ public abstract record PersonDetails
         public required List<PersonOrganizationRelation.ToCreateForNewPerson> PersonOrganizationRelationToCreate { get; init; }
 
         public required List<ProfessionalRoleToCreateForNewPerson> ProfessionalRolesToCreate { get; init; }
-        public override T Match<T>(Func<PersonDetailsForCreate, T> create, Func<PersonDetailsForUpdate, T> update)
-        {
-            return create(this);
-        }
-        public override void Match(Action<PersonDetailsForCreate> create, Action<PersonDetailsForUpdate> update)
-        {
-            create(this);
-        }
     }
-    public sealed record PersonDetailsForUpdate : PersonDetails
+    public sealed record ForUpdate : PersonDetails
     {
         public override IEnumerable<InterPersonalRelation> InterPersonalRelations => InterPersonalRelationsToCreate;
         public override IEnumerable<PartyPoliticalEntityRelation> PartyPoliticalEntityRelations => PartyPoliticalEntityRelationsToCreate;
@@ -96,13 +71,5 @@ public abstract record PersonDetails
         public required List<PartyPoliticalEntityRelation.ToUpdate> PartyPoliticalEntityRelationToUpdates { get; init; }
         public required List<PersonOrganizationRelation.ToUpdate> PersonOrganizationRelationToUpdates { get; init; }
         public required List<ProfessionalRoleToCreateForNewPerson> ProfessionalRolesToCreate { get; init; }
-        public override T Match<T>(Func<PersonDetailsForCreate, T> create, Func<PersonDetailsForUpdate, T> update)
-        {
-            return update(this);
-        }
-        public override void Match(Action<PersonDetailsForCreate> create, Action<PersonDetailsForUpdate> update)
-        {
-            update(this);
-        }
     }
 }

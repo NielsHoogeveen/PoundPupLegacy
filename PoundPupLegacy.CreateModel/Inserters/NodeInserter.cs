@@ -16,12 +16,12 @@ public class NodeInserterFactory : AutoGenerateIdDatabaseInserterFactory<Request
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(PublisherId,request.NodeDetailsForCreate.PublisherId),
-            ParameterValue.Create(CreatedDateTime, request.NodeDetailsForCreate.CreatedDateTime),
-            ParameterValue.Create(ChangedDateTime, request.NodeDetailsForCreate.ChangedDateTime),
-            ParameterValue.Create(Title, request.NodeDetailsForCreate.Title),
-            ParameterValue.Create(NodeTypeId, request.NodeDetailsForCreate.NodeTypeId),
-            ParameterValue.Create(OwnerId, request.NodeDetailsForCreate.OwnerId),
+            ParameterValue.Create(PublisherId,request.NodeDetails.PublisherId),
+            ParameterValue.Create(CreatedDateTime, request.NodeDetails.CreatedDateTime),
+            ParameterValue.Create(ChangedDateTime, request.NodeDetails.ChangedDateTime),
+            ParameterValue.Create(Title, request.NodeDetails.Title),
+            ParameterValue.Create(NodeTypeId, request.NodeDetails.NodeTypeId),
+            ParameterValue.Create(OwnerId, request.NodeDetails.OwnerId),
             ParameterValue.Create(AuthorizationStatusId, request.NodeDetails.AuthoringStatusId),
         };
     }

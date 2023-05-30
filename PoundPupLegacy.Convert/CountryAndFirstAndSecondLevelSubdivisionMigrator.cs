@@ -32,10 +32,10 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
         }));
 
         yield return new CountryAndFirstAndSecondLevelSubdivision.ToCreate {
-            IdentificationForCreate = new Identification.Possible {
+            Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.NodeDetailsForCreate {
                 Title = "Saint Barthélemy",
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
@@ -43,7 +43,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
                 {
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -54,7 +54,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
                     },
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -70,13 +70,13 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
                 PublisherId = 1,
                 TermIds = new List<int>(),
             },
-            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+            NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 Terms = new List<NewTermForNewNameable>
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyIdTopics,
@@ -127,10 +127,10 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             },
         };
         yield return new CountryAndFirstAndSecondLevelSubdivision.ToCreate {
-            IdentificationForCreate = new Identification.Possible {
+            Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.NodeDetailsForCreate {
                 Title = "Saint Martin",
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
@@ -138,7 +138,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
                 {
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -149,7 +149,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
                     },
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -165,13 +165,13 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
                 PublisherId = 1,
                 TermIds = new List<int>(),
             },
-            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+            NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 Terms = new List<NewTermForNewNameable>
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyIdTopics,
@@ -222,10 +222,10 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             },
         };
         yield return new CountryAndFirstAndSecondLevelSubdivision.ToCreate {
-            IdentificationForCreate = new Identification.Possible {
+            Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.NodeDetailsForCreate {
                 Title = "French Southern Territories",
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
@@ -233,7 +233,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
                 {
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -244,7 +244,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
                     },
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -260,13 +260,13 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
                 PublisherId = 1,
                 TermIds = new List<int>(),
             },
-            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+            NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 Terms = new List<NewTermForNewNameable>
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyIdTopics,
@@ -403,7 +403,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
             {
                 new NewTermForNewNameable
                 {
-                    IdentificationForCreate = new Identification.Possible {
+                    Identification = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyIdTopics,
@@ -419,10 +419,10 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
 
 
             yield return new CountryAndFirstAndSecondLevelSubdivision.ToCreate {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.NodeDetailsForCreate {
                     PublisherId = reader.GetInt32("access_role_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
@@ -433,7 +433,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
                     {
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -444,7 +444,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
                         },
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,
@@ -457,7 +457,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionMigrator(
                     NodeTypeId = 16,
                     TermIds = new List<int>(),
                 },
-                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                NameableDetails = new NameableDetails.ForCreate {
                     Description = "",
                     Terms = vocabularyNames,
                     FileIdTileImage = null,

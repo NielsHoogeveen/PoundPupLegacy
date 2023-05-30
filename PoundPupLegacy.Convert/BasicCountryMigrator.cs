@@ -134,10 +134,10 @@ internal sealed class BasicCountryMigrator(
         });
 
         yield return new BasicCountry.ToCreate {
-            IdentificationForCreate = new Identification.Possible {
+            Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.NodeDetailsForCreate {
                 PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
@@ -148,7 +148,7 @@ internal sealed class BasicCountryMigrator(
                 {
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = 1,
@@ -161,13 +161,13 @@ internal sealed class BasicCountryMigrator(
                 NodeTypeId = 13,
                 TermIds = new List<int>(),
             },
-            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+            NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 Terms = new List<NewTermForNewNameable>
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -207,10 +207,10 @@ internal sealed class BasicCountryMigrator(
             },
         };
         yield return new BasicCountry.ToCreate {
-            IdentificationForCreate = new Identification.Possible {
+            Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.NodeDetailsForCreate {
                 PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
@@ -221,7 +221,7 @@ internal sealed class BasicCountryMigrator(
                 {
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                                 Id = null
                             },
                         TenantId = 1,
@@ -234,13 +234,13 @@ internal sealed class BasicCountryMigrator(
                 NodeTypeId = 13,
                 TermIds = new List<int>(),
             },
-            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+            NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 Terms = new List<NewTermForNewNameable>
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -280,10 +280,10 @@ internal sealed class BasicCountryMigrator(
             },
         };
         yield return new BasicCountry.ToCreate {
-            IdentificationForCreate = new Identification.Possible {
+            Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.NodeDetailsForCreate {
                 PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
@@ -294,7 +294,7 @@ internal sealed class BasicCountryMigrator(
                 {
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = 1,
@@ -307,13 +307,13 @@ internal sealed class BasicCountryMigrator(
                 NodeTypeId = 13,
                 TermIds = new List<int>(),
             },
-            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+            NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 Terms = new List<NewTermForNewNameable>
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -353,10 +353,10 @@ internal sealed class BasicCountryMigrator(
             },
         };
         yield return new BasicCountry.ToCreate {
-            IdentificationForCreate = new Identification.Possible {
+            Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.NodeDetailsForCreate {
                 PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
@@ -367,7 +367,7 @@ internal sealed class BasicCountryMigrator(
                 {
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = 1,
@@ -380,13 +380,13 @@ internal sealed class BasicCountryMigrator(
                 NodeTypeId = 13,
                 TermIds = new List<int>(),
             },
-            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+            NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 Terms = new List<NewTermForNewNameable>
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -555,7 +555,7 @@ internal sealed class BasicCountryMigrator(
             {
                 new NewTermForNewNameable
                 {
-                    IdentificationForCreate = new Identification.Possible {
+                    Identification = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -569,10 +569,10 @@ internal sealed class BasicCountryMigrator(
                 },
             };
             var country = new BasicCountry.ToCreate {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.NodeDetailsForCreate {
                     PublisherId = reader.GetInt32("access_role_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
@@ -583,7 +583,7 @@ internal sealed class BasicCountryMigrator(
                     {
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -594,7 +594,7 @@ internal sealed class BasicCountryMigrator(
                         },
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,
@@ -607,7 +607,7 @@ internal sealed class BasicCountryMigrator(
                     NodeTypeId = 13,
                     TermIds = new List<int>(),
                 },
-                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                NameableDetails = new NameableDetails.ForCreate {
                     Description = "",
                     Terms = vocabularyNames,
                     FileIdTileImage = null,

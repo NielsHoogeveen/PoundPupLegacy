@@ -59,7 +59,7 @@ internal sealed class FileMigratorCPCT(
             var id = reader.GetInt32("id");
 
             yield return new File {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null,
                 },
                 Path = GetPath(id, reader.GetString("path")),

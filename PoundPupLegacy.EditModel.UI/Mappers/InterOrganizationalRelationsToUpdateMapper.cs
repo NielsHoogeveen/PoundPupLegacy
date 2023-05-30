@@ -13,10 +13,10 @@ internal class InterOrganizationalRelationsToUpdateMapper(
             if(relation.RelationDetails.HasBeenDeleted)
                 continue;
             yield return new CreateModel.InterOrganizationalRelation.ToUpdate {
-                IdentificationCertain = new Identification.Certain {
+                Identification = new Identification.Certain {
                     Id = relation.NodeIdentification.NodeId
                 },
-                NodeDetailsForUpdate = nodeDetailsMapper.Map(relation.NodeDetailsForUpdate),
+                NodeDetails = nodeDetailsMapper.Map(relation.NodeDetailsForUpdate),
                 InterOrganizationalRelationDetails = new CreateModel.InterOrganizationalRelationDetails {
                     InterOrganizationalRelationTypeId = relation.InterOrganizationalRelationDetails.InterOrganizationalRelationType.Id,
                     DateRange = relation.RelationDetails.DateRange ?? new DateTimeRange(null, null),

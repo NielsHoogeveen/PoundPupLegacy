@@ -103,7 +103,7 @@ internal sealed class InterOrganizationalRelationMigratorCPCT(
             {
                 new TenantNode.ToCreateForNewNode
                 {
-                    IdentificationForCreate = new Identification.Possible {
+                    Identification = new Identification.Possible {
                         Id = null
                     },
                     TenantId = Constants.CPCT,
@@ -115,7 +115,7 @@ internal sealed class InterOrganizationalRelationMigratorCPCT(
             };
             if (organizationFromPublicationStatusId == 1 && organizationToPublicationStatusId == 1) {
                 tenantNodes.Add(new TenantNode.ToCreateForNewNode {
-                    IdentificationForCreate = new Identification.Possible {
+                    Identification = new Identification.Possible {
                         Id = null
                     },
                     TenantId = Constants.PPL,
@@ -127,10 +127,10 @@ internal sealed class InterOrganizationalRelationMigratorCPCT(
             }
 
             yield return new InterOrganizationalRelation.ToCreateForExistingParticipants{
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.NodeDetailsForCreate {
                     PublisherId = reader.GetInt32("user_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),

@@ -30,7 +30,7 @@ internal sealed class CaseTypeCreator(
         foreach (var caseRelationTypeId in element.CaseRelationTypeIds) {
             await caseTypeCasePartyTypeInserter.InsertAsync(new CaseTypeCasePartyType {
                 CasePartyTypeId = caseRelationTypeId,
-                CaseTypeId = element.IdentificationForCreate.Id!.Value
+                CaseTypeId = element.Identification.Id!.Value
             });
         }
     }

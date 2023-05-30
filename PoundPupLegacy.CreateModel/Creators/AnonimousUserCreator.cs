@@ -15,7 +15,7 @@ internal sealed class AnonimousUserCreator(
         await using var publisherWriter = await publisherInserterFactory.CreateAsync(connection);
 
         var user = new AnonymousUser {
-            IdentificationForCreate = new Identification.Possible {
+            Identification = new Identification.Possible {
                 Id = 0
             },
             Name = "anonymous",

@@ -64,7 +64,7 @@ internal sealed class BindingCountryMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -79,10 +79,10 @@ internal sealed class BindingCountryMigrator(
                 };
 
             var country = new BindingCountry.ToCreate {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.NodeDetailsForCreate {
                     PublisherId = reader.GetInt32("access_role_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
@@ -93,7 +93,7 @@ internal sealed class BindingCountryMigrator(
                     {
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -104,7 +104,7 @@ internal sealed class BindingCountryMigrator(
                         },
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,
@@ -117,7 +117,7 @@ internal sealed class BindingCountryMigrator(
                     NodeTypeId = 20,
                     TermIds = new List<int>(),
                 },
-                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                NameableDetails = new NameableDetails.ForCreate {
                     Description = "",
                     Terms = vocabularyNames,
                     FileIdTileImage = null,

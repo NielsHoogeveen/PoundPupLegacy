@@ -106,7 +106,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT(
             {
                 new TenantNode.ToCreateForNewNode
                 {
-                    IdentificationForCreate = new Identification.Possible {
+                    Identification = new Identification.Possible {
                         Id = null
                     },
                     TenantId = Constants.CPCT,
@@ -118,7 +118,7 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT(
             };
             if (partyPublicationStatusId == 1) {
                 tenantNodes.Add(new TenantNode.ToCreateForNewNode {
-                    IdentificationForCreate = new Identification.Possible {
+                    Identification = new Identification.Possible {
                         Id = null
                     },
                     TenantId = Constants.PPL,
@@ -129,10 +129,10 @@ internal sealed class PartyPoliticalEntityRelationMigratorCPCT(
                 });
             }
             yield return new PartyPoliticalEntityRelation.ToCreateForExistingParty {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.NodeDetailsForCreate {
                     PublisherId = reader.GetInt32("user_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),

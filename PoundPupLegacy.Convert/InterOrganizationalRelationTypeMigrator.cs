@@ -62,7 +62,7 @@ internal sealed class InterOrganizationalRelationTypeMigrator(
             {
                 new NewTermForNewNameable
                 {
-                    IdentificationForCreate = new Identification.Possible {
+                    Identification = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -71,10 +71,10 @@ internal sealed class InterOrganizationalRelationTypeMigrator(
                 }
             };
             yield return new InterOrganizationalRelationType.ToCreate {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.NodeDetailsForCreate {
                     PublisherId = reader.GetInt32("access_role_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
@@ -85,7 +85,7 @@ internal sealed class InterOrganizationalRelationTypeMigrator(
                     {
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -96,7 +96,7 @@ internal sealed class InterOrganizationalRelationTypeMigrator(
                         },
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,
@@ -109,7 +109,7 @@ internal sealed class InterOrganizationalRelationTypeMigrator(
                     NodeTypeId = 2,
                     TermIds = new List<int>(),
                 },
-                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                NameableDetails = new NameableDetails.ForCreate {
                     Description = reader.GetString("description"),
                     FileIdTileImage = reader.IsDBNull("file_id_tile_image")
                     ? null

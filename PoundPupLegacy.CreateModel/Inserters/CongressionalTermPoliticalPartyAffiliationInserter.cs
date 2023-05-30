@@ -12,7 +12,7 @@ internal sealed class CongressionalTermPoliticalPartyAffiliationInserterFactory 
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(CongressionalTermId, request.CongressionalTermPoliticalPartyAffiliationDetailsResolved.CongressionalTermId),
+            ParameterValue.Create(CongressionalTermId, request.CongressionalTermPoliticalPartyAffiliationDetails.CongressionalTermId),
             ParameterValue.Create(UnitedStatesPoliticalPartyAffiliationId, request.CongressionalTermPoliticalPartyAffiliationDetails.PoliticalPartyAffiliationId),
             ParameterValue.Create(DateRange, request.CongressionalTermPoliticalPartyAffiliationDetails.DateTimeRange),
         };

@@ -132,10 +132,10 @@ internal sealed class AdoptionImportMigrator(
             //The relation is about imports so the relation from is the receiving party
             //and relation to is the sending party
             //even though the children go from the sending party to the receiving party
-            IdentificationForCreate = new Identification.Possible {
+            Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.NodeDetailsForCreate {
                 Title = title,
                 OwnerId = Constants.OWNER_GEOGRAPHY,
                 AuthoringStatusId = 1,
@@ -146,7 +146,7 @@ internal sealed class AdoptionImportMigrator(
                 TenantNodes = new List<TenantNode.ToCreateForNewNode>{
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = 1,

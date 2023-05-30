@@ -99,10 +99,10 @@ internal sealed class BasicNameableMigrator(
         var reader = await readCommand.ExecuteReaderAsync();
 
         yield return new BasicNameable.ToCreate {
-            IdentificationForCreate = new Identification.Possible {
+            Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.NodeDetailsForCreate {
                 PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
@@ -113,7 +113,7 @@ internal sealed class BasicNameableMigrator(
                 {
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = 1,
@@ -126,14 +126,14 @@ internal sealed class BasicNameableMigrator(
                 NodeTypeId = 41,
                 TermIds = new List<int>(),
             },
-            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+            NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
                 Terms = new List<NewTermForNewNameable>
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -161,7 +161,7 @@ internal sealed class BasicNameableMigrator(
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -171,10 +171,10 @@ internal sealed class BasicNameableMigrator(
                 };
 
             yield return new BasicNameable.ToCreate {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.NodeDetailsForCreate {
                     PublisherId = reader.GetInt32("user_id"),
                     CreatedDateTime = reader.GetDateTime("created"),
                     ChangedDateTime = reader.GetDateTime("changed"),
@@ -185,7 +185,7 @@ internal sealed class BasicNameableMigrator(
                     {
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = 1,
@@ -198,7 +198,7 @@ internal sealed class BasicNameableMigrator(
                     NodeTypeId = reader.GetInt32("node_type_id"),
                     TermIds = new List<int>(),
                 },
-                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                NameableDetails = new NameableDetails.ForCreate {
                     Description = reader.GetString("description"),
                     FileIdTileImage = null,
                     Terms = vocabularyNames,
@@ -209,10 +209,10 @@ internal sealed class BasicNameableMigrator(
         await reader.CloseAsync();
 
         yield return new BasicNameable.ToCreate {
-            IdentificationForCreate = new Identification.Possible {
+            Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.NodeDetailsForCreate {
                 PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
@@ -223,7 +223,7 @@ internal sealed class BasicNameableMigrator(
                 {
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = 1,
@@ -236,14 +236,14 @@ internal sealed class BasicNameableMigrator(
                 NodeTypeId = 41,
                 TermIds = new List<int>(),
             },
-            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+            NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
                 Terms = new List<NewTermForNewNameable>
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -259,10 +259,10 @@ internal sealed class BasicNameableMigrator(
             },
         };
         yield return new BasicNameable.ToCreate {
-            IdentificationForCreate = new Identification.Possible {
+            Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.NodeDetailsForCreate {
                 PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
@@ -273,7 +273,7 @@ internal sealed class BasicNameableMigrator(
                 {
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = 1,
@@ -286,14 +286,14 @@ internal sealed class BasicNameableMigrator(
                 NodeTypeId = 41,
                 TermIds = new List<int>(),
             },
-            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+            NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
                 Terms = new List<NewTermForNewNameable>
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -309,10 +309,10 @@ internal sealed class BasicNameableMigrator(
             },
         };
         yield return new BasicNameable.ToCreate {
-            IdentificationForCreate = new Identification.Possible {
+            Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.NodeDetailsForCreate {
                 PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
@@ -323,7 +323,7 @@ internal sealed class BasicNameableMigrator(
                 {
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = 1,
@@ -336,14 +336,14 @@ internal sealed class BasicNameableMigrator(
                 NodeTypeId = 41,
                 TermIds = new List<int>(),
             },
-            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+            NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
                 Terms = new List<NewTermForNewNameable>
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,

@@ -7,15 +7,14 @@ public interface ProfessionalRoleToCreateForNewPerson : ProfessionalRole, Possib
 }
 public interface ProfessionalRoleToCreateForExistingPerson : ProfessionalRole, PossiblyIdentifiable
 {
-    ProfessionalRoleDetails.ProfessionalRoleDetailsForCreateOfExistingPerson ProfessionalRoleDetailsForCreate { get; }
+    ProfessionalRoleDetails.ProfessionalRoleDetailsForCreateOfExistingPerson ProfessionalRoleDetails { get; }
 }
 public interface ProfessionalRoleToUpdate : ProfessionalRole, CertainlyIdentifiable
 {
-    ProfessionalRoleDetails.ProfessionalRoleDetailsForUpdate ProfessionalRoleDetailsForUpdate { get; }
+    ProfessionalRoleDetails.ProfessionalRoleDetailsForUpdate ProfessionalRoleDetails { get; }
 }
 public interface ProfessionalRole : IRequest
 {
-    ProfessionalRoleDetails ProfessionalRoleDetails { get; }
 }
 
 public abstract record ProfessionalRoleDetails

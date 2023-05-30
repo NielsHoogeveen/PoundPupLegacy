@@ -102,7 +102,7 @@ internal sealed class TypeOfAbuserMigrator(
             {
                 new NewTermForNewNameable
                 {
-                    IdentificationForCreate = new Identification.Possible {
+                    Identification = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyIdTypeOfAbuser,
@@ -120,7 +120,7 @@ internal sealed class TypeOfAbuserMigrator(
                 }
 
                 vocabularyNames.Add(new NewTermForNewNameable {
-                    IdentificationForCreate = new Identification.Possible {
+                    Identification = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyIdTopics,
@@ -130,10 +130,10 @@ internal sealed class TypeOfAbuserMigrator(
             }
 
             yield return new TypeOfAbuser.ToCreate {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.NodeDetailsForCreate {
                     PublisherId = reader.GetInt32("access_role_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
@@ -144,7 +144,7 @@ internal sealed class TypeOfAbuserMigrator(
                     {
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -155,7 +155,7 @@ internal sealed class TypeOfAbuserMigrator(
                         },
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,
@@ -168,7 +168,7 @@ internal sealed class TypeOfAbuserMigrator(
                     NodeTypeId = reader.GetInt32("node_type_id"),
                     TermIds = new List<int>(),
                 },
-                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                NameableDetails = new NameableDetails.ForCreate {
                     Description = reader.GetString("description"),
                     FileIdTileImage = reader.IsDBNull("file_id_tile_image")
                     ? null

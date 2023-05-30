@@ -10,19 +10,19 @@ internal sealed class PublicationStatusMigrator(
     {
         await Task.CompletedTask;
         yield return new PublicationStatus {
-            IdentificationForCreate = new Identification.Possible {
+            Identification = new Identification.Possible {
                 Id = 0,
             },
             Name = "Not Published",
         };
         yield return new PublicationStatus {
-            IdentificationForCreate = new Identification.Possible {
+            Identification = new Identification.Possible {
                 Id = 1,
             },
             Name = "Published publically",
         };
         yield return new PublicationStatus {
-            IdentificationForCreate = new Identification.Possible {
+            Identification = new Identification.Possible {
                 Id = 2,
             },
             Name = "Published privately",

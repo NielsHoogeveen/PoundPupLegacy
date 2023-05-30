@@ -103,10 +103,10 @@ internal sealed class SubdivisionTypeMigrator(
 
         foreach (var name in names) {
             yield return new SubdivisionType.ToCreate {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.NodeDetailsForCreate {
                     PublisherId = 1,
                     CreatedDateTime = DateTime.Now,
                     ChangedDateTime = DateTime.Now,
@@ -117,7 +117,7 @@ internal sealed class SubdivisionTypeMigrator(
                     {
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -128,7 +128,7 @@ internal sealed class SubdivisionTypeMigrator(
                         },
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,
@@ -141,14 +141,14 @@ internal sealed class SubdivisionTypeMigrator(
                     NodeTypeId = 51,
                     TermIds = new List<int>(),
                 },
-                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                NameableDetails = new NameableDetails.ForCreate {
                     Description = "",
                     FileIdTileImage = null,
                     Terms = new List<NewTermForNewNameable>
                 {
                     new NewTermForNewNameable
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,

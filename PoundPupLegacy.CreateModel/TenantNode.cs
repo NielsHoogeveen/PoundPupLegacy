@@ -7,15 +7,13 @@ public abstract record TenantNode: IRequest
     public required int PublicationStatusId { get; init; }
     public sealed record ToUpdate : TenantNode, CertainlyIdentifiable
     {
-        public required Identification.Certain IdentificationCertain { get; init; }
-        public Identification Identification => IdentificationCertain;
+        public required Identification.Certain Identification { get; init; }
     }
     public sealed record ToCreateForNewNode : TenantNode, PossiblyIdentifiable
     {
         public required int TenantId { get; init; }
         public required int? UrlId { get; set; }
-        public required Identification.Possible IdentificationForCreate { get; init; }
-        public Identification Identification => IdentificationForCreate;
+        public required Identification.Possible Identification { get; init; }
         public ToCreateForExistingNode ResolveNodeId(int nodeId)
         {
             return new ToCreateForExistingNode {
@@ -25,7 +23,7 @@ public abstract record TenantNode: IRequest
                 PublicationStatusId = PublicationStatusId,
                 UrlId = UrlId ?? nodeId,
                 NodeId = nodeId,
-                IdentificationForCreate = IdentificationForCreate
+                Identification = Identification
             };
         }
     }
@@ -34,7 +32,6 @@ public abstract record TenantNode: IRequest
         public required int TenantId { get; init; }
         public required int UrlId { get; set; }
         public required int NodeId { get; set; }
-        public required Identification.Possible IdentificationForCreate { get; init; }
-        public Identification Identification => IdentificationForCreate;
+        public required Identification.Possible Identification { get; init; }
     }
 }

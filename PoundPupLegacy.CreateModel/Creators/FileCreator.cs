@@ -23,8 +23,8 @@ public class FileCreator(
     {
         await base.ProcessAsync(element);
         foreach (var tenantFile in element.TenantFiles) {
-            tenantFile.FileId = element.IdentificationForCreate.Id;
-            tenantFile.TenantFileId ??= element.IdentificationForCreate.Id;
+            tenantFile.FileId = element.Identification.Id;
+            tenantFile.TenantFileId ??= element.Identification.Id;
             await tenantFileInserter.InsertAsync(tenantFile);
         }
     }

@@ -41,7 +41,7 @@ internal sealed class FileMigratorPPL(
             var id = reader.GetInt32("id");
 
             yield return new File {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null,
                 },
                 Path = reader.GetString("path"),

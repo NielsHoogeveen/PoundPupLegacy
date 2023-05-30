@@ -2,17 +2,16 @@
 
 public interface LocatableToUpdate : Locatable, NameableToUpdate, DocumentableToUpdate
 {
-    LocatableDetails.LocatableDetailsForUpdate LocatableDetailsForUpdate { get; }
+    LocatableDetails.LocatableDetailsForUpdate LocatableDetails { get; }
 }
 
 public interface LocatableToCreate: Locatable, NameableToCreate,DocumentableToCreate 
 {
-    LocatableDetails.LocatableDetailsForCreate LocatableDetailsForCreate { get; }
+    LocatableDetails.LocatableDetailsForCreate LocatableDetails { get; }
 }
 
 public interface Locatable : Nameable, Documentable
 {
-    LocatableDetails LocatableDetails { get; }
 }
 
 public abstract record LocatableDetails

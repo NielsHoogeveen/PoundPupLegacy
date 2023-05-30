@@ -56,23 +56,23 @@ internal sealed class PersonCreator(
     {
         await base.ProcessAsync(element, id);
         await professionalRoleCreator
-            .CreateAsync(element.PersonDetailsForCreate.ProfessionalRolesToCreate
+            .CreateAsync(element.PersonDetails.ProfessionalRolesToCreate
                 .Select(x => x.ResolvePerson(id))
                 .ToAsyncEnumerable());
         await interPersonalRelationCreator
-            .CreateAsync(element.PersonDetailsForCreate.InterPersonalRelationsToCreateFrom
+            .CreateAsync(element.PersonDetails.InterPersonalRelationsToCreateFrom
                 .Select(x => x.ResolvePersonFrom(id))
                 .ToAsyncEnumerable());
         await interPersonalRelationCreator
-            .CreateAsync(element.PersonDetailsForCreate.InterPersonalRelationsToCreateTo
+            .CreateAsync(element.PersonDetails.InterPersonalRelationsToCreateTo
                 .Select(x => x.ResolvePersonTo(id))
                 .ToAsyncEnumerable());
         await partyPoliticalRelationCreator
-            .CreateAsync(element.PersonDetailsForCreate.PartyPoliticalEntityRelationsToCreate
+            .CreateAsync(element.PersonDetails.PartyPoliticalEntityRelationsToCreate
                 .Select(x => x.ResolveParty(id))
                 .ToAsyncEnumerable());
         await personOrganizationRelationCreator
-            .CreateAsync(element.PersonDetailsForCreate.PersonOrganizationRelationToCreate
+            .CreateAsync(element.PersonDetails.PersonOrganizationRelationToCreate
                 .Select(x => x.ResolvePerson(id))
                 .ToAsyncEnumerable());
     }

@@ -38,7 +38,7 @@ internal sealed class InterOrganizationalRelationUpdaterFactory : DatabaseUpdate
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new List<ParameterValue> {
-            ParameterValue.Create(NodeId, request.IdentificationCertain.Id),
+            ParameterValue.Create(NodeId, request.Identification.Id),
             ParameterValue.Create(Title, request.NodeDetails.Title),
             ParameterValue.Create(OrganizationIdFrom, request.OrganizationIdFrom),
             ParameterValue.Create(OrganizationIdTo, request.OrganizationIdTo),

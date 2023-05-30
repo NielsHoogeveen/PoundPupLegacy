@@ -38,10 +38,10 @@ internal sealed class ArticleMigrator(
 
         while (await reader.ReadAsync()) {
             yield return new Document.ToCreate {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.NodeDetailsForCreate {
                     PublisherId = reader.GetInt32("user_id"),
                     CreatedDateTime = reader.GetDateTime("created"),
                     ChangedDateTime = reader.GetDateTime("changed"),
@@ -52,7 +52,7 @@ internal sealed class ArticleMigrator(
                     {
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = 1,

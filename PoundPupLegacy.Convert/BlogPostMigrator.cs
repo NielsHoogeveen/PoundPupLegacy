@@ -39,10 +39,10 @@ internal sealed class BlogPostMigrator(
             var id = reader.GetInt32("id");
             var text = ReplacePHPCode(id, reader.GetString("text"));
             var discussion = new BlogPost.ToCreate {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.NodeDetailsForCreate {
                     PublisherId = reader.GetInt32("user_id"),
                     CreatedDateTime = reader.GetDateTime("created"),
                     ChangedDateTime = reader.GetDateTime("changed"),
@@ -53,7 +53,7 @@ internal sealed class BlogPostMigrator(
                     {
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = 1,

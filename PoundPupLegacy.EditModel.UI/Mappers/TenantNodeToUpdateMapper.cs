@@ -9,7 +9,7 @@ internal class TenantNodeToUpdateMapper : IEnumerableMapper<TenantNode.ExistingT
             if (tenantNode.HasBeenDeleted)
                 continue;
             yield return new CreateModel.TenantNode.ToCreateForExistingNode {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = tenantNode.Id,
                 },
                 TenantId = tenantNode.Id,

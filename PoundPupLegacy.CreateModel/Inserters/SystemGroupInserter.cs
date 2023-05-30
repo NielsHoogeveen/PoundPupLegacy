@@ -10,7 +10,7 @@ internal sealed class SystemGroupInserterFactory : IdentifiableDatabaseInserterF
     protected override IEnumerable<ParameterValue> GetNonIdParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(VocabularyIdTagging, request.IdentificationForCreate?.Id),
+            ParameterValue.Create(VocabularyIdTagging, request.Identification?.Id),
         };
     }
 }

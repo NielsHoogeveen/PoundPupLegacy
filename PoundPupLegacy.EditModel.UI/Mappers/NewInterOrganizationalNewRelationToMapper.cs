@@ -11,10 +11,10 @@ internal class NewInterOrganizationalNewRelationToMapper(
         foreach (var relation in source) {
             var now = DateTime.Now;
             yield return new CreateModel.InterOrganizationalRelation.ToCreateForNewOrganizationTo {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null,
                 },
-                NodeDetailsForCreate = nodeDetailMapper.Map(relation.NodeDetailsForCreate),
+                NodeDetails = nodeDetailMapper.Map(relation.NodeDetailsForCreate),
                 OrganizationIdFrom = relation.OrganizationFrom.Id,
                 InterOrganizationalRelationDetails = new CreateModel.InterOrganizationalRelationDetails {
                     GeographicalEntityId = relation.InterOrganizationalRelationDetails.GeographicalEntity?.Id,

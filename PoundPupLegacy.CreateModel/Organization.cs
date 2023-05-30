@@ -2,15 +2,14 @@
 
 public interface OrganizationToUpdate : Organization, PartyToUpdate
 {
-    OrganizationDetails.OrganizationDetailsForUpdate OrganizationDetailsForUpdate { get; }
+    OrganizationDetails.OrganizationDetailsForUpdate OrganizationDetails { get; }
 }
 public interface OrganizationToCreate : Organization, PartyToCreate
 {
-    OrganizationDetails.OrganizationDetailsForCreate OrganizationDetailsForCreate { get; }
+    OrganizationDetails.OrganizationDetailsForCreate OrganizationDetails { get; }
 }
 public interface Organization: Party
 {
-    OrganizationDetails OrganizationDetails { get; }
 }
 
 public abstract record OrganizationDetails

@@ -1,15 +1,14 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 public interface CaseToUpdate : Case, LocatableToUpdate, DocumentableToUpdate, NameableToUpdate
 {
-    CaseDetails.CaseDetailsForUpdate CaseDetailsForUpdate { get; }
+    CaseDetails.CaseDetailsForUpdate CaseDetails { get; }
 }
 public interface CaseToCreate : Case, LocatableToCreate, DocumentableToCreate, NameableToCreate 
 {
-    CaseDetails.CaseDetailsForCreate CaseDetailsForCreate { get; }
+    CaseDetails.CaseDetailsForCreate CaseDetails { get; }
 }
 public interface Case: Locatable, Documentable, Nameable
 {
-    CaseDetails CaseDetails { get; }
 }
 public abstract record CaseDetails
 {

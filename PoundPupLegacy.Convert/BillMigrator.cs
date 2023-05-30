@@ -160,7 +160,7 @@ internal sealed class BillMigrator(
                 }
 
                 vocabularyNames.Add(new NewTermForNewNameable {
-                    IdentificationForCreate = new Identification.Possible {
+                    Identification = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -170,7 +170,7 @@ internal sealed class BillMigrator(
             }
             else {
                 vocabularyNames.Add(new NewTermForNewNameable {
-                    IdentificationForCreate = new Identification.Possible {
+                    Identification = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -185,10 +185,10 @@ internal sealed class BillMigrator(
             }
 
             yield return new HouseBill.ToCreate {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.NodeDetailsForCreate {
                     PublisherId = reader.GetInt32("user_id"),
                     CreatedDateTime = reader.GetDateTime("created"),
                     ChangedDateTime = reader.GetDateTime("changed"),
@@ -199,7 +199,7 @@ internal sealed class BillMigrator(
                     {
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = 1,
@@ -212,7 +212,7 @@ internal sealed class BillMigrator(
                     NodeTypeId = 56,
                     TermIds = new List<int>(),
                 },
-                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                NameableDetails = new NameableDetails.ForCreate {
                     Description = reader.GetString("description"),
                     Terms = vocabularyNames,
                     FileIdTileImage = null,
@@ -367,7 +367,7 @@ internal sealed class BillMigrator(
                     }));
                 }
                 vocabularyNames.Add(new NewTermForNewNameable {
-                    IdentificationForCreate = new Identification.Possible {
+                    Identification = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -377,7 +377,7 @@ internal sealed class BillMigrator(
             }
             else {
                 vocabularyNames.Add(new NewTermForNewNameable {
-                    IdentificationForCreate = new Identification.Possible {
+                    Identification = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -392,10 +392,10 @@ internal sealed class BillMigrator(
             }
 
             yield return new SenateBill.ToCreate {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.NodeDetailsForCreate {
                     PublisherId = reader.GetInt32("user_id"),
                     CreatedDateTime = reader.GetDateTime("created"),
                     ChangedDateTime = reader.GetDateTime("changed"),
@@ -406,7 +406,7 @@ internal sealed class BillMigrator(
                     {
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = 1,
@@ -419,7 +419,7 @@ internal sealed class BillMigrator(
                     NodeTypeId = 57,
                     TermIds = new List<int>(),
                 },
-                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                NameableDetails = new NameableDetails.ForCreate {
                     Description = reader.GetString("description"),
                     Terms = vocabularyNames,
                     FileIdTileImage = null,

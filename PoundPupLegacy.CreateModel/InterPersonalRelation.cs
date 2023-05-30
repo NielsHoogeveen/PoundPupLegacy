@@ -3,17 +3,13 @@
 public abstract record InterPersonalRelation : Node
 {
     private InterPersonalRelation() { }
-    public abstract Identification Identification { get; }
-    public abstract NodeDetails NodeDetails { get; }
     public required InterPersonalRelationDetails InterPersonalRelationDetails { get; init; }
     public sealed record ToCreateForExistingParticipants : InterPersonalRelation, NodeToCreate
     {
         public required int PersonIdFrom { get; init; }
         public required int PersonIdTo { get; init; }
-        public required Identification.Possible IdentificationForCreate { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-        public override Identification Identification => IdentificationForCreate;
-        public override NodeDetails NodeDetails => NodeDetailsForCreate;
+        public required Identification.Possible Identification { get; init; }
+        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
     }
     public sealed record ToCreateForNewPersonFrom : InterPersonalRelation, NodeToCreate
     {
@@ -24,14 +20,12 @@ public abstract record InterPersonalRelation : Node
                 PersonIdFrom = PersonIdFrom,
                 PersonIdTo = PersonIdTo,
                 InterPersonalRelationDetails = InterPersonalRelationDetails,
-                NodeDetailsForCreate = NodeDetailsForCreate,
-                IdentificationForCreate = IdentificationForCreate,
+                NodeDetails = NodeDetails,
+                Identification = Identification,
             };
         }
-        public required Identification.Possible IdentificationForCreate { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-        public override Identification Identification => IdentificationForCreate;
-        public override NodeDetails NodeDetails => NodeDetailsForCreate;
+        public required Identification.Possible Identification { get; init; }
+        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
     }
 
     public sealed record ToCreateForNewPersonTo : InterPersonalRelation, NodeToCreate
@@ -44,23 +38,19 @@ public abstract record InterPersonalRelation : Node
                 PersonIdFrom = PersonIdFrom,
                 PersonIdTo = PersonIdTo,
                 InterPersonalRelationDetails = InterPersonalRelationDetails,
-                NodeDetailsForCreate = NodeDetailsForCreate,
-                IdentificationForCreate = IdentificationForCreate,
+                NodeDetails = NodeDetails,
+                Identification = Identification,
             };
         }
-        public required Identification.Possible IdentificationForCreate { get; init; }
-        public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-        public override Identification Identification => IdentificationForCreate;
-        public override NodeDetails NodeDetails => NodeDetailsForCreate;
+        public required Identification.Possible Identification { get; init; }
+        public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
     }
     public sealed record InterPersonalRelationToUpdate : InterPersonalRelation, NodeToUpdate
     {
         public required int PersonIdFrom { get; init; }
         public required int PersonIdTo { get; init; }
-        public override Identification Identification => IdentificationCertain;
-        public override NodeDetails NodeDetails => NodeDetailsForUpdate;
-        public required Identification.Certain IdentificationCertain { get; init; }
-        public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
+        public required Identification.Certain Identification { get; init; }
+        public required NodeDetails.ForUpdate NodeDetails { get; init; }
     }
 }
 

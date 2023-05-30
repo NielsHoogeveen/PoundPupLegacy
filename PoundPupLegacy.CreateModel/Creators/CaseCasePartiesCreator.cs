@@ -30,13 +30,13 @@ public class CaseCasePartiesCreator(
         await caseCasePartiesInserter.InsertAsync(element);
         foreach (var organizationId in element.CaseParties.OrganizationIds) {
             await casePartiesOrganizationInserter.InsertAsync(new CasePartiesOrganization {
-                CasePartiesId = element.CaseParties.IdentificationForCreate.Id!.Value,
+                CasePartiesId = element.CaseParties.Identification.Id!.Value,
                 OrganizationId = organizationId
             });
         }
         foreach (var personId in element.CaseParties.PersonIds) {
             await casePartiesPersonInserter.InsertAsync(new CasePartiesPerson {
-                CasePartiesId = element.CaseParties.IdentificationForCreate.Id!.Value,
+                CasePartiesId = element.CaseParties.Identification.Id!.Value,
                 PersonId = personId
             });
         }

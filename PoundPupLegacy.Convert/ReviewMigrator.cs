@@ -40,10 +40,10 @@ internal sealed class ReviewMigrator(
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             yield return new BlogPost.ToCreate {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.NodeDetailsForCreate {
                     PublisherId = reader.GetInt32("user_id"),
                     CreatedDateTime = reader.GetDateTime("created"),
                     ChangedDateTime = reader.GetDateTime("changed"),
@@ -54,7 +54,7 @@ internal sealed class ReviewMigrator(
                     {
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = 1,

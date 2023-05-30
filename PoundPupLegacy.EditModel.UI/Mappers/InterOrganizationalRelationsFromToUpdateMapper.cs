@@ -10,10 +10,10 @@ internal class InterOrganizationalRelationsFromUpdateMapper(
             if (relation.RelationDetails.HasBeenDeleted)
                 continue;
             yield return new CreateModel.InterOrganizationalRelation.ToCreateForNewOrganizationTo.ToUpdate {
-                IdentificationCertain = new Identification.Certain {
+                Identification = new Identification.Certain {
                     Id = relation.NodeIdentification.NodeId,
                 },
-                NodeDetailsForUpdate = nodeDetailMapper.Map(relation.NodeDetailsForUpdate),
+                NodeDetails = nodeDetailMapper.Map(relation.NodeDetailsForUpdate),
                 OrganizationIdFrom = relation.OrganizationFrom.Id,
                 OrganizationIdTo = relation.OrganizationTo.Id,
                 InterOrganizationalRelationDetails = new CreateModel.InterOrganizationalRelationDetails {

@@ -22,7 +22,7 @@ internal sealed class TenantInserterFactory : IdentifiableDatabaseInserterFactor
             ParameterValue.Create(SubTitle, request.SubTitle),
             ParameterValue.Create(FooterText, request.FooterText),
             ParameterValue.Create(CssFile, request.CssFile),
-            ParameterValue.Create(AccessRoleIdNotLoggedIn, request.AccessRoleNotLoggedIn.IdentificationForCreate?.Id),
+            ParameterValue.Create(AccessRoleIdNotLoggedIn, request.AccessRoleNotLoggedIn.Identification?.Id),
         };
     }
 }

@@ -2,16 +2,15 @@
 
 public interface Identifiable: IRequest
 {
-    Identification Identification { get; }
 }
 public interface CertainlyIdentifiable : Identifiable
 {
-    Identification.Certain IdentificationCertain { get; }
+    Identification.Certain Identification { get; }
 }
 
 public interface PossiblyIdentifiable : Identifiable
 {
-    Identification.Possible IdentificationForCreate { get; }
+    Identification.Possible Identification { get; }
 }
 public abstract record Identification
 {

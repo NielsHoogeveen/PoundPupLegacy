@@ -38,19 +38,19 @@ public class NodeDetailsChanger(
 
     public async Task Process(NodeToUpdate node)
     {
-        foreach (var newNodeTerms in node.NodeDetailsForUpdate.NodeTermsToAdd) {
+        foreach (var newNodeTerms in node.NodeDetails.NodeTermsToAdd) {
             await nodeTermInserter.InsertAsync(newNodeTerms);
         }
-        foreach (var nodeTermsToRemove in node.NodeDetailsForUpdate.NodeTermsToRemove) {
+        foreach (var nodeTermsToRemove in node.NodeDetails.NodeTermsToRemove) {
             await nodeTermDeleter.DeleteAsync(nodeTermsToRemove);
         }
-        foreach (var tenantNodeToUpdate in node.NodeDetailsForUpdate.TenantNodesToUpdate) {
+        foreach (var tenantNodeToUpdate in node.NodeDetails.TenantNodesToUpdate) {
             await tenantNodeUpdater.UpdateAsync(tenantNodeToUpdate);
         }
-        foreach (var newTenentNode in node.NodeDetailsForUpdate.TenantNodesToAdd) {
+        foreach (var newTenentNode in node.NodeDetails.TenantNodesToAdd) {
             await tenantNodeInserter.InsertAsync(newTenentNode);
         }
-        foreach (var tenantNodeToRemove in node.NodeDetailsForUpdate.TenantNodesToRemove) {
+        foreach (var tenantNodeToRemove in node.NodeDetails.TenantNodesToRemove) {
             await tenantNodeDeleter.DeleteAsync(tenantNodeToRemove);
         }
     }

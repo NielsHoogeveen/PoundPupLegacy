@@ -30,7 +30,7 @@ internal sealed class PartyPoliticalEntityRelationUpdaterFactory : DatabaseUpdat
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new List<ParameterValue> {
-            ParameterValue.Create(NodeId, request.IdentificationCertain.Id),
+            ParameterValue.Create(NodeId, request.Identification.Id),
             ParameterValue.Create(Title, request.NodeDetails.Title),
             ParameterValue.Create(PartyId, request.PartyId),
             ParameterValue.Create(PoliticalEntityId, request.PartyPoliticalEntityRelationDetails.PoliticalEntityId),

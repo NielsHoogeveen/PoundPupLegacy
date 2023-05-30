@@ -2,10 +2,8 @@
 public sealed record RepresentativeHouseBillAction: NodeToCreate
 {
     public required RepresentativeHouseBillActionDetails RepresentativeHouseBillActionDetails { get; init; }
-    public required Identification.Possible IdentificationForCreate { get; init; }
-    public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-    public Identification Identification => IdentificationForCreate;
-    public NodeDetails NodeDetails => NodeDetailsForCreate;
+    public required Identification.Possible Identification { get; init; }
+    public required NodeDetails.NodeDetailsForCreate NodeDetails { get; init; }
 }
 public sealed record RepresentativeHouseBillActionDetails
 {

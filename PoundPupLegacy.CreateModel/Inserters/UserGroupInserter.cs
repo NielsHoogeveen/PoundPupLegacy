@@ -14,7 +14,7 @@ public class UserGroupInserterFactory : ConditionalAutoGenerateIdDatabaseInserte
         return new ParameterValue[] {
             ParameterValue.Create(Name, request.Name),
             ParameterValue.Create(Description, request.Description),
-            ParameterValue.Create(AdministratorRoleId, request.AdministratorRole.IdentificationForCreate?.Id)
+            ParameterValue.Create(AdministratorRoleId, request.AdministratorRole.Identification?.Id)
         };
     }
 }

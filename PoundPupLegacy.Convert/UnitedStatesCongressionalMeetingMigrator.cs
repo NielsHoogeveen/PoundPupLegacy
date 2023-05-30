@@ -34,10 +34,10 @@ internal sealed class UnitedStatesCongressionalMeetingMigrator(
             var endDate = DateTime.Parse(parts[2]).AddHours(12).AddMicroseconds(-1);
             var number = int.Parse(parts[3]);
             yield return new UnitedStatesCongressionalMeeting.ToCreate {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.NodeDetailsForCreate {
                     CreatedDateTime = DateTime.Now,
                     ChangedDateTime = DateTime.Now,
                     NodeTypeId = 52,
@@ -47,7 +47,7 @@ internal sealed class UnitedStatesCongressionalMeetingMigrator(
                     {
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = 1,
@@ -61,12 +61,12 @@ internal sealed class UnitedStatesCongressionalMeetingMigrator(
                     Title = title,
                     TermIds = new List<int>(),
                 },
-                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                NameableDetails = new NameableDetails.ForCreate {
                     Terms = new List<NewTermForNewNameable>
                     {
                         new NewTermForNewNameable
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id= null
                             },
                             VocabularyId = vocabularyId,

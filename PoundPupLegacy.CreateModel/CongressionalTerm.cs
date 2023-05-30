@@ -2,15 +2,14 @@
 
 public interface CongressionalTermToUpdate : CongressionalTerm, DocumentableToUpdate
 {
-    CongressionalTermDetails.CongressionalTermDetailsForUpdate CongressionalTermDetailsForUpdate { get; }
+    CongressionalTermDetails.CongressionalTermDetailsForUpdate CongressionalTermDetails { get; }
 }
 public interface CongressionalTermToCreate : CongressionalTerm, DocumentableToCreate
 {
-    CongressionalTermDetails.CongressionalTermDetailsForCreate CongressionalTermDetailsForCreate { get; }
+    CongressionalTermDetails.CongressionalTermDetailsForCreate CongressionalTermDetails { get; }
 }
 public interface CongressionalTerm : Documentable
 {
-    CongressionalTermDetails CongressionalTermDetails { get; }
 }
 public abstract record CongressionalTermDetails
 {

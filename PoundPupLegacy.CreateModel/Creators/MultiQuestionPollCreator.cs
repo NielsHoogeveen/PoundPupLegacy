@@ -42,7 +42,7 @@ public class MultiQuestionPollCreator(
             await pollQuestionCreatorFactory.CreateAsync(question);
             var pollQuestions = new MultiQuestionPollPollQuestion {
                 MultiQuestionPollId = id,
-                PollQuestionId = question.IdentificationForCreate.Id!.Value,
+                PollQuestionId = question.Identification.Id!.Value,
                 Delta = index
             };
             await multiQuestionPollPollQuestionInserter.InsertAsync(pollQuestions);

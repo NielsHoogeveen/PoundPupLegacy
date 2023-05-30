@@ -46,7 +46,7 @@ internal sealed class TenantNodeReaderByUrlIdFactory : SingleItemDatabaseReaderF
     protected override TenantNode.ToCreateForExistingNode Read(NpgsqlDataReader reader)
     {
         return new TenantNode.ToCreateForExistingNode {
-            IdentificationForCreate = new Identification.Possible {
+            Identification = new Identification.Possible {
                 Id = IdReader.GetValue(reader),
             },
             TenantId = TenantIdReader.GetValue(reader),

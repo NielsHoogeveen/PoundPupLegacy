@@ -2,17 +2,14 @@
 
 public sealed record NewTermForNewNameable: TermToCreateForNewNameable
 {
-    public required Identification.Possible IdentificationForCreate { get; init; }
-    public Identification Identification => IdentificationForCreate;
+    public required Identification.Possible Identification { get; init; }
     public required int VocabularyId { get; init; }
     public required string Name { get; init; }
     public required List<int> ParentTermIds { get; init; }
     public TermToCreateForExistingNameable ResolveNameable(int nameableId)
     {
         return new NewTermForExistingNameable {
-            IdentificationForCreate = new Identification.Possible {
-                Id = null,
-            },
+            Identification = Identification,
             Name = Name,
             VocabularyId = VocabularyId,
             NameableId = nameableId,
@@ -22,8 +19,7 @@ public sealed record NewTermForNewNameable: TermToCreateForNewNameable
 }
 public sealed record NewTermForExistingNameable : TermToCreateForExistingNameable
 {
-    public required Identification.Possible IdentificationForCreate { get; init; }
-    public Identification Identification => IdentificationForCreate;
+    public required Identification.Possible Identification { get; init; }
     public required int VocabularyId { get; init; }
     public required string Name { get; init; }
     public required int NameableId { get; init; }
@@ -32,8 +28,7 @@ public sealed record NewTermForExistingNameable : TermToCreateForExistingNameabl
 
 public sealed record ExistingTerm : TermToUpdate
 {
-    public required Identification.Certain IdentificationCertain { get; init; }
-    public Identification Identification => IdentificationCertain;
+    public required Identification.Certain Identification { get; init; }
     public required int VocabularyId { get; init; }
     public required string Name { get; init; }
     public required int NameableId { get; init; }

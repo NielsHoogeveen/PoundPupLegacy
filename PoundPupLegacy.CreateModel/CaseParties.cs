@@ -8,8 +8,7 @@ public abstract record CaseParties
     {
         public required List<int> OrganizationIds { get; init; }
         public required List<int> PersonIds { get; init; }
-        public required Identification.Possible IdentificationForCreate { get; init; }
-        public Identification Identification => IdentificationForCreate;
+        public required Identification.Possible Identification { get; init; }
     }
     public sealed record ToUpdate : CaseParties, CertainlyIdentifiable
     {
@@ -17,7 +16,6 @@ public abstract record CaseParties
         public required List<int> PersonIdsToAdd { get; init; }
         public required List<int> OrganizationIdsToRemove { get; init; }
         public required List<int> PersonIdsToRemove { get; init; }
-        public required Identification.Certain IdentificationCertain { get; init; }
-        public Identification Identification => IdentificationCertain;
+        public required Identification.Certain Identification { get; init; }
     }
 }

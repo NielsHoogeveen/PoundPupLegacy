@@ -6,7 +6,7 @@ internal class TenantNodesForCreateMapper : IEnumerableMapper<EditModel.TenantNo
     {
         foreach (var item in source) {
             yield return new CreateModel.TenantNode.ToCreateForNewNode {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null,
                 },
                 PublicationStatusId = item.PublicationStatusId,

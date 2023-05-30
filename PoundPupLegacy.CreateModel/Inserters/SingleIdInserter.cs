@@ -96,7 +96,7 @@ internal sealed class SingleIdInserter<T> : DatabaseAccessor<T>, IDatabaseInsert
 
     protected override IEnumerable<ParameterValue> GetParameterValues(T request)
     {
-        return new ParameterValue[] { ParameterValue.Create(SingleIdInserterFactory.Id, request.IdentificationForCreate.Id) };
+        return new ParameterValue[] { ParameterValue.Create(SingleIdInserterFactory.Id, request.Identification.Id) };
     }
 
     public async Task InsertAsync(T request)
@@ -108,9 +108,9 @@ internal sealed class SingleIdInserter<T> : DatabaseAccessor<T>, IDatabaseInsert
             await _command.ExecuteNonQueryAsync();
         }
         else {
-            if (request.IdentificationForCreate.Id is not null)
+            if (request.Identification.Id is not null)
                 throw new Exception($"Id should be null when adding a {_tableName}");
-            request.IdentificationForCreate.Id = await _command.ExecuteScalarAsync() switch {
+            request.Identification.Id = await _command.ExecuteScalarAsync() switch {
                 long i => (int)i,
                 _ => throw new Exception($"No id has been assigned when adding a {_tableName}"),
             };

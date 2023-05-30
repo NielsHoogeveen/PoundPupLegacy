@@ -6,7 +6,7 @@ internal class NewTenantNodeForNewNodeMapper : IEnumerableMapper<TenantNode.NewT
     {
         foreach(var  tenantNode in source) {
             yield return new CreateModel.TenantNode.ToCreateForNewNode {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null,
                 },
                 PublicationStatusId = tenantNode.PublicationStatusId,

@@ -2,15 +2,13 @@
 
 public sealed record LocationToCreate : LocationBase, EventuallyIdentifiableLocation
 {
-    public required Identification.Possible IdentificationForCreate { get; init;}
+    public required Identification.Possible Identification { get; init;}
 
-    public Identification Identification => IdentificationForCreate;
 }
 public sealed record LocationToUpdate : LocationBase, ImmediatelyIdentifiableLocation
 {
-    public required Identification.Certain IdentificationCertain { get; init; }
+    public required Identification.Certain Identification { get; init; }
 
-    public Identification Identification => IdentificationCertain;
 }
 
 public abstract record LocationBase : Location

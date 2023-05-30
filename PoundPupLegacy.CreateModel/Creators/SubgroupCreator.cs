@@ -38,7 +38,7 @@ internal class SubgroupCreator(
     {
         await base.ProcessAsync(element);
         var administratorRole = element.AdministratorRole;
-        administratorRole.UserGroupId = element.IdentificationForCreate.Id;
+        administratorRole.UserGroupId = element.Identification.Id;
         await principalInserter.InsertAsync(administratorRole);
         await userRoleInserter.InsertAsync(administratorRole);
         await administratorRoleInserter.InsertAsync(administratorRole);

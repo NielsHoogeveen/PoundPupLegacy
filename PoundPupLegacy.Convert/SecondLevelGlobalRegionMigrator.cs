@@ -68,7 +68,7 @@ internal sealed class SecondLevelGlobalRegionMigrator(
             {
                 new NewTermForNewNameable
                 {
-                    IdentificationForCreate = new Identification.Possible {
+                    Identification = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -83,10 +83,10 @@ internal sealed class SecondLevelGlobalRegionMigrator(
             };
 
             yield return new SecondLevelGlobalRegion.ToCreate {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetailsForCreate =new NodeDetails.NodeDetailsForCreate {
+                NodeDetails =new NodeDetails.NodeDetailsForCreate {
                     PublisherId = reader.GetInt32("access_role_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
@@ -97,7 +97,7 @@ internal sealed class SecondLevelGlobalRegionMigrator(
                     {
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -108,7 +108,7 @@ internal sealed class SecondLevelGlobalRegionMigrator(
                         },
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,
@@ -121,7 +121,7 @@ internal sealed class SecondLevelGlobalRegionMigrator(
                     NodeTypeId = 12,
                     TermIds = new List<int>(),
                 },
-                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                NameableDetails = new NameableDetails.ForCreate {
                     Terms = vocabularyNames,
                     Description = reader.GetString("description"),
                     FileIdTileImage = reader.IsDBNull("file_id_tile_image")

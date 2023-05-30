@@ -413,10 +413,10 @@ internal class MemberOfCongressMigrator(
                     if (term.party_affiliations == null) {
                         return new List<CongressionalTermPoliticalPartyAffiliation.ToCreateForNewTerm> {
                             new CongressionalTermPoliticalPartyAffiliation.ToCreateForNewTerm {
-                                IdentificationForCreate = new Identification.Possible {
+                                Identification = new Identification.Possible {
                                     Id = null
                                 },
-                                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate{
+                                NodeDetails = new NodeDetails.NodeDetailsForCreate{
                                     PublisherId = 2,
                                     CreatedDateTime = DateTime.Now,
                                     ChangedDateTime = DateTime.Now,
@@ -426,7 +426,7 @@ internal class MemberOfCongressMigrator(
                                     TenantNodes = new List<TenantNode.ToCreateForNewNode>
                                     {
                                         new TenantNode.ToCreateForNewNode {
-                                            IdentificationForCreate = new Identification.Possible {
+                                            Identification = new Identification.Possible {
                                                 Id = null
                                             },
                                             TenantId = 1,
@@ -439,7 +439,7 @@ internal class MemberOfCongressMigrator(
                                     NodeTypeId = 64,
                                     TermIds = new List<int>(),
                                 },
-                                CongressionalTermPoliticalPartyAffiliationDetailsUnresolved = new CongressionalTermPoliticalPartyAffiliationDetails.CongressionalTermPoliticalPartyAffiliationDetailsUnresolved {
+                                CongressionalTermPoliticalPartyAffiliationDetails = new CongressionalTermPoliticalPartyAffiliationDetails.CongressionalTermPoliticalPartyAffiliationDetailsUnresolved {
                                     PoliticalPartyAffiliationId = GetPoliticalPartyAffiliationId(term.party),
                                     DateTimeRange = new DateTimeRange(term.start, term.end),
                                 },
@@ -447,10 +447,10 @@ internal class MemberOfCongressMigrator(
                         };
                     }
                     return term.party_affiliations.Select(party_affiliations => new CongressionalTermPoliticalPartyAffiliation.ToCreateForNewTerm {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
-                        NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                        NodeDetails = new NodeDetails.NodeDetailsForCreate {
                             PublisherId = 2,
                             CreatedDateTime = DateTime.Now,
                             ChangedDateTime = DateTime.Now,
@@ -459,7 +459,7 @@ internal class MemberOfCongressMigrator(
                             AuthoringStatusId = 1,
                             TenantNodes = new List<TenantNode.ToCreateForNewNode> {
                                 new TenantNode.ToCreateForNewNode {
-                                    IdentificationForCreate = new Identification.Possible {
+                                    Identification = new Identification.Possible {
                                         Id = null
                                     },
                                     TenantId = 1,
@@ -472,7 +472,7 @@ internal class MemberOfCongressMigrator(
                             NodeTypeId = 64,
                             TermIds = new List<int>(),
                         },
-                        CongressionalTermPoliticalPartyAffiliationDetailsUnresolved = new CongressionalTermPoliticalPartyAffiliationDetails.CongressionalTermPoliticalPartyAffiliationDetailsUnresolved {
+                        CongressionalTermPoliticalPartyAffiliationDetails = new CongressionalTermPoliticalPartyAffiliationDetails.CongressionalTermPoliticalPartyAffiliationDetailsUnresolved {
                             PoliticalPartyAffiliationId = GetPoliticalPartyAffiliationId(party_affiliations.party),
                             DateTimeRange = new DateTimeRange(party_affiliations.start, party_affiliations.end),
                         },
@@ -491,10 +491,10 @@ internal class MemberOfCongressMigrator(
                         var subdivisionId = GetStateId(term);
                         var partyAffiliations = GetPartyAffiliations(term);
                         var senateTerm = new SenateTerm.ToCreate {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
-                            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                            NodeDetails = new NodeDetails.NodeDetailsForCreate {
                                 PublisherId = 2,
                                 CreatedDateTime = DateTime.Now,
                                 ChangedDateTime = DateTime.Now,
@@ -503,7 +503,7 @@ internal class MemberOfCongressMigrator(
                                 AuthoringStatusId = 1,
                                 TenantNodes = new List<TenantNode.ToCreateForNewNode> {
                                     new TenantNode.ToCreateForNewNode {
-                                        IdentificationForCreate = new Identification.Possible {
+                                        Identification = new Identification.Possible {
                                             Id = null
                                         },
                                         TenantId = 1,
@@ -516,7 +516,7 @@ internal class MemberOfCongressMigrator(
                                 NodeTypeId = 65,
                                 TermIds = new List<int>(),
                             },
-                            CongressionalTermDetailsForCreate = new CongressionalTermDetails.CongressionalTermDetailsForCreate { 
+                            CongressionalTermDetails = new CongressionalTermDetails.CongressionalTermDetailsForCreate { 
                                 PartyAffiliations = partyAffiliations
                             },
                             SenateTermDetails = new SenateTermDetails {
@@ -535,10 +535,10 @@ internal class MemberOfCongressMigrator(
                         var partyAffiliations = GetPartyAffiliations(term);
 
                         var houseTerm = new HouseTerm.ToCreate {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
-                            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                            NodeDetails = new NodeDetails.NodeDetailsForCreate {
                                 PublisherId = 2,
                                 CreatedDateTime = DateTime.Now,
                                 ChangedDateTime = DateTime.Now,
@@ -547,7 +547,7 @@ internal class MemberOfCongressMigrator(
                                 AuthoringStatusId = 1,
                                 TenantNodes = new List<TenantNode.ToCreateForNewNode> {
                                     new TenantNode.ToCreateForNewNode {
-                                        IdentificationForCreate = new Identification.Possible {
+                                        Identification = new Identification.Possible {
                                             Id = null
                                         },
                                         TenantId = 1,
@@ -560,7 +560,7 @@ internal class MemberOfCongressMigrator(
                                 NodeTypeId = 65,
                                 TermIds = new List<int>(),
                             },
-                            CongressionalTermDetailsForCreate = new CongressionalTermDetails.CongressionalTermDetailsForCreate {
+                            CongressionalTermDetails = new CongressionalTermDetails.CongressionalTermDetailsForCreate {
                                 PartyAffiliations = partyAffiliations,
                             },
                             HouseTermDetails = new HouseTermDetails {
@@ -580,10 +580,10 @@ internal class MemberOfCongressMigrator(
                 if (memberOfCongress.node_id.HasValue) {
                     if (isSenator) {
                         professionalRolesExistingPerson.Add(new Senator.ToCreateForExistingPerson {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null,
                             },
-                            ProfessionalRoleDetailsForCreate = new ProfessionalRoleDetails.ProfessionalRoleDetailsForCreateOfExistingPerson {
+                            ProfessionalRoleDetails = new ProfessionalRoleDetails.ProfessionalRoleDetailsForCreateOfExistingPerson {
                                 Id = null,
                                 DateTimeRange = null,
                                 ProfessionId = senatorRoleId,
@@ -596,16 +596,16 @@ internal class MemberOfCongressMigrator(
                     }
                     if (isRepresentative) {
                         professionalRolesExistingPerson.Add(new Representative.ToCreateForExistingPerson {
-                            IdentificationForCreate = new Identification.Possible { 
+                            Identification = new Identification.Possible { 
                                 Id = null
                             },
-                            ProfessionalRoleDetailsForCreate = new ProfessionalRoleDetails.ProfessionalRoleDetailsForCreateOfExistingPerson {
+                            ProfessionalRoleDetails = new ProfessionalRoleDetails.ProfessionalRoleDetailsForCreateOfExistingPerson {
                                 Id = null,
                                 PersonId = memberOfCongress.node_id.Value,
                                 DateTimeRange = null,
                                 ProfessionId = repRoleId,
                             },
-                            RepresentativeDetailsToCreate = new RepresentativeDetails.RepresentativeDetailsForCreate { 
+                            RepresentativeDetailsToCreate = new RepresentativeDetails.ForCreate { 
                                 HouseTermToCreate = GetHouseTerms(),
                             },
                         });
@@ -636,14 +636,14 @@ internal class MemberOfCongressMigrator(
                             SenatorDetailsForCreate = new SenatorDetails.ForCreate {
                                 SenateTermToCreate = GetSenateTerms(),
                             },
-                            IdentificationForCreate = new Identification.Possible { 
+                            Identification = new Identification.Possible { 
                                 Id = null
                             },
                         });
                     }
                     if (isRepresentative) {
                         professionalRolesNewPerson.Add(new Representative.ToCreateForNewPerson {
-                            IdentificationForCreate = new Identification.Possible { 
+                            Identification = new Identification.Possible { 
                                 Id = null
                             },
                             ProfessionalRoleDetailsForCreate = new ProfessionalRoleDetails.ProfessionalRoleDetailsForCreateOfNewPerson{
@@ -651,7 +651,7 @@ internal class MemberOfCongressMigrator(
                                 DateTimeRange = null,
                                 ProfessionId = repRoleId,
                             },
-                            RepresentativeDetailsForCreate = new RepresentativeDetails.RepresentativeDetailsForCreate {
+                            RepresentativeDetailsForCreate = new RepresentativeDetails.ForCreate {
                                 HouseTermToCreate = GetHouseTerms(),
                             },
                         });;
@@ -666,7 +666,7 @@ internal class MemberOfCongressMigrator(
                     var title = memberOfCongress.name.official_full is null ? $"{memberOfCongress.name.first} {memberOfCongress.name.middle} {memberOfCongress.name.last} {memberOfCongress.name.suffix}".Replace("  ", " ") : memberOfCongress.name.official_full;
                     var vocabularyNames = new List<NewTermForNewNameable> {
                         new NewTermForNewNameable {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             VocabularyId = vocabularyId,
@@ -676,10 +676,10 @@ internal class MemberOfCongressMigrator(
                     };
 
                     yield return new Person.ToCreate {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
-                        NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                        NodeDetails = new NodeDetails.NodeDetailsForCreate {
                             PublisherId = 2,
                             CreatedDateTime = DateTime.Now,
                             ChangedDateTime = DateTime.Now,
@@ -688,7 +688,7 @@ internal class MemberOfCongressMigrator(
                             AuthoringStatusId = 1,
                             TenantNodes = new List<TenantNode.ToCreateForNewNode> {
                                 new TenantNode.ToCreateForNewNode {
-                                    IdentificationForCreate = new Identification.Possible {
+                                    Identification = new Identification.Possible {
                                         Id = null
                                     },
                                     TenantId = 1,
@@ -701,15 +701,15 @@ internal class MemberOfCongressMigrator(
                             NodeTypeId = 24,
                             TermIds = new List<int>(),
                         },
-                        NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                        NameableDetails = new NameableDetails.ForCreate {
                             Description = "",
                             FileIdTileImage = null,
                             Terms = vocabularyNames,
                         },
-                        LocatableDetailsForCreate = new LocatableDetails.LocatableDetailsForCreate {
+                        LocatableDetails = new LocatableDetails.LocatableDetailsForCreate {
                             Locations = new List<EventuallyIdentifiableLocation>(),
                         },
-                        PersonDetailsForCreate = new PersonDetails.PersonDetailsForCreate {
+                        PersonDetails = new PersonDetails.ForCreate {
                             DateOfBirth = memberOfCongress.bio.birthday,
                             DateOfDeath = null,
                             FileIdPortrait = null,
@@ -773,7 +773,7 @@ internal class MemberOfCongressMigrator(
             var file = new FileInfo(fileNameSource);
             if (file.Exists) {
                 yield return new File {
-                    IdentificationForCreate = new Identification.Possible {
+                    Identification = new Identification.Possible {
                         Id = null,
                     },
                     Path = $"files/members_of_congress/{reader.GetString(1)}.jpg",
@@ -1003,10 +1003,10 @@ internal class MemberOfCongressMigrator(
 
             var now = DateTime.Now;
             yield return new PersonOrganizationRelation.ToCreateForExistingParticipants{
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.NodeDetailsForCreate {
                     PublisherId = 2,
                     CreatedDateTime = now,
                     ChangedDateTime = now,
@@ -1017,7 +1017,7 @@ internal class MemberOfCongressMigrator(
                     {
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = 1,
@@ -1028,7 +1028,7 @@ internal class MemberOfCongressMigrator(
                         },
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,

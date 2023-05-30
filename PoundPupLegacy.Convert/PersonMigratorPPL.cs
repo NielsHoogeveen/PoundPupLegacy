@@ -208,7 +208,7 @@ internal sealed class PersonMigratorPPL(
             var topicName = reader.IsDBNull("topic_name") ? null : reader.GetString("topic_name");
             var vocabularyNames = new List<NewTermForNewNameable> {
                 new NewTermForNewNameable {
-                    IdentificationForCreate = new Identification.Possible {
+                    Identification = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -218,10 +218,10 @@ internal sealed class PersonMigratorPPL(
             };
 
             yield return new Person.ToCreate {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.NodeDetailsForCreate {
                     PublisherId = reader.GetInt32("access_role_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
@@ -232,7 +232,7 @@ internal sealed class PersonMigratorPPL(
                     {
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -243,7 +243,7 @@ internal sealed class PersonMigratorPPL(
                         },
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,
@@ -256,15 +256,15 @@ internal sealed class PersonMigratorPPL(
                     NodeTypeId = reader.GetInt16("node_type_id"),
                     TermIds = new List<int>(),
                 },
-                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                NameableDetails = new NameableDetails.ForCreate {
                     Description = "",
                     FileIdTileImage = null,
                     Terms = vocabularyNames,
                 },
-                LocatableDetailsForCreate = new LocatableDetails.LocatableDetailsForCreate {
+                LocatableDetails = new LocatableDetails.LocatableDetailsForCreate {
                     Locations = new List<EventuallyIdentifiableLocation>(),
                 },
-                PersonDetailsForCreate = new PersonDetails.PersonDetailsForCreate {
+                PersonDetails = new PersonDetails.ForCreate {
                     DateOfBirth = GetDateOfBirth(reader.GetInt32("id"), reader.IsDBNull("date_of_birth") ? null : reader.GetDateTime("date_of_birth")),
                     DateOfDeath = GetDateOfDeath(reader.GetInt32("id"), reader.IsDBNull("date_of_death") ? null : reader.GetDateTime("date_of_death")),
                     FileIdPortrait = reader.IsDBNull("file_id_portrait")

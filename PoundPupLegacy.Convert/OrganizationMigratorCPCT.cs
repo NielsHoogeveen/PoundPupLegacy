@@ -219,7 +219,7 @@ internal sealed class OrganizationMigratorCPCT(
             }
             var vocabularyNames = new List<NewTermForNewNameable> {
                 new NewTermForNewNameable {
-                    IdentificationForCreate = new Identification.Possible {
+                    Identification = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -235,7 +235,7 @@ internal sealed class OrganizationMigratorCPCT(
             {
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -250,7 +250,7 @@ internal sealed class OrganizationMigratorCPCT(
 
             if (!organizationOrganizationTypeIds.Contains(miscellaneous) && !toSkipForPPL.Contains(id)) {
                 tenantNodes.Add(new TenantNode.ToCreateForNewNode {
-                    IdentificationForCreate = new Identification.Possible {
+                    Identification = new Identification.Possible {
                         Id = null
                     },
                     TenantId = Constants.PPL,
@@ -262,10 +262,10 @@ internal sealed class OrganizationMigratorCPCT(
             }
 
             yield return new BasicOrganization.ToCreate {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.NodeDetailsForCreate {
                     PublisherId = reader.GetInt32("access_role_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
@@ -276,15 +276,15 @@ internal sealed class OrganizationMigratorCPCT(
                     NodeTypeId = reader.GetInt16("node_type_id"),
                     TermIds = new List<int>(),
                 },
-                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                NameableDetails = new NameableDetails.ForCreate {
                     Description = reader.IsDBNull("description") ? "" : reader.GetString("description"),
                     FileIdTileImage = null,
                     Terms = vocabularyNames,
                 },
-                LocatableDetailsForCreate = new LocatableDetails.LocatableDetailsForCreate {
+                LocatableDetails = new LocatableDetails.LocatableDetailsForCreate {
                     Locations = new List<EventuallyIdentifiableLocation>(),
                 },
-                OrganizationDetailsForCreate = new OrganizationDetails.OrganizationDetailsForCreate {
+                OrganizationDetails = new OrganizationDetails.OrganizationDetailsForCreate {
                     WebsiteUrl = reader.IsDBNull("website_url") ? null : reader.GetString("website_url"),
                     EmailAddress = reader.IsDBNull("email_address") ? null : reader.GetString("email_address"),
                     Established = reader.IsDBNull("established") ? null : (new DateTimeRange(reader.GetDateTime("established").Date, reader.GetDateTime("established").Date.AddDays(1).AddMilliseconds(-1))).ToFuzzyDate(),

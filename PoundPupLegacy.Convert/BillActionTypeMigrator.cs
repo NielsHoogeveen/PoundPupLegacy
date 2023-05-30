@@ -57,8 +57,8 @@ internal sealed class BillActionTypeMigrator(
             {
                 new NewTermForNewNameable
                 {
-                    IdentificationForCreate = new Identification.Possible {
-                        Id = null,
+                    Identification = new Identification.Possible {
+                        Id = id,
                     },
                     VocabularyId = vocabularyId,
                     Name = name,
@@ -67,10 +67,10 @@ internal sealed class BillActionTypeMigrator(
             };
 
             yield return new BillActionType.ToCreate {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.NodeDetailsForCreate {
                     PublisherId = reader.GetInt32("access_role_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
@@ -81,8 +81,8 @@ internal sealed class BillActionTypeMigrator(
                     {
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
-                                Id = null
+                            Identification = new Identification.Possible {
+                                Id = null,
                             },
                             TenantId = Constants.PPL,
                             PublicationStatusId = reader.GetInt32("node_status_id"),
@@ -92,8 +92,8 @@ internal sealed class BillActionTypeMigrator(
                         },
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
-                                Id = null
+                            Identification = new Identification.Possible {
+                                Id = null,
                             },
                             TenantId = Constants.CPCT,
                             PublicationStatusId = 2,
@@ -105,7 +105,7 @@ internal sealed class BillActionTypeMigrator(
                     NodeTypeId = 58,
                     TermIds = new List<int>(),
                 },
-                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                NameableDetails = new NameableDetails.ForCreate {
                     Description = reader.GetString("description"),
                     FileIdTileImage = reader.IsDBNull("file_id_tile_image")
                     ? null

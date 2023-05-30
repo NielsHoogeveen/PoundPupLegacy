@@ -25,7 +25,7 @@ internal sealed class LocationMigratorCPCT(
         foreach (var item in locations) {
             await locationLocatableInserter.InsertAsync(new LocationLocatable {
                 LocatableId = item.Item2,
-                LocationId = item.Item1.IdentificationForCreate.Id!.Value
+                LocationId = item.Item1.Identification.Id!.Value
             });
         }
     }
@@ -366,7 +366,7 @@ internal sealed class LocationMigratorCPCT(
                 UrlId = urlId
             });
             yield return (new LocationToCreate {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = renamedId
                 },
                 Street = GetStreet(id, reader.IsDBNull("street") ? null : reader.GetString("street")),

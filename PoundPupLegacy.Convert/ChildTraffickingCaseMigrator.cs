@@ -66,7 +66,7 @@ internal sealed class ChildTraffickingCaseMigrator(
 
             var vocabularyNames = new List<NewTermForNewNameable> {
                 new NewTermForNewNameable {
-                    IdentificationForCreate = new Identification.Possible {
+                    Identification = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -76,10 +76,10 @@ internal sealed class ChildTraffickingCaseMigrator(
             };
 
             var country = new ChildTraffickingCase.ToCreate {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.NodeDetailsForCreate {
                     PublisherId = reader.GetInt32("user_id"),
                     CreatedDateTime = reader.GetDateTime("created"),
                     ChangedDateTime = reader.GetDateTime("changed"),
@@ -90,7 +90,7 @@ internal sealed class ChildTraffickingCaseMigrator(
                     {
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -101,7 +101,7 @@ internal sealed class ChildTraffickingCaseMigrator(
                         },
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,
@@ -114,15 +114,15 @@ internal sealed class ChildTraffickingCaseMigrator(
                     NodeTypeId = reader.GetInt32("node_type_id"),
                     TermIds = new List<int>(),
                 },
-                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                NameableDetails = new NameableDetails.ForCreate {
                     Terms = vocabularyNames,
                     Description = reader.GetString("description"),
                     FileIdTileImage = null,
                 },
-                LocatableDetailsForCreate = new LocatableDetails.LocatableDetailsForCreate {
+                LocatableDetails = new LocatableDetails.LocatableDetailsForCreate {
                     Locations = new List<EventuallyIdentifiableLocation>(),
                 },
-                CaseDetailsForCreate = new CaseDetails.CaseDetailsForCreate {
+                CaseDetails = new CaseDetails.CaseDetailsForCreate {
                     Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date"))?.ToFuzzyDate(),
                     CaseParties = new List<NewCaseNewCaseParties>(),
                 },

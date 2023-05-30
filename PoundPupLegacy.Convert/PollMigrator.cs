@@ -66,16 +66,16 @@ internal sealed class PollMigrator(
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
 
-            if (currentPoll is not null && currentPoll.NodeDetailsForCreate.TenantNodes.First().UrlId != id) {
+            if (currentPoll is not null && currentPoll.NodeDetails.TenantNodes.First().UrlId != id) {
                 yield return currentPoll;
                 currentPoll = null;
                 currentDelta = null;
             }
             currentPoll ??= new SingleQuestionPoll.ToCreate {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.NodeDetailsForCreate {
                     PublisherId = reader.GetInt32("user_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
@@ -86,7 +86,7 @@ internal sealed class PollMigrator(
                     {
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -170,10 +170,10 @@ internal sealed class PollMigrator(
 
 
             multiQuestionPoll = new MultiQuestionPoll.ToCreate {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.NodeDetailsForCreate {
                     PublisherId = reader.GetInt32("user_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
@@ -184,7 +184,7 @@ internal sealed class PollMigrator(
                     {
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -263,16 +263,16 @@ internal sealed class PollMigrator(
                     var id = reader.GetInt32("id");
                     var name = reader.GetString("title");
 
-                    if (currentQuestion is not null && currentQuestion.NodeDetailsForCreate.TenantNodes.First().UrlId != id) {
+                    if (currentQuestion is not null && currentQuestion.NodeDetails.TenantNodes.First().UrlId != id) {
                         multiQuestionPoll.MultiQuestionPollDetails.PollQuestions.Add(currentQuestion);
                         currentQuestion = null;
                         currentDelta = null;
                     }
                     currentQuestion ??= new MultiQuestionPollQuestion.ToCreate {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
-                        NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                        NodeDetails = new NodeDetails.NodeDetailsForCreate {
                             PublisherId = reader.GetInt32("user_id"),
                             CreatedDateTime = reader.GetDateTime("created_date_time"),
                             ChangedDateTime = reader.GetDateTime("changed_date_time"),
@@ -283,7 +283,7 @@ internal sealed class PollMigrator(
                             {
                                 new TenantNode.ToCreateForNewNode
                                 {
-                                    IdentificationForCreate = new Identification.Possible {
+                                    Identification = new Identification.Possible {
                                         Id = null
                                     },
                                     TenantId = Constants.PPL,

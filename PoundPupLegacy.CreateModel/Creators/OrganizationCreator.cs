@@ -58,26 +58,26 @@ public class OrganizationCreator(
         if (element is UnitedStatesPoliticalParty.ToCreate pp) {
             await unitedStatesPoliticalPartyInserter.InsertAsync(pp);
         }
-        foreach (var organizationTypeId in element.OrganizationDetailsForCreate.OrganizationTypeIds) {
+        foreach (var organizationTypeId in element.OrganizationDetails.OrganizationTypeIds) {
             await organizationOrganizationTypeInserter.InsertAsync(new OrganizationOrganizationType{
                 OrganizationId = id,
                 OrganizationTypeId = organizationTypeId
             });
         }
         await interOrganizationalRelationCreator
-            .CreateAsync(element.OrganizationDetailsForCreate.InterOrganizationalRelationsFrom
+            .CreateAsync(element.OrganizationDetails.InterOrganizationalRelationsFrom
                 .Select(x => x.ResolveOrganizationFrom(id))
                 .ToAsyncEnumerable());
         await interOrganizationalRelationCreator
-            .CreateAsync(element.OrganizationDetailsForCreate.InterOrganizationalRelationsTo
+            .CreateAsync(element.OrganizationDetails.InterOrganizationalRelationsTo
                 .Select(x => x.ResolveOrganizationTo(id))
                 .ToAsyncEnumerable());
         await partyPoliticalRelationCreator
-            .CreateAsync(element.OrganizationDetailsForCreate.PartyPoliticalEntityRelationsToCreate
+            .CreateAsync(element.OrganizationDetails.PartyPoliticalEntityRelationsToCreate
                 .Select(x => x.ResolveParty(id))
                 .ToAsyncEnumerable());
         await personOrganizationRelationCreator
-            .CreateAsync(element.OrganizationDetailsForCreate.PersonOrganizationRelationsToCreate
+            .CreateAsync(element.OrganizationDetails.PersonOrganizationRelationsToCreate
                 .Select(x => x.ResolveOrganization(id))
                 .ToAsyncEnumerable());
     }

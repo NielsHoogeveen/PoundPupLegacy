@@ -44,10 +44,10 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
                 VocabularyId = vocabularyIdTopics
             }));
             yield return new FirstAndBottomLevelSubdivision.ToCreate {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.NodeDetailsForCreate {
                     Title = title,
                     CreatedDateTime = DateTime.Parse(parts[1]),
                     ChangedDateTime = DateTime.Parse(parts[2]),
@@ -58,7 +58,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
                     {
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -69,7 +69,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
                         },
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,
@@ -82,13 +82,13 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
                     PublisherId = int.Parse(parts[6]),
                     TermIds = new List<int>(),
                 },
-                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                NameableDetails = new NameableDetails.ForCreate {
                     Description = "",
                     Terms = new List<NewTermForNewNameable>
                     {
                         new NewTermForNewNameable
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null,
                             },
                             VocabularyId = vocabularyIdTopics,
@@ -473,7 +473,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
             {
                 new NewTermForNewNameable
                 {
-                    IdentificationForCreate = new Identification.Possible {
+                    Identification = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyIdTopics,
@@ -488,10 +488,10 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
             };
 
             yield return new FirstAndBottomLevelSubdivision.ToCreate {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.NodeDetailsForCreate {
                     PublisherId = reader.GetInt32("access_role_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
@@ -502,7 +502,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
                     {
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = 1,
@@ -515,7 +515,7 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
                     NodeTypeId = 17,
                     TermIds = new List<int>(),
                 },
-                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                NameableDetails = new NameableDetails.ForCreate {
                     Terms = vocabularyNames,
                     Description = "",
                     FileIdTileImage = null,

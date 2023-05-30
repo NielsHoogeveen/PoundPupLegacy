@@ -36,7 +36,7 @@ public class HouseTermCreator(
     {
         await base.ProcessAsync(element, id);
         await congressionalTermPoliticalPartyAffiliationCreator
-            .CreateAsync(element.CongressionalTermDetailsForCreate.PartyAffiliations
+            .CreateAsync(element.CongressionalTermDetails.PartyAffiliations
             .Select(x => x.ResolveCongressionalTerm(id))
             .ToAsyncEnumerable());
 

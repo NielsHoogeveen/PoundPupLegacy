@@ -92,7 +92,7 @@ internal sealed class PersonMigratorCPCT(
 
             var vocabularyNames = new List<NewTermForNewNameable> {
                 new NewTermForNewNameable {
-                    IdentificationForCreate = new Identification.Possible {
+                    Identification = new Identification.Possible {
                         Id = null,
                     },
                     VocabularyId = vocabularyId,
@@ -102,10 +102,10 @@ internal sealed class PersonMigratorCPCT(
             };
 
             yield return new Person.ToCreate {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                NodeDetails = new NodeDetails.NodeDetailsForCreate {
                     PublisherId = reader.GetInt32("access_role_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
@@ -116,7 +116,7 @@ internal sealed class PersonMigratorCPCT(
                     {
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.PPL,
@@ -127,7 +127,7 @@ internal sealed class PersonMigratorCPCT(
                         },
                         new TenantNode.ToCreateForNewNode
                         {
-                            IdentificationForCreate = new Identification.Possible {
+                            Identification = new Identification.Possible {
                                 Id = null
                             },
                             TenantId = Constants.CPCT,
@@ -140,15 +140,15 @@ internal sealed class PersonMigratorCPCT(
                     NodeTypeId = 24,
                     TermIds = new List<int>(),
                 },
-                NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                NameableDetails = new NameableDetails.ForCreate {
                     Description = "",
                     FileIdTileImage = null,
                     Terms = vocabularyNames,
                 },
-                LocatableDetailsForCreate = new LocatableDetails.LocatableDetailsForCreate {
+                LocatableDetails = new LocatableDetails.LocatableDetailsForCreate {
                     Locations = new List<EventuallyIdentifiableLocation>(),
                 },
-                PersonDetailsForCreate = new PersonDetails.PersonDetailsForCreate {
+                PersonDetails = new PersonDetails.ForCreate {
                     DateOfBirth = null,
                     DateOfDeath = null,
                     FileIdPortrait = null,

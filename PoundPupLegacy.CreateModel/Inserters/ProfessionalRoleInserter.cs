@@ -12,9 +12,9 @@ internal sealed class ProfessionalRoleInserterFactory : AutoGenerateIdDatabaseIn
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(PersonId, request.ProfessionalRoleDetailsForCreate.PersonId),
-            ParameterValue.Create(ProfessionId, request.ProfessionalRoleDetailsForCreate.ProfessionId),
-            ParameterValue.Create(DateRange, request.ProfessionalRoleDetailsForCreate.DateTimeRange)
+            ParameterValue.Create(PersonId, request.ProfessionalRoleDetails.PersonId),
+            ParameterValue.Create(ProfessionId, request.ProfessionalRoleDetails.ProfessionId),
+            ParameterValue.Create(DateRange, request.ProfessionalRoleDetails.DateTimeRange)
         };
     }
 }

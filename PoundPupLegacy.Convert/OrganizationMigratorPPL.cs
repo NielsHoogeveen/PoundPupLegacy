@@ -24,10 +24,10 @@ internal sealed class OrganizationMigratorPPL(
         });
 
         yield return new BasicOrganization.ToCreate {
-            IdentificationForCreate = new Identification.Possible {
+            Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.NodeDetailsForCreate {
                 PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
@@ -38,7 +38,7 @@ internal sealed class OrganizationMigratorPPL(
                 {
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -49,7 +49,7 @@ internal sealed class OrganizationMigratorPPL(
                     },
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -62,12 +62,12 @@ internal sealed class OrganizationMigratorPPL(
                 NodeTypeId = 23,
                 TermIds = new List<int>(),
             },
-            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+            NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
                 Terms = new List<NewTermForNewNameable> {
                     new NewTermForNewNameable {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -81,10 +81,10 @@ internal sealed class OrganizationMigratorPPL(
                     }
                 },
             },
-            LocatableDetailsForCreate = new LocatableDetails.LocatableDetailsForCreate {
+            LocatableDetails = new LocatableDetails.LocatableDetailsForCreate {
                 Locations = new List<EventuallyIdentifiableLocation>(),
             },
-            OrganizationDetailsForCreate = new OrganizationDetails.OrganizationDetailsForCreate {
+            OrganizationDetails = new OrganizationDetails.OrganizationDetailsForCreate {
                 WebsiteUrl = null,
                 EmailAddress = null,
                 Established = null,
@@ -104,10 +104,10 @@ internal sealed class OrganizationMigratorPPL(
             }
         };
         yield return new UnitedStatesPoliticalParty.ToCreate {
-            IdentificationForCreate = new Identification.Possible {
+            Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.NodeDetailsForCreate {
                 PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
@@ -118,7 +118,7 @@ internal sealed class OrganizationMigratorPPL(
                 {
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -129,7 +129,7 @@ internal sealed class OrganizationMigratorPPL(
                     },
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -142,12 +142,12 @@ internal sealed class OrganizationMigratorPPL(
                 NodeTypeId = 63,
                 TermIds = new List<int>(),
             },
-            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+            NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
                 Terms = new List<NewTermForNewNameable> {
                     new NewTermForNewNameable {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -161,10 +161,10 @@ internal sealed class OrganizationMigratorPPL(
                     }
                 },
             },
-            LocatableDetailsForCreate = new LocatableDetails.LocatableDetailsForCreate {
+            LocatableDetails = new LocatableDetails.LocatableDetailsForCreate {
                 Locations = new List<EventuallyIdentifiableLocation>(),
             },
-            OrganizationDetailsForCreate = new OrganizationDetails.OrganizationDetailsForCreate {
+            OrganizationDetails = new OrganizationDetails.OrganizationDetailsForCreate {
                 WebsiteUrl = null,
                 EmailAddress = null,
                 Established = null,
@@ -184,10 +184,10 @@ internal sealed class OrganizationMigratorPPL(
             },
         };
         yield return new UnitedStatesPoliticalParty.ToCreate {
-            IdentificationForCreate = new Identification.Possible {
+            Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.NodeDetailsForCreate {
                 PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
@@ -198,7 +198,7 @@ internal sealed class OrganizationMigratorPPL(
                 {
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                                 Id = null
                             },
                         TenantId = Constants.PPL,
@@ -209,7 +209,7 @@ internal sealed class OrganizationMigratorPPL(
                     },
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                                 Id = null
                             },
                         TenantId = Constants.CPCT,
@@ -222,12 +222,12 @@ internal sealed class OrganizationMigratorPPL(
                 NodeTypeId = 63,
                 TermIds = new List<int>(),
             },
-            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+            NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
                 Terms = new List<NewTermForNewNameable> {
                     new NewTermForNewNameable {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -241,10 +241,10 @@ internal sealed class OrganizationMigratorPPL(
                     }
                 },
             },
-            LocatableDetailsForCreate = new LocatableDetails.LocatableDetailsForCreate {
+            LocatableDetails = new LocatableDetails.LocatableDetailsForCreate {
                 Locations = new List<EventuallyIdentifiableLocation>(),
             },
-            OrganizationDetailsForCreate = new OrganizationDetails.OrganizationDetailsForCreate {
+            OrganizationDetails = new OrganizationDetails.OrganizationDetailsForCreate {
                 WebsiteUrl = null,
                 EmailAddress = null,
                 Established = null,
@@ -264,10 +264,10 @@ internal sealed class OrganizationMigratorPPL(
             },
         };
         yield return new BasicOrganization.ToCreate {
-            IdentificationForCreate = new Identification.Possible {
+            Identification = new Identification.Possible {
                 Id = null
             },
-            NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+            NodeDetails = new NodeDetails.NodeDetailsForCreate {
                 PublisherId = 1,
                 CreatedDateTime = DateTime.Now,
                 ChangedDateTime = DateTime.Now,
@@ -278,7 +278,7 @@ internal sealed class OrganizationMigratorPPL(
                 {
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.PPL,
@@ -289,7 +289,7 @@ internal sealed class OrganizationMigratorPPL(
                     },
                     new TenantNode.ToCreateForNewNode
                     {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null
                         },
                         TenantId = Constants.CPCT,
@@ -302,12 +302,12 @@ internal sealed class OrganizationMigratorPPL(
                 NodeTypeId = 23,
                 TermIds = new List<int>(),
             },
-            NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+            NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
                 Terms = new List<NewTermForNewNameable> {
                     new NewTermForNewNameable {
-                        IdentificationForCreate = new Identification.Possible {
+                        Identification = new Identification.Possible {
                             Id = null,
                         },
                         VocabularyId = vocabularyId,
@@ -321,10 +321,10 @@ internal sealed class OrganizationMigratorPPL(
                     }
                 },
             },
-            LocatableDetailsForCreate = new LocatableDetails.LocatableDetailsForCreate {
+            LocatableDetails = new LocatableDetails.LocatableDetailsForCreate {
                 Locations = new List<EventuallyIdentifiableLocation>(),
             },
-            OrganizationDetailsForCreate = new OrganizationDetails.OrganizationDetailsForCreate {
+            OrganizationDetails = new OrganizationDetails.OrganizationDetailsForCreate {
                 WebsiteUrl = null,
                 EmailAddress = null,
                 Established = null,
@@ -557,7 +557,7 @@ internal sealed class OrganizationMigratorPPL(
                 }));
             }
             vocabularyNames.Add(new NewTermForNewNameable {
-                IdentificationForCreate = new Identification.Possible {
+                Identification = new Identification.Possible {
                     Id = null,
                 },
                 VocabularyId = vocabularyId,
@@ -567,10 +567,10 @@ internal sealed class OrganizationMigratorPPL(
 
             if (id == Constants.DEMOCRATIC_PARTY || id == Constants.REPUBLICAN_PARTY) {
                 yield return new UnitedStatesPoliticalParty.ToCreate {
-                    IdentificationForCreate = new Identification.Possible {
+                    Identification = new Identification.Possible {
                         Id = null
                     },
-                    NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    NodeDetails = new NodeDetails.NodeDetailsForCreate {
                         PublisherId = reader.GetInt32("access_role_id"),
                         CreatedDateTime = reader.GetDateTime("created_date_time"),
                         ChangedDateTime = reader.GetDateTime("changed_date_time"),
@@ -579,7 +579,7 @@ internal sealed class OrganizationMigratorPPL(
                         AuthoringStatusId = 1,
                         TenantNodes = new List<TenantNode.ToCreateForNewNode> {
                             new TenantNode.ToCreateForNewNode {
-                                IdentificationForCreate = new Identification.Possible {
+                                Identification = new Identification.Possible {
                                     Id = null
                                 },
                                 TenantId = Constants.PPL,
@@ -589,7 +589,7 @@ internal sealed class OrganizationMigratorPPL(
                                 UrlId = id
                             },
                             new TenantNode.ToCreateForNewNode {
-                                IdentificationForCreate = new Identification.Possible {
+                                Identification = new Identification.Possible {
                                     Id = null
                                 },
                                 TenantId = Constants.CPCT,
@@ -602,15 +602,15 @@ internal sealed class OrganizationMigratorPPL(
                         NodeTypeId = 63,
                         TermIds = new List<int>(),
                     },
-                    NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                    NameableDetails = new NameableDetails.ForCreate {
                         FileIdTileImage = null,
                         Description = reader.IsDBNull("description") ? "" : reader.GetString("description"),
                         Terms = vocabularyNames,
                     },
-                    LocatableDetailsForCreate = new LocatableDetails.LocatableDetailsForCreate {
+                    LocatableDetails = new LocatableDetails.LocatableDetailsForCreate {
                         Locations = new List<EventuallyIdentifiableLocation>(),
                     },
-                    OrganizationDetailsForCreate = new OrganizationDetails.OrganizationDetailsForCreate {
+                    OrganizationDetails = new OrganizationDetails.OrganizationDetailsForCreate {
                         WebsiteUrl = reader.IsDBNull("website_url") ? null : reader.GetString("website_url"),
                         EmailAddress = reader.IsDBNull("email_address") ? null : reader.GetString("email_address"),
                         Established = reader.IsDBNull("established") ? null : (new DateTimeRange(reader.GetDateTime("established"), reader.GetDateTime("established"))).ToFuzzyDate(),
@@ -632,10 +632,10 @@ internal sealed class OrganizationMigratorPPL(
             }
             else {
                 yield return new BasicOrganization.ToCreate {
-                    IdentificationForCreate = new Identification.Possible {
+                    Identification = new Identification.Possible {
                         Id = null
                     },
-                    NodeDetailsForCreate = new NodeDetails.NodeDetailsForCreate {
+                    NodeDetails = new NodeDetails.NodeDetailsForCreate {
                         PublisherId = reader.GetInt32("access_role_id"),
                         CreatedDateTime = reader.GetDateTime("created_date_time"),
                         ChangedDateTime = reader.GetDateTime("changed_date_time"),
@@ -646,7 +646,7 @@ internal sealed class OrganizationMigratorPPL(
                         {
                             new TenantNode.ToCreateForNewNode
                             {
-                                IdentificationForCreate = new Identification.Possible {
+                                Identification = new Identification.Possible {
                                     Id = null
                                 },
                                 TenantId = Constants.PPL,
@@ -657,7 +657,7 @@ internal sealed class OrganizationMigratorPPL(
                             },
                             new TenantNode.ToCreateForNewNode
                             {
-                                IdentificationForCreate = new Identification.Possible {
+                                Identification = new Identification.Possible {
                                     Id = null
                                 },
                                 TenantId = Constants.CPCT,
@@ -670,15 +670,15 @@ internal sealed class OrganizationMigratorPPL(
                         NodeTypeId = reader.GetInt16("node_type_id"),
                         TermIds = new List<int>(),
                     },
-                    NameableDetailsForCreate = new NameableDetails.NameableDetailsForCreate {
+                    NameableDetails = new NameableDetails.ForCreate {
                         FileIdTileImage = null,
                         Terms = vocabularyNames,
                         Description = reader.IsDBNull("description") ? "" : reader.GetString("description"),
                     },
-                    LocatableDetailsForCreate = new LocatableDetails.LocatableDetailsForCreate {
+                    LocatableDetails = new LocatableDetails.LocatableDetailsForCreate {
                         Locations = new List<EventuallyIdentifiableLocation>(),
                     },
-                    OrganizationDetailsForCreate = new OrganizationDetails.OrganizationDetailsForCreate {
+                    OrganizationDetails = new OrganizationDetails.OrganizationDetailsForCreate {
                         OrganizationTypeIds = organizationOrganizationTypeIds,
                         WebsiteUrl = reader.IsDBNull("website_url") ? null : reader.GetString("website_url"),
                         EmailAddress = reader.IsDBNull("email_address") ? null : reader.GetString("email_address"),

@@ -44,7 +44,7 @@ internal class SystemGroupCreator(
         await systemGroupInserter.InsertAsync(element);
 
         var administratorRole = element.AdministratorRole;
-        administratorRole.UserGroupId = element.IdentificationForCreate.Id!.Value;
+        administratorRole.UserGroupId = element.Identification.Id!.Value;
         await principalInserter.InsertAsync(administratorRole);
         await userRoleInserter.InsertAsync(administratorRole);
         await administratorRoleInserter.InsertAsync(administratorRole);

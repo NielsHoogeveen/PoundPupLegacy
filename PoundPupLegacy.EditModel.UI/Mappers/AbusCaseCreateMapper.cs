@@ -2,7 +2,7 @@
 
 internal class AbusCaseCreateMapper(
     IMapper<EditModel.NodeDetails.NodeDetailsForCreate, CreateModel.NodeDetails.NodeDetailsForCreate> nodeDetailsMapper,
-    IMapper<EditModel.NameableDetails, CreateModel.NameableDetails.NameableDetailsForCreate> nameableMapper,
+    IMapper<EditModel.NameableDetails, CreateModel.NameableDetails.ForCreate> nameableMapper,
     IMapper<EditModel.LocatableDetails.NewLocatableDetails, CreateModel.LocatableDetails.LocatableDetailsForCreate> locatableMapper,
     IMapper<EditModel.CaseDetails, CreateModel.CaseDetails.CaseDetailsForCreate> caseDetailMapper,
     IMapper<EditModel.AbuseCaseDetails, CreateModel.AbuseCaseDetails> abuseCaseDetailsMapper
@@ -12,11 +12,11 @@ internal class AbusCaseCreateMapper(
     {
         var now = DateTime.Now;
         return new CreateModel.AbuseCase.ToCreate {
-            IdentificationForCreate = new Identification.Possible { Id = null},
-            NodeDetailsForCreate = nodeDetailsMapper.Map(viewModel.NodeDetailsForCreate),
-            NameableDetailsForCreate = nameableMapper.Map(viewModel.NameableDetails),
-            LocatableDetailsForCreate = locatableMapper.Map(viewModel.NewLocatableDetails),
-            CaseDetailsForCreate = caseDetailMapper.Map(viewModel.CaseDetails),
+            Identification = new Identification.Possible { Id = null},
+            NodeDetails = nodeDetailsMapper.Map(viewModel.NodeDetailsForCreate),
+            NameableDetails = nameableMapper.Map(viewModel.NameableDetails),
+            LocatableDetails = locatableMapper.Map(viewModel.NewLocatableDetails),
+            CaseDetails = caseDetailMapper.Map(viewModel.CaseDetails),
             AbuseCaseDetails = abuseCaseDetailsMapper.Map(viewModel.AbuseCaseDetails),
         };
     }
