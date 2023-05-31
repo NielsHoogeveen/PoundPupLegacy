@@ -1,18 +1,33 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
 [JsonSerializable(typeof(DeportationCase.ToUpdate), TypeInfoPropertyName = "DeportationCaseToUpdate")]
+
 [JsonSerializable(typeof(LocatableDetails.ForUpdate), TypeInfoPropertyName = "LocatableDetailsForUpdate")]
 [JsonSerializable(typeof(Location.ToUpdate), TypeInfoPropertyName = "LocationDetailsForUpdate")]
 [JsonSerializable(typeof(List<Location.ToUpdate>), TypeInfoPropertyName = "LocationDetailsListForUpdate")]
-[JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
-public partial class ExistingDeportationCaseJsonContext : JsonSerializerContext { }
 
-[JsonSerializable(typeof(DeportationCase.ToCreate))]
+[JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
+
+[JsonSerializable(typeof(TenantNodeDetails.ForUpdate), TypeInfoPropertyName = "TenantNodeDetailsForUpdate")]
+
+[JsonSerializable(typeof(Tags.ToUpdate), TypeInfoPropertyName = "TagsToUpdate")]
+[JsonSerializable(typeof(List<Tags.ToUpdate>), TypeInfoPropertyName = "TagsListToUpdate")]
+
+public partial class DeportationCaseToUpdateJsonContext : JsonSerializerContext { }
+
+[JsonSerializable(typeof(DeportationCase.ToCreate), TypeInfoPropertyName = "DeportationCaseToCreate")]
+
 [JsonSerializable(typeof(LocatableDetails.ForCreate), TypeInfoPropertyName = "LocatableDetailsCreate")]
 [JsonSerializable(typeof(Location.ToCreate), TypeInfoPropertyName = "LocationDetailsForCreate")]
 [JsonSerializable(typeof(List<Location.ToCreate>), TypeInfoPropertyName = "LocationDetailsListForCreate")]
+
 [JsonSerializable(typeof(NodeDetails.ForCreate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
-public partial class NewDeportationCaseJsonContext : JsonSerializerContext { }
+
+[JsonSerializable(typeof(TenantNodeDetails.ForCreate), TypeInfoPropertyName = "TenantNodeDetailsForCreate")]
+
+[JsonSerializable(typeof(Tags.ToCreate), TypeInfoPropertyName = "TagsToCreate")]
+[JsonSerializable(typeof(List<Tags.ToCreate>), TypeInfoPropertyName = "TagsListToCreate")]
+public partial class DeportationCaseToCreateJsonContext : JsonSerializerContext { }
 
 [JsonSerializable(typeof(DeportationCaseDetails))]
 public partial class DeportationCaseDetailsJsonContext : JsonSerializerContext { }

@@ -5,7 +5,7 @@
     <ValidationMessage For="@(() => Model.Title)" />
 </div>
 @ChildContent
-<TagsEditor NodeTypesTags="Model.Tags" />
+<TagsEditor NodeTypesTags="Model.Tags.ToList()" />
 <TenantNodesEditor NodeDetails="@Model" />
 <AttachmentEditor Files="Model.Files"/>
 @if (Model is Locatable locatable) {

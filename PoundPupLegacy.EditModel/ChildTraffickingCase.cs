@@ -1,23 +1,30 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
 [JsonSerializable(typeof(ChildTraffickingCase.ToUpdate), TypeInfoPropertyName = "ChildTraffickingCaseToUpdate")]
+
 [JsonSerializable(typeof(LocatableDetails.ForUpdate), TypeInfoPropertyName = "LocatableDetailsForUpdate")]
 [JsonSerializable(typeof(Location.ToUpdate), TypeInfoPropertyName = "LocationDetailsForUpdate")]
 [JsonSerializable(typeof(List<Location.ToUpdate>), TypeInfoPropertyName = "LocationDetailsListForUpdate")]
+
 [JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
-public partial class ExistingChildTraffickingCaseJsonContext : JsonSerializerContext { }
+
+[JsonSerializable(typeof(TenantNodeDetails.ForUpdate), TypeInfoPropertyName = "TenantNodeDetailsForUpdate")]
+
+[JsonSerializable(typeof(Tags.ToUpdate), TypeInfoPropertyName = "TagsToUpdate")]
+[JsonSerializable(typeof(List<Tags.ToUpdate>), TypeInfoPropertyName = "TagsListToUpdate")]
+public partial class ChildTraffickingCaseToUpdateJsonContext : JsonSerializerContext { }
 
 [JsonSerializable(typeof(LocatableDetails.ForCreate), TypeInfoPropertyName = "LocatableDetailsCreate")]
 [JsonSerializable(typeof(Location.ToCreate), TypeInfoPropertyName = "LocationDetailsForCreate")]
 [JsonSerializable(typeof(List<Location.ToCreate>), TypeInfoPropertyName = "LocationDetailsListForCreate")]
 [JsonSerializable(typeof(NodeDetails.ForCreate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
-public partial class NewChildTraffickingCaseJsonContext : JsonSerializerContext { }
 
-[JsonSerializable(typeof(ChildTraffickingCaseDetails.ResolvedChildTraffickingCaseDetails))]
-public partial class ResolvedChildTraffickingCaseDetailsJsonContext : JsonSerializerContext { }
+[JsonSerializable(typeof(TenantNodeDetails.ForCreate), TypeInfoPropertyName = "TenantNodeDetailsForCreate")]
 
-[JsonSerializable(typeof(ChildTraffickingCaseDetails.NewChildTraffickingCaseDetails))]
-public partial class NewChildTraffickingCaseDetailsJsonContext : JsonSerializerContext { }
+[JsonSerializable(typeof(Tags.ToCreate), TypeInfoPropertyName = "TagsToCreate")]
+[JsonSerializable(typeof(List<Tags.ToCreate>), TypeInfoPropertyName = "TagsListToCreate")]
+public partial class ChildTraffickingCaseToCreateJsonContext : JsonSerializerContext { }
+
 
 public abstract record ChildTraffickingCase : Case, ResolvedNode, Node<ChildTraffickingCase.ToUpdate, ChildTraffickingCase.ToCreate>, Resolver<ChildTraffickingCase.ToUpdate, ChildTraffickingCase.ToCreate, Unit>
 {

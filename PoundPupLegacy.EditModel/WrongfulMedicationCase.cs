@@ -7,15 +7,26 @@
 
 [JsonSerializable(typeof(List<Location.ToUpdate>), TypeInfoPropertyName = "LocationDetailsListForUpdate")]
 [JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
-public partial class ExistingWrongfulMedicationCaseJsonContext : JsonSerializerContext { }
 
-[JsonSerializable(typeof(WrongfulMedicationCase.ToCreate))]
+[JsonSerializable(typeof(TenantNodeDetails.ForUpdate), TypeInfoPropertyName = "TenantNodeDetailsForUpdate")]
+
+[JsonSerializable(typeof(Tags.ToUpdate), TypeInfoPropertyName = "TagsToUpdate")]
+[JsonSerializable(typeof(List<Tags.ToUpdate>), TypeInfoPropertyName = "TagsListToUpdate")]
+public partial class WrongfulMedicationCaseToUpdateJsonContext : JsonSerializerContext { }
+
+[JsonSerializable(typeof(WrongfulMedicationCase.ToCreate), TypeInfoPropertyName = "WrongfulMedicationCaseToCreate")]
 
 [JsonSerializable(typeof(LocatableDetails.ForCreate), TypeInfoPropertyName = "LocatableDetailsCreate")]
 [JsonSerializable(typeof(Location.ToCreate), TypeInfoPropertyName = "LocationDetailsForCreate")]
 [JsonSerializable(typeof(List<Location.ToCreate>), TypeInfoPropertyName = "LocationDetailsListForCreate")]
+
 [JsonSerializable(typeof(NodeDetails.ForCreate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
-public partial class NewWrongfulMedicationCaseJsonContext : JsonSerializerContext { }
+
+[JsonSerializable(typeof(TenantNodeDetails.ForCreate), TypeInfoPropertyName = "TenantNodeDetailsForCreate")]
+
+[JsonSerializable(typeof(Tags.ToCreate), TypeInfoPropertyName = "TagsToCreate")]
+[JsonSerializable(typeof(List<Tags.ToCreate>), TypeInfoPropertyName = "TagsListToCreate")]
+public partial class WrongfulMedicationCaseToCreateJsonContext : JsonSerializerContext { }
 
 public abstract record WrongfulMedicationCase : Case, ResolvedNode, Node<WrongfulMedicationCase.ToUpdate, WrongfulMedicationCase.ToCreate>, Resolver<WrongfulMedicationCase.ToUpdate, WrongfulMedicationCase.ToCreate, Unit>
 {

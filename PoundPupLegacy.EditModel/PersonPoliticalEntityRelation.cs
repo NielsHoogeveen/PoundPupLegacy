@@ -1,10 +1,5 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(PersonPoliticalEntityRelation.Complete.Resolved.ToUpdate), TypeInfoPropertyName = "PersonPoliticalEntityRelationCompleteResolvedToUpdate")]
-[JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
-
-public partial class ExistingPersonPoliticalEntityRelationJsonContext : JsonSerializerContext { }
-
 public static class PersonPoliticalEntityRelationExtensions
 {
     public static PersonPoliticalEntityRelation GetPersonPoliticalEntityRelation(this PersonListItem personListItem, PersonPoliticalEntityRelationTypeListItem relationType, int ownerId, int publisherId)

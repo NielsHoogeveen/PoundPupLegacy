@@ -34,7 +34,7 @@ public abstract record NodeDetails{
         public required List<TenantNode.ToCreate.ForExistingNode> TenantNodesToAdd { get; init; }
         public required List<TenantNode.ToUpdate> TenantNodesToUpdate { get; init; }
         public required List<TenantNodeToDelete> TenantNodesToRemove { get; init; }
-        public required List<NodeTermToAdd> NodeTermsToAdd { get; init; }
+        public required List<ResolvedNodeTermToAdd> NodeTermsToAdd { get; init; }
         public required List<NodeTermToRemove> NodeTermsToRemove { get; init; }
     }
 }

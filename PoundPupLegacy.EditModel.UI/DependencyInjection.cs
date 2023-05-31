@@ -3,6 +3,7 @@ using PoundPupLegacy.CreateModel.Updaters;
 using Microsoft.Extensions.DependencyInjection;
 using PoundPupLegacy.EditModel.UI.Services;
 using PoundPupLegacy.EditModel.UI.Services.Implementation;
+using PoundPupLegacy.CreateModel.Deleters;
 
 namespace PoundPupLegacy.EditModel.UI;
 
@@ -13,6 +14,7 @@ public static class DependencyInjection
         services.AddEditModelReaders();
         services.AddEditModelInserters();
         services.AddCreateModelUpdaters();
+        services.AddCreateModelDeleters();
         services.AddTransient<IAttachmentStoreService, AttachmentStoreService>();
         services.AddViewModelRetrieveService<AbuseCase, AbuseCase.ToUpdate, AbuseCase.ToCreate>();
         services.AddViewModelRetrieveService<ChildTraffickingCase, ChildTraffickingCase.ToUpdate, ChildTraffickingCase.ToCreate>();

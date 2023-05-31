@@ -3,8 +3,8 @@
 namespace PoundPupLegacy.EditModel.UI.Mappers;
 
 internal class NodeDetailsForUpdateMapper(
-    IEnumerableMapper<Tags, NodeTermToAdd> nodeTermsToAddMapper,
-    IEnumerableMapper<Tags, NodeTermToRemove> nodeTermsToDeleteMapper,
+    IEnumerableMapper<Tags.ToUpdate, ResolvedNodeTermToAdd> nodeTermsToAddMapper,
+    IEnumerableMapper<Tags.ToUpdate, NodeTermToRemove> nodeTermsToDeleteMapper,
     IEnumerableMapper<EditModel.TenantNode.ToCreateForExistingNode, CreateModel.TenantNode.ToCreate.ForExistingNode> tenantNodeToCreateMapper,
     IEnumerableMapper<EditModel.TenantNode.ToUpdate, CreateModel.Deleters.TenantNodeToDelete> tenantNodeDeleteMapper,
     IEnumerableMapper<EditModel.TenantNode.ToUpdate, CreateModel.TenantNode.ToUpdate> tenantNodeUpdateMapper
@@ -20,8 +20,8 @@ internal class NodeDetailsForUpdateMapper(
             TenantNodesToAdd = tenantNodeToCreateMapper.Map(source.TenantNodeDetailsForUpdate.TenantNodesToAdd).ToList(),
             TenantNodesToRemove = tenantNodeDeleteMapper.Map(source.TenantNodeDetailsForUpdate.TenantNodesToUpdate).ToList(),
             TenantNodesToUpdate = tenantNodeUpdateMapper.Map(source.TenantNodeDetailsForUpdate.TenantNodesToUpdate).ToList(),
-            NodeTermsToAdd = nodeTermsToAddMapper.Map(source.Tags).ToList(),
-            NodeTermsToRemove = nodeTermsToDeleteMapper.Map(source.Tags).ToList(),
+            NodeTermsToAdd = nodeTermsToAddMapper.Map(source.TagsForUpdate).ToList(),
+            NodeTermsToRemove = nodeTermsToDeleteMapper.Map(source.TagsForUpdate).ToList(),
 
         };
     }

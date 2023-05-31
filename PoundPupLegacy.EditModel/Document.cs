@@ -1,14 +1,24 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
 [JsonSerializable(typeof(Document.ToUpdate), TypeInfoPropertyName = "DocumentToUpdate")]
-[JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
-public partial class ExistingDocumentJsonContext : JsonSerializerContext { }
 
-[JsonSerializable(typeof(Document.ToCreate))]
+[JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
+
+[JsonSerializable(typeof(TenantNodeDetails.ForUpdate), TypeInfoPropertyName = "TenantNodeDetailsForUpdate")]
+
+[JsonSerializable(typeof(Tags.ToUpdate), TypeInfoPropertyName = "TagsToUpdate")]
+[JsonSerializable(typeof(List<Tags.ToUpdate>), TypeInfoPropertyName = "TagsListToUpdate")]
+public partial class DocumentToUpdateJsonContext : JsonSerializerContext { }
+
+[JsonSerializable(typeof(Document.ToCreate), TypeInfoPropertyName = "DocumentToCreate")]
+
 [JsonSerializable(typeof(NodeDetails.ForCreate), TypeInfoPropertyName = "NodeDetailsForCreate")]
-public partial class NewDocumentJsonContext : JsonSerializerContext { }
-[JsonSerializable(typeof(DocumentDetails))]
-public partial class DocumentDetailsJsonContext : JsonSerializerContext { }
+
+[JsonSerializable(typeof(TenantNodeDetails.ForCreate), TypeInfoPropertyName = "TenantNodeDetailsForCreate")]
+
+[JsonSerializable(typeof(Tags.ToCreate), TypeInfoPropertyName = "TagsToCreate")]
+[JsonSerializable(typeof(List<Tags.ToCreate>), TypeInfoPropertyName = "TagsListToCreate")]
+public partial class DocumentToCreateJsonContext : JsonSerializerContext { }
 
 public abstract record Document : SimpleTextNode, ResolvedNode, Node<Document.ToUpdate, Document.ToCreate>, Resolver<Document.ToUpdate, Document.ToCreate, Unit>
 

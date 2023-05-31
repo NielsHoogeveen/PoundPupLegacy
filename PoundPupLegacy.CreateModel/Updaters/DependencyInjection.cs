@@ -6,6 +6,7 @@ public static class DependencyInjection
 {
     public static void AddCreateModelUpdaters(this IServiceCollection services)
     {
+        services.AddTransient<NodeDetailsChangerFactory>();
         services.AddTransient<IEntityChangerFactory<AbuseCase.ToUpdate>, AbuseCaseChangerFactory>();
         services.AddTransient<IEntityChangerFactory<ChildTraffickingCase.ToUpdate>, ChildTraffickingCaseChangerFactory>();
         services.AddTransient<IEntityChangerFactory<CoercedAdoptionCase.ToUpdate>, CoercedAdoptionCaseChangerFactory>();

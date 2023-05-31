@@ -1,12 +1,5 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(PersonOrganizationRelation.ForPerson.Complete.Resolved.ToUpdate), TypeInfoPropertyName = "PersonOrganizationRelationForPersonCompleteResolvedToUpdate")]
-[JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
-public partial class ExistingPersonOrganizationRelationForPersonJsonContext : JsonSerializerContext { }
-
-[JsonSerializable(typeof(PersonOrganizationRelation.ForOrganization.Complete.Resolved.ToUpdate), TypeInfoPropertyName = "PersonOrganizationRelationForOrganizationCompleteResolvedToUpdate")]
-[JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
-public partial class ExistingPersonOrganizationRelationForOrganizationJsonContext : JsonSerializerContext { }
 
 public interface ResolvedPersonOrganizationRelation : Relation
 {

@@ -1,8 +1,24 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
 [JsonSerializable(typeof(BlogPost.ToUpdate), TypeInfoPropertyName = "BlogPostToUpdate")]
+
 [JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
-public partial class ExistingBlogPostJsonContext : JsonSerializerContext { }
+
+[JsonSerializable(typeof(TenantNodeDetails.ForUpdate), TypeInfoPropertyName = "TenantNodeDetailsForUpdate")]
+
+[JsonSerializable(typeof(Tags.ToUpdate), TypeInfoPropertyName = "TagsToUpdate")]
+[JsonSerializable(typeof(List<Tags.ToUpdate>), TypeInfoPropertyName = "TagsListToUpdate")]
+public partial class BlogPostToUpdateJsonContext : JsonSerializerContext { }
+
+[JsonSerializable(typeof(BlogPost.ToCreate), TypeInfoPropertyName = "BlogPostToCreate")]
+
+[JsonSerializable(typeof(NodeDetails.ForCreate), TypeInfoPropertyName = "NodeDetailsForCreate")]
+
+[JsonSerializable(typeof(TenantNodeDetails.ForCreate), TypeInfoPropertyName = "TenantNodeDetailsForCreate")]
+
+[JsonSerializable(typeof(Tags.ToCreate), TypeInfoPropertyName = "TagsToCreate")]
+[JsonSerializable(typeof(List<Tags.ToCreate>), TypeInfoPropertyName = "TagsListToCreate")]
+public partial class BlogPostToCreateJsonContext : JsonSerializerContext { }
 
 public abstract record BlogPost : SimpleTextNode, ResolvedNode, Node<BlogPost.ToUpdate, BlogPost.ToCreate>, Resolver<BlogPost.ToUpdate, BlogPost.ToCreate, Unit>
 {

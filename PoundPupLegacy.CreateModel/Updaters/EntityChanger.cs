@@ -11,7 +11,7 @@ public class NodeDetailsChangerFactory(
     IDatabaseUpdaterFactory<TenantNode.ToUpdate> tenantNodeUpdaterFactory,
     IDatabaseDeleterFactory<TenantNodeToDelete> tenantNodeDeleterFactory,
     IDatabaseInserterFactory<TenantNode.ToCreate.ForExistingNode> tenantNodeInserterFactory,
-    IDatabaseInserterFactory<NodeTermToAdd> nodeTermInserterFactory,
+    IDatabaseInserterFactory<ResolvedNodeTermToAdd> nodeTermInserterFactory,
     IDatabaseDeleterFactory<NodeTermToRemove> nodeTermDeleterFactory
 )
 {
@@ -31,7 +31,7 @@ public class NodeDetailsChanger(
     IDatabaseUpdater<TenantNode.ToUpdate> tenantNodeUpdater,
     IDatabaseDeleter<TenantNodeToDelete> tenantNodeDeleter,
     IDatabaseInserter<TenantNode.ToCreate.ForExistingNode> tenantNodeInserter,
-    IDatabaseInserter<NodeTermToAdd> nodeTermInserter,
+    IDatabaseInserter<ResolvedNodeTermToAdd> nodeTermInserter,
     IDatabaseDeleter<NodeTermToRemove> nodeTermDeleter
 ) : IAsyncDisposable
 {

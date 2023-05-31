@@ -24,7 +24,7 @@
         {
 
 
-            if (!(elem is NodeTerm.ExistingNodeTerm existingNodeTerm && existingNodeTerm.HasBeenDeleted)) {
+            if (!(elem is NodeTerm.ForUpdate existingNodeTerm && existingNodeTerm.HasBeenDeleted)) {
                 <div class="tag-element">
                         <span class="tag-element-name">@elem.Name</span>
                     <button type="button" @onclick="() => SetTagToDeleted(elem.TermId)">delete</button>
@@ -40,7 +40,7 @@
     [EditorRequired]
     public Tags NodeTypeTags { get; set; } = default!;
 
-    List<NodeTerm.NewNodeTerm> termOptions = new();
+    List<NodeTerm.ForCreate> termOptions = new();
 
     string topicSearch { get; set; } = "";
 
@@ -50,13 +50,13 @@
         if (tag is not null)
         {
             switch (NodeTypeTags.Entries.FirstOrDefault(x => x.TermId == termId)) {
-                case NodeTerm.ExistingNodeTerm existingNodeTerm:
+                case NodeTerm.ForUpdate existingNodeTerm:
                     if (existingNodeTerm.HasBeenDeleted) {
                         existingNodeTerm.HasBeenDeleted = false;
                     }
                     break;
                 case null:
-                    NodeTypeTags.Entries.Add(tag);
+                    NodeTypeTags.EntriesToCreate.Add(tag);
                     break;
                 default:
                     break;
@@ -88,13 +88,13 @@
         var elem = NodeTypeTags.Entries.FirstOrDefault(x => x.TermId == termId);
         if (elem is not null)
         {
-            if (elem is NodeTerm.ExistingNodeTerm existingNodeTerm)
+            if (elem is NodeTerm.ForUpdate existingNodeTerm)
             {
                 existingNodeTerm.HasBeenDeleted = true;
             }
-            else
+            else if (elem is NodeTerm.ForCreate newNodeTerm)
             {
-                NodeTypeTags.Entries.Remove(elem);
+                NodeTypeTags.EntriesToCreate.Remove(newNodeTerm);
             }
             StateHasChanged();
         }

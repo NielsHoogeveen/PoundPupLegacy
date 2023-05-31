@@ -16,7 +16,7 @@ internal class NodeDetailsForCreateMapper(
             OwnerId = source.OwnerId,
             PublisherId = source.PublisherId,
             Title = source.Title,
-            TermIds = termIdsToAddMapper.Map(source.Tags).ToList(),
+            TermIds = termIdsToAddMapper.Map(source.TagsToCreate).ToList(),
             TenantNodes = tenantNodeMapper.Map(source.TenantNodeDetailsForCreate.TenantNodesToAdd).ToList(),
         };
     }

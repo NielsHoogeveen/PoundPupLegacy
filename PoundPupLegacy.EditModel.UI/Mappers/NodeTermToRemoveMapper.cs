@@ -2,12 +2,12 @@
 
 namespace PoundPupLegacy.EditModel.UI.Mappers;
 
-internal class NodeTermToRemoveMapper : IEnumerableMapper<Tags, NodeTermToRemove>
+internal class NodeTermToRemoveMapper : IEnumerableMapper<Tags.ToUpdate, NodeTermToRemove>
 {
-    public IEnumerable<NodeTermToRemove> Map(IEnumerable<Tags> source)
+    public IEnumerable<NodeTermToRemove> Map(IEnumerable<Tags.ToUpdate> source)
     {
-        foreach (var tag in source.SelectMany(x => x.Entries)) {
-            if(tag is NodeTerm.ExistingNodeTerm existingNodeTerm && existingNodeTerm.HasBeenDeleted) {
+        foreach (var tag in source.SelectMany(x => x.EntriesToUpdate)) {
+            if(tag is NodeTerm.ForUpdate existingNodeTerm && existingNodeTerm.HasBeenDeleted) {
                 yield return new NodeTermToRemove {
                     NodeId = existingNodeTerm.NodeId,
                     TermId = existingNodeTerm.TermId

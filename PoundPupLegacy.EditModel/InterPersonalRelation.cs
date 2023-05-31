@@ -1,13 +1,5 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(InterPersonalRelation.From.Complete.Resolved.ToUpdate), TypeInfoPropertyName = "InterPersonalRelationFromCompleteResolvedToUpdate")]
-[JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
-public partial class ExistingInterPersonalRelationFromJsonContext : JsonSerializerContext { }
-
-[JsonSerializable(typeof(InterPersonalRelation.To.Complete.Resolved.ToUpdate), TypeInfoPropertyName = "InterPersonalRelationToCompleteResolvedToUpdate")]
-[JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
-public partial class ExistingInterPersonalRelationToJsonContext : JsonSerializerContext { }
-
 public static class InterPersonalRelationExtentions{
     public static InterPersonalRelation.From.Incomplete.ToCreateForExistingPerson GetNewInterPersonalRelationFrom(this PersonListItem personListItem, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId)
     {

@@ -37,9 +37,17 @@
 
 [JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
 [JsonSerializable(typeof(NodeDetails.ForCreate), TypeInfoPropertyName = "NodeDetailsForCreate")]
+
 [JsonSerializable(typeof(TenantNodeDetails.ForUpdate), TypeInfoPropertyName = "TenantNodeDetailsForUpdate")]
 [JsonSerializable(typeof(TenantNodeDetails.ForCreate), TypeInfoPropertyName = "TenantNodeDetailsForCreate")]
-public partial class ExistingOrganizationJsonContext : JsonSerializerContext { }
+
+[JsonSerializable(typeof(TenantNodeDetails.ForUpdate), TypeInfoPropertyName = "TenantNodeDetailsForUpdate")]
+
+[JsonSerializable(typeof(Tags.ToUpdate), TypeInfoPropertyName = "TagsToUpdate")]
+[JsonSerializable(typeof(Tags.ToCreate), TypeInfoPropertyName = "TagsToCreate")]
+[JsonSerializable(typeof(List<Tags.ToUpdate>), TypeInfoPropertyName = "TagsListToUpdate")]
+
+public partial class OrganizationToUpdateJsonContext : JsonSerializerContext { }
 
 [JsonSerializable(typeof(Organization.ToCreate), TypeInfoPropertyName = "OrganizationToCreate")]
 
@@ -54,9 +62,21 @@ public partial class ExistingOrganizationJsonContext : JsonSerializerContext { }
 [JsonSerializable(typeof(InterOrganizationalRelation.To.Complete), TypeInfoPropertyName = "InterOrganizationalRelationToComplete")]
 [JsonSerializable(typeof(List<InterOrganizationalRelation.To.Complete>), TypeInfoPropertyName = "InterOrganizationalRelationListToComplete")]
 
+[JsonSerializable(typeof(IEnumerable<InterOrganizationalRelation.To.Complete.ToCreateForNewOrganization>), TypeInfoPropertyName = "InterOrganizationalRelationEnumerableToCompleteToCreateForNewOrganization")]
+[JsonSerializable(typeof(InterOrganizationalRelation.To.Complete.ToCreateForNewOrganization), TypeInfoPropertyName = "InterOrganizationalRelationToCompleteToCreateForNewOrganization")]
+[JsonSerializable(typeof(List<InterOrganizationalRelation.To.Complete.ToCreateForNewOrganization>), TypeInfoPropertyName = "InterOrganizationalRelationListToCompleteToCreateForNewOrganization")]
+
+[JsonSerializable(typeof(IEnumerable<InterOrganizationalRelation.From.Complete.ToCreateForNewOrganization>), TypeInfoPropertyName = "InterOrganizationalRelationEnumerableFromCompleteToCreateForNewOrganization")]
+[JsonSerializable(typeof(InterOrganizationalRelation.From.Complete.ToCreateForNewOrganization), TypeInfoPropertyName = "InterOrganizationalRelationToCompleteFromCreateForNewOrganization")]
+[JsonSerializable(typeof(List<InterOrganizationalRelation.From.Complete.ToCreateForNewOrganization>), TypeInfoPropertyName = "InterOrganizationalRelationListToCompleteFromCreateForNewOrganization")]
+
 [JsonSerializable(typeof(IEnumerable<OrganizationPoliticalEntityRelation.Complete>), TypeInfoPropertyName = "OrganizationPoliticalEntityRelationEnumerableComplete")]
 [JsonSerializable(typeof(OrganizationPoliticalEntityRelation.Complete), TypeInfoPropertyName = "OrganizationPoliticalEntityRelationComplete")]
 [JsonSerializable(typeof(List<OrganizationPoliticalEntityRelation.Complete>), TypeInfoPropertyName = "OrganizationPoliticalEntityRelationListComplete")]
+
+[JsonSerializable(typeof(IEnumerable<OrganizationPoliticalEntityRelation.Complete.ToCreateForNewOrganization>), TypeInfoPropertyName = "OrganizationPoliticalEntityRelationCompleteToCreateEnumeranbleForNewOrganization")]
+[JsonSerializable(typeof(OrganizationPoliticalEntityRelation.Complete.ToCreateForNewOrganization), TypeInfoPropertyName = "OrganizationPoliticalEntityRelationCompleteToCreateForNewOrganization")]
+[JsonSerializable(typeof(List<OrganizationPoliticalEntityRelation.Complete.ToCreateForNewOrganization>), TypeInfoPropertyName = "OrganizationPoliticalEntityRelationCompleteListToCreateForNewOrganization")]
 
 [JsonSerializable(typeof(IEnumerable<PersonOrganizationRelation.ForOrganization.Complete>), TypeInfoPropertyName = "PersonOrganizationRelationEnumerableForOrganizationComplete")]
 [JsonSerializable(typeof(PersonOrganizationRelation.ForOrganization.Complete), TypeInfoPropertyName = "PersonOrganizationRelationForOrganizationComplete")]
@@ -65,7 +85,13 @@ public partial class ExistingOrganizationJsonContext : JsonSerializerContext { }
 [JsonSerializable(typeof(List<Location.ToCreate>), TypeInfoPropertyName = "LocationDetailsListForCreate")]
 [JsonSerializable(typeof(NodeDetails.ForCreate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
 [JsonSerializable(typeof(TenantNodeDetails.ForCreate), TypeInfoPropertyName = "TenantNodeDetailsForCreate")]
-public partial class NewOrganizationJsonContext : JsonSerializerContext { }
+
+[JsonSerializable(typeof(TenantNodeDetails.ForCreate), TypeInfoPropertyName = "TenantNodeDetailsForCreate")]
+
+[JsonSerializable(typeof(Tags.ToCreate), TypeInfoPropertyName = "TagsToCreate")]
+[JsonSerializable(typeof(List<Tags.ToCreate>), TypeInfoPropertyName = "TagsListToCreate")]
+
+public partial class OrganizationToCreateJsonContext : JsonSerializerContext { }
 
 
 public abstract record Organization : Locatable, ResolvedNode, Node<Organization.ToUpdate, Organization.ToCreate>, Resolver<Organization.ToUpdate, Organization.ToCreate, Unit>

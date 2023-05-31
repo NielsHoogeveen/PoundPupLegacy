@@ -1,11 +1,24 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
 [JsonSerializable(typeof(Discussion.ToUpdate), TypeInfoPropertyName = "DiscussionToUpdate")]
+
 [JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
-public partial class ExistingDiscussionJsonContext : JsonSerializerContext { }
+
+[JsonSerializable(typeof(TenantNodeDetails.ForUpdate), TypeInfoPropertyName = "TenantNodeDetailsForUpdate")]
+
+[JsonSerializable(typeof(Tags.ToUpdate), TypeInfoPropertyName = "TagsToUpdate")]
+[JsonSerializable(typeof(List<Tags.ToUpdate>), TypeInfoPropertyName = "TagsListToUpdate")]
+public partial class ExistingDiscussionToUpdateJsonContext : JsonSerializerContext { }
+
 [JsonSerializable(typeof(Discussion.ToCreate))]
+
 [JsonSerializable(typeof(NodeDetails.ForCreate), TypeInfoPropertyName = "NodeDetailsForCreate")]
-public partial class NewDiscussionJsonContext : JsonSerializerContext { }
+
+[JsonSerializable(typeof(TenantNodeDetails.ForCreate), TypeInfoPropertyName = "TenantNodeDetailsForCreate")]
+
+[JsonSerializable(typeof(Tags.ToCreate), TypeInfoPropertyName = "TagsToCreate")]
+[JsonSerializable(typeof(List<Tags.ToCreate>), TypeInfoPropertyName = "TagsListToCreate")]
+public partial class DiscussionToCreateJsonContext : JsonSerializerContext { }
 
 public abstract record Discussion : SimpleTextNode, ResolvedNode, Node<Discussion.ToUpdate, Discussion.ToCreate>, Resolver<Discussion.ToUpdate, Discussion.ToCreate, Unit>
 {

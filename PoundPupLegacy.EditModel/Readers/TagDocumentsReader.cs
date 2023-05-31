@@ -10,7 +10,7 @@ public sealed record TagDocumentsReaderRequest : IRequest
     public required int[] NodeTypeIds { get; init; }
 }
 
-internal sealed class TagDocumentsReaderFactory : EnumerableDatabaseReaderFactory<Request, NodeTerm.NewNodeTerm>
+internal sealed class TagDocumentsReaderFactory : EnumerableDatabaseReaderFactory<Request, NodeTerm.ForCreate>
 {
     private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     private static readonly SearchOptionDatabaseParameter SearchOptionParameter = new() { Name = "search_option" };
@@ -65,9 +65,9 @@ internal sealed class TagDocumentsReaderFactory : EnumerableDatabaseReaderFactor
         };
     }
 
-    protected override NodeTerm.NewNodeTerm Read(NpgsqlDataReader reader)
+    protected override NodeTerm.ForCreate Read(NpgsqlDataReader reader)
     {
-        return new NodeTerm.NewNodeTerm {
+        return new NodeTerm.ForCreate {
             Name = NameReader.GetValue(reader),
             TermId = TermIdReader.GetValue(reader),
             NodeTypeId = NodeTypeIdReader.GetValue(reader)

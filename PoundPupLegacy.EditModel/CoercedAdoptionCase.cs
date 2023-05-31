@@ -1,19 +1,33 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
 [JsonSerializable(typeof(CoercedAdoptionCase.ToUpdate), TypeInfoPropertyName = "CoercedAdoptionCaseToUpdate")]
+
 [JsonSerializable(typeof(LocatableDetails.ForUpdate), TypeInfoPropertyName = "LocatableDetailsForUpdate")]
 [JsonSerializable(typeof(Location.ToUpdate), TypeInfoPropertyName = "LocationDetailsForUpdate")]
 [JsonSerializable(typeof(List<Location.ToUpdate>), TypeInfoPropertyName = "LocationDetailsListForUpdate")]
+
 [JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
 
-public partial class ExistingCoercedAdoptionCaseJsonContext : JsonSerializerContext { }
+[JsonSerializable(typeof(TenantNodeDetails.ForUpdate), TypeInfoPropertyName = "TenantNodeDetailsForUpdate")]
+
+[JsonSerializable(typeof(Tags.ToUpdate), TypeInfoPropertyName = "TagsToUpdate")]
+[JsonSerializable(typeof(List<Tags.ToUpdate>), TypeInfoPropertyName = "TagsListToUpdate")]
+
+public partial class CoercedAdoptionCaseJsonToUpdateContext : JsonSerializerContext { }
+
+[JsonSerializable(typeof(CoercedAdoptionCase.ToCreate), TypeInfoPropertyName = "CoercedAdoptionCaseToCreate")]
 
 [JsonSerializable(typeof(LocatableDetails.ForCreate), TypeInfoPropertyName = "LocatableDetailsCreate")]
 [JsonSerializable(typeof(Location.ToCreate), TypeInfoPropertyName = "LocationDetailsForCreate")]
-[JsonSerializable(typeof(CoercedAdoptionCase.ToCreate))]
 [JsonSerializable(typeof(List<Location.ToCreate>), TypeInfoPropertyName = "LocationDetailsListForCreate")]
+
 [JsonSerializable(typeof(NodeDetails.ForCreate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
-public partial class NewCoercedAdoptionCaseJsonContext : JsonSerializerContext { }
+
+[JsonSerializable(typeof(TenantNodeDetails.ForCreate), TypeInfoPropertyName = "TenantNodeDetailsForCreate")]
+
+[JsonSerializable(typeof(Tags.ToCreate), TypeInfoPropertyName = "TagsToCreate")]
+[JsonSerializable(typeof(List<Tags.ToCreate>), TypeInfoPropertyName = "TagsListToCreate")]
+public partial class CoercedAdoptionCaseToCreateJsonContext : JsonSerializerContext { }
 
 public abstract record CoercedAdoptionCase : Case, ResolvedNode, Node<CoercedAdoptionCase.ToUpdate, CoercedAdoptionCase.ToCreate>, Resolver<CoercedAdoptionCase.ToUpdate, CoercedAdoptionCase.ToCreate,Unit>
 {

@@ -6,12 +6,12 @@ internal sealed class TopicSearchService(
     IDbConnection connection,
     ILogger<TopicSearchService> logger,
     IDoesRecordExistDatabaseReaderFactory<TopicExistsRequest> doesTopcExistReaderFactory,
-    IEnumerableDatabaseReaderFactory<TagDocumentsReaderRequest, NodeTerm.NewNodeTerm> tagDocumentsReaderFactory
+    IEnumerableDatabaseReaderFactory<TagDocumentsReaderRequest, NodeTerm.ForCreate> tagDocumentsReaderFactory
 ) : DatabaseService(connection, logger), ITopicSearchService
 {
-    public async Task<List<NodeTerm.NewNodeTerm>> GetTerms(int tenantId, string searchString, int[] nodeTypeIds)
+    public async Task<List<NodeTerm.ForCreate>> GetTerms(int tenantId, string searchString, int[] nodeTypeIds)
     {
-        List<NodeTerm.NewNodeTerm> tags = new();
+        List<NodeTerm.ForCreate> tags = new();
         return await WithSequencedConnection(async (connection) => {
             await using var reader = await tagDocumentsReaderFactory.CreateAsync(connection);
             await foreach (var elem in reader.ReadAsync(new TagDocumentsReaderRequest {
