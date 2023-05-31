@@ -65,8 +65,8 @@ internal sealed class OrganizationMigratorPPL(
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
-                Terms = new List<NewTermForNewNameable> {
-                    new NewTermForNewNameable {
+                Terms = new List<Term.ToCreateForNewNameable> {
+                    new Term.ToCreateForNewNameable {
                         Identification = new Identification.Possible {
                             Id = null,
                         },
@@ -81,10 +81,10 @@ internal sealed class OrganizationMigratorPPL(
                     }
                 },
             },
-            LocatableDetails = new LocatableDetails.LocatableDetailsForCreate {
-                Locations = new List<EventuallyIdentifiableLocation>(),
+            LocatableDetails = new LocatableDetails.ForCreate {
+                Locations = new List<Location.ToCreate>(),
             },
-            OrganizationDetails = new OrganizationDetails.OrganizationDetailsForCreate {
+            OrganizationDetails = new OrganizationDetails.ForCreate {
                 WebsiteUrl = null,
                 EmailAddress = null,
                 Established = null,
@@ -145,8 +145,8 @@ internal sealed class OrganizationMigratorPPL(
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
-                Terms = new List<NewTermForNewNameable> {
-                    new NewTermForNewNameable {
+                Terms = new List<Term.ToCreateForNewNameable> {
+                    new Term.ToCreateForNewNameable {
                         Identification = new Identification.Possible {
                             Id = null,
                         },
@@ -161,10 +161,10 @@ internal sealed class OrganizationMigratorPPL(
                     }
                 },
             },
-            LocatableDetails = new LocatableDetails.LocatableDetailsForCreate {
-                Locations = new List<EventuallyIdentifiableLocation>(),
+            LocatableDetails = new LocatableDetails.ForCreate {
+                Locations = new List<Location.ToCreate>(),
             },
-            OrganizationDetails = new OrganizationDetails.OrganizationDetailsForCreate {
+            OrganizationDetails = new OrganizationDetails.ForCreate {
                 WebsiteUrl = null,
                 EmailAddress = null,
                 Established = null,
@@ -225,8 +225,8 @@ internal sealed class OrganizationMigratorPPL(
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
-                Terms = new List<NewTermForNewNameable> {
-                    new NewTermForNewNameable {
+                Terms = new List<Term.ToCreateForNewNameable> {
+                    new Term.ToCreateForNewNameable {
                         Identification = new Identification.Possible {
                             Id = null,
                         },
@@ -241,10 +241,10 @@ internal sealed class OrganizationMigratorPPL(
                     }
                 },
             },
-            LocatableDetails = new LocatableDetails.LocatableDetailsForCreate {
-                Locations = new List<EventuallyIdentifiableLocation>(),
+            LocatableDetails = new LocatableDetails.ForCreate {
+                Locations = new List<Location.ToCreate>(),
             },
-            OrganizationDetails = new OrganizationDetails.OrganizationDetailsForCreate {
+            OrganizationDetails = new OrganizationDetails.ForCreate {
                 WebsiteUrl = null,
                 EmailAddress = null,
                 Established = null,
@@ -305,8 +305,8 @@ internal sealed class OrganizationMigratorPPL(
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
-                Terms = new List<NewTermForNewNameable> {
-                    new NewTermForNewNameable {
+                Terms = new List<Term.ToCreateForNewNameable> {
+                    new Term.ToCreateForNewNameable {
                         Identification = new Identification.Possible {
                             Id = null,
                         },
@@ -321,10 +321,10 @@ internal sealed class OrganizationMigratorPPL(
                     }
                 },
             },
-            LocatableDetails = new LocatableDetails.LocatableDetailsForCreate {
-                Locations = new List<EventuallyIdentifiableLocation>(),
+            LocatableDetails = new LocatableDetails.ForCreate {
+                Locations = new List<Location.ToCreate>(),
             },
-            OrganizationDetails = new OrganizationDetails.OrganizationDetailsForCreate {
+            OrganizationDetails = new OrganizationDetails.ForCreate {
                 WebsiteUrl = null,
                 EmailAddress = null,
                 Established = null,
@@ -479,7 +479,7 @@ internal sealed class OrganizationMigratorPPL(
         });
 
         while (await reader.ReadAsync()) {
-            var vocabularyNames = new List<NewTermForNewNameable>();
+            var vocabularyNames = new List<Term.ToCreateForNewNameable>();
 
 
             var typeIds = reader
@@ -556,7 +556,7 @@ internal sealed class OrganizationMigratorPPL(
                     VocabularyId = vocabularyId
                 }));
             }
-            vocabularyNames.Add(new NewTermForNewNameable {
+            vocabularyNames.Add(new Term.ToCreateForNewNameable {
                 Identification = new Identification.Possible {
                     Id = null,
                 },
@@ -607,10 +607,10 @@ internal sealed class OrganizationMigratorPPL(
                         Description = reader.IsDBNull("description") ? "" : reader.GetString("description"),
                         Terms = vocabularyNames,
                     },
-                    LocatableDetails = new LocatableDetails.LocatableDetailsForCreate {
-                        Locations = new List<EventuallyIdentifiableLocation>(),
+                    LocatableDetails = new LocatableDetails.ForCreate {
+                        Locations = new List<Location.ToCreate>(),
                     },
-                    OrganizationDetails = new OrganizationDetails.OrganizationDetailsForCreate {
+                    OrganizationDetails = new OrganizationDetails.ForCreate {
                         WebsiteUrl = reader.IsDBNull("website_url") ? null : reader.GetString("website_url"),
                         EmailAddress = reader.IsDBNull("email_address") ? null : reader.GetString("email_address"),
                         Established = reader.IsDBNull("established") ? null : (new DateTimeRange(reader.GetDateTime("established"), reader.GetDateTime("established"))).ToFuzzyDate(),
@@ -675,10 +675,10 @@ internal sealed class OrganizationMigratorPPL(
                         Terms = vocabularyNames,
                         Description = reader.IsDBNull("description") ? "" : reader.GetString("description"),
                     },
-                    LocatableDetails = new LocatableDetails.LocatableDetailsForCreate {
-                        Locations = new List<EventuallyIdentifiableLocation>(),
+                    LocatableDetails = new LocatableDetails.ForCreate {
+                        Locations = new List<Location.ToCreate>(),
                     },
-                    OrganizationDetails = new OrganizationDetails.OrganizationDetailsForCreate {
+                    OrganizationDetails = new OrganizationDetails.ForCreate {
                         OrganizationTypeIds = organizationOrganizationTypeIds,
                         WebsiteUrl = reader.IsDBNull("website_url") ? null : reader.GetString("website_url"),
                         EmailAddress = reader.IsDBNull("email_address") ? null : reader.GetString("email_address"),

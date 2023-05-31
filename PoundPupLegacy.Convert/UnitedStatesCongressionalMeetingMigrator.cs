@@ -62,9 +62,9 @@ internal sealed class UnitedStatesCongressionalMeetingMigrator(
                     TermIds = new List<int>(),
                 },
                 NameableDetails = new NameableDetails.ForCreate {
-                    Terms = new List<NewTermForNewNameable>
+                    Terms = new List<Term.ToCreateForNewNameable>
                     {
-                        new NewTermForNewNameable
+                        new Term.ToCreateForNewNameable
                         {
                             Identification = new Identification.Possible {
                                 Id= null

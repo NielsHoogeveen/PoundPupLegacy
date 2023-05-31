@@ -104,9 +104,9 @@ internal sealed class TypeOfAbuseMigrator(
             var firstParentTopicName = reader.IsDBNull("first_parent_topic_name") ? null : reader.GetString("first_parent_topic_name");
             var secondParentTopicName = reader.IsDBNull("second_parent_topic_name") ? null : reader.GetString("second_parent_topic_name");
 
-            var vocabularyNames = new List<NewTermForNewNameable>
+            var vocabularyNames = new List<Term.ToCreateForNewNameable>
             {
-                new NewTermForNewNameable
+                new Term.ToCreateForNewNameable
                 {
                     Identification = new Identification.Possible {
                         Id = null,
@@ -130,7 +130,7 @@ internal sealed class TypeOfAbuseMigrator(
                         VocabularyId = vocabularyIdTopics
                     }));
                 }
-                vocabularyNames.Add(new NewTermForNewNameable {
+                vocabularyNames.Add(new Term.ToCreateForNewNameable {
                     Identification = new Identification.Possible {
                         Id = null,
                     },

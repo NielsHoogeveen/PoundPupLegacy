@@ -1,14 +1,21 @@
 ﻿namespace PoundPupLegacy.EditModel;
 [JsonSerializable(typeof(InterOrganizationalRelation.From.Complete), TypeInfoPropertyName = "InterOrganizationalRelationFromComplete")]
+[JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
 public partial class InterOrganizationalRelationFromJsonContext : JsonSerializerContext { }
 
 [JsonSerializable(typeof(InterOrganizationalRelation.To.Complete), TypeInfoPropertyName = "InterOrganizationalRelationToComplete")]
+[JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
+
 public partial class InterOrganizationalRelationToJsonContext : JsonSerializerContext { }
 
 [JsonSerializable(typeof(InterOrganizationalRelation.From.Complete.Resolved.ToUpdate), TypeInfoPropertyName = "InterOrganizationalRelationFromCompleteResolvedToUpdate")]
+[JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
+
 public partial class ExistingInterOrganizationalRelationFromJsonContext : JsonSerializerContext { }
 
 [JsonSerializable(typeof(InterOrganizationalRelation.To.Complete.Resolved.ToUpdate), TypeInfoPropertyName = "InterOrganizationalRelationToCompleteResolvedToUpdate")]
+[JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
+
 public partial class ExistingInterOrganizationalRelationToJsonContext : JsonSerializerContext { }
 public static class InterOrganizationalRelationExtentions
 {
@@ -82,7 +89,7 @@ public abstract record InterOrganizationalRelation : Relation
         {
             private Incomplete() { }
             public override NodeDetails NodeDetails => NodeDetailsForCreate;
-            public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+            public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
             public sealed override T Match<T>(
                 Func<Incomplete, T> incompleteInterOrganizationalRelationFrom,
                 Func<Complete, T> completedInterOrganizationalRelationFrom
@@ -201,7 +208,7 @@ public abstract record InterOrganizationalRelation : Relation
             public sealed record ToCreateForNewOrganization : Complete, NewNode
             {
                 public override NodeDetails NodeDetails => NodeDetailsForCreate;
-                public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+                public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
                 public required OrganizationName OrganizationFrom { get; set; }
                 
                 public sealed override void SetName(string name)
@@ -239,7 +246,7 @@ public abstract record InterOrganizationalRelation : Relation
                 public sealed record ToUpdate : Resolved, ExistingNode
                 {
                     public override NodeDetails NodeDetails => NodeDetailsForUpdate;
-                    public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
+                    public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
                     public required NodeIdentification NodeIdentification { get; init; }
 
                     public sealed override To.Complete.Resolved.ToUpdate SwapFromAndTo()
@@ -258,7 +265,7 @@ public abstract record InterOrganizationalRelation : Relation
                 public sealed record ToCreate : Resolved, NewNode
                 {
                     public override NodeDetails NodeDetails => NodeDetailsForCreate;
-                    public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+                    public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
                     public sealed override To.Complete.Resolved.ToCreate SwapFromAndTo()
                     {
                         return new To.Complete.Resolved.ToCreate {
@@ -291,7 +298,7 @@ public abstract record InterOrganizationalRelation : Relation
             private Incomplete() { }
 
             public override NodeDetails NodeDetails => NodeDetailsForCreate;
-            public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+            public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
             public sealed override T Match<T>(
                 Func<Incomplete, T> incompleteInterOrganizationalRelationTo,
                 Func<Complete, T> completedInterOrganizationalRelationTo
@@ -408,7 +415,7 @@ public abstract record InterOrganizationalRelation : Relation
             public sealed record ToCreateForNewOrganization : Complete, NewNode
             {
                 public override NodeDetails NodeDetails => NodeDetailsForCreate;
-                public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+                public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
                 public required OrganizationName OrganizationTo { get; set; }
 
                 public sealed override void SetName(string name)
@@ -447,7 +454,7 @@ public abstract record InterOrganizationalRelation : Relation
                 public sealed record ToUpdate : Resolved, ExistingNode
                 {
                     public override NodeDetails NodeDetails => NodeDetailsForUpdate;
-                    public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
+                    public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
                     public required NodeIdentification NodeIdentification { get; init; }
                     public sealed override From.Complete.Resolved.ToUpdate SwapFromAndTo()
                     {
@@ -465,7 +472,7 @@ public abstract record InterOrganizationalRelation : Relation
                 public sealed record ToCreate : Resolved, NewNode
                 {
                     public override NodeDetails NodeDetails => NodeDetailsForCreate;
-                    public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+                    public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
 
                     public sealed override From.Complete.Resolved.ToCreate SwapFromAndTo()
                     {

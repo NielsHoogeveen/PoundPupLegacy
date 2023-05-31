@@ -1,20 +1,17 @@
-﻿using PoundPupLegacy.CreateModel;
-namespace PoundPupLegacy.EditModel.UI.Mappers;
+﻿namespace PoundPupLegacy.EditModel.UI.Mappers;
 
-internal class TenantNodeToUpdateMapper : IEnumerableMapper<TenantNode.ExistingTenantNode, CreateModel.TenantNode.ToCreate.ForExistingNode>
+internal class TenantNodeToUpdateMapper : IEnumerableMapper<TenantNode.ToUpdate, CreateModel.TenantNode.ToUpdate>
 {
-    public IEnumerable<CreateModel.TenantNode.ToCreate.ForExistingNode> Map(IEnumerable<TenantNode.ExistingTenantNode> source)
+    public IEnumerable<CreateModel.TenantNode.ToUpdate> Map(IEnumerable<TenantNode.ToUpdate> source)
     {
         foreach(var  tenantNode in source) {
             if (tenantNode.HasBeenDeleted)
                 continue;
-            yield return new CreateModel.TenantNode.ToCreate.ForExistingNode {
-                Identification = new Identification.Possible {
+            yield return new CreateModel.TenantNode.ToUpdate {
+                Identification = new Identification.Certain {
                     Id = tenantNode.Id,
                 },
                 TenantId = tenantNode.Id,
-                UrlId = tenantNode.UrlId,
-                NodeId = tenantNode.Id,
                 PublicationStatusId = tenantNode.PublicationStatusId,
                 UrlPath = tenantNode.UrlPath,
                 SubgroupId = tenantNode.SubgroupId,

@@ -13,12 +13,12 @@ public interface ResolvedNewNode : NewNode, ResolvedNode
 }
 public interface NewNode : Node
 {
-    public NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; }
+    public NodeDetails.ForCreate NodeDetailsForCreate { get; }
 }
 public interface ExistingNode : ResolvedNode
 {
     NodeIdentification NodeIdentification { get; }
-    public NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; }
+    public NodeDetails.ForUpdate NodeDetailsForUpdate { get; }
 }
 
 
@@ -31,7 +31,7 @@ public sealed record NodeIdentification
 public abstract record NodeDetails 
 {
     
-    public static NodeDetailsForCreate EmptyInstance(int nodeTypeId, string nodeTypeName, int ownerId, int publisherId) => new NodeDetailsForCreate {
+    public static ForCreate EmptyInstance(int nodeTypeId, string nodeTypeName, int ownerId, int publisherId) => new ForCreate {
         Files = new List<File>(),
         NodeTypeId = nodeTypeId,
         NodeTypeName = nodeTypeName,
@@ -40,8 +40,8 @@ public abstract record NodeDetails
         Tags = new List<Tags>(),
         Tenants = new List<Tenant>(),
         Title = "",
-        NewTenantNodeDetails = new TenantNodeDetails.NewTenantNodeDetails {
-            TenantNodesToAdd = new List<TenantNode.NewTenantNodeForNewNode>(),
+        TenantNodeDetailsForCreate = new TenantNodeDetails.ForCreate {
+            TenantNodesToAdd = new List<TenantNode.ToCreateForNewNode>(),
         }
     };
     public required string NodeTypeName { get; set; }
@@ -77,16 +77,16 @@ public abstract record NodeDetails
         }
     }
     public abstract TenantNodeDetails TenantNodeDetails { get; }
-    public sealed record NodeDetailsForCreate: NodeDetails
+    public sealed record ForCreate: NodeDetails
     {
-        public override TenantNodeDetails TenantNodeDetails => NewTenantNodeDetails;
-        public required TenantNodeDetails.NewTenantNodeDetails NewTenantNodeDetails { get; init; }
+        public override TenantNodeDetails TenantNodeDetails => TenantNodeDetailsForCreate;
+        public required TenantNodeDetails.ForCreate TenantNodeDetailsForCreate { get; init; }
 
     }
-    public sealed record NodeDetailsForUpdate : NodeDetails
+    public sealed record ForUpdate : NodeDetails
     {
-        public override TenantNodeDetails TenantNodeDetails => ExistingTenantNodeDetails;
-        public required TenantNodeDetails.ExistingTenantNodeDetails ExistingTenantNodeDetails { get; init; }
+        public override TenantNodeDetails TenantNodeDetails => TenantNodeDetailsForUpdate;
+        public required TenantNodeDetails.ForUpdate TenantNodeDetailsForUpdate { get; init; }
     }
 }
 

@@ -66,9 +66,9 @@ internal sealed class CasePartyTypeMigrator(
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
-                Terms = new List<NewTermForNewNameable>
+                Terms = new List<Term.ToCreateForNewNameable>
                 {
-                    new NewTermForNewNameable
+                    new Term.ToCreateForNewNameable
                     {
                         Identification = new Identification.Possible {
                             Id = null,
@@ -123,9 +123,9 @@ internal sealed class CasePartyTypeMigrator(
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
-                Terms = new List<NewTermForNewNameable>
+                Terms = new List<Term.ToCreateForNewNameable>
                 {
-                    new NewTermForNewNameable
+                    new Term.ToCreateForNewNameable
                     {
                         Identification = new Identification.Possible {
                             Id = null,
@@ -179,9 +179,9 @@ internal sealed class CasePartyTypeMigrator(
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
-                Terms = new List<NewTermForNewNameable>
+                Terms = new List<Term.ToCreateForNewNameable>
                 {
-                    new NewTermForNewNameable
+                    new Term.ToCreateForNewNameable
                     {
                         Identification = new Identification.Possible {
                             Id = null,
@@ -235,9 +235,9 @@ internal sealed class CasePartyTypeMigrator(
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
-                Terms = new List<NewTermForNewNameable>
+                Terms = new List<Term.ToCreateForNewNameable>
                 {
-                    new NewTermForNewNameable
+                    new Term.ToCreateForNewNameable
                     {
                         Identification = new Identification.Possible {
                             Id = null,
@@ -291,9 +291,9 @@ internal sealed class CasePartyTypeMigrator(
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
-                Terms = new List<NewTermForNewNameable>
+                Terms = new List<Term.ToCreateForNewNameable>
                 {
-                    new NewTermForNewNameable
+                    new Term.ToCreateForNewNameable
                     {
                         Identification = new Identification.Possible {
                             Id = null,
@@ -347,9 +347,9 @@ internal sealed class CasePartyTypeMigrator(
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
-                Terms = new List<NewTermForNewNameable>
+                Terms = new List<Term.ToCreateForNewNameable>
                 {
-                    new NewTermForNewNameable
+                    new Term.ToCreateForNewNameable
                     {
                         Identification = new Identification.Possible {
                             Id = null,
@@ -403,9 +403,9 @@ internal sealed class CasePartyTypeMigrator(
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
-                Terms = new List<NewTermForNewNameable>
+                Terms = new List<Term.ToCreateForNewNameable>
                 {
-                    new NewTermForNewNameable
+                    new Term.ToCreateForNewNameable
                     {
                         Identification = new Identification.Possible {
                             Id = null,

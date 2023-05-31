@@ -64,9 +64,9 @@ internal sealed class SecondLevelGlobalRegionMigrator(
             var name = reader.GetString("title");
             var parentRegionName = reader.GetString("first_level_global_region_name");
 
-            var vocabularyNames = new List<NewTermForNewNameable>
+            var vocabularyNames = new List<Term.ToCreateForNewNameable>
             {
-                new NewTermForNewNameable
+                new Term.ToCreateForNewNameable
                 {
                     Identification = new Identification.Possible {
                         Id = null,

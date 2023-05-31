@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(TenantNode.ExistingTenantNode))]
+[JsonSerializable(typeof(TenantNode.ToUpdate))]
 public partial class ExistingTenantNodeJsonContext : JsonSerializerContext { }
 
 public abstract record TenantNode
@@ -14,45 +14,45 @@ public abstract record TenantNode
     public bool CanBeUnchecked { get; set; } = true;
 
     public abstract void Match(
-        Action<ExistingTenantNode> existingTenantNode,
-        Action<NewTenantNodeForExistingNode> newTenantNodeForExistingNode,
-        Action<NewTenantNodeForNewNode> newTenantNodeForNewNode
+        Action<ToUpdate> existingTenantNode,
+        Action<ToCreateForExistingNode> newTenantNodeForExistingNode,
+        Action<ToCreateForNewNode> newTenantNodeForNewNode
     );
 
-    public sealed record ExistingTenantNode: TenantNode
+    public sealed record ToUpdate: TenantNode
     {
         public int Id { get; set; }
         public int UrlId { get; set; }
         public int NodeId { get; set; }
         public override void Match(
-            Action<ExistingTenantNode> existingTenantNode,
-            Action<NewTenantNodeForExistingNode> newTenantNodeForExistingNode,
-            Action<NewTenantNodeForNewNode> newTenantNodeForNewNode
+            Action<ToUpdate> existingTenantNode,
+            Action<ToCreateForExistingNode> newTenantNodeForExistingNode,
+            Action<ToCreateForNewNode> newTenantNodeForNewNode
         )
         {
             existingTenantNode(this);
         }
     }
-    public sealed record NewTenantNodeForNewNode: TenantNode
+    public sealed record ToCreateForNewNode: TenantNode
     {
         public override void Match(
-            Action<ExistingTenantNode> existingTenantNode,
-            Action<NewTenantNodeForExistingNode> newTenantNodeForExistingNode,
-            Action<NewTenantNodeForNewNode> newTenantNodeForNewNode
+            Action<ToUpdate> existingTenantNode,
+            Action<ToCreateForExistingNode> newTenantNodeForExistingNode,
+            Action<ToCreateForNewNode> newTenantNodeForNewNode
         )
         {
             newTenantNodeForNewNode(this);
         }
 
     }
-    public sealed record NewTenantNodeForExistingNode: TenantNode
+    public sealed record ToCreateForExistingNode: TenantNode
     {
         public int UrlId { get; set; }
         public int NodeId { get; set; }
         public override void Match(
-            Action<ExistingTenantNode> existingTenantNode,
-            Action<NewTenantNodeForExistingNode> newTenantNodeForExistingNode,
-            Action<NewTenantNodeForNewNode> newTenantNodeForNewNode
+            Action<ToUpdate> existingTenantNode,
+            Action<ToCreateForExistingNode> newTenantNodeForExistingNode,
+            Action<ToCreateForNewNode> newTenantNodeForNewNode
         )
         {
             newTenantNodeForExistingNode(this);

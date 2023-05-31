@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.EditModel.UI.Mappers;
 
-internal class NewInterOrganizationalExistingRelationToMapper(
-IMapper<EditModel.NodeDetails.NodeDetailsForCreate, CreateModel.NodeDetails.ForCreate> nodeDetailMapper
+internal class InterOrganizationalToCreateForExistingRelationToMapper(
+IMapper<EditModel.NodeDetails.ForCreate, CreateModel.NodeDetails.ForCreate> nodeDetailMapper
 ) : IEnumerableMapper<EditModel.InterOrganizationalRelation.To.Complete.Resolved.ToCreate, CreateModel.InterOrganizationalRelation.ToCreate.ForExistingParticipants>
 {
     public IEnumerable<CreateModel.InterOrganizationalRelation.ToCreate.ForExistingParticipants> Map(IEnumerable<EditModel.InterOrganizationalRelation.To.Complete.Resolved.ToCreate> source)

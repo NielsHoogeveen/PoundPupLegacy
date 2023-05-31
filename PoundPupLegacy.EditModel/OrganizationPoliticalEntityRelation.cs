@@ -1,7 +1,11 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(OrganizationPoliticalEntityRelation.Complete.Resolved.ToUpdate))]
-public partial class ExistingOrganizationPoliticalEntityRelationJsonContext : JsonSerializerContext { }
+//[JsonSerializable(typeof(OrganizationPoliticalEntityRelation.Complete.Resolved.ToUpdate), TypeInfoPropertyName = "OrganizationPoliticalEntityRelationCompleteResolvedToUpdate")]
+//[JsonSerializable(typeof(TenantNodeDetails.ForCreate), TypeInfoPropertyName = "TenantNodeDetailsForCreate")]
+//[JsonSerializable(typeof(TenantNodeDetails.ForUpdate), TypeInfoPropertyName = "TenantNodeDetailsForUpdate")]
+//[JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
+//[JsonSerializable(typeof(NodeDetails.ForCreate), TypeInfoPropertyName = "NodeDetailsForCreate")]
+//public partial class ExistingOrganizationPoliticalEntityRelationJsonContext : JsonSerializerContext { }
 
 public static class OrganizationPoliticalEntityRelationExtension
 {
@@ -55,7 +59,7 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
     {
         private Incomplete() { }
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
-        public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+        public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
         public override T Match<T>(
             Func<Incomplete, T> incompleteOrganizationPoliticalEntityRelation,
             Func<Complete, T> completedOrganizationPoliticalEntityRelation
@@ -142,7 +146,7 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
             public sealed record ToUpdate : Resolved, ExistingNode
             {
                 public override NodeDetails NodeDetails => NodeDetailsForUpdate;
-                public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
+                public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
                 public required NodeIdentification NodeIdentification { get; init; }
 
                 public override T Match<T>(
@@ -157,7 +161,7 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
                 }
                 public required OrganizationListItem Organization { get; set; }
                 public required PoliticalEntityListItem PoliticalEntity { get; set; }
-                public override string OrganizationName => Organization.Name;
+                public override string OrganizationName => Organization.Name; 
                 public override string PoliticalEntityName => PoliticalEntity.Name;
                 public override OrganizationItem? OrganizationItem => Organization;
                 public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
@@ -165,7 +169,7 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
             public sealed record ToCreateForExistingOrganization : Resolved, NewNode
             {
                 public override NodeDetails NodeDetails => NodeDetailsForCreate;
-                public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+                public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
 
                 public override T Match<T>(
                     Func<Incomplete.ToCreateForNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
@@ -190,7 +194,7 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
         public sealed record ToCreateForNewOrganization : Complete, NewNode
         {
             public override NodeDetails NodeDetails => NodeDetailsForCreate;
-            public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+            public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
             public override T Match<T>(
                 Func<Incomplete.ToCreateForNewOrganization, T> newOrganizationPoliticalEntityRelationNewOrganization,
                 Func<Incomplete.ToCreateForExistingOrganization, T> newOrganizationPoliticalEntityRelationExistingOrganization,

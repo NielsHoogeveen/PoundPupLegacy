@@ -5,7 +5,7 @@ internal sealed class LocationMigratorCPCT(
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreate.ForExistingNode> tenantNodeReaderByUrlIdFactory,
     IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166CodeFactory,
-    IEntityCreatorFactory<EventuallyIdentifiableLocation> locationCreatorFactory,
+    IEntityCreatorFactory<Location.ToCreate> locationCreatorFactory,
     IDatabaseInserterFactory<LocationLocatable> locationLocatableInserterFactory
 ) : MigratorCPCT(
     databaseConnections, 
@@ -313,7 +313,7 @@ internal sealed class LocationMigratorCPCT(
 
 
 
-    private async IAsyncEnumerable<(EventuallyIdentifiableLocation, int)> ReadLocations(
+    private async IAsyncEnumerable<(Location.ToCreate, int)> ReadLocations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166Code
     )
@@ -365,7 +365,7 @@ internal sealed class LocationMigratorCPCT(
                 TenantId = tenantId,
                 UrlId = urlId
             });
-            yield return (new LocationToCreate {
+            yield return (new Location.ToCreate {
                 Identification = new Identification.Possible {
                     Id = renamedId
                 },

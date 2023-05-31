@@ -144,9 +144,9 @@ internal sealed class SubdivisionTypeMigrator(
                 NameableDetails = new NameableDetails.ForCreate {
                     Description = "",
                     FileIdTileImage = null,
-                    Terms = new List<NewTermForNewNameable>
+                    Terms = new List<Term.ToCreateForNewNameable>
                 {
-                    new NewTermForNewNameable
+                    new Term.ToCreateForNewNameable
                     {
                         Identification = new Identification.Possible {
                             Id = null,

@@ -1,9 +1,11 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(PersonOrganizationRelation.ForPerson.Complete.Resolved.ToUpdate))]
+[JsonSerializable(typeof(PersonOrganizationRelation.ForPerson.Complete.Resolved.ToUpdate), TypeInfoPropertyName = "PersonOrganizationRelationForPersonCompleteResolvedToUpdate")]
+[JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
 public partial class ExistingPersonOrganizationRelationForPersonJsonContext : JsonSerializerContext { }
 
-[JsonSerializable(typeof(PersonOrganizationRelation.ForOrganization.Complete.Resolved.ToUpdate))]
+[JsonSerializable(typeof(PersonOrganizationRelation.ForOrganization.Complete.Resolved.ToUpdate), TypeInfoPropertyName = "PersonOrganizationRelationForOrganizationCompleteResolvedToUpdate")]
+[JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
 public partial class ExistingPersonOrganizationRelationForOrganizationJsonContext : JsonSerializerContext { }
 
 public interface ResolvedPersonOrganizationRelation : Relation
@@ -107,7 +109,7 @@ public abstract record PersonOrganizationRelation : Relation
             public sealed record ToCreateForNewOrganization : Complete, NewNode
             {
                 public override NodeDetails NodeDetails => NodeDetailsForCreate;
-                public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+                public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
                 public required PersonListItem Person { get; set; }
                 public required OrganizationName Organization { get; set; }
                 private PersonListItem? personItem = null;
@@ -134,7 +136,7 @@ public abstract record PersonOrganizationRelation : Relation
                 public sealed record ToUpdate : Resolved, ExistingPersonOrganizationRelation
                 {
                     public override NodeDetails NodeDetails => NodeDetailsForUpdate;
-                    public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
+                    public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
                     public required NodeIdentification NodeIdentification { get; init; }
                     public required PersonListItem Person { get; set; }
                     public required OrganizationListItem Organization { get; set; }
@@ -160,7 +162,7 @@ public abstract record PersonOrganizationRelation : Relation
                 public sealed record ToCreate : Resolved, CompletedNewPersonOrganizationRelation
                 {
                     public override NodeDetails NodeDetails => NodeDetailsForCreate;
-                    public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+                    public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
                     public required PersonListItem Person { get; set; }
                     public required OrganizationListItem Organization { get; set; }
 
@@ -186,7 +188,7 @@ public abstract record PersonOrganizationRelation : Relation
         public abstract record Incomplete : ForOrganization
         {
             public override NodeDetails NodeDetails => NodeDetailsForCreate;
-            public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+            public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
             public override T Match<T>(
                 Func<Complete, T> completedPersonOrganizationRelationForOrganization,
                 Func<Incomplete, T> incompletePersonOrganizationRelationForOrganization
@@ -282,7 +284,7 @@ public abstract record PersonOrganizationRelation : Relation
             public sealed record ToCreateForNewPerson : Complete, NewNode
             {
                 public override NodeDetails NodeDetails => NodeDetailsForCreate;
-                public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+                public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
                 public required PersonName Person { get; set; }
                 public required OrganizationListItem Organization { get; set; }
                 public override PersonItem PersonItem => Person;
@@ -309,7 +311,7 @@ public abstract record PersonOrganizationRelation : Relation
                 public sealed record ToUpdate : Resolved, ExistingPersonOrganizationRelation
                 {
                     public override NodeDetails NodeDetails => NodeDetailsForUpdate;
-                    public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
+                    public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
                     public required NodeIdentification NodeIdentification { get; init; }
                     public int NodeId { get; init; }
                     public int UrlId { get; set; }
@@ -337,7 +339,7 @@ public abstract record PersonOrganizationRelation : Relation
                 public sealed record ToCreate : Resolved, CompletedNewPersonOrganizationRelation
                 {
                     public override NodeDetails NodeDetails => NodeDetailsForCreate;
-                    public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+                    public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
                     public required PersonListItem Person { get; set; }
                     public required OrganizationListItem Organization { get; set; }
                     public override PersonItem PersonItem => Person;
@@ -363,7 +365,7 @@ public abstract record PersonOrganizationRelation : Relation
         public abstract record Incomplete : ForPerson, NewNode
         {
             public override NodeDetails NodeDetails => NodeDetailsForCreate;
-            public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+            public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
             public override T Match<T>(
                 Func<Complete, T> complete,
                 Func<Incomplete, T> incomplete

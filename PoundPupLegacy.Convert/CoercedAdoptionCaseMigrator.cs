@@ -113,8 +113,8 @@ internal sealed class CoercedAdoptionCaseMigrator(
         while (await reader.ReadAsync()) {
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
-            var vocabularyNames = new List<NewTermForNewNameable> {
-                new NewTermForNewNameable {
+            var vocabularyNames = new List<Term.ToCreateForNewNameable> {
+                new Term.ToCreateForNewNameable {
                     Identification = new Identification.Possible {
                         Id = null,
                     },
@@ -169,8 +169,8 @@ internal sealed class CoercedAdoptionCaseMigrator(
                     Description = reader.GetString("description"),
                     FileIdTileImage = null,
                 },
-                LocatableDetails = new LocatableDetails.LocatableDetailsForCreate {
-                    Locations = new List<EventuallyIdentifiableLocation>(),
+                LocatableDetails = new LocatableDetails.ForCreate {
+                    Locations = new List<Location.ToCreate>(),
                 },
                 CaseDetails = new CaseDetails.CaseDetailsForCreate {
                     Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date"))?.ToFuzzyDate(),

@@ -115,7 +115,7 @@ internal sealed class ActMigrator(
 
         while (await reader.ReadAsync()) {
 
-            var vocabularyNames = new List<NewTermForNewNameable>();
+            var vocabularyNames = new List<CreateModel.Term.ToCreateForNewNameable>();
 
             var id = reader.GetInt32("id");
             var title = reader.GetString("title");
@@ -134,7 +134,7 @@ internal sealed class ActMigrator(
                         VocabularyId = vocabularyId
                     }));
                 }
-                vocabularyNames.Add(new NewTermForNewNameable {
+                vocabularyNames.Add(new CreateModel.Term.ToCreateForNewNameable {
                     Identification = new Identification.Possible {
                         Id = null,
                     },
@@ -144,7 +144,7 @@ internal sealed class ActMigrator(
                 });
             }
             else {
-                vocabularyNames.Add(new NewTermForNewNameable {
+                vocabularyNames.Add(new CreateModel.Term.ToCreateForNewNameable {
                     Identification = new Identification.Possible {
                         Id = null,
                     },

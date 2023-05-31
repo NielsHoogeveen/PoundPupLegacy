@@ -69,7 +69,7 @@ internal sealed class LocationService(
         var address = addressBuilder.ToString();
         var url = $"{GOOGLE_API_ADDRESS}address={address}&key={GOOGLE_API_KEY}";
         var response = await client.GetAsync(url);
-        var responseLocation = new ExistingLocation {
+        var responseLocation = new Location.ToUpdate {
             Street = null,
             Addition = null,
             City = null,

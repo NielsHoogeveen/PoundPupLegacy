@@ -156,7 +156,7 @@ public sealed class Program
             EditModel.OrganizationListItemJsonContext.Default,
             EditModel.OrganizationTypeJsonContext.Default,
             EditModel.PersonListItemJsonContext.Default,
-            EditModel.ExistingOrganizationPoliticalEntityRelationJsonContext.Default,
+            //EditModel.ExistingOrganizationPoliticalEntityRelationJsonContext.Default,
             EditModel.OrganizationPoliticalEntityRelationTypeListItemJsonContext.Default,
             EditModel.ExistingPersonPoliticalEntityRelationJsonContext.Default,
             EditModel.PersonPoliticalEntityRelationTypeListItemJsonContext.Default,

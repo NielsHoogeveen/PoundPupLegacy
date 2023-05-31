@@ -64,9 +64,9 @@ internal sealed class FamilySizeMigrator(
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
-                Terms = new List<NewTermForNewNameable>
+                Terms = new List<Term.ToCreateForNewNameable>
                 {
-                    new NewTermForNewNameable
+                    new Term.ToCreateForNewNameable
                     {
                         Identification = new Identification.Possible {
                             Id = null,
@@ -120,9 +120,9 @@ internal sealed class FamilySizeMigrator(
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
-                Terms = new List<NewTermForNewNameable>
+                Terms = new List<Term.ToCreateForNewNameable>
                 {
-                    new NewTermForNewNameable
+                    new Term.ToCreateForNewNameable
                     {
                         Identification = new Identification.Possible {
                             Id = null,
@@ -176,9 +176,9 @@ internal sealed class FamilySizeMigrator(
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
-                Terms = new List<NewTermForNewNameable>
+                Terms = new List<Term.ToCreateForNewNameable>
                 {
-                    new NewTermForNewNameable
+                    new Term.ToCreateForNewNameable
                     {
                         Identification = new Identification.Possible {
                             Id = null,
@@ -232,9 +232,9 @@ internal sealed class FamilySizeMigrator(
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
-                Terms = new List<NewTermForNewNameable>
+                Terms = new List<Term.ToCreateForNewNameable>
                 {
-                    new NewTermForNewNameable
+                    new Term.ToCreateForNewNameable
                     {
                         Identification = new Identification.Possible {
                             Id = null,
@@ -243,7 +243,7 @@ internal sealed class FamilySizeMigrator(
                         Name = "more than 12",
                         ParentTermIds = new List<int>(),
                     },
-                    new NewTermForNewNameable
+                    new Term.ToCreateForNewNameable
                     {
                         Identification = new Identification.Possible {
                             Id = null,

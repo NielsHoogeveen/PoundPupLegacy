@@ -2,119 +2,6 @@
 using File = PoundPupLegacy.CreateModel.File;
 
 namespace PoundPupLegacy.Convert;
-
-public sealed record MemberOfCongress
-{
-    public int? node_id { get; set; }
-    public Id id { get; set; }
-    public Bio bio { get; set; }
-    public Name name { get; set; }
-    public Term[] terms { get; set; }
-    public LeadershipRole[] leadership_roles { get; set; }
-
-}
-
-public sealed record Bio
-{
-    public DateTime? birthday { get; set; }
-    public string gender { get; set; }
-}
-
-public sealed record Id
-{
-    public string bioguide { get; set; }
-    public string thomas { get; set; }
-    public string lis { get; set; }
-    public int govtrack { get; set; }
-    public string opensecrets { get; set; }
-    public int votesmart { get; set; }
-    public string[] fec { get; set; }
-    public int cspan { get; set; }
-    public string wikipedia { get; set; }
-    public long house_history { get; set; }
-    public string ballotpedia { get; set; }
-    public int maplight { get; set; }
-    public int icpsr { get; set; }
-    public string wikidata { get; set; }
-    public string google_entity_id { get; set; }
-}
-public sealed record Term
-{
-    public string type { get; set; }
-    public DateTime start { get; set; }
-    public DateTime end { get; set; }
-    public string state { get; set; }
-    public int? district { get; set; }
-    public int? @class { get; set; }
-    public string party { get; set; }
-    public string how { get; set; }
-
-    public string state_rank { get; set; }
-
-    public string caucus { get; set; }
-
-    public PartyAffiliation[] party_affiliations { get; set; }
-}
-public sealed record Name
-{
-    public string first { get; set; }
-    public string middle { get; set; }
-    public string last { get; set; }
-    public string suffix { get; set; }
-
-    public string nickname { get; set; }
-    public string official_full { get; set; }
-}
-
-public sealed record PartyAffiliation
-{
-    public DateTime start { get; set; }
-    public DateTime end { get; set; }
-    public string party { get; set; }
-}
-
-public sealed record LeadershipRole
-{
-    public DateTime start { get; set; }
-    public DateTime end { get; set; }
-    public string title { get; set; }
-    public string chamber { get; set; }
-}
-
-public enum MemberType
-{
-    Representative,
-    Senator
-}
-public sealed record TempTerm
-{
-    public int Id { get; set; }
-    public DateTime StartDate { get; set; }
-    public DateTime? EndDate { get; set; }
-
-    public MemberType MemberType { get; set; }
-
-    public string State { get; set; }
-}
-
-
-public sealed record StoredTerm
-{
-    public required int GovtrackId { get; init; }
-    public required int PersonId { get; init; }
-
-    public required string PersonName { get; init; }
-    public required int? NodeId { get; init; }
-    public required DateTime StartDate { get; set; }
-    public required DateTime? EndDate { get; set; }
-    public required int RelationTypeId { get; init; }
-    public required string RelationTypeName { get; init; }
-    public int PoliticalEntityId { get; set; }
-    public required string PoliticalEntityCode { get; set; }
-    public required bool Delete { get; set; }
-    public required int? DocumentId { get; init; }
-}
-
 internal class MemberOfCongressMigrator(
         IDatabaseConnections databaseConnections,
         IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
@@ -127,7 +14,7 @@ internal class MemberOfCongressMigrator(
     ) : MigratorPPL(databaseConnections)
 {
 
-    private List<MemberOfCongress> _membersOfCongress = new List<MemberOfCongress>();
+    private List<MembersOfCongressJsonDefinition.MemberOfCongress> _membersOfCongress = new List<MembersOfCongressJsonDefinition.MemberOfCongress>();
 
     protected override string Name => "members of congress";
 
@@ -408,7 +295,7 @@ internal class MemberOfCongressMigrator(
                     return politicalPartyAffiliations!.First(x => x.Item1 == party.ToLower()).Item2;
                 }
 
-                List<CongressionalTermPoliticalPartyAffiliation.ToCreateForNewTerm> GetPartyAffiliations(Term term)
+                List<CongressionalTermPoliticalPartyAffiliation.ToCreateForNewTerm> GetPartyAffiliations(MembersOfCongressJsonDefinition.Term term)
                 {
                     if (term.party_affiliations == null) {
                         return new List<CongressionalTermPoliticalPartyAffiliation.ToCreateForNewTerm> {
@@ -480,7 +367,7 @@ internal class MemberOfCongressMigrator(
                     ).ToList();
                 }
 
-                int GetStateId(Term term)
+                int GetStateId(MembersOfCongressJsonDefinition.Term term)
                 {
                     return states!.First(x => x.Item1 == $"US-{term.state}").Item2;
                 }
@@ -664,8 +551,8 @@ internal class MemberOfCongressMigrator(
 
                     }
                     var title = memberOfCongress.name.official_full is null ? $"{memberOfCongress.name.first} {memberOfCongress.name.middle} {memberOfCongress.name.last} {memberOfCongress.name.suffix}".Replace("  ", " ") : memberOfCongress.name.official_full;
-                    var vocabularyNames = new List<NewTermForNewNameable> {
-                        new NewTermForNewNameable {
+                    var vocabularyNames = new List<CreateModel.Term.ToCreateForNewNameable> {
+                        new Term.ToCreateForNewNameable {
                             Identification = new Identification.Possible {
                                 Id = null
                             },
@@ -706,8 +593,8 @@ internal class MemberOfCongressMigrator(
                             FileIdTileImage = null,
                             Terms = vocabularyNames,
                         },
-                        LocatableDetails = new LocatableDetails.LocatableDetailsForCreate {
-                            Locations = new List<EventuallyIdentifiableLocation>(),
+                        LocatableDetails = new LocatableDetails.ForCreate {
+                            Locations = new List<Location.ToCreate>(),
                         },
                         PersonDetails = new PersonDetails.ForCreate {
                             DateOfBirth = memberOfCongress.bio.birthday,
@@ -732,20 +619,20 @@ internal class MemberOfCongressMigrator(
         }
     }
 
-    private async IAsyncEnumerable<MemberOfCongress> GetMembersOfCongress()
+    private async IAsyncEnumerable<MembersOfCongressJsonDefinition.MemberOfCongress> GetMembersOfCongress()
     {
 
 
         string fileName = @"..\..\..\files\legislators-current.json";
         var jsonUtf8Bytes = await System.IO.File.ReadAllBytesAsync(fileName);
-        foreach (var member in JsonSerializer.Deserialize<List<MemberOfCongress>>(jsonUtf8Bytes)!) {
+        foreach (var member in JsonSerializer.Deserialize<List<MembersOfCongressJsonDefinition.MemberOfCongress>>(jsonUtf8Bytes)!) {
             if (member.terms.Any(x => x.end >= DateTime.Parse("1999-01-03"))) {
                 yield return member;
             }
         }
         string fileName2 = @"..\..\..\files\legislators-historical.json";
         var jsonUtf8Bytes2 = await System.IO.File.ReadAllBytesAsync(fileName2);
-        foreach (var member in JsonSerializer.Deserialize<List<MemberOfCongress>>(jsonUtf8Bytes2)!) {
+        foreach (var member in JsonSerializer.Deserialize<List<MembersOfCongressJsonDefinition.MemberOfCongress>>(jsonUtf8Bytes2)!) {
             if (member.terms.Any(x => x.end >= DateTime.Parse("1999-01-03"))) {
                 yield return member;
             }
@@ -1054,4 +941,123 @@ internal class MemberOfCongressMigrator(
         }
         await reader.CloseAsync();
     }
+}
+
+public static class MembersOfCongressJsonDefinition
+{
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
+    public sealed record MemberOfCongress
+    {
+        public int? node_id { get; set; }
+        public Id id { get; set; }
+        public Bio bio { get; set; }
+        public Name name { get; set; }
+        public Term[] terms { get; set; }
+        public LeadershipRole[] leadership_roles { get; set; }
+
+    }
+
+    public sealed record Bio
+    {
+        public DateTime? birthday { get; set; }
+        public string gender { get; set; }
+    }
+
+    public sealed record Id
+    {
+        public string bioguide { get; set; }
+        public string thomas { get; set; }
+        public string lis { get; set; }
+        public int govtrack { get; set; }
+        public string opensecrets { get; set; }
+        public int votesmart { get; set; }
+        public string[] fec { get; set; }
+        public int cspan { get; set; }
+        public string wikipedia { get; set; }
+        public long house_history { get; set; }
+        public string ballotpedia { get; set; }
+        public int maplight { get; set; }
+        public int icpsr { get; set; }
+        public string wikidata { get; set; }
+        public string google_entity_id { get; set; }
+    }
+    public sealed record Term
+    {
+        public string type { get; set; }
+        public DateTime start { get; set; }
+        public DateTime end { get; set; }
+        public string state { get; set; }
+        public int? district { get; set; }
+        public int? @class { get; set; }
+        public string party { get; set; }
+        public string how { get; set; }
+
+        public string state_rank { get; set; }
+
+        public string caucus { get; set; }
+
+        public PartyAffiliation[] party_affiliations { get; set; }
+    }
+    public sealed record Name
+    {
+        public string first { get; set; }
+        public string middle { get; set; }
+        public string last { get; set; }
+        public string suffix { get; set; }
+
+        public string nickname { get; set; }
+        public string official_full { get; set; }
+    }
+
+    public sealed record PartyAffiliation
+    {
+        public DateTime start { get; set; }
+        public DateTime end { get; set; }
+        public string party { get; set; }
+    }
+
+    public sealed record LeadershipRole
+    {
+        public DateTime start { get; set; }
+        public DateTime end { get; set; }
+        public string title { get; set; }
+        public string chamber { get; set; }
+    }
+
+    public enum MemberType
+    {
+        Representative,
+        Senator
+    }
+    public sealed record TempTerm
+    {
+        public int Id { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime? EndDate { get; set; }
+
+        public MemberType MemberType { get; set; }
+
+        public string State { get; set; }
+    }
+
+
+    public sealed record StoredTerm
+    {
+        public required int GovtrackId { get; init; }
+        public required int PersonId { get; init; }
+
+        public required string PersonName { get; init; }
+        public required int? NodeId { get; init; }
+        public required DateTime StartDate { get; set; }
+        public required DateTime? EndDate { get; set; }
+        public required int RelationTypeId { get; init; }
+        public required string RelationTypeName { get; init; }
+        public int PoliticalEntityId { get; set; }
+        public required string PoliticalEntityCode { get; set; }
+        public required bool Delete { get; set; }
+        public required int? DocumentId { get; init; }
+    }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
 }

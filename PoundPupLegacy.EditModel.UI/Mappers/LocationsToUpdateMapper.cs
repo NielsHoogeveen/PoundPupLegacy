@@ -2,14 +2,14 @@
 
 namespace PoundPupLegacy.EditModel.UI.Mappers;
 
-internal class LocationsToUpdateMapper : IEnumerableMapper<Location.ExistingLocation, ImmediatelyIdentifiableLocation>
+internal class LocationsToUpdateMapper : IEnumerableMapper<Location.ToUpdate, CreateModel.Location.ToUpdate>
 {
-    public IEnumerable<ImmediatelyIdentifiableLocation> Map(IEnumerable<Location.ExistingLocation> source)
+    public IEnumerable<CreateModel.Location.ToUpdate> Map(IEnumerable<Location.ToUpdate> source)
     {
         foreach(var location in source) {
             if(location.HasBeenDeleted)
                 continue;
-            yield return new CreateModel.LocationToUpdate {
+            yield return new CreateModel.Location.ToUpdate {
                 Identification = new Identification.Certain { 
                     Id = location.Id,
                 },

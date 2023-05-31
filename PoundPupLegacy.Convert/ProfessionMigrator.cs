@@ -87,9 +87,9 @@ internal sealed class ProfessionMigrator(
             var name = reader.GetString("title");
             var topicName = reader.IsDBNull("topic_name") ? null : reader.GetString("topic_name");
 
-            var vocabularyNames = new List<NewTermForNewNameable>
+            var vocabularyNames = new List<Term.ToCreateForNewNameable>
             {
-                new NewTermForNewNameable
+                new Term.ToCreateForNewNameable
                 {
                     Identification = new Identification.Possible {
                         Id = null,
@@ -100,7 +100,7 @@ internal sealed class ProfessionMigrator(
                 }
             };
             if (topicName != null) {
-                vocabularyNames.Add(new NewTermForNewNameable {
+                vocabularyNames.Add(new Term.ToCreateForNewNameable {
                     Identification = new Identification.Possible {
                         Id = null,
                     },
@@ -207,9 +207,9 @@ internal sealed class ProfessionMigrator(
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
-                Terms = new List<NewTermForNewNameable>
+                Terms = new List<Term.ToCreateForNewNameable>
                 {
-                    new NewTermForNewNameable
+                    new Term.ToCreateForNewNameable
                     {
                         Identification = new Identification.Possible {
                             Id = null,
@@ -266,9 +266,9 @@ internal sealed class ProfessionMigrator(
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
-                Terms = new List<NewTermForNewNameable>
+                Terms = new List<Term.ToCreateForNewNameable>
                 {
-                    new NewTermForNewNameable
+                    new Term.ToCreateForNewNameable
                     {
                         Identification = new Identification.Possible {
                             Id = null,

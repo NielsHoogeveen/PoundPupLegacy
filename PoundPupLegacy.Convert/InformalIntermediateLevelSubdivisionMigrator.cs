@@ -83,9 +83,9 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
                     TermIds = new List<int>(),
                 },
                 NameableDetails = new NameableDetails.ForCreate {
-                    Terms = new List<NewTermForNewNameable>
+                    Terms = new List<Term.ToCreateForNewNameable>
                     {
-                        new NewTermForNewNameable
+                        new Term.ToCreateForNewNameable
                         {
                             Identification = new Identification.Possible {
                                 Id = null,
@@ -186,9 +186,9 @@ internal sealed class InformalIntermediateLevelSubdivisionMigrator(
 
             var id = reader.GetInt32("id");
             var title = $"{reader.GetString("title")} (region of the USA)";
-            var vocabularyNames = new List<NewTermForNewNameable>
+            var vocabularyNames = new List<Term.ToCreateForNewNameable>
             {
-                new NewTermForNewNameable
+                new Term.ToCreateForNewNameable
                 {
                     Identification = new Identification.Possible {
                         Id = null,

@@ -53,9 +53,9 @@ internal sealed class BillActionTypeMigrator(
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
 
-            var vocabularyNames = new List<NewTermForNewNameable>
+            var vocabularyNames = new List<Term.ToCreateForNewNameable>
             {
-                new NewTermForNewNameable
+                new Term.ToCreateForNewNameable
                 {
                     Identification = new Identification.Possible {
                         Id = id,

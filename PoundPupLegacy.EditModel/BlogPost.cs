@@ -1,6 +1,7 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
 [JsonSerializable(typeof(BlogPost.ToUpdate), TypeInfoPropertyName = "BlogPostToUpdate")]
+[JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
 public partial class ExistingBlogPostJsonContext : JsonSerializerContext { }
 
 public abstract record BlogPost : SimpleTextNode, ResolvedNode
@@ -13,7 +14,7 @@ public abstract record BlogPost : SimpleTextNode, ResolvedNode
     public sealed record ToUpdate : BlogPost, ExistingNode
     {
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
-        public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
+        public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
         public required NodeIdentification NodeIdentification { get; init; }
         public override T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem)
         {
@@ -27,7 +28,7 @@ public abstract record BlogPost : SimpleTextNode, ResolvedNode
     public sealed record ToCreate: BlogPost, ResolvedNewNode
     {
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
-        public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+        public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
 
         public override T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem)
         {

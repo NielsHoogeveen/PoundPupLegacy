@@ -86,9 +86,9 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
             },
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
-                Terms = new List<NewTermForNewNameable>
+                Terms = new List<Term.ToCreateForNewNameable>
                 {
-                    new NewTermForNewNameable
+                    new Term.ToCreateForNewNameable
                     {
                         Identification = new Identification.Possible {
                             Id = null,
@@ -184,9 +184,9 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
             },
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
-                Terms = new List<NewTermForNewNameable>
+                Terms = new List<Term.ToCreateForNewNameable>
                 {
-                    new NewTermForNewNameable
+                    new Term.ToCreateForNewNameable
                     {
                         Identification = new Identification.Possible {
                             Id = null,
@@ -282,9 +282,9 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
             },
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
-                Terms = new List<NewTermForNewNameable>
+                Terms = new List<Term.ToCreateForNewNameable>
                 {
-                    new NewTermForNewNameable
+                    new Term.ToCreateForNewNameable
                     {
                         Identification = new Identification.Possible {
                             Id = null,
@@ -380,9 +380,9 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
             },
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
-                Terms = new List<NewTermForNewNameable>
+                Terms = new List<Term.ToCreateForNewNameable>
                 {
-                    new NewTermForNewNameable
+                    new Term.ToCreateForNewNameable
                     {
                         Identification = new Identification.Possible {
                             Id = null,
@@ -510,9 +510,9 @@ internal sealed class CountryAndFirstLevelSubDivisionMigrator(
                         reader.GetString("title");
 
             var regionName = reader.GetString("second_level_region_name");
-            var vocabularyNames = new List<NewTermForNewNameable>
+            var vocabularyNames = new List<Term.ToCreateForNewNameable>
             {
-                new NewTermForNewNameable
+                new Term.ToCreateForNewNameable
                 {
                     Identification = new Identification.Possible {
                         Id = null,

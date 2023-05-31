@@ -1,8 +1,11 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
 [JsonSerializable(typeof(Document.ToUpdate), TypeInfoPropertyName = "DocumentToUpdate")]
+[JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
 public partial class ExistingDocumentJsonContext : JsonSerializerContext { }
+
 [JsonSerializable(typeof(Document.ToCreate))]
+[JsonSerializable(typeof(NodeDetails.ForCreate), TypeInfoPropertyName = "NodeDetailsForCreate")]
 public partial class NewDocumentJsonContext : JsonSerializerContext { }
 [JsonSerializable(typeof(DocumentDetails))]
 public partial class DocumentDetailsJsonContext : JsonSerializerContext { }
@@ -19,7 +22,7 @@ public abstract record Document : SimpleTextNode, ResolvedNode
     public sealed record ToUpdate : Document, ExistingNode
     {
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
-        public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
+        public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
         public required NodeIdentification NodeIdentification { get; init; }
         public override T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem)
         {
@@ -33,7 +36,7 @@ public abstract record Document : SimpleTextNode, ResolvedNode
     public sealed record ToCreate : Document, ResolvedNewNode
     {
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
-        public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+        public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
         public override T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem)
         {
             return newItem(this);

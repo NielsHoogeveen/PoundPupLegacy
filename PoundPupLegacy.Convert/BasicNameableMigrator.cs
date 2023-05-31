@@ -129,9 +129,9 @@ internal sealed class BasicNameableMigrator(
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
-                Terms = new List<NewTermForNewNameable>
+                Terms = new List<Term.ToCreateForNewNameable>
                 {
-                    new NewTermForNewNameable
+                    new Term.ToCreateForNewNameable
                     {
                         Identification = new Identification.Possible {
                             Id = null,
@@ -157,9 +157,9 @@ internal sealed class BasicNameableMigrator(
                     VocabularyId = vocabularyId
                 }));
             }
-            var vocabularyNames = new List<NewTermForNewNameable>
+            var vocabularyNames = new List<Term.ToCreateForNewNameable>
                 {
-                    new NewTermForNewNameable
+                    new Term.ToCreateForNewNameable
                     {
                         Identification = new Identification.Possible {
                             Id = null,
@@ -239,9 +239,9 @@ internal sealed class BasicNameableMigrator(
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
-                Terms = new List<NewTermForNewNameable>
+                Terms = new List<Term.ToCreateForNewNameable>
                 {
-                    new NewTermForNewNameable
+                    new Term.ToCreateForNewNameable
                     {
                         Identification = new Identification.Possible {
                             Id = null,
@@ -289,9 +289,9 @@ internal sealed class BasicNameableMigrator(
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
-                Terms = new List<NewTermForNewNameable>
+                Terms = new List<Term.ToCreateForNewNameable>
                 {
-                    new NewTermForNewNameable
+                    new Term.ToCreateForNewNameable
                     {
                         Identification = new Identification.Possible {
                             Id = null,
@@ -339,9 +339,9 @@ internal sealed class BasicNameableMigrator(
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
-                Terms = new List<NewTermForNewNameable>
+                Terms = new List<Term.ToCreateForNewNameable>
                 {
-                    new NewTermForNewNameable
+                    new Term.ToCreateForNewNameable
                     {
                         Identification = new Identification.Possible {
                             Id = null,

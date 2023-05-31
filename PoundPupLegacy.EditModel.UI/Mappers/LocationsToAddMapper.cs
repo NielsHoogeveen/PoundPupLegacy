@@ -1,13 +1,11 @@
-﻿using PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.EditModel.UI.Mappers;
 
-namespace PoundPupLegacy.EditModel.UI.Mappers;
-
-internal class LocationsToAddMapper : IEnumerableMapper<Location.ExistingLocation, EventuallyIdentifiableLocation>
+internal class LocationsToAddMapper : IEnumerableMapper<EditModel.Location.ToCreate, CreateModel.Location.ToCreate>
 {
-    public IEnumerable<EventuallyIdentifiableLocation> Map(IEnumerable<Location.ExistingLocation> source)
+    public IEnumerable<CreateModel.Location.ToCreate> Map(IEnumerable<Location.ToCreate> source)
     {
         foreach (var location in source) {
-            yield return new CreateModel.LocationToCreate {
+            yield return new CreateModel.Location.ToCreate {
                 Identification = new Identification.Possible { 
                     Id = null,
                 },

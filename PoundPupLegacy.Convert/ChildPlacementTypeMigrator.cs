@@ -83,9 +83,9 @@ internal sealed class ChildPlacementTypeMigrator(
             var name = reader.GetString("title");
             var topicName = reader.IsDBNull("topic_name") ? null : reader.GetString("topic_name");
             var topicParentName = reader.IsDBNull("parent_topic_name") ? null : reader.GetString("parent_topic_name");
-            var vocabularyNames = new List<NewTermForNewNameable>
+            var vocabularyNames = new List<Term.ToCreateForNewNameable>
             {
-                new NewTermForNewNameable
+                new Term.ToCreateForNewNameable
                 {
                     Identification = new Identification.Possible {
                         Id = null,
@@ -103,7 +103,7 @@ internal sealed class ChildPlacementTypeMigrator(
                         VocabularyId = vocabularyIdTopics
                     }));
                 }
-                vocabularyNames.Add(new NewTermForNewNameable {
+                vocabularyNames.Add(new Term.ToCreateForNewNameable {
                     Identification = new Identification.Possible {
                         Id = null,
                     },

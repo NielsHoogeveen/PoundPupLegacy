@@ -1,20 +1,20 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(TenantNodeDetails.ExistingTenantNodeDetails))]
+[JsonSerializable(typeof(TenantNodeDetails.ForUpdate))]
 public partial class ExistingTenantNodeDetailsJsonContext : JsonSerializerContext { }
 
-[JsonSerializable(typeof(TenantNodeDetails.ExistingTenantNodeDetails))]
+[JsonSerializable(typeof(TenantNodeDetails.ForUpdate))]
 public partial class NewTenantNodeDetailsJsonContext : JsonSerializerContext { }
 
 public abstract record TenantNodeDetails
 {
     public abstract IEnumerable<TenantNode> TenantNodes { get; }
 
-    public sealed record ExistingTenantNodeDetails: TenantNodeDetails
+    public sealed record ForUpdate: TenantNodeDetails
     {
-        private List<TenantNode.NewTenantNodeForExistingNode> tenantNodesToAdd = new();
+        private List<TenantNode.ToCreateForExistingNode> tenantNodesToAdd = new();
 
-        public List<TenantNode.NewTenantNodeForExistingNode> TenantNodesToAdd {
+        public List<TenantNode.ToCreateForExistingNode> TenantNodesToAdd {
             get => tenantNodesToAdd;
             init {
                 if (value is not null) {
@@ -22,9 +22,9 @@ public abstract record TenantNodeDetails
                 }
             }
         }
-        private List<TenantNode.ExistingTenantNode> tenantNodesToUpdate = new();
+        private List<TenantNode.ToUpdate> tenantNodesToUpdate = new();
 
-        public List<TenantNode.ExistingTenantNode> TenantNodesToUpdate {
+        public List<TenantNode.ToUpdate> TenantNodesToUpdate {
             get => tenantNodesToUpdate;
             init {
                 if (value is not null) {
@@ -45,15 +45,15 @@ public abstract record TenantNodeDetails
             }
         }
     }
-    public sealed record NewTenantNodeDetails: TenantNodeDetails
+    public sealed record ForCreate: TenantNodeDetails
     {
-        public static NewTenantNodeDetails EmptyInstance => new NewTenantNodeDetails {
-            TenantNodesToAdd = new List<TenantNode.NewTenantNodeForNewNode>(),
+        public static ForCreate EmptyInstance => new ForCreate {
+            TenantNodesToAdd = new List<TenantNode.ToCreateForNewNode>(),
         };
 
-        private List<TenantNode.NewTenantNodeForNewNode> tenantNodesToAdd = new();
+        private List<TenantNode.ToCreateForNewNode> tenantNodesToAdd = new();
 
-        public List<TenantNode.NewTenantNodeForNewNode> TenantNodesToAdd {
+        public List<TenantNode.ToCreateForNewNode> TenantNodesToAdd {
             get => tenantNodesToAdd;
             init {
                 if (value is not null) {

@@ -2,10 +2,10 @@
 
 internal class NodeDetailsForCreateMapper(
     IEnumerableMapper<Tags, int> termIdsToAddMapper,
-    IEnumerableMapper<EditModel.TenantNode.NewTenantNodeForNewNode, CreateModel.TenantNode.ToCreate.ForNewNode> tenantNodeMapper
-    ) : IMapper<EditModel.NodeDetails.NodeDetailsForCreate, CreateModel.NodeDetails.ForCreate>
+    IEnumerableMapper<EditModel.TenantNode.ToCreateForNewNode, CreateModel.TenantNode.ToCreate.ForNewNode> tenantNodeMapper
+    ) : IMapper<EditModel.NodeDetails.ForCreate, CreateModel.NodeDetails.ForCreate>
 {
-    public CreateModel.NodeDetails.ForCreate Map(EditModel.NodeDetails.NodeDetailsForCreate source)
+    public CreateModel.NodeDetails.ForCreate Map(EditModel.NodeDetails.ForCreate source)
     {
         var now = DateTime.Now;
         return new CreateModel.NodeDetails.ForCreate {
@@ -17,7 +17,7 @@ internal class NodeDetailsForCreateMapper(
             PublisherId = source.PublisherId,
             Title = source.Title,
             TermIds = termIdsToAddMapper.Map(source.Tags).ToList(),
-            TenantNodes = tenantNodeMapper.Map(source.NewTenantNodeDetails.TenantNodesToAdd).ToList(),
+            TenantNodes = tenantNodeMapper.Map(source.TenantNodeDetailsForCreate.TenantNodesToAdd).ToList(),
         };
     }
 }

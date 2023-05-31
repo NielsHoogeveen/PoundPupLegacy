@@ -1,9 +1,17 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
 [JsonSerializable(typeof(ChildTraffickingCase.ToUpdate), TypeInfoPropertyName = "ChildTraffickingCaseToUpdate")]
+[JsonSerializable(typeof(LocatableDetails.ForUpdate), TypeInfoPropertyName = "LocatableDetailsForUpdate")]
+[JsonSerializable(typeof(Location.ToUpdate), TypeInfoPropertyName = "LocationDetailsForUpdate")]
+[JsonSerializable(typeof(List<Location.ToUpdate>), TypeInfoPropertyName = "LocationDetailsListForUpdate")]
+[JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
 public partial class ExistingChildTraffickingCaseJsonContext : JsonSerializerContext { }
 
 [JsonSerializable(typeof(ChildTraffickingCase.ToCreate.Unresolved))]
+[JsonSerializable(typeof(LocatableDetails.ForCreate), TypeInfoPropertyName = "LocatableDetailsCreate")]
+[JsonSerializable(typeof(Location.ToCreate), TypeInfoPropertyName = "LocationDetailsForCreate")]
+[JsonSerializable(typeof(List<Location.ToCreate>), TypeInfoPropertyName = "LocationDetailsListForCreate")]
+[JsonSerializable(typeof(NodeDetails.ForCreate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
 public partial class NewChildTraffickingCaseJsonContext : JsonSerializerContext { }
 
 [JsonSerializable(typeof(ChildTraffickingCaseDetails.ResolvedChildTraffickingCaseDetails))]
@@ -34,9 +42,9 @@ public abstract record ChildTraffickingCase : Case
     public sealed record ToUpdate : ChildTraffickingCase, ExistingLocatable
     {
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
-        public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
-        public override LocatableDetails LocatableDetails => ExistingLocatableDetails;
-        public required LocatableDetails.ExistingLocatableDetails ExistingLocatableDetails { get; init; }
+        public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
+        public override LocatableDetails LocatableDetails => LocatableDetailsForUpdate;
+        public required LocatableDetails.ForUpdate LocatableDetailsForUpdate { get; init; }
         public required NodeIdentification NodeIdentification { get; init; }
         public override ChildTraffickingCaseDetails ChildTraffickingCaseDetails => ResolvedChildTraffickingCaseDetails;
         public required ChildTraffickingCaseDetails.ResolvedChildTraffickingCaseDetails ResolvedChildTraffickingCaseDetails { get; init; }
@@ -60,9 +68,9 @@ public abstract record ChildTraffickingCase : Case
     public abstract record ToCreate : ChildTraffickingCase, NewLocatable
     {
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
-        public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-        public override LocatableDetails LocatableDetails => NewLocatableDetails;
-        public required LocatableDetails.NewLocatableDetails NewLocatableDetails { get; init; }
+        public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
+        public override LocatableDetails LocatableDetails => LocatableDetailsForCreate;
+        public required LocatableDetails.ForCreate LocatableDetailsForCreate { get; init; }
 
         public sealed record Resolved : ToCreate, ResolvedNewNode
         {
@@ -99,7 +107,7 @@ public abstract record ChildTraffickingCase : Case
                     },
                     NameableDetails = NameableDetails,
                     NodeDetailsForCreate = NodeDetailsForCreate,
-                    NewLocatableDetails = NewLocatableDetails,
+                    LocatableDetailsForCreate = LocatableDetailsForCreate,
                 };
             }
             public override T Match<T>(

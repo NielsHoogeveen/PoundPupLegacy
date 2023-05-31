@@ -1,15 +1,15 @@
 ﻿namespace PoundPupLegacy.EditModel.UI.Mappers;
 
 internal class InterOrganizationalRelationsFromUpdateMapper(
-    IMapper<EditModel.NodeDetails.NodeDetailsForUpdate, CreateModel.NodeDetails.ForUpdate> nodeDetailMapper
-) : IEnumerableMapper<InterOrganizationalRelation.To.Complete.Resolved.ToUpdate, CreateModel.InterOrganizationalRelation.ToCreate.ForNewOrganizationTo.ToUpdate>
+    IMapper<EditModel.NodeDetails.ForUpdate, CreateModel.NodeDetails.ForUpdate> nodeDetailMapper
+) : IEnumerableMapper<InterOrganizationalRelation.To.Complete.Resolved.ToUpdate, CreateModel.InterOrganizationalRelation.ToUpdate>
 {
-    public IEnumerable<CreateModel.InterOrganizationalRelation.ToCreate.ForNewOrganizationTo.ToUpdate> Map(IEnumerable<InterOrganizationalRelation.To.Complete.Resolved.ToUpdate> source)
+    public IEnumerable<CreateModel.InterOrganizationalRelation.ToUpdate> Map(IEnumerable<InterOrganizationalRelation.To.Complete.Resolved.ToUpdate> source)
     {
         foreach (var relation in source) {
             if (relation.RelationDetails.HasBeenDeleted)
                 continue;
-            yield return new CreateModel.InterOrganizationalRelation.ToCreate.ForNewOrganizationTo.ToUpdate {
+            yield return new CreateModel.InterOrganizationalRelation.ToUpdate {
                 Identification = new Identification.Certain {
                     Id = relation.NodeIdentification.NodeId,
                 },

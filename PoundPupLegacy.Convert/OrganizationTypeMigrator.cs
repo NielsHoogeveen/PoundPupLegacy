@@ -141,9 +141,9 @@ internal sealed class OrganizationTypeMigrator(
                     VocabularyId = vocabularyIdTopics
                 }));
             }
-            var vocabularyNames = new List<NewTermForNewNameable>
+            var vocabularyNames = new List<Term.ToCreateForNewNameable>
             {
-                new NewTermForNewNameable
+                new Term.ToCreateForNewNameable
                 {
                     Identification = new Identification.Possible {
                         Id = null,
@@ -152,7 +152,7 @@ internal sealed class OrganizationTypeMigrator(
                     Name = name,
                     ParentTermIds = new List<int>()
                 },
-                new NewTermForNewNameable {
+                new Term.ToCreateForNewNameable {
                     Identification = new Identification.Possible {
                         Id = null,
                     },
@@ -261,9 +261,9 @@ internal sealed class OrganizationTypeMigrator(
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
                 FileIdTileImage = null,
-                Terms = new List<NewTermForNewNameable>
+                Terms = new List<Term.ToCreateForNewNameable>
                 {
-                    new NewTermForNewNameable
+                    new Term.ToCreateForNewNameable
                     {
                         Identification = new Identification.Possible {
                             Id = null,
@@ -272,7 +272,7 @@ internal sealed class OrganizationTypeMigrator(
                         Name = Constants.POLITICAL_PARTY_NAME,
                         ParentTermIds = new List<int>(),
                     },
-                    new NewTermForNewNameable {
+                    new Term.ToCreateForNewNameable {
                         Identification = new Identification.Possible {
                             Id = null,
                         },

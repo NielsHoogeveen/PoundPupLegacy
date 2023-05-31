@@ -87,9 +87,9 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                 },
                 NameableDetails = new NameableDetails.ForCreate {
                     Description = "",
-                    Terms = new List<NewTermForNewNameable>
+                    Terms = new List<Term.ToCreateForNewNameable>
                     {
-                        new NewTermForNewNameable
+                        new Term.ToCreateForNewNameable
                         {
                             Identification = new Identification.Possible {
                                 Id = null,
@@ -194,9 +194,9 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
                 },
                 NameableDetails = new NameableDetails.ForCreate {
                     Description = "",
-                    Terms = new List<NewTermForNewNameable>
+                    Terms = new List<Term.ToCreateForNewNameable>
                     {
-                        new NewTermForNewNameable
+                        new Term.ToCreateForNewNameable
                         {
                             Identification = new Identification.Possible {
                                 Id = null,
@@ -317,9 +317,9 @@ internal sealed class BasicSecondLevelSubdivisionMigrator(
             var id = reader.GetInt32("id");
             var title = $"{reader.GetString("title").Replace(" (state)", "")} (state of the USA)";
             var subdivisioName = $"{reader.GetString("subdivision_name")} (region of the USA)";
-            var vocabularyNames = new List<NewTermForNewNameable>
+            var vocabularyNames = new List<Term.ToCreateForNewNameable>
             {
-                new NewTermForNewNameable
+                new Term.ToCreateForNewNameable
                 {
                     Identification = new Identification.Possible {
                         Id = null,

@@ -163,9 +163,9 @@ internal sealed class BasicCountryMigrator(
             },
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
-                Terms = new List<NewTermForNewNameable>
+                Terms = new List<Term.ToCreateForNewNameable>
                 {
-                    new NewTermForNewNameable
+                    new Term.ToCreateForNewNameable
                     {
                         Identification = new Identification.Possible {
                             Id = null,
@@ -236,9 +236,9 @@ internal sealed class BasicCountryMigrator(
             },
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
-                Terms = new List<NewTermForNewNameable>
+                Terms = new List<Term.ToCreateForNewNameable>
                 {
-                    new NewTermForNewNameable
+                    new Term.ToCreateForNewNameable
                     {
                         Identification = new Identification.Possible {
                             Id = null,
@@ -309,9 +309,9 @@ internal sealed class BasicCountryMigrator(
             },
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
-                Terms = new List<NewTermForNewNameable>
+                Terms = new List<Term.ToCreateForNewNameable>
                 {
-                    new NewTermForNewNameable
+                    new Term.ToCreateForNewNameable
                     {
                         Identification = new Identification.Possible {
                             Id = null,
@@ -382,9 +382,9 @@ internal sealed class BasicCountryMigrator(
             },
             NameableDetails = new NameableDetails.ForCreate {
                 Description = "",
-                Terms = new List<NewTermForNewNameable>
+                Terms = new List<Term.ToCreateForNewNameable>
                 {
-                    new NewTermForNewNameable
+                    new Term.ToCreateForNewNameable
                     {
                         Identification = new Identification.Possible {
                             Id = null,
@@ -551,9 +551,9 @@ internal sealed class BasicCountryMigrator(
             var regionName = reader.GetString("second_level_region_name");
             var topicName = reader.GetString("topic_name");
 
-            var vocabularyNames = new List<NewTermForNewNameable>
+            var vocabularyNames = new List<Term.ToCreateForNewNameable>
             {
-                new NewTermForNewNameable
+                new Term.ToCreateForNewNameable
                 {
                     Identification = new Identification.Possible {
                         Id = null,

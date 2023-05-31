@@ -1,6 +1,8 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(PersonPoliticalEntityRelation.Complete.Resolved.ToUpdate))]
+[JsonSerializable(typeof(PersonPoliticalEntityRelation.Complete.Resolved.ToUpdate), TypeInfoPropertyName = "PersonPoliticalEntityRelationCompleteResolvedToUpdate")]
+[JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
+
 public partial class ExistingPersonPoliticalEntityRelationJsonContext : JsonSerializerContext { }
 
 public static class PersonPoliticalEntityRelationExtensions
@@ -47,7 +49,7 @@ public abstract record PersonPoliticalEntityRelation : Relation
     {
         private Incomplete() { }
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
-        public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+        public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
         public abstract Complete GetCompletedRelation(PoliticalEntityListItem politicalEntity);
         public override T Match<T>(
             Func<Incomplete, T> incomplete,
@@ -111,7 +113,7 @@ public abstract record PersonPoliticalEntityRelation : Relation
             public sealed record ToUpdate : Resolved, ExistingNode
             {
                 public override NodeDetails NodeDetails => NodeDetailsForUpdate;
-                public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
+                public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
                 public required NodeIdentification NodeIdentification { get; init; }
                 public int NodeId { get; init; }
                 public int UrlId { get; set; }
@@ -125,7 +127,7 @@ public abstract record PersonPoliticalEntityRelation : Relation
             public sealed record ToCreate : Resolved, NewNode
             {
                 public override NodeDetails NodeDetails => NodeDetailsForCreate;
-                public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+                public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
                 public required PersonListItem Person { get; set; }
                 public required PoliticalEntityListItem PoliticalEntity { get; set; }
                 public override string PersonName => Person.Name;
@@ -137,7 +139,7 @@ public abstract record PersonPoliticalEntityRelation : Relation
         public sealed record ToCreateForNewPerson : Complete, NewNode
         {
             public override NodeDetails NodeDetails => NodeDetailsForCreate;
-            public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+            public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
             public required PersonName Person { get; set; }
             public required PoliticalEntityListItem PoliticalEntity { get; set; }
             public override string PersonName => Person.Name;

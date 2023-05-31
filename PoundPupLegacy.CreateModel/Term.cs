@@ -1,61 +1,41 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record NewTermForNewNameable: TermToCreateForNewNameable
+public abstract record Term
 {
-    public required Identification.Possible Identification { get; init; }
-    public required int VocabularyId { get; init; }
-    public required string Name { get; init; }
-    public required List<int> ParentTermIds { get; init; }
-    public TermToCreateForExistingNameable ResolveNameable(int nameableId)
+    private Term() { }
+    public sealed record ToCreateForNewNameable : Term, PossiblyIdentifiable
     {
-        return new NewTermForExistingNameable {
-            Identification = Identification,
-            Name = Name,
-            VocabularyId = VocabularyId,
-            NameableId = nameableId,
-            ParentTermIds = ParentTermIds
-        };
+        public required Identification.Possible Identification { get; init; }
+        public required int VocabularyId { get; init; }
+        public required string Name { get; init; }
+        public required List<int> ParentTermIds { get; init; }
+        public ToCreateForExistingNameable ResolveNameable(int nameableId)
+        {
+            return new ToCreateForExistingNameable {
+                Identification = Identification,
+                Name = Name,
+                VocabularyId = VocabularyId,
+                NameableId = nameableId,
+                ParentTermIds = ParentTermIds
+            };
+        }
     }
-}
-public sealed record NewTermForExistingNameable : TermToCreateForExistingNameable
-{
-    public required Identification.Possible Identification { get; init; }
-    public required int VocabularyId { get; init; }
-    public required string Name { get; init; }
-    public required int NameableId { get; init; }
-    public required List<int> ParentTermIds { get; init; }
-}
+    public sealed record ToCreateForExistingNameable : Term, PossiblyIdentifiable
+    {
+        public required Identification.Possible Identification { get; init; }
+        public required int VocabularyId { get; init; }
+        public required string Name { get; init; }
+        public required int NameableId { get; init; }
+        public required List<int> ParentTermIds { get; init; }
+    }
 
-public sealed record ExistingTerm : TermToUpdate
-{
-    public required Identification.Certain Identification { get; init; }
-    public required int VocabularyId { get; init; }
-    public required string Name { get; init; }
-    public required int NameableId { get; init; }
+    public sealed record ToUpdate : Term, CertainlyIdentifiable
+    {
+        public required Identification.Certain Identification { get; init; }
+        public required int VocabularyId { get; init; }
+        public required string Name { get; init; }
+        public required int NameableId { get; init; }
+        public required List<int> ParentTermIds { get; init; }
+    }
 
-    public required List<int> ParentTermIds { get; init; }
-}
-public interface TermToUpdate : Term, CertainlyIdentifiable
-{
-    int NameableId { get; }
-}
-public interface TermToCreateForNewNameable : TermToCreate
-{
-    public TermToCreateForExistingNameable ResolveNameable(int nameableId);
-}
-
-public interface TermToCreateForExistingNameable : TermToCreate
-{
-    int NameableId { get; }
-}
-
-public interface TermToCreate : Term, PossiblyIdentifiable
-{
-}
-
-public interface Term: IRequest
-{
-    int VocabularyId { get; }
-    string Name { get; }
-    List<int> ParentTermIds {get;}
 }

@@ -1,9 +1,17 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
 [JsonSerializable(typeof(DeportationCase.ToUpdate), TypeInfoPropertyName = "DeportationCaseToUpdate")]
+[JsonSerializable(typeof(LocatableDetails.ForUpdate), TypeInfoPropertyName = "LocatableDetailsForUpdate")]
+[JsonSerializable(typeof(Location.ToUpdate), TypeInfoPropertyName = "LocationDetailsForUpdate")]
+[JsonSerializable(typeof(List<Location.ToUpdate>), TypeInfoPropertyName = "LocationDetailsListForUpdate")]
+[JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
 public partial class ExistingDeportationCaseJsonContext : JsonSerializerContext { }
 
 [JsonSerializable(typeof(DeportationCase.ToCreate))]
+[JsonSerializable(typeof(LocatableDetails.ForCreate), TypeInfoPropertyName = "LocatableDetailsCreate")]
+[JsonSerializable(typeof(Location.ToCreate), TypeInfoPropertyName = "LocationDetailsForCreate")]
+[JsonSerializable(typeof(List<Location.ToCreate>), TypeInfoPropertyName = "LocationDetailsListForCreate")]
+[JsonSerializable(typeof(NodeDetails.ForCreate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
 public partial class NewDeportationCaseJsonContext : JsonSerializerContext { }
 
 [JsonSerializable(typeof(DeportationCaseDetails))]
@@ -23,9 +31,9 @@ public abstract record DeportationCase : Case, ResolvedNode
     public sealed record ToUpdate : DeportationCase, ExistingNode
     {
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
-        public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
+        public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
         public override LocatableDetails LocatableDetails => ExistingLocatableDetails;
-        public required LocatableDetails.ExistingLocatableDetails ExistingLocatableDetails { get; init; }
+        public required LocatableDetails.ForUpdate ExistingLocatableDetails { get; init; }
         public required NodeIdentification NodeIdentification { get; init; }
         public override T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem)
         {
@@ -39,9 +47,9 @@ public abstract record DeportationCase : Case, ResolvedNode
     public sealed record ToCreate : DeportationCase, ResolvedNewNode
     {
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
-        public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-        public override LocatableDetails LocatableDetails => NewLocatableDetails;
-        public required LocatableDetails.NewLocatableDetails NewLocatableDetails { get; init; }
+        public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
+        public override LocatableDetails LocatableDetails => LocatableDetailsForCreate;
+        public required LocatableDetails.ForCreate LocatableDetailsForCreate { get; init; }
         public override T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem)
         {
             return newItem(this);

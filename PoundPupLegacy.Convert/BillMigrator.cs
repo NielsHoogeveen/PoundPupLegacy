@@ -139,7 +139,7 @@ internal sealed class BillMigrator(
 
         while (await reader.ReadAsync()) {
 
-            var vocabularyNames = new List<NewTermForNewNameable>();
+            var vocabularyNames = new List<Term.ToCreateForNewNameable>();
 
             var id = reader.GetInt32("id");
             var title = reader.GetString("title");
@@ -159,7 +159,7 @@ internal sealed class BillMigrator(
                     }));
                 }
 
-                vocabularyNames.Add(new NewTermForNewNameable {
+                vocabularyNames.Add(new Term.ToCreateForNewNameable {
                     Identification = new Identification.Possible {
                         Id = null,
                     },
@@ -169,7 +169,7 @@ internal sealed class BillMigrator(
                 });
             }
             else {
-                vocabularyNames.Add(new NewTermForNewNameable {
+                vocabularyNames.Add(new Term.ToCreateForNewNameable {
                     Identification = new Identification.Possible {
                         Id = null,
                     },
@@ -347,7 +347,7 @@ internal sealed class BillMigrator(
 
         while (await reader.ReadAsync()) {
 
-            var vocabularyNames = new List<NewTermForNewNameable>();
+            var vocabularyNames = new List<Term.ToCreateForNewNameable>();
 
             var id = reader.GetInt32("id");
             var title = reader.GetString("title");
@@ -366,7 +366,7 @@ internal sealed class BillMigrator(
                         VocabularyId = vocabularyId
                     }));
                 }
-                vocabularyNames.Add(new NewTermForNewNameable {
+                vocabularyNames.Add(new Term.ToCreateForNewNameable {
                     Identification = new Identification.Possible {
                         Id = null,
                     },
@@ -376,7 +376,7 @@ internal sealed class BillMigrator(
                 });
             }
             else {
-                vocabularyNames.Add(new NewTermForNewNameable {
+                vocabularyNames.Add(new Term.ToCreateForNewNameable {
                     Identification = new Identification.Possible {
                         Id = null,
                     },

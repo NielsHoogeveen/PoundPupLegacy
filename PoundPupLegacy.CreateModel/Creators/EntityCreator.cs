@@ -11,7 +11,7 @@ public interface IEntityCreatorFactory<T>
     Task<IEntityCreator<T>> CreateAsync(IDbConnection connection);
 }
 public class LocatableDetailsCreatorFactory(
-    IDatabaseInserterFactory<EventuallyIdentifiableLocation> locationInserterFactory,
+    IDatabaseInserterFactory<Location.ToCreate> locationInserterFactory,
     IDatabaseInserterFactory<LocationLocatable> locationLocatableInserterFactory
 )
 {
@@ -24,7 +24,7 @@ public class LocatableDetailsCreatorFactory(
     }
 }
 public class TermCreatorFactory(
-    IDatabaseInserterFactory<TermToCreateForExistingNameable> termInserterFactory,
+    IDatabaseInserterFactory<Term.ToCreateForExistingNameable> termInserterFactory,
     IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory
 )
 {
@@ -39,7 +39,7 @@ public class TermCreatorFactory(
     }
 }
 public class LocatableDetailsCreator(
-    IDatabaseInserter<EventuallyIdentifiableLocation> locationInserter,
+    IDatabaseInserter<Location.ToCreate> locationInserter,
     IDatabaseInserter<LocationLocatable> locationLocatableInserter
 ) : IAsyncDisposable
 {
@@ -61,11 +61,11 @@ public class LocatableDetailsCreator(
     }
 }
 public class TermCreator(
-    List<IDatabaseInserter<TermToCreateForExistingNameable>> inserters,
+    List<IDatabaseInserter<Term.ToCreateForExistingNameable>> inserters,
     IDatabaseInserter<TermHierarchy> termHierarchyInserter
-) : InsertingEntityCreator<TermToCreateForExistingNameable>(inserters)
+) : InsertingEntityCreator<Term.ToCreateForExistingNameable>(inserters)
 {
-    public override async Task ProcessAsync(TermToCreateForExistingNameable element)
+    public override async Task ProcessAsync(Term.ToCreateForExistingNameable element)
     {
         await base.ProcessAsync(element);
         foreach (var parent in element.ParentTermIds) {

@@ -134,7 +134,7 @@ internal sealed class AbuseCaseMigrator(
             var id = reader.GetInt32("id");
             var name = reader.GetString("title");
 
-            var vocabularyNames = new List<NewTermForNewNameable>();
+            var vocabularyNames = new List<Term.ToCreateForNewNameable>();
             var topicName = reader.GetString("topic_name");
             var topicParentNames = reader.IsDBNull("topic_parent_names") 
                 ? new List<string>() 
@@ -151,7 +151,7 @@ internal sealed class AbuseCaseMigrator(
                 }));
             }
             
-            vocabularyNames.Add(new NewTermForNewNameable {
+            vocabularyNames.Add(new Term.ToCreateForNewNameable {
                 Identification = new Identification.Possible { 
                     Id = null 
                 },
@@ -205,8 +205,8 @@ internal sealed class AbuseCaseMigrator(
                     FileIdTileImage = null,
                     Terms = vocabularyNames,
                 },
-                LocatableDetails = new LocatableDetails.LocatableDetailsForCreate {
-                    Locations = new List<EventuallyIdentifiableLocation>(),
+                LocatableDetails = new LocatableDetails.ForCreate {
+                    Locations = new List<Location.ToCreate>(),
                 },
                 CaseDetails = new CaseDetails.CaseDetailsForCreate {
                     Date = reader.IsDBNull("date") ? null : StringToDateTimeRange(reader.GetString("date"))?.ToFuzzyDate(),

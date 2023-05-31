@@ -2,9 +2,9 @@
 
 namespace PoundPupLegacy.EditModel.UI.Mappers;
 
-internal class TenantNodeToRemoveMapper : IEnumerableMapper<TenantNode.ExistingTenantNode, TenantNodeToDelete>
+internal class TenantNodeToRemoveMapper : IEnumerableMapper<TenantNode.ToUpdate, TenantNodeToDelete>
 {
-    public IEnumerable<TenantNodeToDelete> Map(IEnumerable<TenantNode.ExistingTenantNode> source)
+    public IEnumerable<TenantNodeToDelete> Map(IEnumerable<TenantNode.ToUpdate> source)
     {
         foreach(var  tenantNode in source) {
             if (!tenantNode.HasBeenDeleted)

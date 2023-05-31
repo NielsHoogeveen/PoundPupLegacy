@@ -1,9 +1,11 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(InterPersonalRelation.From.Complete.Resolved.ToUpdate))]
+[JsonSerializable(typeof(InterPersonalRelation.From.Complete.Resolved.ToUpdate), TypeInfoPropertyName = "InterPersonalRelationFromCompleteResolvedToUpdate")]
+[JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
 public partial class ExistingInterPersonalRelationFromJsonContext : JsonSerializerContext { }
 
-[JsonSerializable(typeof(InterPersonalRelation.To.Complete.Resolved.ToUpdate))]
+[JsonSerializable(typeof(InterPersonalRelation.To.Complete.Resolved.ToUpdate), TypeInfoPropertyName = "InterPersonalRelationToCompleteResolvedToUpdate")]
+[JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
 public partial class ExistingInterPersonalRelationToJsonContext : JsonSerializerContext { }
 
 public static class InterPersonalRelationExtentions{
@@ -79,7 +81,7 @@ public abstract record InterPersonalRelation : Relation
         {
             private Incomplete() { }
             public override NodeDetails NodeDetails => NodeDetailsForCreate;
-            public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+            public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
             public sealed override T Match<T>(
                 Func<Incomplete, T> incompleteInterPersonalRelationFrom,
                 Func<Complete, T> completedInterPersonalRelationFrom
@@ -199,7 +201,7 @@ public abstract record InterPersonalRelation : Relation
             public sealed record ToCreateForNewPerson : Complete, NewNode
             {
                 public override NodeDetails NodeDetails => NodeDetailsForCreate;
-                public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+                public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
                 public required PersonName PersonFrom { get; set; }
 
                 public sealed override void SetName(string name)
@@ -237,7 +239,7 @@ public abstract record InterPersonalRelation : Relation
                 public sealed record ToUpdate : Resolved, ExistingNode
                 {
                     public override NodeDetails NodeDetails => NodeDetailsForUpdate;
-                    public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
+                    public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
                     public required NodeIdentification NodeIdentification { get; init; }
 
                     public sealed override To.Complete.Resolved.ToUpdate SwapFromAndTo()
@@ -256,7 +258,7 @@ public abstract record InterPersonalRelation : Relation
                 public sealed record ToCreate : Resolved, NewNode
                 {
                     public override NodeDetails NodeDetails => NodeDetailsForCreate;
-                    public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+                    public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
                     public sealed override To.Complete.Resolved.ToCreate SwapFromAndTo()
                     {
                         return new To.Complete.Resolved.ToCreate {
@@ -287,7 +289,7 @@ public abstract record InterPersonalRelation : Relation
         public abstract record Incomplete : To
         {
             public override NodeDetails NodeDetails => NodeDetailsForCreate;
-            public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+            public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
             private Incomplete() { }
 
             public sealed override T Match<T>(
@@ -408,7 +410,7 @@ public abstract record InterPersonalRelation : Relation
             public sealed record ToCreateNewPerson : Complete, NewNode
             {
                 public override NodeDetails NodeDetails => NodeDetailsForCreate;
-                public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+                public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
                 public required PersonName PersonTo { get; set; }
 
                 public sealed override void SetName(string name)
@@ -447,7 +449,7 @@ public abstract record InterPersonalRelation : Relation
                 public sealed record ToUpdate : Resolved, ExistingNode
                 {
                     public override NodeDetails NodeDetails => NodeDetailsForUpdate;
-                    public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
+                    public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
                     public required NodeIdentification NodeIdentification { get; init; }
 
                     public sealed override From.Complete.Resolved.ToUpdate SwapFromAndTo()
@@ -466,7 +468,7 @@ public abstract record InterPersonalRelation : Relation
                 public sealed record ToCreate : Resolved, NewNode
                 {
                     public override NodeDetails NodeDetails => NodeDetailsForCreate;
-                    public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
+                    public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
                     public sealed override From.Complete.Resolved.ToCreate SwapFromAndTo()
                     {
                         return new From.Complete.Resolved.ToCreate {

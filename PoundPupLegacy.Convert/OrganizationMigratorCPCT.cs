@@ -217,8 +217,8 @@ internal sealed class OrganizationMigratorCPCT(
                     });
                 }
             }
-            var vocabularyNames = new List<NewTermForNewNameable> {
-                new NewTermForNewNameable {
+            var vocabularyNames = new List<Term.ToCreateForNewNameable> {
+                new Term.ToCreateForNewNameable {
                     Identification = new Identification.Possible {
                         Id = null,
                     },
@@ -281,10 +281,10 @@ internal sealed class OrganizationMigratorCPCT(
                     FileIdTileImage = null,
                     Terms = vocabularyNames,
                 },
-                LocatableDetails = new LocatableDetails.LocatableDetailsForCreate {
-                    Locations = new List<EventuallyIdentifiableLocation>(),
+                LocatableDetails = new LocatableDetails.ForCreate {
+                    Locations = new List<Location.ToCreate>(),
                 },
-                OrganizationDetails = new OrganizationDetails.OrganizationDetailsForCreate {
+                OrganizationDetails = new OrganizationDetails.ForCreate {
                     WebsiteUrl = reader.IsDBNull("website_url") ? null : reader.GetString("website_url"),
                     EmailAddress = reader.IsDBNull("email_address") ? null : reader.GetString("email_address"),
                     Established = reader.IsDBNull("established") ? null : (new DateTimeRange(reader.GetDateTime("established").Date, reader.GetDateTime("established").Date.AddDays(1).AddMilliseconds(-1))).ToFuzzyDate(),

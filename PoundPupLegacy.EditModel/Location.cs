@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(ExistingLocation))]
+[JsonSerializable(typeof(Location.ToUpdate))]
 public partial class LocationJsonContext : JsonSerializerContext { }
 
 public abstract record Location
@@ -27,12 +27,12 @@ public abstract record Location
             }
         }
     }
-    public sealed record ExistingLocation : Location
+    public sealed record ToUpdate : Location
     {
         public int Id { get; init; }
         public bool HasBeenDeleted { get; set; } = false;
     }
-    public sealed record NewLocation : Location
+    public sealed record ToCreate : Location
     {
     }
 }

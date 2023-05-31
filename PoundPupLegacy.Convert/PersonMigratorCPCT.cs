@@ -90,8 +90,8 @@ internal sealed class PersonMigratorCPCT(
             };
 
 
-            var vocabularyNames = new List<NewTermForNewNameable> {
-                new NewTermForNewNameable {
+            var vocabularyNames = new List<Term.ToCreateForNewNameable> {
+                new Term.ToCreateForNewNameable {
                     Identification = new Identification.Possible {
                         Id = null,
                     },
@@ -145,8 +145,8 @@ internal sealed class PersonMigratorCPCT(
                     FileIdTileImage = null,
                     Terms = vocabularyNames,
                 },
-                LocatableDetails = new LocatableDetails.LocatableDetailsForCreate {
-                    Locations = new List<EventuallyIdentifiableLocation>(),
+                LocatableDetails = new LocatableDetails.ForCreate {
+                    Locations = new List<Location.ToCreate>(),
                 },
                 PersonDetails = new PersonDetails.ForCreate {
                     DateOfBirth = null,

@@ -110,7 +110,7 @@
                     break;
                 case ExistingNode e:
                     var t = Node.NodeDetails.Tenants.First(x => x.Id == TenantId);
-                    t.TenantNode = new TenantNode.NewTenantNodeForExistingNode {
+                    t.TenantNode = new TenantNode.ToCreateForExistingNode {
                             TenantId = TenantId,
                             HasBeenDeleted = false,
                             NodeId = e.NodeIdentification.NodeId,
@@ -134,7 +134,7 @@
             if(tenant.TenantNode is null) {
                 throw new NullReferenceException("Tenant Node should not be null");
             }
-            if (tenant.TenantNode is TenantNode.ExistingTenantNode existingTenantNode) {
+            if (tenant.TenantNode is TenantNode.ToUpdate existingTenantNode) {
                 existingTenantNode.HasBeenDeleted = true;
             }
             else {
@@ -149,11 +149,11 @@
         if (Node is not null) {
             var tenant = Node.NodeDetails.Tenants.First(x => x.Id == tenantId);
             switch (tenant.TenantNode) {
-                case TenantNode.ExistingTenantNode existingTenantNode:
+                case TenantNode.ToUpdate existingTenantNode:
                     tenant.TenantNode.HasBeenDeleted = false;
                     break;
-                case TenantNode.NewTenantNodeForExistingNode newTenantNodeForExistingNode:
-                    tenant.TenantNode = new TenantNode.NewTenantNodeForExistingNode {
+                case TenantNode.ToCreateForExistingNode newTenantNodeForExistingNode:
+                    tenant.TenantNode = new TenantNode.ToCreateForExistingNode {
                         TenantId = tenantId,
                         HasBeenDeleted = false,
                         PublicationStatusId = tenant.PublicationStatusIdDefault,
@@ -166,7 +166,7 @@
                     };
                     break;
                 default:
-                    tenant.TenantNode = new TenantNode.NewTenantNodeForNewNode {
+                    tenant.TenantNode = new TenantNode.ToCreateForNewNode {
                         TenantId = tenantId,
                         HasBeenDeleted = false,
                         PublicationStatusId = tenant.PublicationStatusIdDefault,

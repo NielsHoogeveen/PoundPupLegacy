@@ -18,11 +18,11 @@ public abstract record NameableDetails
     public required int? FileIdTileImage { get; init; }
     public sealed record ForCreate: NameableDetails
     {
-        public required List<NewTermForNewNameable> Terms { get; init; }
+        public required List<Term.ToCreateForNewNameable> Terms { get; init; }
     }
     public sealed record ForUpdate : NameableDetails
     {
-        public required List<NewTermForExistingNameable> TermsToAdd { get; init; }
+        public required List<Term.ToCreateForExistingNameable> TermsToAdd { get; init; }
     }
 }
 

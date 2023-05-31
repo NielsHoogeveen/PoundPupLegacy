@@ -84,7 +84,7 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<ISOCodedFirstLevelSubdivisionToCreate>, ISOCodedFirstLevelSubdivisionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<ISOCodedSubdivisionToCreate>, ISOCodedSubdivisionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<LocatableToCreate>, LocatableInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<LocationToCreate>, LocationInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<Location.ToCreate>, LocationInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<LocationLocatable>, LocationLocatableInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<MemberOfCongressToCreateForExistingPerson>, MemberOfCongressInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<MenuItem>, MenuItemInserterFactory>();
@@ -139,7 +139,7 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<Tenant>, TenantInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<TenantNode.ToCreate.ForExistingNode>, TenantNodeInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<TenantNodeMenuItem>, TenantNodeMenuItemInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<TermToCreateForExistingNameable>, TermInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<Term.ToCreateForExistingNameable>, TermInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<TermHierarchy>, TermHierarchyInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<TopLevelCountryToCreate>, TopLevelCountryInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<TypeOfAbuse.ToCreate>, TypeOfAbuseInserterFactory>();

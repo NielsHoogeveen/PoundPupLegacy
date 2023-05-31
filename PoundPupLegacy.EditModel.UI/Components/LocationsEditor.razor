@@ -57,7 +57,7 @@
     private void AddLocation()
     {
         (var countryId, var countryName) = DefaultCountryService.GetDefaultCountry(TenantId);
-        locationToEdit = new ExistingLocation {
+        locationToEdit = new Location.ToUpdate {
             Street = null,
             Addition = null,
             PostalCode = null,  
@@ -80,7 +80,7 @@
     private void OnOkLocationDialog()
     {
         if (locationToEdit is not null) {
-            if (locationToEdit is NewLocation newLocation) {
+            if (locationToEdit is Location.ToCreate newLocation) {
                 Locatable!.LocatableDetails.Add(newLocation);
             }
             locationToEdit = null;

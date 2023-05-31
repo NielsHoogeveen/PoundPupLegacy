@@ -1,6 +1,8 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(Person.ToUpdate))]
+[JsonSerializable(typeof(Person.ToUpdate), TypeInfoPropertyName = "PersonToUpdate")]
+[JsonSerializable(typeof(LocatableDetails.ForUpdate), TypeInfoPropertyName = "LocatableDetailsForUpdate")]
+[JsonSerializable(typeof(Location.ToUpdate), TypeInfoPropertyName = "LocationDetailsForUpdate")]
 
 [JsonSerializable(typeof(IEnumerable<InterPersonalRelation.From.Complete>), TypeInfoPropertyName = "InterPersonalRelationIterableFromComplete")]
 [JsonSerializable(typeof(InterPersonalRelation.From.Complete), TypeInfoPropertyName = "InterPersonalRelationFromComplete")]
@@ -20,8 +22,10 @@
 [JsonSerializable(typeof(PersonOrganizationRelation.ForPerson.Complete), TypeInfoPropertyName = "PersonOrganizationRelationForPersonComplete")]
 [JsonSerializable(typeof(List<PersonOrganizationRelation.ForPerson.Complete>), TypeInfoPropertyName = "PersonOrganizationRelationListForPersonComplete")]
 
+[JsonSerializable(typeof(PersonOrganizationRelation.ForPerson.Complete.Resolved.ToCreate), TypeInfoPropertyName = "PersonOrganizationRelationForPersonCompleteResolvedToCreate")]
 [JsonSerializable(typeof(PersonOrganizationRelation.ForPerson.Complete.Resolved.ToUpdate), TypeInfoPropertyName = "PersonOrganizationRelationForPersonCompleteResolvedToUpdate")]
 [JsonSerializable(typeof(List<PersonOrganizationRelation.ForPerson.Complete.Resolved.ToUpdate>), TypeInfoPropertyName = "PersonOrganizationRelationListForPersonCompleteResolvedToUpdate")]
+[JsonSerializable(typeof(List<PersonOrganizationRelation.ForPerson.Complete.Resolved.ToCreate>), TypeInfoPropertyName = "PersonOrganizationRelationListForPersonCompleteResolvedToCreate")]
 
 [JsonSerializable(typeof(IEnumerable<PersonPoliticalEntityRelation.Complete>), TypeInfoPropertyName = "PersonPoliticalEntityEnumerableRelationComplete")]
 [JsonSerializable(typeof(PersonPoliticalEntityRelation.Complete), TypeInfoPropertyName = "PersonPoliticalEntityRelationComplete")]
@@ -30,7 +34,19 @@
 [JsonSerializable(typeof(PersonPoliticalEntityRelation.Complete.Resolved.ToUpdate), TypeInfoPropertyName = "PersonPoliticalEntityRelationCompleteResolvedToUpdate")]
 [JsonSerializable(typeof(List<PersonPoliticalEntityRelation.Complete.Resolved.ToUpdate>), TypeInfoPropertyName = "PersonPoliticalEntityRelationListCompleteResolvedToUpdate")]
 
+[JsonSerializable(typeof(List<Location.ToUpdate>), TypeInfoPropertyName = "LocationDetailsListForUpdate")]
+[JsonSerializable(typeof(List<Location.ToCreate>), TypeInfoPropertyName = "LocationDetailsListForCreate")]
+
+[JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
+[JsonSerializable(typeof(NodeDetails.ForCreate), TypeInfoPropertyName = "NodeDetailsForCreate")]
+
+[JsonSerializable(typeof(TenantNodeDetails.ForUpdate), TypeInfoPropertyName = "TenantNodeDetailsForUpdate")]
+[JsonSerializable(typeof(TenantNodeDetails.ForCreate), TypeInfoPropertyName = "TenantNodeDetailsForCreate")]
+
 public partial class ExistingPersonJsonContext : JsonSerializerContext { }
+
+[JsonSerializable(typeof(LocatableDetails.ForCreate), TypeInfoPropertyName = "LocatableDetailsCreate")]
+[JsonSerializable(typeof(Location.ToCreate), TypeInfoPropertyName = "LocationDetailsForCreate")]
 
 [JsonSerializable(typeof(IEnumerable<InterPersonalRelation.From.Complete>), TypeInfoPropertyName = "InterPersonalRelationIterableFromComplete")]
 [JsonSerializable(typeof(Person.ToCreate), TypeInfoPropertyName = "PersonToCreate")]
@@ -48,6 +64,9 @@ public partial class ExistingPersonJsonContext : JsonSerializerContext { }
 [JsonSerializable(typeof(IEnumerable<PersonPoliticalEntityRelation.Complete>), TypeInfoPropertyName = "PersonPoliticalEntityEnumerableRelationComplete")]
 [JsonSerializable(typeof(PersonPoliticalEntityRelation.Complete), TypeInfoPropertyName = "PersonPoliticalEntityRelationComplete")]
 [JsonSerializable(typeof(List<PersonPoliticalEntityRelation.Complete>), TypeInfoPropertyName = "PersonPoliticalEntityRelationListComplete")]
+
+[JsonSerializable(typeof(List<Location.ToCreate>), TypeInfoPropertyName = "LocationDetailsListForCreate")]
+[JsonSerializable(typeof(NodeDetails.ForCreate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
 public partial class NewPersonJsonContext : JsonSerializerContext { }
 
 public abstract record Person : Locatable, ResolvedNode
@@ -68,9 +87,9 @@ public abstract record Person : Locatable, ResolvedNode
     public sealed record ToUpdate : Person, ExistingNode, ExistingLocatable
     {
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
-        public required NodeDetails.NodeDetailsForUpdate NodeDetailsForUpdate { get; init; }
-        public override LocatableDetails LocatableDetails => ExistingLocatableDetails;
-        public required LocatableDetails.ExistingLocatableDetails ExistingLocatableDetails { get; init; }
+        public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
+        public override LocatableDetails LocatableDetails => LocatableDetailsForUpdate;
+        public required LocatableDetails.ForUpdate LocatableDetailsForUpdate { get; init; }
         public required NodeIdentification NodeIdentification { get; init; }
         private List<PersonPoliticalEntityRelation.Complete.Resolved.ToUpdate> existingPersonPoliticalEntityRelations = new();
         public List<PersonPoliticalEntityRelation.Complete.Resolved.ToUpdate> ExistingPersonPoliticalEntityRelations {
@@ -164,9 +183,9 @@ public abstract record Person : Locatable, ResolvedNode
     public sealed record ToCreate : Person, NewLocatable, ResolvedNewNode
     {
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
-        public required NodeDetails.NodeDetailsForCreate NodeDetailsForCreate { get; init; }
-        public override LocatableDetails LocatableDetails => NewLocatableDetails;
-        public required LocatableDetails.NewLocatableDetails NewLocatableDetails { get; init; }
+        public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
+        public override LocatableDetails LocatableDetails => LocatableDetailsForCreate;
+        public required LocatableDetails.ForCreate LocatableDetailsForCreate { get; init; }
         public override IEnumerable<PersonPoliticalEntityRelation.Complete> PersonPoliticalEntityRelations => NewPersonPoliticalEntityRelations;
         public override IEnumerable<PersonOrganizationRelation.ForPerson.Complete> PersonOrganizationRelations => NewPersonOrganizationRelations;
         public override IEnumerable<InterPersonalRelation.From.Complete> InterPersonalRelationsFrom => NewInterPersonalRelationsFrom;

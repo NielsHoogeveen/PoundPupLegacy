@@ -84,9 +84,9 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
                 },
                 NameableDetails = new NameableDetails.ForCreate {
                     Description = "",
-                    Terms = new List<NewTermForNewNameable>
+                    Terms = new List<Term.ToCreateForNewNameable>
                     {
-                        new NewTermForNewNameable
+                        new Term.ToCreateForNewNameable
                         {
                             Identification = new Identification.Possible {
                                 Id = null,
@@ -469,9 +469,9 @@ internal sealed class FirstAndBottomLevelSubdivisionMigrator(
 
             var topicName = reader.GetString("topic_name");
             var countryName = reader.GetString("country_name");
-            var vocabularyNames = new List<NewTermForNewNameable>
+            var vocabularyNames = new List<Term.ToCreateForNewNameable>
             {
-                new NewTermForNewNameable
+                new Term.ToCreateForNewNameable
                 {
                     Identification = new Identification.Possible {
                         Id = null,

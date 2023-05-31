@@ -206,8 +206,8 @@ internal sealed class PersonMigratorPPL(
                 _ => reader.GetString("title")
             };
             var topicName = reader.IsDBNull("topic_name") ? null : reader.GetString("topic_name");
-            var vocabularyNames = new List<NewTermForNewNameable> {
-                new NewTermForNewNameable {
+            var vocabularyNames = new List<Term.ToCreateForNewNameable> {
+                new Term.ToCreateForNewNameable {
                     Identification = new Identification.Possible {
                         Id = null,
                     },
@@ -261,8 +261,8 @@ internal sealed class PersonMigratorPPL(
                     FileIdTileImage = null,
                     Terms = vocabularyNames,
                 },
-                LocatableDetails = new LocatableDetails.LocatableDetailsForCreate {
-                    Locations = new List<EventuallyIdentifiableLocation>(),
+                LocatableDetails = new LocatableDetails.ForCreate {
+                    Locations = new List<Location.ToCreate>(),
                 },
                 PersonDetails = new PersonDetails.ForCreate {
                     DateOfBirth = GetDateOfBirth(reader.GetInt32("id"), reader.IsDBNull("date_of_birth") ? null : reader.GetDateTime("date_of_birth")),

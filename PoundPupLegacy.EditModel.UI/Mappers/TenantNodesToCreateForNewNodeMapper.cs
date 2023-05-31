@@ -1,8 +1,8 @@
 ﻿namespace PoundPupLegacy.EditModel.UI.Mappers;
 
-internal class TenantNodesForCreateMapper : IEnumerableMapper<EditModel.TenantNode.NewTenantNodeForNewNode, CreateModel.TenantNode.ToCreate.ForNewNode>
+internal class TenantNodesToCreateForNewNodeMapper : IEnumerableMapper<EditModel.TenantNode.ToCreateForNewNode, CreateModel.TenantNode.ToCreate.ForNewNode>
 {
-    public IEnumerable<CreateModel.TenantNode.ToCreate.ForNewNode> Map(IEnumerable<EditModel.TenantNode.NewTenantNodeForNewNode> source)
+    public IEnumerable<CreateModel.TenantNode.ToCreate.ForNewNode> Map(IEnumerable<EditModel.TenantNode.ToCreateForNewNode> source)
     {
         foreach (var item in source) {
             yield return new CreateModel.TenantNode.ToCreate.ForNewNode {

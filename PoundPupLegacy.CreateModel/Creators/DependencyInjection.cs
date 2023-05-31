@@ -70,7 +70,7 @@ internal static class DependencyInjection
         services.AddTransient<IEntityCreatorFactory<InterOrganizationalRelationType.ToCreate>, InterOrganizationalRelationTypeCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<InterPersonalRelation.ToCreate.ForExistingParticipants>, InterPersonalRelationCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<InterPersonalRelationType.ToCreate>, InterPersonalRelationTypeCreatorFactory>();
-        services.AddTransient<IEntityCreatorFactory<LocationToCreate>, LocationCreatorFactory>();
+        services.AddTransient<IEntityCreatorFactory<Location.ToCreate>, LocationCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<LocationLocatable>, LocationLocatableCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<MultiQuestionPoll.ToCreate>, MultiQuestionPollCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<NodeFile>, NodeFileCreatorFactory>();

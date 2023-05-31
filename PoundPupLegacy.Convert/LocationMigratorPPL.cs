@@ -4,7 +4,7 @@ internal sealed class LocationMigratorPPL(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166CodeFactory,
-    IEntityCreatorFactory<EventuallyIdentifiableLocation> locationCreatorFactory,
+    IEntityCreatorFactory<Location.ToCreate> locationCreatorFactory,
     IDatabaseInserterFactory<LocationLocatable> locationLocatableInserterFactory
 ) : MigratorPPL(databaseConnections)
 {
@@ -33,7 +33,7 @@ internal sealed class LocationMigratorPPL(
         }
     }
 
-    private async IAsyncEnumerable<(EventuallyIdentifiableLocation, int)> GetLocations(
+    private async IAsyncEnumerable<(Location.ToCreate, int)> GetLocations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader
     )
     {
@@ -41,7 +41,7 @@ internal sealed class LocationMigratorPPL(
             TenantId = Constants.PPL,
             UrlId = 105
         });
-        yield return (new LocationToCreate {
+        yield return (new Location.ToCreate {
             Identification = new Identification.Possible {
                 Id = 18,
             },
@@ -1349,7 +1349,7 @@ internal sealed class LocationMigratorPPL(
 
 
 
-    private async IAsyncEnumerable<(EventuallyIdentifiableLocation, int)> ReadLocations(
+    private async IAsyncEnumerable<(Location.ToCreate, int)> ReadLocations(
         IMandatorySingleItemDatabaseReader<NodeIdReaderByUrlIdRequest, int> nodeIdReader,
         IMandatorySingleItemDatabaseReader<SubdivisionIdReaderByIso3166CodeRequest, int> subdivisionIdReaderByIso3166Code
     )
@@ -1399,7 +1399,7 @@ internal sealed class LocationMigratorPPL(
                 TenantId = Constants.PPL,
                 UrlId = reader.GetInt32("node_id"),
             });
-            yield return (new LocationToCreate {
+            yield return (new Location.ToCreate {
                 Identification = new Identification.Possible {
                     Id = id
                 },
