@@ -6,12 +6,12 @@ internal sealed class HouseTermCreatorFactory(
     IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
     IDatabaseInserterFactory<DocumentableToCreate> documentableInserterFactory,
     IDatabaseInserterFactory<CongressionalTermToCreate> congressionalTermInserterFactory,
-    IDatabaseInserterFactory<HouseTerm.ToCreate> houseTermInserterFactory,
+    IDatabaseInserterFactory<HouseTerm.ToCreateForExistingRepresentative> houseTermInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     IEntityCreatorFactory<CongressionalTermPoliticalPartyAffiliation.ToCreateForExistingTerm> congressionalTermPoliticalPartyAffiliationCreatorFactory
-) : IEntityCreatorFactory<HouseTerm.ToCreate>
+) : IEntityCreatorFactory<HouseTerm.ToCreateForExistingRepresentative>
 {
-    public async Task<IEntityCreator<HouseTerm.ToCreate>> CreateAsync(IDbConnection connection) =>
+    public async Task<IEntityCreator<HouseTerm.ToCreateForExistingRepresentative>> CreateAsync(IDbConnection connection) =>
         new HouseTermCreator(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),
@@ -27,12 +27,12 @@ internal sealed class HouseTermCreatorFactory(
 }
 
 public class HouseTermCreator(
-    List<IDatabaseInserter<HouseTerm.ToCreate>> inserters,
+    List<IDatabaseInserter<HouseTerm.ToCreateForExistingRepresentative>> inserters,
     NodeDetailsCreator nodeDetailsCreator,
     IEntityCreator<CongressionalTermPoliticalPartyAffiliation.ToCreateForExistingTerm> congressionalTermPoliticalPartyAffiliationCreator
-) : NodeCreator<HouseTerm.ToCreate>(inserters, nodeDetailsCreator)
+) : NodeCreator<HouseTerm.ToCreateForExistingRepresentative>(inserters, nodeDetailsCreator)
 {
-    public override async Task ProcessAsync(HouseTerm.ToCreate element, int id)
+    public override async Task ProcessAsync(HouseTerm.ToCreateForExistingRepresentative element, int id)
     {
         await base.ProcessAsync(element, id);
         await congressionalTermPoliticalPartyAffiliationCreator

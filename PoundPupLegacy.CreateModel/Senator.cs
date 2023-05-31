@@ -37,8 +37,8 @@ public abstract record SenatorDetails
 
     public sealed record ForCreate : SenatorDetails
     {
-        public override IEnumerable<SenateTerm> SenateTerms => SenateTermToCreate;
-        public required List<SenateTerm.ToCreate> SenateTermToCreate { get; init; }
+        public override IEnumerable<SenateTerm.ToCreateForNewSenator> SenateTerms => SenateTermToCreate;
+        public required List<SenateTerm.ToCreateForNewSenator> SenateTermToCreate { get; init; }
     }
     public sealed record ForUpdate : SenatorDetails
     {

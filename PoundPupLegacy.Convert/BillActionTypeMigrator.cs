@@ -58,7 +58,7 @@ internal sealed class BillActionTypeMigrator(
                 new Term.ToCreateForNewNameable
                 {
                     Identification = new Identification.Possible {
-                        Id = id,
+                        Id = null
                     },
                     VocabularyId = vocabularyId,
                     Name = name,

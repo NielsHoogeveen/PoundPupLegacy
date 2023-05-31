@@ -62,7 +62,7 @@ internal static class DependencyInjection
         services.AddTransient<IEntityCreatorFactory<FormalIntermediateLevelSubdivision.ToCreate>, FormalIntermediateLevelSubdivisionCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<HagueStatus.ToCreate>, HagueStatusCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<HouseBill.ToCreate>, HouseBillCreatorFactory>();
-        services.AddTransient<IEntityCreatorFactory<HouseTerm.ToCreate>, HouseTermCreatorFactory>();
+        services.AddTransient<IEntityCreatorFactory<HouseTerm.ToCreateForExistingRepresentative>, HouseTermCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<InformalIntermediateLevelSubdivision.ToCreate>, InformalIntermediateLevelSubdivisionCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<InterCountryRelation.ToCreate>, InterCountryRelationCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<InterCountryRelationType.ToCreate>, InterCountryRelationTypeCreatorFactory>();
@@ -85,7 +85,7 @@ internal static class DependencyInjection
         services.AddTransient<IEntityCreatorFactory<PersonOrganizationRelation.ToCreate.ForExistingParticipants>, PersonOrganizationRelationCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<PersonOrganizationRelationType.ToCreate>, PersonOrganizationRelationTypeCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<PollStatus>, PollStatusCreatorFactory>();
-        services.AddTransient<IEntityCreatorFactory<BasicProfessionalRole.ToCreateForExistingPerson>, ProfessionalRoleCreatorFactory>();
+        services.AddTransient<IEntityCreatorFactory<ProfessionalRoleToCreateForExistingPerson>, ProfessionalRoleCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<Profession.ToCreate>, ProfessionCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<PublicationStatus>, PublicationStatusCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<PollQuestionToCreate>, PollQuestionCreatorFactory>();
@@ -93,7 +93,7 @@ internal static class DependencyInjection
         services.AddTransient<IEntityCreatorFactory<RepresentativeHouseBillAction>, RepresentativeHouseBillActionCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<SecondLevelGlobalRegion.ToCreate>, SecondLevelGlobalRegionCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<SenateBill.ToCreate>, SenateBillCreatorFactory>();
-        services.AddTransient<IEntityCreatorFactory<SenateTerm.ToCreate>, SenateTermCreatorFactory>();
+        services.AddTransient<IEntityCreatorFactory<SenateTerm.ToCreateForExistingSenator>, SenateTermCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<SenatorSenateBillAction>, SenatorSenateBillActionCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<SingleQuestionPoll.ToCreate>, SingleQuestionPollCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<SubdivisionType.ToCreate>, SubdivisionTypeCreatorFactory>();

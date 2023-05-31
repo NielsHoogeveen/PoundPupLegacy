@@ -5,7 +5,7 @@ internal sealed class OrganizationMigratorCPCT(
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
     ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreate.ForExistingNode> tenantNodeReaderByUrlIdFactory,
     IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameableIdRequest, int> termIdReaderByNameableIdFactory,
-    IEntityCreatorFactory<Organization> organizationCreatorFactory
+    IEntityCreatorFactory<OrganizationToCreate> organizationCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 
     nodeIdReaderFactory, 

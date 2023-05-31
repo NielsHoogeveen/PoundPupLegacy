@@ -36,8 +36,8 @@ public abstract record RepresentativeDetails
     public abstract IEnumerable<HouseTerm> HouseTerms { get; }
     public sealed record ForCreate: RepresentativeDetails
     {
-        public override IEnumerable<HouseTerm> HouseTerms => HouseTermToCreate;  
-        public required List<HouseTerm.ToCreate> HouseTermToCreate { get; init;}
+        public override IEnumerable<HouseTerm.ToCreateForNewRepresenatative> HouseTerms => HouseTermToCreate;  
+        public required List<HouseTerm.ToCreateForNewRepresenatative> HouseTermToCreate { get; init;}
     }
     public sealed record ForUpdate: RepresentativeDetails
     {

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = HouseTerm.ToCreate;
+using Request = HouseTerm.ToCreateForExistingRepresentative;
 
 internal sealed class HouseTermInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

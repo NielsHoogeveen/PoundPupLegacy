@@ -5,12 +5,12 @@ internal sealed class SenateTermCreatorFactory(
     IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
     IDatabaseInserterFactory<DocumentableToCreate> documentableInserterFactory,
     IDatabaseInserterFactory<CongressionalTermToCreate> congressionalTermInserterFactory,
-    IDatabaseInserterFactory<SenateTerm.ToCreate> senateTermInserterFactory,
+    IDatabaseInserterFactory<SenateTerm.ToCreateForExistingSenator> senateTermInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory,
     IEntityCreatorFactory<CongressionalTermPoliticalPartyAffiliation.ToCreateForExistingTerm> congressionalTermPoliticalPartyAffiliationCreatorFactory
-) : IEntityCreatorFactory<SenateTerm.ToCreate>
+) : IEntityCreatorFactory<SenateTerm.ToCreateForExistingSenator>
 {
-    public async Task<IEntityCreator<SenateTerm.ToCreate>> CreateAsync(IDbConnection connection) =>
+    public async Task<IEntityCreator<SenateTerm.ToCreateForExistingSenator>> CreateAsync(IDbConnection connection) =>
         new SenateTermCreator(
             new() 
             {
@@ -25,12 +25,12 @@ internal sealed class SenateTermCreatorFactory(
         );
 }
 internal class SenateTermCreator(
-    List<IDatabaseInserter<SenateTerm.ToCreate>> inserters,
+    List<IDatabaseInserter<SenateTerm.ToCreateForExistingSenator>> inserters,
     NodeDetailsCreator nodeDetailsCreator,
     IEntityCreator<CongressionalTermPoliticalPartyAffiliation.ToCreateForExistingTerm> congressionalTermPoliticalPartyAffiliationCreator
-) : NodeCreator<SenateTerm.ToCreate>(inserters, nodeDetailsCreator) 
+) : NodeCreator<SenateTerm.ToCreateForExistingSenator>(inserters, nodeDetailsCreator) 
 {
-    public override async Task ProcessAsync(SenateTerm.ToCreate element, int id)
+    public override async Task ProcessAsync(SenateTerm.ToCreateForExistingSenator element, int id)
     {
         await base.ProcessAsync(element, id);
         await congressionalTermPoliticalPartyAffiliationCreator

@@ -4,7 +4,7 @@ internal sealed class PollQuestionCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
     IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
     IDatabaseInserterFactory<SimpleTextNodeToCreate> simpleTextNodeInserterFactory,
-    IDatabaseInserterFactory<PollQuestion> pollQuestionInserterFactory,
+    IDatabaseInserterFactory<PollQuestionToCreate> pollQuestionInserterFactory,
     IDatabaseInserterFactory<PollOption> pollOptionInserterFactory,
     IDatabaseInserterFactory<PollVote> pollVoteInserterFactory,
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory

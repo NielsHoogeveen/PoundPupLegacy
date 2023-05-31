@@ -9,7 +9,7 @@ internal class MemberOfCongressMigrator(
         IEntityCreatorFactory<File> fileCreatorFactory,
         IEntityCreatorFactory<NodeFile> nodeFileCreatorFactory,
         IEntityCreatorFactory<PersonOrganizationRelation.ToCreate.ForExistingParticipants> personOrganizationRelationCreatorFactory,
-        IEntityCreatorFactory<ProfessionalRole> professionalRoleCreatorFactory
+        IEntityCreatorFactory<ProfessionalRoleToCreateForExistingPerson> professionalRoleCreatorFactory
 
     ) : MigratorPPL(databaseConnections)
 {
@@ -372,12 +372,12 @@ internal class MemberOfCongressMigrator(
                     return states!.First(x => x.Item1 == $"US-{term.state}").Item2;
                 }
 
-                List<SenateTerm.ToCreate> GetSenateTerms()
+                List<SenateTerm.ToCreateForNewSenator> GetSenateTerms()
                 {
                     return memberOfCongress.terms.Where(x => x.type == "sen").Select(term => {
                         var subdivisionId = GetStateId(term);
                         var partyAffiliations = GetPartyAffiliations(term);
-                        var senateTerm = new SenateTerm.ToCreate {
+                        var senateTerm = new SenateTerm.ToCreateForNewSenator {
                             Identification = new Identification.Possible {
                                 Id = null
                             },
@@ -406,8 +406,7 @@ internal class MemberOfCongressMigrator(
                             CongressionalTermDetails = new CongressionalTermDetails.CongressionalTermDetailsForCreate { 
                                 PartyAffiliations = partyAffiliations
                             },
-                            SenateTermDetails = new SenateTermDetails {
-                                SenatorId = null,
+                            SenateTermDetails = new SenateTermDetails.ForNewSenator {
                                 DateTimeRange = new DateTimeRange(term.start, term.end),
                                 SubdivisionId = subdivisionId,
                             },
@@ -415,13 +414,13 @@ internal class MemberOfCongressMigrator(
                         return senateTerm;
                     }).ToList();
                 }
-                List<HouseTerm.ToCreate> GetHouseTerms()
+                List<HouseTerm.ToCreateForNewRepresenatative> GetHouseTerms()
                 {
                     return memberOfCongress.terms.Where(x => x.type == "rep").Select(term => {
                         var subdivisionId = GetStateId(term);
                         var partyAffiliations = GetPartyAffiliations(term);
 
-                        var houseTerm = new HouseTerm.ToCreate {
+                        var houseTerm = new HouseTerm.ToCreateForNewRepresenatative {
                             Identification = new Identification.Possible {
                                 Id = null
                             },
@@ -450,8 +449,7 @@ internal class MemberOfCongressMigrator(
                             CongressionalTermDetails = new CongressionalTermDetails.CongressionalTermDetailsForCreate {
                                 PartyAffiliations = partyAffiliations,
                             },
-                            HouseTermDetails = new HouseTermDetails {
-                                RepresentativeId = null,
+                            HouseTermDetails = new HouseTermDetails.ForNewRepresentative {
                                 District = term.district,
                                 DateTimeRange = new DateTimeRange(term.start, term.end),
                                 SubdivisionId = subdivisionId,
@@ -459,7 +457,6 @@ internal class MemberOfCongressMigrator(
                         };
                         return houseTerm;
                     }).ToList();
-
                 }
                 var professionalRolesExistingPerson = new List<ProfessionalRoleToCreateForExistingPerson>();
                 var professionalRolesNewPerson = new List<ProfessionalRoleToCreateForNewPerson>();

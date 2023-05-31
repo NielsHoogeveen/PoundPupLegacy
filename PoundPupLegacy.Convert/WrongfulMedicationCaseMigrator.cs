@@ -62,7 +62,7 @@ internal sealed class WrongfulMedicationCaseMigrator(
             var vocabularyNames = new List<Term.ToCreateForNewNameable> {
                 new Term.ToCreateForNewNameable {
                     Identification = new Identification.Possible {
-                        Id = id,
+                        Id = null,
                     },
                     VocabularyId = vocabularyId,
                     Name = title,

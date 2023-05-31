@@ -72,7 +72,7 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<GlobalRegionToCreate>, GlobalRegionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<HagueStatus.ToCreate>, HagueStatusInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<HouseBill.ToCreate>, HouseBillInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<HouseTerm.ToCreate>, HouseTermInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<HouseTerm.ToCreateForExistingRepresentative>, HouseTermInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<InformalIntermediateLevelSubdivision.ToCreate>, InformalIntermediateLevelSubdivisionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<InterCountryRelation.ToCreate>, InterCountryRelationInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<InterCountryRelationType.ToCreate>, InterCountryRelationTypeInserterFactory>();
@@ -126,7 +126,7 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<SecondLevelGlobalRegion.ToCreate>, SecondLevelGlobalRegionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<SecondLevelSubdivisionToCreate>, SecondLevelSubdivisionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<SenateBill.ToCreate>, SenateBillInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<SenateTerm.ToCreate>, SenateTermInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<SenateTerm.ToCreateForExistingSenator>, SenateTermInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<Senator.ToCreateForExistingPerson>, SenatorInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<SenatorSenateBillAction>, SenatorSenateBillActionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<SimpleTextNodeToCreate>, SimpleTextNodeInserterFactory>();
