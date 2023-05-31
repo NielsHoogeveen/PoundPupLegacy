@@ -17,9 +17,10 @@ public partial class NewDeportationCaseJsonContext : JsonSerializerContext { }
 [JsonSerializable(typeof(DeportationCaseDetails))]
 public partial class DeportationCaseDetailsJsonContext : JsonSerializerContext { }
 
-public abstract record DeportationCase : Case, ResolvedNode
+public abstract record DeportationCase : Case, ResolvedNode, Node<DeportationCase.ToUpdate, DeportationCase.ToCreate>, Resolver<DeportationCase.ToUpdate, DeportationCase.ToCreate, Unit>
 {
     private DeportationCase() { }
+    public Node<ToUpdate, ToCreate> Resolve(Unit data) => this;
     public abstract T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem);
     public abstract void Match(Action<ToUpdate> existingItem, Action<ToCreate> newItem);
     public required CaseDetails CaseDetails { get; init; }

@@ -14,12 +14,15 @@ public partial class ExistingDisruptedPlacementCaseJsonContext : JsonSerializerC
 [JsonSerializable(typeof(NodeDetails.ForCreate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
 public partial class NewDisruptedPlacementCaseJsonContext : JsonSerializerContext { }
 
-public abstract record DisruptedPlacementCase : Case, ResolvedNode
+public abstract record DisruptedPlacementCase : Case, ResolvedNode, Node<DisruptedPlacementCase.ToUpdate, DisruptedPlacementCase.ToCreate>, Resolver<DisruptedPlacementCase.ToUpdate, DisruptedPlacementCase.ToCreate, Unit>
 {
+    public Node<ToUpdate, ToCreate> Resolve(Unit data) => this;
     public required CaseDetails CaseDetails { get; init; }
     public required NameableDetails NameableDetails { get; init; }
     public abstract LocatableDetails LocatableDetails { get; }
     public abstract NodeDetails NodeDetails { get; }
+    public abstract T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem);
+    public abstract void Match(Action<ToUpdate> existingItem, Action<ToCreate> newItem);
     public sealed record ToUpdate : DisruptedPlacementCase, ExistingNode
     {
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
@@ -27,6 +30,14 @@ public abstract record DisruptedPlacementCase : Case, ResolvedNode
         public override LocatableDetails LocatableDetails => ExistingLocatableDetails;
         public required LocatableDetails.ForUpdate ExistingLocatableDetails { get; init; }
         public required NodeIdentification NodeIdentification { get; init; }
+        public override T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem)
+        {
+            return existingItem(this);
+        }
+        public override void Match(Action<ToUpdate> existingItem, Action<ToCreate> newItem)
+        {
+            existingItem(this);
+        }
 
     }
     public sealed record ToCreate : DisruptedPlacementCase, ResolvedNewNode
@@ -35,6 +46,14 @@ public abstract record DisruptedPlacementCase : Case, ResolvedNode
         public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
         public override LocatableDetails LocatableDetails => NewLocatableDetails;
         public required LocatableDetails.ForCreate NewLocatableDetails { get; init; }
+        public override T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem)
+        {
+            return newItem(this);
+        }
+        public override void Match(Action<ToUpdate> existingItem, Action<ToCreate> newItem)
+        {
+            newItem(this);
+        }
 
     }
 }

@@ -1,4 +1,4 @@
-﻿@inherits EditorBase
+﻿@inherits EditorDetailBase
 @if (relationContext is not null)
 {
     <ModalDialog 
@@ -348,10 +348,11 @@
         StateHasChanged();
     }
 
-    public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
+    public override async Task<List<ErrorDetail>> Validate()
     {
-        await Task.CompletedTask;
+        return await Task.FromResult(new List<ErrorDetail>());
     }
+
     public override void OnTitleChange(string title)
     {
         if (interPersonalRelationsFromEditor is not null) {

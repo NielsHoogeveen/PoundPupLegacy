@@ -12,7 +12,7 @@ public abstract record WrongfulMedicationCase : Case
         public required CaseDetails.CaseDetailsForCreate CaseDetails { get; init; }
         public required LocatableDetails.ForCreate LocatableDetails { get; init; }
     }
-    public sealed record WrongfulMedicationCaseToUpdate : WrongfulMedicationCase, CaseToUpdate
+    public sealed record ToUpdate : WrongfulMedicationCase, CaseToUpdate
     {
         public required Identification.Certain Identification { get; init; }
         public required NodeDetails.ForUpdate NodeDetails { get; init; }

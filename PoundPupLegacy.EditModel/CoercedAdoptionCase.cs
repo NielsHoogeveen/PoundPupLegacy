@@ -15,9 +15,10 @@ public partial class ExistingCoercedAdoptionCaseJsonContext : JsonSerializerCont
 [JsonSerializable(typeof(NodeDetails.ForCreate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
 public partial class NewCoercedAdoptionCaseJsonContext : JsonSerializerContext { }
 
-public abstract record CoercedAdoptionCase : Case, ResolvedNode
+public abstract record CoercedAdoptionCase : Case, ResolvedNode, Node<CoercedAdoptionCase.ToUpdate, CoercedAdoptionCase.ToCreate>, Resolver<CoercedAdoptionCase.ToUpdate, CoercedAdoptionCase.ToCreate,Unit>
 {
     private CoercedAdoptionCase() { }
+    public Node<ToUpdate, ToCreate> Resolve(Unit data) => this;
     public abstract T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem);
     public abstract void Match(Action<ToUpdate> existingItem, Action<ToCreate> newItem);
     public required CaseDetails CaseDetails { get; init; }

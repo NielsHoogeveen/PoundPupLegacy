@@ -8,7 +8,7 @@ public static class DependencyInjection
     {
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, AbuseCase.ToCreate>, AbuseCaseCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, BlogPost.ToCreate>, BlogPostCreateDocumentReaderFactory>();
-        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, ChildTraffickingCase.ToCreate.Unresolved>, ChildTraffickingCaseCreateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, UnresolvedChildTraffickingCase.ToCreate>, ChildTraffickingCaseCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, CoercedAdoptionCase.ToCreate>, CoercedAdoptionCaseCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, DeportationCase.ToCreate>, DeportationCaseCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Discussion.ToCreate>, DiscussionCreateDocumentReaderFactory>();
@@ -17,8 +17,8 @@ public static class DependencyInjection
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, FathersRightsViolationCase.ToCreate>, FathersRightsViolationCaseCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Organization.ToCreate>, OrganizationCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Person.ToCreate>, PersonCreateDocumentReaderFactory>();
-        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, WrongfulMedicationCase.NewWrongfulMedicationCase>, WrongfulMedicationCaseCreateDocumentReaderFactory>();
-        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, WrongfulRemovalCase.NewWrongfulRemovalCase>, WrongfulRemovalCaseCreateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, WrongfulMedicationCase.ToCreate>, WrongfulMedicationCaseCreateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, WrongfulRemovalCase.ToCreate>, WrongfulRemovalCaseCreateDocumentReaderFactory>();
 
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, AbuseCase.ToUpdate>, AbuseCaseUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, BlogPost.ToUpdate>, BlogPostUpdateDocumentReaderFactory>();
@@ -31,8 +31,8 @@ public static class DependencyInjection
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, FathersRightsViolationCase.ToUpdate>, FathersRightsViolationCaseUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Organization.ToUpdate>, OrganizationUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Person.ToUpdate>, PersonUpdateDocumentReaderFactory>();
-        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, WrongfulMedicationCase.ExistingWrongfulMedicationCase>, WrongfulMedicationCaseUpdateDocumentReaderFactory>();
-        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, WrongfulRemovalCase.ExistingWrongfulRemovalCase>, WrongfulRemovalCaseUpdateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, WrongfulMedicationCase.ToUpdate>, WrongfulMedicationCaseUpdateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, WrongfulRemovalCase.ToUpdate>, WrongfulRemovalCaseUpdateDocumentReaderFactory>();
 
         services.AddTransient<IEnumerableDatabaseReaderFactory<CountryListItemsReaderRequest, CountryListItem>, CountryListItemsReaderFactory>();
         services.AddTransient<IEnumerableDatabaseReaderFactory<GeographicalEntitiesReaderRequest, GeographicalEntityListItem>, GeographicalEntitiesReaderFactory>();

@@ -2,15 +2,15 @@
 
 public interface Node<TExisting, TNew>: Node
     where TExisting: ExistingNode
-    where TNew: ResolvedNewNode
+    where TNew: NewNode
 {
     T Match<T>(Func<TExisting, T> existing, Func<TNew, T> resolved);
 }
-public interface Resolver<TExisting, TNew> : Node
+public interface Resolver<TExisting, TNew, TResolveData> : Node
     where TExisting : ExistingNode
     where TNew : ResolvedNewNode
 {
-    Node<TExisting, TNew> Resolve();
+    Node<TExisting, TNew> Resolve(TResolveData data);
 }
 
 public interface Node

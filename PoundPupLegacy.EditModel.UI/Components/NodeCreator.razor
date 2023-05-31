@@ -1,15 +1,10 @@
-﻿@typeparam TRead where TRead : class, Node
-@typeparam TSave where TSave : class, TRead
+﻿@typeparam TEditModel where TEditModel : class, Node
 @inherits ViewerBase
-@inject IEditService<TRead, TSave> editService
+@inject IViewModelRetrieveService<TEditModel> editService
 
-@if (Model is not null)
-{
-    <NodeEditor Model="Model" TRead="TRead" TSave="TSave" Title="@Title"/>
-}
 @code {
 
-    TRead? Model;
+    protected TEditModel? Model = default!;
 
     protected override async Task OnInitializedAsync()
     {

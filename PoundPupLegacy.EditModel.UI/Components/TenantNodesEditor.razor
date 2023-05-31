@@ -1,11 +1,11 @@
-﻿@inherits ViewerBase
+﻿@inherits EditorBase
 @inject NavigationManager navigationManager;
 
-@if (Node is not null)
+@if (NodeDetails is not null)
 {
     <div class="tenant-node-editor" >
         <h4>Publications</h4>
-        @if(Node.NodeDetails.Tenants.Any()){
+        @if(NodeDetails.Tenants.Any()){
             <div class="tenant-nodes">
                 <div class="grid-header"></div>
                 <div class="grid-header">
@@ -20,7 +20,7 @@
                 <div class="grid-header">
                     Subgroup
                 </div>
-                @foreach(var tenant in Node.NodeDetails.Tenants) {
+                @foreach(var tenant in NodeDetails.Tenants) {
                     @if(tenant.TenantNode is not null && !tenant.TenantNode.HasBeenDeleted)
                     {
                         if (tenant.TenantNode.CanBeUnchecked)
@@ -86,12 +86,11 @@
     </div>
 }
 @code {
-
     [Parameter]
     [EditorRequired]
-    public Node? Node { get; set; }
+    public NodeDetails NodeDetails { get; set; } = default!;
 
-    private int? NodeId => Node switch {
+    private int? NodeId => NodeDetails switch {
         ExistingNode n => n.NodeIdentification.NodeId,
         _ => null
     };
@@ -99,9 +98,9 @@
     protected override async Task OnInitializedAsync()
     {
         await Task.CompletedTask;
-        if (Node is not null)
+        if (NodeDetails is not null)
         {
-            switch (Node) {
+            switch (NodeDetails) {
                 case NewNode n:
                     foreach (var tenant in n.NodeDetails.Tenants) {
                         var tenantNode = n.NodeDetailsForCreate.TenantNodeDetails.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);
@@ -109,7 +108,7 @@
                     }
                     break;
                 case ExistingNode e:
-                    var t = Node.NodeDetails.Tenants.First(x => x.Id == TenantId);
+                    var t = NodeDetails.Tenants.First(x => x.Id == TenantId);
                     t.TenantNode = new TenantNode.ToCreateForExistingNode {
                             TenantId = TenantId,
                             HasBeenDeleted = false,
@@ -128,9 +127,9 @@
 
     private void Uncheck(int tenantId)
     {
-        if(Node is not null)
+        if(NodeDetails is not null)
         {
-            var tenant = Node.NodeDetails.Tenants.First(x => x.Id == tenantId);
+            var tenant = NodeDetails.Tenants.First(x => x.Id == tenantId);
             if(tenant.TenantNode is null) {
                 throw new NullReferenceException("Tenant Node should not be null");
             }
@@ -146,8 +145,8 @@
     }
     private void Check(int tenantId)
     {
-        if (Node is not null) {
-            var tenant = Node.NodeDetails.Tenants.First(x => x.Id == tenantId);
+        if (NodeDetails is not null) {
+            var tenant = NodeDetails.Tenants.First(x => x.Id == tenantId);
             switch (tenant.TenantNode) {
                 case TenantNode.ToUpdate existingTenantNode:
                     tenant.TenantNode.HasBeenDeleted = false;
@@ -183,9 +182,9 @@
     }
     private void SetSubgroup(int tenantId, int? subgroupId)
     {
-        if (Node is not null)
+        if (NodeDetails is not null)
         {
-            var tenant = Node.NodeDetails.Tenants.First(x => x.Id == tenantId);
+            var tenant = NodeDetails.Tenants.First(x => x.Id == tenantId);
             if(tenant.TenantNode is not null) {
                 tenant.TenantNode.SubgroupId = subgroupId;
                 if (subgroupId.HasValue) {
@@ -202,8 +201,8 @@
     }
     private void SetPublicationStatus(int tenantId, int publicationStatusId)
     {
-        if (Node is not null) {
-            var tenant = Node.NodeDetails.Tenants.First(x => x.Id == tenantId);
+        if (NodeDetails is not null) {
+            var tenant = NodeDetails.Tenants.First(x => x.Id == tenantId);
             if (tenant.TenantNode is not null) {
                 tenant.TenantNode.PublicationStatusId = publicationStatusId;
             }

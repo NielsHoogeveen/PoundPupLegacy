@@ -11,7 +11,7 @@ public abstract record FathersRightsViolationCase : Case
         public required CaseDetails.CaseDetailsForCreate CaseDetails { get; init; }
         public required LocatableDetails.ForCreate LocatableDetails { get; init; }
     }
-    public sealed record FathersRightsViolationCaseToUpdate : FathersRightsViolationCase, CaseToUpdate
+    public sealed record ToUpdate : FathersRightsViolationCase, CaseToUpdate
     {
         public required Identification.Certain Identification { get; init; }
         public required NodeDetails.ForUpdate NodeDetails { get; init; }

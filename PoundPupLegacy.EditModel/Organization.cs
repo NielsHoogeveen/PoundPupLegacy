@@ -68,9 +68,10 @@ public partial class ExistingOrganizationJsonContext : JsonSerializerContext { }
 public partial class NewOrganizationJsonContext : JsonSerializerContext { }
 
 
-public abstract record Organization : Locatable, ResolvedNode
+public abstract record Organization : Locatable, ResolvedNode, Node<Organization.ToUpdate, Organization.ToCreate>, Resolver<Organization.ToUpdate, Organization.ToCreate, Unit>
 {
     private Organization() { }
+    public Node<ToUpdate, ToCreate> Resolve(Unit data) => this;
     public abstract T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem);
     public abstract void Match(Action<ToUpdate> existingItem, Action<ToCreate> newItem);
     public required NameableDetails NameableDetails { get; init; }

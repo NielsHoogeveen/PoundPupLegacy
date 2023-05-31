@@ -14,27 +14,100 @@ public static class DependencyInjection
         services.AddEditModelInserters();
         services.AddCreateModelUpdaters();
         services.AddTransient<IAttachmentStoreService, AttachmentStoreService>();
-        //services.AddTransient<IEditService<AbuseCase, AbuseCase>, AbuseCaseEditService>();
-        //services.AddTransient<IEditService<BlogPost, BlogPost>, BlogPostEditService>();
-        //services.AddTransient<IEditService<ChildTraffickingCase, ResolvedChildTraffickingCase>, ChildTraffickingCaseEditService>();
-        //services.AddTransient<IEditService<CoercedAdoptionCase, CoercedAdoptionCase>, CoercedAdoptionCaseEditService>();
-        //services.AddTransient<IEditService<DeportationCase, DeportationCase>, DeportationCaseEditService>();
-        //services.AddTransient<IEditService<Discussion, Discussion>, DiscussionEditService>();
-        //services.AddTransient<IEditService<DisruptedPlacementCase, DisruptedPlacementCase>, DisruptedPlacementCaseEditService>();
-        //services.AddTransient<IEditService<Document, Document>, DocumentEditService>();
-        //services.AddTransient<IEditService<FathersRightsViolationCase, FathersRightsViolationCase>, FathersRightsViolationCaseEditService>();
-        //services.AddTransient<IEditService<Organization, Organization>, OrganizationEditService>();
-        //services.AddTransient<IEditService<Person, Person>, PersonEditService>();
-        //services.AddTransient<IEditService<WrongfulMedicationCase, WrongfulMedicationCase>, WrongfulMedicationCaseEditService>();
-        //services.AddTransient<IEditService<WrongfulRemovalCase, WrongfulRemovalCase>, WrongfulRemovalCaseEditService>();
+        services.AddViewModelRetrieveService<AbuseCase, AbuseCase.ToUpdate, AbuseCase.ToCreate>();
+        services.AddViewModelRetrieveService<ChildTraffickingCase, ChildTraffickingCase.ToUpdate, ChildTraffickingCase.ToCreate>();
+        services.AddViewModelRetrieveService<CoercedAdoptionCase, CoercedAdoptionCase.ToUpdate, CoercedAdoptionCase.ToCreate>();
+        services.AddViewModelRetrieveService<DeportationCase, DeportationCase.ToUpdate, DeportationCase.ToCreate>();
+        services.AddViewModelRetrieveService<DisruptedPlacementCase, DisruptedPlacementCase.ToUpdate, DisruptedPlacementCase.ToCreate>();
+        services.AddViewModelRetrieveService<FathersRightsViolationCase, FathersRightsViolationCase.ToUpdate, FathersRightsViolationCase.ToCreate>();
+        services.AddViewModelRetrieveService<WrongfulMedicationCase, WrongfulMedicationCase.ToUpdate, WrongfulMedicationCase.ToCreate>();
+        services.AddViewModelRetrieveService<WrongfulRemovalCase, WrongfulRemovalCase.ToUpdate, WrongfulRemovalCase.ToCreate>();
+        services.AddViewModelRetrieveService<BlogPost, BlogPost.ToUpdate, BlogPost.ToCreate>();
+        services.AddViewModelRetrieveService<Discussion, Discussion.ToUpdate, Discussion.ToCreate>();
+        services.AddViewModelRetrieveService<Organization, Organization.ToUpdate, Organization.ToCreate>();
+        services.AddViewModelRetrieveService<Person, Person.ToUpdate, Person.ToCreate>();
+
+        services.AddEntitySaveService<
+            AbuseCase, 
+            AbuseCase.ToUpdate, 
+            AbuseCase.ToCreate, 
+            CreateModel.AbuseCase, 
+            CreateModel.AbuseCase.ToUpdate, 
+            CreateModel.AbuseCase.ToCreate>();
+
+        services.AddEntitySaveService<
+            ChildTraffickingCase,
+            ChildTraffickingCase.ToUpdate,
+            ChildTraffickingCase.ToCreate,
+            CreateModel.ChildTraffickingCase,
+            CreateModel.ChildTraffickingCase.ToUpdate,
+            CreateModel.ChildTraffickingCase.ToCreate>();
+
+        services.AddEntitySaveService<
+            CoercedAdoptionCase,
+            CoercedAdoptionCase.ToUpdate,
+            CoercedAdoptionCase.ToCreate,
+            CreateModel.CoercedAdoptionCase,
+            CreateModel.CoercedAdoptionCase.ToUpdate,
+            CreateModel.CoercedAdoptionCase.ToCreate>();
+
+        services.AddEntitySaveService<
+            DeportationCase,
+            DeportationCase.ToUpdate,
+            DeportationCase.ToCreate,
+            CreateModel.DeportationCase,
+            CreateModel.DeportationCase.ToUpdate,
+            CreateModel.DeportationCase.ToCreate>();
+
+        services.AddEntitySaveService<
+            DisruptedPlacementCase,
+            DisruptedPlacementCase.ToUpdate,
+            DisruptedPlacementCase.ToCreate,
+            CreateModel.DisruptedPlacementCase,
+            CreateModel.DisruptedPlacementCase.ToUpdate,
+            CreateModel.DisruptedPlacementCase.ToCreate>();
+
+        services.AddEntitySaveService<
+            FathersRightsViolationCase,
+            FathersRightsViolationCase.ToUpdate,
+            FathersRightsViolationCase.ToCreate,
+            CreateModel.FathersRightsViolationCase,
+            CreateModel.FathersRightsViolationCase.ToUpdate,
+            CreateModel.FathersRightsViolationCase.ToCreate>();
+
+        services.AddEntitySaveService<
+            Organization,
+            Organization.ToUpdate,
+            Organization.ToCreate,
+            CreateModel.Organization,
+            CreateModel.OrganizationToUpdate,
+            CreateModel.OrganizationToCreate>();
+
+        services.AddEntitySaveService<
+            Person,
+            Person.ToUpdate,
+            Person.ToCreate,
+            CreateModel.Person,
+            CreateModel.Person.ToUpdate,
+            CreateModel.Person.ToCreate>();
+
+        services.AddEntitySaveService<
+            WrongfulMedicationCase,
+            WrongfulMedicationCase.ToUpdate,
+            WrongfulMedicationCase.ToCreate,
+            CreateModel.WrongfulMedicationCase,
+            CreateModel.WrongfulMedicationCase.ToUpdate,
+            CreateModel.WrongfulMedicationCase.ToCreate>();
+
+        services.AddEntitySaveService<
+            WrongfulRemovalCase,
+            WrongfulRemovalCase.ToUpdate,
+            WrongfulRemovalCase.ToCreate,
+            CreateModel.WrongfulRemovalCase,
+            CreateModel.WrongfulMedicationCase.ToUpdate,
+            CreateModel.WrongfulRemovalCase.ToCreate>();
 
         services.AddTransient<ILocationService, LocationService>();
-        //services.AddTransient<ISaveService<IEnumerable<ResolvedInterOrganizationalRelationFrom>>, InterOrganizationalRelationFromSaveService>();
-        //services.AddTransient<ISaveService<IEnumerable<ResolvedInterOrganizationalRelationTo>>, InterOrganizationalRelationToSaveService>();
-        //services.AddTransient<ISaveService<IEnumerable<ResolvedInterPersonalRelationFrom>>, InterPersonalRelationFromSaveService>();
-        //services.AddTransient<ISaveService<IEnumerable<ResolvedInterPersonalRelationTo>>, InterPersonalRelationToSaveService>();
-        //services.AddTransient<ISaveService<IEnumerable<OrganizationPoliticalEntityRelation>>, OrganizationPoliticalEntityRelationSaveService>();
-        //services.AddTransient<ISaveService<IEnumerable<PersonOrganizationRelation>>, PersonOrganizationRelationSaveService>();
         services.AddTransient<ISaveService<IEnumerable<File>>, FilesSaveService>();
         services.AddTransient<ITextService, TextService>();
         services.AddTransient<ISearchService<DocumentListItem>, DocumentSearchService>();

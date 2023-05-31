@@ -1,4 +1,4 @@
-﻿@inherits EditorBase
+﻿@inherits EditorDetailBase
 <InterPersonalRelationsEditor 
     RelationsFrom="Model.InterPersonalRelationsFrom.ToList()" 
     RelationsTo="Model.InterPersonalRelationsTo.ToList()" 
@@ -24,9 +24,9 @@
         _ => null
     };
 
-    public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
+    public override async Task<List<ErrorDetail>> Validate()
     {
-        await Task.CompletedTask;
+        return await Task.FromResult(new List<ErrorDetail>());
     }
 
     public override void OnTitleChange(string title)

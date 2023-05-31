@@ -1,0 +1,38 @@
+﻿@inherits EditorDetailBase
+<div class="form-group">
+    <label for="title">Title</label>
+    <InputText @bind-Value="Model.Title" id="title" class="title-editor" type="text" @oninput="OnTitleChange" />
+    <ValidationMessage For="@(() => Model.Title)" />
+</div>
+@ChildContent
+<TagsEditor NodeTypesTags="Model.Tags" />
+<TenantNodesEditor NodeDetails="@Model" />
+<AttachmentEditor Files="Model.Files"/>
+@if (Model is Locatable locatable) {
+    <LocationsEditor Locatable="locatable" />
+}
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public NodeDetails Model { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment ChildContent { get; set; } = default!;
+
+    public void OnTitleChange(ChangeEventArgs args)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void OnTitleChange(string title)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override async Task<List<ErrorDetail>> Validate()
+    {
+        return await Task.FromResult(new List<ErrorDetail>());
+    }
+}

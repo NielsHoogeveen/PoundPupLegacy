@@ -1,20 +1,31 @@
-﻿<NodeEditor2 
-    TCreateModel="BlogPost.ToCreate" 
-    TUpdateModel="BlogPost.ToUpdate" 
-    Model="Model"
-    Title="Edit blogpost" Map="Map">
-    @*<SimpleTextNodePropertiesEditor Model="Model" />*@
-</NodeEditor2>
-
+﻿@inherits EntityEditorBase<BlogPost.ToUpdate, BlogPost.ToCreate, Unit>
+@if (Model is not null)
+{
+    <NodeEditor 
+        TCreateModel="BlogPost.ToCreate" 
+        TUpdateModel="BlogPost.ToUpdate"
+        TResolveData="Unit"
+        Model="Model"
+        OnValidationResult="() => Validate()"
+        Title="Edit blogpost" Map="Map">
+        <NodeDetailsEditor Model="BlogPost.NodeDetails" @ref=nodeDetailsEditor>
+            <SimpleTextNodePropertiesEditor Model="BlogPost" @ref=simpleTextNodePropertiesEditor/>
+        </NodeDetailsEditor>
+    </NodeEditor>
+}
 @code {
     [Parameter]
     [EditorRequired]
-    public int UrlId { get; set; }
+    public BlogPost BlogPost { get; set; } = default!;
 
-    private BlogPost? Model { get; set; }
+    protected override Resolver<BlogPost.ToUpdate, BlogPost.ToCreate, Unit> Model => BlogPost;
 
-    private BlogPost Map(BlogPost source)
-    {
-        return source;
-    }
+    private NodeDetailsEditor? nodeDetailsEditor;
+    private SimpleTextNodePropertiesEditor? simpleTextNodePropertiesEditor;
+
+    protected override List<EditorDetailBase?> DetailsEditors => new() {
+        nodeDetailsEditor,
+        simpleTextNodePropertiesEditor
+    };
+    protected override Unit ResolveData => Unit.Instance;
 }

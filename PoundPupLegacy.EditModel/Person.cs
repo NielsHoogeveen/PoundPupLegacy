@@ -69,9 +69,11 @@ public partial class ExistingPersonJsonContext : JsonSerializerContext { }
 [JsonSerializable(typeof(NodeDetails.ForCreate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
 public partial class NewPersonJsonContext : JsonSerializerContext { }
 
-public abstract record Person : Locatable, ResolvedNode
+public abstract record Person: Locatable, ResolvedNode, Node<Person.ToUpdate, Person.ToCreate>, Resolver<Person.ToUpdate, Person.ToCreate, Unit>
 {
     private Person() { }
+    public Node<ToUpdate, ToCreate> Resolve(Unit data) => this;
+
     public abstract T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem);
     public abstract void Match(Action<ToUpdate> existingItem, Action<ToCreate> newItem);
     public required NameableDetails NameableDetails { get; init; }

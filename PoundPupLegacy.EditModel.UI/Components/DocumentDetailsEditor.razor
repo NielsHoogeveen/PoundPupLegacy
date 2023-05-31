@@ -1,4 +1,4 @@
-﻿@inherits EditorBase
+﻿@inherits EditorDetailBase
 
 <div class="form-group">
     <label>Document type</label>
@@ -26,9 +26,10 @@
     [Parameter]
     [EditorRequired]
     public Document Model { get; set; } = default!;
-    public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
+
+    public override async Task<List<ErrorDetail>> Validate()
     {
-        await Task.CompletedTask;
+        return await Task.FromResult(new List<ErrorDetail>());
     }
 
     private void HandleChange(ChangeEventArgs e)

@@ -1,17 +1,26 @@
-﻿@inherits EditorBase
+﻿@inherits EntityEditorBase<ChildTraffickingCase.ToUpdate, ChildTraffickingCase.ToCreate, CountryListItem>
+    <NodeEditor TCreateModel="ChildTraffickingCase.ToCreate"
+        TUpdateModel="ChildTraffickingCase.ToUpdate"
+        Model="Model"
+        TResolveData="CountryListItem"
+        OnValidationResult="() => Validate()"
+        Title="Edit child trafficking case" Map="Map">
+    <NodeDetailsEditor Model="ChildTraffickingCase.NodeDetails" @ref=nodeDetailsEditor>
+        <div></div>
+    </NodeDetailsEditor>
+</NodeEditor>
 
 @code {
     [Parameter]
     [EditorRequired]
-    public ChildTraffickingCase Model { get; set; } = default!;
+    public UnresolvedChildTraffickingCase ChildTraffickingCase { get; set; } = default!;
 
-    public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
-    {
-        await Task.CompletedTask;
-    }
-    public override void OnTitleChange(string title)
-    {
+    protected override Resolver<ChildTraffickingCase.ToUpdate, ChildTraffickingCase.ToCreate, CountryListItem> Model => ChildTraffickingCase;
 
-    }
+    private NodeDetailsEditor? nodeDetailsEditor;
 
+    protected override List<EditorDetailBase?> DetailsEditors => new() {
+        nodeDetailsEditor
+    };
+    protected override CountryListItem ResolveData => null;
 }

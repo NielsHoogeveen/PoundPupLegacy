@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.EditModel.Readers;
 
-internal sealed class WrongfulMedicationCaseCreateDocumentReaderFactory : NodeCreateDocumentReaderFactory<WrongfulMedicationCase.NewWrongfulMedicationCase>
+internal sealed class WrongfulMedicationCaseCreateDocumentReaderFactory : NodeCreateDocumentReaderFactory<WrongfulMedicationCase.ToCreate>
 {
     public override string Sql => SQL;
 

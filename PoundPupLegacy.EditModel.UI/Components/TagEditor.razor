@@ -1,4 +1,4 @@
-﻿@inherits ViewerBase
+﻿@inherits EditorBase
 @inject ITopicSearchService topicSearchService
 
 <div class="node-type-group">
@@ -39,10 +39,6 @@
     [Parameter]
     [EditorRequired]
     public Tags NodeTypeTags { get; set; } = default!;
-
-    [Parameter]
-    [EditorRequired]
-    public int? NodeId { get; set; }
 
     List<NodeTerm.NewNodeTerm> termOptions = new();
 

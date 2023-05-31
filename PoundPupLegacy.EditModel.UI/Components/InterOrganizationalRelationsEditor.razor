@@ -1,4 +1,4 @@
-﻿@inherits EditorBase
+﻿@inherits EditorDetailBase
 @if(relationContext is not null){
     <ModalDialog 
         Title="Add inter-organizational relation"
@@ -351,10 +351,11 @@
         }
     }
 
-    public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
+    public override async Task<List<ErrorDetail>> Validate()
     {
-        await Task.CompletedTask;
+        return await Task.FromResult(new List<ErrorDetail>());
     }
+
     public override void OnTitleChange(string title)
     {
         if(interOrganizationalRelationsFromEditor is not null) {

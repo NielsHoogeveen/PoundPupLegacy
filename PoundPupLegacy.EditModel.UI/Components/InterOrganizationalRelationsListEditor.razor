@@ -1,5 +1,5 @@
 ﻿@typeparam TRelation where TRelation : InterOrganizationalRelation
-@inherits EditorBase
+@inherits EditorDetailBase
 
 <div class="relations-editor">
     @if (typeof(TRelation).Name.EndsWith("From")){
@@ -70,9 +70,9 @@
     
     
 
-    public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
+    public override async Task<List<ErrorDetail>> Validate()
     {
-        await Task.CompletedTask;
+        return await Task.FromResult(new List<ErrorDetail>());
     }
     public override void OnTitleChange(string title)
     {

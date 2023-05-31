@@ -1,17 +1,27 @@
-﻿@inherits EditorBase
-
+﻿@inherits EntityEditorBase<DisruptedPlacementCase.ToUpdate, DisruptedPlacementCase.ToCreate, Unit>
+@if (Model is not null) {
+    <NodeEditor TCreateModel="DisruptedPlacementCase.ToCreate"
+                 TUpdateModel="DisruptedPlacementCase.ToUpdate"
+                 TResolveData="Unit"
+                 Model="Model"
+                 OnValidationResult="() => Validate()"
+                 Title="Edit coerced adoption case" Map="Map">
+        <NodeDetailsEditor Model="DisruptedPlacementCase.NodeDetails" @ref=nodeDetailsEditor>
+            <div></div>
+        </NodeDetailsEditor>
+    </NodeEditor>
+}
 @code {
     [Parameter]
     [EditorRequired]
-    public DisruptedPlacementCase Model { get; set; } = default!;
+    public DisruptedPlacementCase DisruptedPlacementCase { get; set; } = default!;
 
-    public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
-    {
-        await Task.CompletedTask;
-    }
-    public override void OnTitleChange(string title)
-    {
+    protected override Resolver<DisruptedPlacementCase.ToUpdate, DisruptedPlacementCase.ToCreate, Unit> Model => DisruptedPlacementCase;
 
-    }
+    private NodeDetailsEditor? nodeDetailsEditor;
 
+    protected override List<EditorDetailBase?> DetailsEditors => new() {
+        nodeDetailsEditor
+    };
+    protected override Unit ResolveData => Unit.Instance;
 }

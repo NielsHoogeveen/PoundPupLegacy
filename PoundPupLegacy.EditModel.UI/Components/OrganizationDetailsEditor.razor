@@ -1,4 +1,4 @@
-﻿@inherits EditorBase
+﻿@inherits EditorDetailBase
 <div class="organization-fields">
     <div class="form-group">
         <label>Website</label>
@@ -43,9 +43,9 @@
         _ => null
     };
 
-    public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
+    public override async Task<List<ErrorDetail>> Validate()
     {
-        await Task.CompletedTask;
+        return await Task.FromResult(new List<ErrorDetail>());
     }
 
     public override void OnTitleChange(string title)

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(WrongfulMedicationCase.ExistingWrongfulMedicationCase))]
+[JsonSerializable(typeof(WrongfulMedicationCase.ToUpdate))]
 
 [JsonSerializable(typeof(LocatableDetails.ForUpdate), TypeInfoPropertyName = "LocatableDetailsForUpdate")]
 [JsonSerializable(typeof(Location.ToUpdate), TypeInfoPropertyName = "LocationDetailsForUpdate")]
@@ -9,7 +9,7 @@
 [JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
 public partial class ExistingWrongfulMedicationCaseJsonContext : JsonSerializerContext { }
 
-[JsonSerializable(typeof(WrongfulMedicationCase.NewWrongfulMedicationCase))]
+[JsonSerializable(typeof(WrongfulMedicationCase.ToCreate))]
 
 [JsonSerializable(typeof(LocatableDetails.ForCreate), TypeInfoPropertyName = "LocatableDetailsCreate")]
 [JsonSerializable(typeof(Location.ToCreate), TypeInfoPropertyName = "LocationDetailsForCreate")]
@@ -17,43 +17,44 @@ public partial class ExistingWrongfulMedicationCaseJsonContext : JsonSerializerC
 [JsonSerializable(typeof(NodeDetails.ForCreate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
 public partial class NewWrongfulMedicationCaseJsonContext : JsonSerializerContext { }
 
-public abstract record WrongfulMedicationCase : Case, ResolvedNode
+public abstract record WrongfulMedicationCase : Case, ResolvedNode, Node<WrongfulMedicationCase.ToUpdate, WrongfulMedicationCase.ToCreate>, Resolver<WrongfulMedicationCase.ToUpdate, WrongfulMedicationCase.ToCreate, Unit>
 {
     private WrongfulMedicationCase() { }
-    public abstract T Match<T>(Func<ExistingWrongfulMedicationCase, T> existingItem, Func<NewWrongfulMedicationCase, T> newItem);
-    public abstract void Match(Action<ExistingWrongfulMedicationCase> existingItem, Action<NewWrongfulMedicationCase> newItem);
+    public Node<ToUpdate, ToCreate> Resolve(Unit data) => this;
+    public abstract T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem);
+    public abstract void Match(Action<ToUpdate> existingItem, Action<ToCreate> newItem);
     public required CaseDetails CaseDetails { get; init; }
     public required NameableDetails NameableDetails { get; init; }
     public abstract LocatableDetails LocatableDetails { get; }
     public abstract NodeDetails NodeDetails { get; }
 
-    public sealed record ExistingWrongfulMedicationCase : WrongfulMedicationCase, ExistingNode
+    public sealed record ToUpdate : WrongfulMedicationCase, ExistingNode
     {
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
         public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
         public override LocatableDetails LocatableDetails => ExistingLocatableDetails;
         public required LocatableDetails.ForUpdate ExistingLocatableDetails { get; init; }
         public required NodeIdentification NodeIdentification { get; init; }
-        public override T Match<T>(Func<ExistingWrongfulMedicationCase, T> existingItem, Func<NewWrongfulMedicationCase, T> newItem)
+        public override T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem)
         {
             return existingItem(this);
         }
-        public override void Match(Action<ExistingWrongfulMedicationCase> existingItem, Action<NewWrongfulMedicationCase> newItem)
+        public override void Match(Action<ToUpdate> existingItem, Action<ToCreate> newItem)
         {
             existingItem(this);
         }
     }
-    public sealed record NewWrongfulMedicationCase : WrongfulMedicationCase, ResolvedNewNode
+    public sealed record ToCreate : WrongfulMedicationCase, ResolvedNewNode
     {
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
         public override LocatableDetails LocatableDetails => NewLocatableDetails;
         public required LocatableDetails.ForCreate NewLocatableDetails { get; init; }
-        public override T Match<T>(Func<ExistingWrongfulMedicationCase, T> existingItem, Func<NewWrongfulMedicationCase, T> newItem)
+        public override T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem)
         {
             return newItem(this);
         }
-        public override void Match(Action<ExistingWrongfulMedicationCase> existingItem, Action<NewWrongfulMedicationCase> newItem)
+        public override void Match(Action<ToUpdate> existingItem, Action<ToCreate> newItem)
         {
             newItem(this);
         }

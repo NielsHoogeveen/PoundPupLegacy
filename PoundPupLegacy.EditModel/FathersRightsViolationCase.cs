@@ -14,9 +14,11 @@ public partial class ExistingFathersRightsViolationCaseJsonContext : JsonSeriali
 [JsonSerializable(typeof(NodeDetails.ForCreate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
 public partial class NewFathersRightsViolationCaseJsonContext : JsonSerializerContext { }
 
-public abstract record FathersRightsViolationCase : Case, ResolvedNode
+public abstract record FathersRightsViolationCase : Case, ResolvedNode, Node<FathersRightsViolationCase.ToUpdate, FathersRightsViolationCase.ToCreate>, Resolver<FathersRightsViolationCase.ToUpdate, FathersRightsViolationCase.ToCreate, Unit>
 {
     private FathersRightsViolationCase() { }
+    public Node<ToUpdate, ToCreate> Resolve(Unit data) => this;
+
     public abstract T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem);
     public abstract void Match(Action<ToUpdate> existingItem, Action<ToCreate> newItem);
     public required CaseDetails CaseDetails { get; init; }

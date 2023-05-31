@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Updaters;
 
-using Request = WrongfulMedicationCase.WrongfulMedicationCaseToUpdate;
+using Request = WrongfulMedicationCase.ToUpdate;
 internal sealed class WrongfulMedicationCaseChangerFactory(
     IDatabaseUpdaterFactory<Request> databaseUpdaterFactory,
     NodeDetailsChangerFactory nodeDetailsChangerFactory) : IEntityChangerFactory<Request>

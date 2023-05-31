@@ -1,4 +1,4 @@
-﻿@inherits ViewerBase
+﻿@inherits EditorDetailBase
 
 @if(NodeTypesTags is not null)
 {
@@ -16,7 +16,12 @@
     [EditorRequired]
     public List<Tags>? NodeTypesTags { get; set; }
 
-    [Parameter]
-    [EditorRequired]
-    public int? NodeId { get; set; }
+    public override void OnTitleChange(string title)
+    {
+        throw new NotImplementedException();
+    }
+    public override async Task<List<ErrorDetail>> Validate()
+    {
+        return await Task.FromResult(new List<ErrorDetail>());
+    }
 }

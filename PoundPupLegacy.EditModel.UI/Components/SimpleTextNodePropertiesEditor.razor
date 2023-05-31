@@ -1,4 +1,4 @@
-﻿@inherits EditorBase
+﻿@inherits EditorDetailBase
 @if (Model is not null)
 {
     <div class="form-group">
@@ -12,21 +12,19 @@
     [EditorRequired]
     public SimpleTextNode Model { get; set; } = default!;
 
-    public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
+    public override async Task<List<ErrorDetail>> Validate()
     {
         await Task.CompletedTask;
-        if (Model is not null)
-        {
-            if(Model.SimpleTextNodeDetails.Text is null || Model.SimpleTextNodeDetails.Text == string.Empty)
-            {
-                validationMessageStore.Add(() => Model.SimpleTextNodeDetails.Text, "Text is required");
-                invalidIds.Add("editor");
-            };
+        var errors = new List<ErrorDetail>();
+        if (Model is not null) {
+            if (Model.SimpleTextNodeDetails.Text is null || Model.SimpleTextNodeDetails.Text == string.Empty) {
+                errors.Add(new ErrorDetail { Message = "Text is required", Id = "editor" });
+            }
         }
+        return new List<ErrorDetail>();
     }
     public override void OnTitleChange(string title)
     {
-
     }
 
 }

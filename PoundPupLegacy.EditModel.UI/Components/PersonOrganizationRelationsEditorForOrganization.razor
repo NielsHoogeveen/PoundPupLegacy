@@ -1,4 +1,4 @@
-﻿@inherits EditorBase
+﻿@inherits EditorDetailBase
 @if (_relationToEdit is not null) {
     <ModalDialog 
         Title="Add person-organization relation" 
@@ -77,9 +77,9 @@
 
     private PersonOrganizationRelation.ForOrganization? _relationToEdit = null;
 
-    public override async Task Validate(ValidationMessageStore validationMessageStore, List<string> invalidIds)
+    public override async Task<List<ErrorDetail>> Validate()
     {
-        await Task.CompletedTask;
+        return await Task.FromResult(new List<ErrorDetail>());
     }
     public override void OnTitleChange(string title)
     {

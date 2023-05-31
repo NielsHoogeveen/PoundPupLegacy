@@ -10,9 +10,11 @@ public partial class NewDocumentJsonContext : JsonSerializerContext { }
 [JsonSerializable(typeof(DocumentDetails))]
 public partial class DocumentDetailsJsonContext : JsonSerializerContext { }
 
-public abstract record Document : SimpleTextNode, ResolvedNode
+public abstract record Document : SimpleTextNode, ResolvedNode, Node<Document.ToUpdate, Document.ToCreate>, Resolver<Document.ToUpdate, Document.ToCreate, Unit>
+
 {
     private Document() { }
+    public Node<ToUpdate, ToCreate> Resolve(Unit data) => this;
     public abstract T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem);
     public abstract void Match(Action<ToUpdate> existingItem, Action<ToCreate> newItem);
     public required SimpleTextNodeDetails SimpleTextNodeDetails { get; init; }
