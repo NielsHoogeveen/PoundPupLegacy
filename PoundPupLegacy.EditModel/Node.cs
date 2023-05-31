@@ -4,7 +4,13 @@ public interface Node<TExisting, TNew>: Node
     where TExisting: ExistingNode
     where TNew: ResolvedNewNode
 {
-    public T Match<T>(Func<TExisting, T> existing, Func<TNew, T> resolved);
+    T Match<T>(Func<TExisting, T> existing, Func<TNew, T> resolved);
+}
+public interface Resolver<TExisting, TNew> : Node
+    where TExisting : ExistingNode
+    where TNew : ResolvedNewNode
+{
+    Node<TExisting, TNew> Resolve();
 }
 
 public interface Node

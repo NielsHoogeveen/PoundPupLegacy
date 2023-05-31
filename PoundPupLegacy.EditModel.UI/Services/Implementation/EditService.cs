@@ -4,10 +4,9 @@ using PoundPupLegacy.EditModel.UI.Mappers;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
-internal interface IEditService2<TEditModel, TCreateModel,TUpdateModel>
-    where TEditModel: class, Node
-    where TCreateModel : class, TEditModel, ResolvedNewNode
-    where TUpdateModel : class, TEditModel, ExistingNode
+internal interface IEditService2<TCreateModel,TUpdateModel>
+    where TCreateModel : class, ResolvedNewNode
+    where TUpdateModel : class, ExistingNode
 {
     Task<int> SaveAsync(TCreateModel node);
     Task<int> SaveAsync(TUpdateModel node);
@@ -27,7 +26,7 @@ internal class EditService<
         IMapper<TUpdateModel, TDomainModelToUpdate> updateMapper,
         IEntityCreatorFactory<TDomainModelToCreate> entityCreator,
         IEntityChangerFactory<TDomainModelToUpdate> entityChanger
-    ) : DatabaseService(connection, logger), IEditService2<TEditModel, TCreateModel, TUpdateModel>
+    ) : DatabaseService(connection, logger), IEditService2<TCreateModel, TUpdateModel>
     where TEditModel : class, Node
     where TCreateModel: class, TEditModel, ResolvedNewNode
     where TUpdateModel: class, TEditModel, ExistingNode

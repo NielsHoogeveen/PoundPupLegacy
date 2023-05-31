@@ -4,9 +4,10 @@
 [JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
 public partial class ExistingBlogPostJsonContext : JsonSerializerContext { }
 
-public abstract record BlogPost : SimpleTextNode, ResolvedNode, Node<BlogPost.ToUpdate, BlogPost.ToCreate>
+public abstract record BlogPost : SimpleTextNode, ResolvedNode, Node<BlogPost.ToUpdate, BlogPost.ToCreate>, Resolver<BlogPost.ToUpdate, BlogPost.ToCreate>
 {
     private BlogPost() { }
+    public Node<ToUpdate, ToCreate> Resolve() => this;
     public abstract T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem);
     public abstract void Match(Action<ToUpdate> existingItem, Action<ToCreate> newItem);
     public required SimpleTextNodeDetails SimpleTextNodeDetails { get; init; }

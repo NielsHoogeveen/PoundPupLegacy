@@ -1,15 +1,14 @@
 ﻿@*@inherits EditorBase*@
 @using PoundPupLegacy.EditModel.UI.Services.Implementation
-@typeparam TEditModel where TEditModel: class, Node, Node<TUpdateModel, TCreateModel>
-@typeparam TCreateModel where TCreateModel: class, TEditModel, ResolvedNewNode
-@typeparam TUpdateModel where TUpdateModel: class, TEditModel, ExistingNode
+@typeparam TCreateModel where TCreateModel: class, ResolvedNewNode
+@typeparam TUpdateModel where TUpdateModel: class, ExistingNode
 @inject IJSRuntime JSRuntime
-@inject IEditService2<TEditModel, TCreateModel, TUpdateModel> editService
+@inject IEditService2<TCreateModel, TUpdateModel> editService
 
 @code {
     [Parameter]
     [EditorRequired]
-    public TEditModel Model { get; set; } = default!;
+    public Node<TUpdateModel, TCreateModel> Model { get; set; } = default!;
 
     public async Task Save()
     {
