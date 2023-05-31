@@ -2,7 +2,7 @@
 
 namespace PoundPupLegacy.EditModel.UI.Mappers;
 
-internal class CasePartyTypeCasePartiesToAddForExistingPartyMapper : IEnumerableMapper<CasePartyTypeCaseParties, CreateModel.CaseCaseParties.ToCreate.ForExistingCase>
+internal class CasePartyTypeCasePartiesToCreateForExistingCaseMapper : IEnumerableMapper<CasePartyTypeCaseParties, CreateModel.CaseCaseParties.ToCreate.ForExistingCase>
 {
     public IEnumerable<CreateModel.CaseCaseParties.ToCreate.ForExistingCase> Map(IEnumerable<CasePartyTypeCaseParties> source)
     {

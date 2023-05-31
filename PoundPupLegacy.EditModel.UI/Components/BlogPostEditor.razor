@@ -1,5 +1,10 @@
-﻿<NodeEditor2 TRead="BlogPost" TSave="BlogPost" Model="Model" Title="Edit blogpost" Map="Map">
-    <SimpleTextNodePropertiesEditor Model="Model" />
+﻿<NodeEditor2 
+    TEditModel="BlogPost" 
+    TCreateModel="BlogPost.ToCreate" 
+    TUpdateModel="BlogPost.ToUpdate" 
+    Model="Model"
+    Title="Edit blogpost" Map="Map">
+    @*<SimpleTextNodePropertiesEditor Model="Model" />*@
 </NodeEditor2>
 
 @code {

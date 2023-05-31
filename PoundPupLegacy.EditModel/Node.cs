@@ -1,5 +1,12 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
+public interface Node<TExisting, TNew>: Node
+    where TExisting: ExistingNode
+    where TNew: ResolvedNewNode
+{
+    public T Match<T>(Func<TExisting, T> existing, Func<TNew, T> resolved);
+}
+
 public interface Node
 {
     public NodeDetails NodeDetails { get; }

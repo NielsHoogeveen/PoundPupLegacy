@@ -71,7 +71,7 @@ public interface IEntityChangerFactory<T>
     Task<IEntityChanger<T>> CreateAsync(IDbConnection connection);
 }
 
-public interface IEntityChanger<T>
+public interface IEntityChanger<T>: IAsyncDisposable
 {
     Task UpdateAsync(T request);
 }

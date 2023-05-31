@@ -14,7 +14,7 @@ public partial class ExistingAbuseCaseJsonContext : JsonSerializerContext { }
 [JsonSerializable(typeof(NodeDetails.ForCreate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
 public partial class NewAbuseCaseJsonContext : JsonSerializerContext { }
 
-public abstract record AbuseCase: Case, Locatable, Nameable, Node
+public abstract record AbuseCase: Case, Locatable, Nameable, Node, Node<AbuseCase.ToUpdate, AbuseCase.ToCreate>
 {
     private AbuseCase() { }
     public abstract T Match<T>(Func<ToUpdate,T> existingItem, Func<ToCreate, T> newItem);
@@ -24,7 +24,7 @@ public abstract record AbuseCase: Case, Locatable, Nameable, Node
     public required NameableDetails NameableDetails { get; init; }
     public abstract LocatableDetails LocatableDetails { get; }
     public abstract NodeDetails NodeDetails { get; }
-
+    
     public sealed record ToCreate : AbuseCase, ResolvedNewNode, NewLocatable
     {
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
