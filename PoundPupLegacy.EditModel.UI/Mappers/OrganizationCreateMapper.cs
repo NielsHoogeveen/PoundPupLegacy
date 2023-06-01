@@ -28,10 +28,10 @@ internal class OrganizationCreateMapper(
                 Terminated = source.OrganizationDetails.Termination,
                 WebsiteUrl = source.OrganizationDetails.WebSiteUrl,
                 OrganizationTypeIds = source.OrganizationDetails.OrganizationTypes.Select(x => x.Id).ToList(),
-                PartyPoliticalEntityRelationsToCreate = partyPolitcalEntityCreateMapper.Map(source.OrganizationPoliticalEntityRelationsToCreate).ToList(),
-                PersonOrganizationRelationsToCreate = personOrganizationRelationCreateMapper.Map(source.PersonOrganizationRelationsToCreate).ToList(),
-                InterOrganizationalRelationsFrom = interOrganizationalRelationFromMapper.Map(source.InterOrganizationalRelationsFromToCreate).ToList(),
-                InterOrganizationalRelationsTo = interOrganizationalRelationToMapper.Map(source.InterOrganizationalRelationsToToCreate).ToList(),
+                PartyPoliticalEntityRelationsToCreate = partyPolitcalEntityCreateMapper.Map(source.OrganizationDetailsForCreate.OrganizationPoliticalEntityRelationsToCreate).ToList(),
+                PersonOrganizationRelationsToCreate = personOrganizationRelationCreateMapper.Map(source.OrganizationDetailsForCreate.PersonOrganizationRelationsToCreate).ToList(),
+                InterOrganizationalRelationsFrom = interOrganizationalRelationFromMapper.Map(source.OrganizationDetailsForCreate.InterOrganizationalRelationsFromToCreate).ToList(),
+                InterOrganizationalRelationsTo = interOrganizationalRelationToMapper.Map(source.OrganizationDetailsForCreate.InterOrganizationalRelationsToToCreate).ToList(),
             },
         };
     }

@@ -21,7 +21,6 @@ public partial class DocumentToUpdateJsonContext : JsonSerializerContext { }
 public partial class DocumentToCreateJsonContext : JsonSerializerContext { }
 
 public abstract record Document : SimpleTextNode, ResolvedNode, Node<Document.ToUpdate, Document.ToCreate>, Resolver<Document.ToUpdate, Document.ToCreate, Unit>
-
 {
     private Document() { }
     public Node<ToUpdate, ToCreate> Resolve(Unit data) => this;

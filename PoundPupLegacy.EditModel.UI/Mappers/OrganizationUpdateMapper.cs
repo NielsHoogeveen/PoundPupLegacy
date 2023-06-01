@@ -27,12 +27,12 @@ internal class OrganizationUpdateMapper(
                 Established = source.OrganizationDetails.Establishment,
                 Terminated = source.OrganizationDetails.Termination,
                 WebsiteUrl = source.OrganizationDetails.WebSiteUrl,
-                InterOrganizationalRelationsToCreate = interOrganizationalRelationToCreateMapper.Map(source.InterOrganizationalRelation).ToList(),
+                InterOrganizationalRelationsToCreate = interOrganizationalRelationToCreateMapper.Map(source.OrganizationDetailsForUpdate.InterOrganizationalRelation).ToList(),
                 OrganizationTypeIds = source.OrganizationDetails.OrganizationTypes.Select(x => x.Id).ToList(),
-                PartyPoliticalEntityRelationsToCreate = partyPolitcalEntityCreateMapper.Map(source.OrganizationPoliticalEntityRelationsToCreate).ToList(),
-                PartyPoliticalEntityRelationToUpdates = partyPoliticalEntityRelationUpdateMapper.Map(source.OrganizationPoliticalEntityRelationsToUpdate).ToList(),
-                PersonOrganizationRelationsToCreate = personOrganizationRelationCreateMapper.Map(source.PersonOrganizationRelationsToCreate).ToList(),
-                PersonOrganizationRelationsToUpdate = personOrganizationRelationUpdateMapper.Map(source.PersonOrganizationRelationsToUpdate).ToList(),
+                PartyPoliticalEntityRelationsToCreate = partyPolitcalEntityCreateMapper.Map(source.OrganizationDetailsForUpdate.OrganizationPoliticalEntityRelationsToCreate).ToList(),
+                PartyPoliticalEntityRelationToUpdates = partyPoliticalEntityRelationUpdateMapper.Map(source.OrganizationDetailsForUpdate.OrganizationPoliticalEntityRelationsToUpdate).ToList(),
+                PersonOrganizationRelationsToCreate = personOrganizationRelationCreateMapper.Map(source.OrganizationDetailsForUpdate.PersonOrganizationRelationsToCreate).ToList(),
+                PersonOrganizationRelationsToUpdate = personOrganizationRelationUpdateMapper.Map(source.OrganizationDetailsForUpdate.PersonOrganizationRelationsToUpdate).ToList(),
             },
         };
     }

@@ -1,28 +1,23 @@
 ﻿@inherits EditorDetailBase
 <InterPersonalRelationsEditor 
-    RelationsFrom="Model.InterPersonalRelationsFrom.ToList()" 
-    RelationsTo="Model.InterPersonalRelationsTo.ToList()" 
-    RelationTypes="Model.InterPersonalRelationTypes" 
+    RelationsFrom="PersonDetails.InterPersonalRelationsFrom.ToList()" 
+    RelationsTo="PersonDetails.InterPersonalRelationsTo.ToList()" 
+    RelationTypes="PersonDetails.InterPersonalRelationTypes" 
     PersonItem="Person"/>
 <PersonPoliticalEntityRelationsEditor 
     PartyTypeName="person"
     Person="Person"
-    Relations="Model.PersonPoliticalEntityRelations.ToList()"
-    RelationTypes="Model.PersonPoliticalEntityRelationTypes" />
+    Relations="PersonDetails.PersonPoliticalEntityRelations.ToList()"
+    RelationTypes="PersonDetails.PersonPoliticalEntityRelationTypes" />
 <PersonOrganizationRelationsEditorForPerson 
     Person="Person"
-    Relations="Model.PersonOrganizationRelations.ToList()"
-    RelationTypes="Model.PersonOrganizationRelationTypes" />
+    Relations="PersonDetails.PersonOrganizationRelations.ToList()"
+    RelationTypes="PersonDetails.PersonOrganizationRelationTypes" />
 
 @code {
     [Parameter]
     [EditorRequired]
-    public Person Model { get; set; } = default!;
-
-    private int? NodeId => Model switch {
-        ExistingNode n => n.NodeIdentification.NodeId,
-        _ => null
-    };
+    public PersonDetails PersonDetails { get; set; } = default!;
 
     public override async Task<List<ErrorDetail>> Validate()
     {
@@ -31,22 +26,22 @@
 
     public override void OnTitleChange(string title)
     {
-        foreach (var relation in Model.PersonPoliticalEntityRelations.OfType<PersonOrganizationRelation.ForPerson.Complete.Resolved.ToUpdate>()) {
+        foreach (var relation in PersonDetails.PersonPoliticalEntityRelations.OfType<PersonOrganizationRelation.ForPerson.Complete.Resolved.ToUpdate>()) {
             relation.Person.Name = title;
         };
-        foreach (var relation in Model.PersonOrganizationRelations.OfType<PersonOrganizationRelation.ForPerson.Complete.Resolved.ToCreate>()) {
+        foreach (var relation in PersonDetails.PersonOrganizationRelations.OfType<PersonOrganizationRelation.ForPerson.Complete.Resolved.ToCreate>()) {
             relation.Person.Name = title;
         };
         StateHasChanged();
     }
 
-    private PersonItem? Person => Model switch {
-        ExistingNode n => new PersonListItem {
-                Id = n.NodeIdentification.NodeId,
-                Name = Model.NodeDetails.Title
+    private PersonItem? Person => PersonDetails switch {
+        PersonDetails.ForUpdate n => new PersonListItem {
+                Id = NodeId!.Value,
+                Name = PersonDetails.Name
             },
-        NewNode nn => new PersonName {
-            Name = Model.NodeDetails.Title
+        PersonDetails.ForCreate nn => new PersonName {
+            Name = PersonDetails.Name
         },
         _ => null
     };

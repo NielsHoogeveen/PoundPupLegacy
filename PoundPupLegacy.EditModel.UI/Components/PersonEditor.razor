@@ -1,0 +1,35 @@
+﻿@inherits EntityEditorBase<Person.ToUpdate, Person.ToCreate, Unit>
+@if (Model is not null) {
+    <NodeEditor TCreateModel="Person.ToCreate"
+                 TUpdateModel="Person.ToUpdate"
+                 TResolveData="Unit"
+                 Model="Model"
+                 OnValidationResult="() => Validate()"
+                 Title="Edit coerced adoption case" Map="Map">
+        <NodeDetailsEditor Model="Person.NodeDetails" @ref=nodeDetailsEditor>
+            <Top>
+                <NameableEditor Model="Person.NameableDetails" />
+            </Top>
+            <Middle>
+                <PersonDetailsEditor PersonDetails="Person.PersonDetails" />
+            </Middle>
+            <Bottom>
+                <LocatableDetailsEditor LocatableDetails="Person.LocatableDetails" />
+            </Bottom>
+        </NodeDetailsEditor>
+    </NodeEditor>
+}
+@code {
+    [Parameter]
+    [EditorRequired]
+    public Person Person { get; set; } = default!;
+
+    protected override Resolver<Person.ToUpdate, Person.ToCreate, Unit> Model => Person;
+
+    private NodeDetailsEditor? nodeDetailsEditor;
+
+    protected override List<EditorDetailBase?> DetailsEditors => new() {
+        nodeDetailsEditor
+    };
+    protected override Unit ResolveData => Unit.Instance;
+}

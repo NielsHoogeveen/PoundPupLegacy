@@ -2,46 +2,41 @@
 <div class="organization-fields">
     <div class="form-group">
         <label>Website</label>
-        <InputText type="text" @bind-Value="@Model.OrganizationDetails.WebSiteUrl" />
+        <InputText type="text" @bind-Value="@OrganizationDetails.WebSiteUrl" />
     </div>
     <div class="form-group">
         <label>Email</label>
-        <InputText type="text" @bind-Value="@Model.OrganizationDetails.EmailAddress" />
+        <InputText type="text" @bind-Value="@OrganizationDetails.EmailAddress" />
     </div>
     <div class="form-group">
         <label>Established</label>
-        <FuzzyDateEditor @bind-Value=" Model.OrganizationDetails.Establishment" />
+        <FuzzyDateEditor @bind-Value=" OrganizationDetails.Establishment" />
     </div>
     <div class="form-group">
         <label>Terminated</label>
-        <FuzzyDateEditor @bind-Value="Model.OrganizationDetails.Termination" />
+        <FuzzyDateEditor @bind-Value="OrganizationDetails.Termination" />
     </div>
 </div>
-<OrganizationOrganizationTypesEditor Model="Model" />
+<OrganizationOrganizationTypesEditor OrganizationDetails="OrganizationDetails" />
 <InterOrganizationalRelationsEditor 
-    RelationsFrom="Model.InterOrganizationalRelationsFrom.ToList()" 
-    RelationsTo="Model.InterOrganizationalRelationsTo.ToList()" 
-    RelationTypes="Model.OrganizationDetails.InterOrganizationalRelationTypes" 
-    OrganizationItem="Model.OrganizationDetails.OrganizationItem"/>
+    RelationsFrom="OrganizationDetails.InterOrganizationalRelationsFrom.ToList()"
+    RelationsTo="OrganizationDetails.InterOrganizationalRelationsTo.ToList()"
+    RelationTypes="OrganizationDetails.InterOrganizationalRelationTypes" 
+    OrganizationItem="OrganizationDetails.OrganizationItem"/>
 <OrganizationPoliticalEntityRelationsEditor 
     PartyTypeName="organization"
-    Organization="Model.OrganizationDetails.OrganizationItem"
-    Relations="Model.OrganizationPoliticalEntityRelations.ToList()"
-    RelationTypes="Model.OrganizationPoliticalEntityRelationTypes" />
+    Organization="OrganizationDetails.OrganizationItem"
+    Relations="OrganizationDetails.OrganizationPoliticalEntityRelations.ToList()"
+    RelationTypes="OrganizationDetails.OrganizationPoliticalEntityRelationTypes" />
 <PersonOrganizationRelationsEditorForOrganization 
-    Organization="Model.OrganizationDetails.OrganizationItem"
-    Relations="Model.PersonOrganizationRelations.ToList()"
-    RelationTypes="Model.PersonOrganizationRelationTypes" />
+    Organization="OrganizationDetails.OrganizationItem"
+    Relations="OrganizationDetails.PersonOrganizationRelations.ToList()"
+    RelationTypes="OrganizationDetails.PersonOrganizationRelationTypes" />
 
 @code {
     [Parameter]
     [EditorRequired]
-    public Organization Model { get; set; } = default!;
-
-    private int? NodeId => Model switch {
-        ExistingNode n => n.NodeIdentification.NodeId,
-        _ => null
-    };
+    public OrganizationDetails OrganizationDetails { get; set; } = default!;
 
     public override async Task<List<ErrorDetail>> Validate()
     {
@@ -50,19 +45,19 @@
 
     public override void OnTitleChange(string title)
     {
-        foreach (var relation in Model.OrganizationPoliticalEntityRelations.OfType<OrganizationPoliticalEntityRelation.Complete.Resolved.ToUpdate>()) {
+        foreach (var relation in OrganizationDetails.OrganizationPoliticalEntityRelations.OfType<OrganizationPoliticalEntityRelation.Complete.Resolved.ToUpdate>()) {
             relation.Organization.Name = title;
         };
-        foreach (var relation in Model.OrganizationPoliticalEntityRelations.OfType<OrganizationPoliticalEntityRelation.Complete.Resolved.ToCreateForExistingOrganization>()) {
+        foreach (var relation in OrganizationDetails.OrganizationPoliticalEntityRelations.OfType<OrganizationPoliticalEntityRelation.Complete.Resolved.ToCreateForExistingOrganization>()) {
             relation.Organization.Name = title;
         };
-        foreach (var relation in Model.OrganizationPoliticalEntityRelations.OfType<OrganizationPoliticalEntityRelation.Complete.ToCreateForNewOrganization>()) {
+        foreach (var relation in OrganizationDetails.OrganizationPoliticalEntityRelations.OfType<OrganizationPoliticalEntityRelation.Complete.ToCreateForNewOrganization>()) {
             relation.Organization.Name = title;
         };
-        foreach (var relation in Model.PersonOrganizationRelations.OfType<PersonOrganizationRelation.ForOrganization.Complete.Resolved.ToUpdate>()) {
+        foreach (var relation in OrganizationDetails.PersonOrganizationRelations.OfType<PersonOrganizationRelation.ForOrganization.Complete.Resolved.ToUpdate>()) {
             relation.Organization.Name = title;
         };
-        foreach (var relation in Model.PersonOrganizationRelations.OfType<PersonOrganizationRelation.ForOrganization.Complete.Resolved.ToCreate>()) {
+        foreach (var relation in OrganizationDetails.PersonOrganizationRelations.OfType<PersonOrganizationRelation.ForOrganization.Complete.Resolved.ToCreate>()) {
             relation.Organization.Name = title;
         };
         StateHasChanged();

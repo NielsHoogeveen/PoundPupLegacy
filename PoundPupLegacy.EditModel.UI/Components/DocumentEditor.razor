@@ -1,28 +1,31 @@
-﻿@inherits EntityEditorBase<BlogPost.ToUpdate, BlogPost.ToCreate, Unit>
+﻿@inherits EntityEditorBase<Document.ToUpdate, Document.ToCreate, Unit>
 @if (Model is not null)
 {
     <NodeEditor 
-        TCreateModel="BlogPost.ToCreate" 
-        TUpdateModel="BlogPost.ToUpdate"
+        TCreateModel="Document.ToCreate" 
+        TUpdateModel="Document.ToUpdate"
         TResolveData="Unit"
         Model="Model"
         OnValidationResult="() => Validate()"
         Title="Edit blogpost">
         <NodeDetailsEditor 
-            Model="BlogPost.NodeDetails" 
+            Model="Document.NodeDetails" 
             @ref=nodeDetailsEditor>
             <Top>
-                <SimpleTextNodePropertiesEditor Model="BlogPost" @ref=simpleTextNodePropertiesEditor/>
+                <SimpleTextNodePropertiesEditor Model="Document" @ref=simpleTextNodePropertiesEditor/>
             </Top>
+            <Middle>
+                <DocumentDetailsEditor Model="Document.DocumentDetails" />
+            </Middle>
         </NodeDetailsEditor>
     </NodeEditor>
 }
 @code {
     [Parameter]
     [EditorRequired]
-    public BlogPost BlogPost { get; set; } = default!;
+    public Document Document { get; set; } = default!;
 
-    protected override Resolver<BlogPost.ToUpdate, BlogPost.ToCreate, Unit> Model => BlogPost;
+    protected override Resolver<Document.ToUpdate, Document.ToCreate, Unit> Model => Document;
 
     private NodeDetailsEditor? nodeDetailsEditor;
     private SimpleTextNodePropertiesEditor? simpleTextNodePropertiesEditor;

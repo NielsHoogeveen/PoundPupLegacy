@@ -1,7 +1,7 @@
 ﻿@inherits ViewerBase
 @inject IDefaultCountryService DefaultCountryService
 
-@if (Locatable.LocatableDetails.Locations.Any()) {
+@if (LocatableDetails.Locations.Any()) {
     @if (locationToEdit is not null)
     {
         <ModalDialog Title="Add location" Id="location-dialog" OnOk="OnOkLocationDialog" OnCancel="OnCancelLocationDialog">
@@ -21,7 +21,7 @@
             <div class="header">Subdivision</div>
             <div class="header">Country</div>
             <div class="header"></div>
-            @foreach(var location in Locatable.LocatableDetails.Locations) {
+            @foreach(var location in LocatableDetails.Locations) {
                 @if (location is not null) {
                     <div class="item">@location.Street</div>
                     <div class="item">@location.Addition</div>
@@ -41,11 +41,11 @@
 
     [Parameter]
     [EditorRequired]
-    public Locatable Locatable { get; set; } = default!;
+    public LocatableDetails LocatableDetails { get; set; } = default!;
 
     private Location? locationToEdit = null;
 
-    private int? NodeId => Locatable switch {
+    private int? NodeId => LocatableDetails switch {
         ExistingNode n => n.NodeIdentification.NodeId,
         _ => null
     };
@@ -81,7 +81,7 @@
     {
         if (locationToEdit is not null) {
             if (locationToEdit is Location.ToCreate newLocation) {
-                Locatable!.LocatableDetails.Add(newLocation);
+                LocatableDetails!.Add(newLocation);
             }
             locationToEdit = null;
         }

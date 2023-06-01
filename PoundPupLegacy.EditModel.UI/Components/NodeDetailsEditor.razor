@@ -4,22 +4,26 @@
     <InputText @bind-Value="Model.Title" id="title" class="title-editor" type="text" @oninput="OnTitleChange" />
     <ValidationMessage For="@(() => Model.Title)" />
 </div>
-@ChildContent
+@Top
 <TagsEditor NodeTypesTags="Model.Tags.ToList()" />
+@Middle
 <TenantNodesEditor NodeDetails="@Model" />
 <AttachmentEditor Files="Model.Files"/>
-@if (Model is Locatable locatable) {
-    <LocationsEditor Locatable="locatable" />
-}
-
+@Bottom
 @code {
     [Parameter]
     [EditorRequired]
     public NodeDetails Model { get; set; } = default!;
 
     [Parameter]
-    [EditorRequired]
-    public RenderFragment? ChildContent { get; set; } 
+    public RenderFragment? Top { get; set; } 
+
+    [Parameter]
+    public RenderFragment? Middle { get; set; }
+
+    [Parameter]
+    public RenderFragment? Bottom { get; set; }
+
 
     public void OnTitleChange(ChangeEventArgs args)
     {

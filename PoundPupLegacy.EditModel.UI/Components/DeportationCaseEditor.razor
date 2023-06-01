@@ -7,7 +7,12 @@
                  OnValidationResult="() => Validate()"
                  Title="Edit coerced adoption case" Map="Map">
         <NodeDetailsEditor Model="DeportationCase.NodeDetails" @ref=nodeDetailsEditor>
-            <div></div>
+            <Top>
+                <NameableEditor Model="DeportationCase.NameableDetails" />
+            </Top>
+            <Bottom>
+                <LocatableDetailsEditor LocatableDetails="DeportationCase.LocatableDetails" />
+            </Bottom>
         </NodeDetailsEditor>
     </NodeEditor>
 }

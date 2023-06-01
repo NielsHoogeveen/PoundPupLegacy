@@ -1,6 +1,9 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
 [JsonSerializable(typeof(Person.ToUpdate), TypeInfoPropertyName = "PersonToUpdate")]
+
+[JsonSerializable(typeof(PersonDetails.ForUpdate), TypeInfoPropertyName = "PersonDetailsForUpdate")]
+
 [JsonSerializable(typeof(LocatableDetails.ForUpdate), TypeInfoPropertyName = "LocatableDetailsForUpdate")]
 [JsonSerializable(typeof(Location.ToUpdate), TypeInfoPropertyName = "LocationDetailsForUpdate")]
 
@@ -51,6 +54,8 @@
 
 public partial class PersonToUpdateJsonContext : JsonSerializerContext { }
 
+[JsonSerializable(typeof(PersonDetails.ForCreate), TypeInfoPropertyName = "PersonDetailsForCreate")]
+
 [JsonSerializable(typeof(LocatableDetails.ForCreate), TypeInfoPropertyName = "LocatableDetailsCreate")]
 [JsonSerializable(typeof(Location.ToCreate), TypeInfoPropertyName = "LocationDetailsForCreate")]
 
@@ -89,14 +94,9 @@ public abstract record Person: Locatable, ResolvedNode, Node<Person.ToUpdate, Pe
     public abstract void Match(Action<ToUpdate> existingItem, Action<ToCreate> newItem);
     public required NameableDetails NameableDetails { get; init; }
     public abstract LocatableDetails LocatableDetails { get; }
+
+    public abstract PersonDetails PersonDetails { get; }
     public abstract NodeDetails NodeDetails { get; }
-    public abstract IEnumerable<PersonPoliticalEntityRelation.Complete> PersonPoliticalEntityRelations { get; }
-    public required List<PersonPoliticalEntityRelationTypeListItem> PersonPoliticalEntityRelationTypes { get; init; }
-    public abstract IEnumerable<InterPersonalRelation.From.Complete> InterPersonalRelationsFrom { get; }
-    public abstract IEnumerable<InterPersonalRelation.To.Complete> InterPersonalRelationsTo { get; }
-    public required List<InterPersonalRelationTypeListItem> InterPersonalRelationTypes { get; init; }
-    public abstract IEnumerable<PersonOrganizationRelation.ForPerson.Complete> PersonOrganizationRelations { get; }
-    public required List<PersonOrganizationRelationTypeListItem> PersonOrganizationRelationTypes { get; init; }
     public sealed record ToUpdate : Person, ExistingNode, ExistingLocatable
     {
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
@@ -104,6 +104,49 @@ public abstract record Person: Locatable, ResolvedNode, Node<Person.ToUpdate, Pe
         public override LocatableDetails LocatableDetails => LocatableDetailsForUpdate;
         public required LocatableDetails.ForUpdate LocatableDetailsForUpdate { get; init; }
         public required NodeIdentification NodeIdentification { get; init; }
+        public override PersonDetails PersonDetails => PersonDetailsForUpdate;
+        public required PersonDetails.ForUpdate PersonDetailsForUpdate { get; init; }
+        public override T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem)
+        {
+            return existingItem(this);
+        }
+        public override void Match(Action<ToUpdate> existingItem, Action<ToCreate> newItem)
+        {
+            existingItem(this);
+        }
+    }
+    public sealed record ToCreate : Person, NewLocatable, ResolvedNewNode
+    {
+        public override NodeDetails NodeDetails => NodeDetailsForCreate;
+        public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
+        public override LocatableDetails LocatableDetails => LocatableDetailsForCreate;
+        public required LocatableDetails.ForCreate LocatableDetailsForCreate { get; init; }
+        public override PersonDetails PersonDetails => PersonDetailsForCreate;
+        public required PersonDetails.ForCreate PersonDetailsForCreate { get; init; }
+        public override T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem)
+        {
+            return newItem(this);
+        }
+        public override void Match(Action<ToUpdate> existingItem, Action<ToCreate> newItem)
+        {
+            newItem(this);
+        }
+    }
+}
+
+public abstract record PersonDetails
+{
+    public required string Name { get; init; }
+    public abstract IEnumerable<PersonPoliticalEntityRelation.Complete> PersonPoliticalEntityRelations { get; }
+    public required List<PersonPoliticalEntityRelationTypeListItem> PersonPoliticalEntityRelationTypes { get; init; }
+    public abstract IEnumerable<InterPersonalRelation.From.Complete> InterPersonalRelationsFrom { get; }
+    public abstract IEnumerable<InterPersonalRelation.To.Complete> InterPersonalRelationsTo { get; }
+    public required List<InterPersonalRelationTypeListItem> InterPersonalRelationTypes { get; init; }
+    public abstract IEnumerable<PersonOrganizationRelation.ForPerson.Complete> PersonOrganizationRelations { get; }
+    public required List<PersonOrganizationRelationTypeListItem> PersonOrganizationRelationTypes { get; init; }
+
+    public sealed record ForUpdate: PersonDetails
+    {
         private List<PersonPoliticalEntityRelation.Complete.Resolved.ToUpdate> existingPersonPoliticalEntityRelations = new();
         public List<PersonPoliticalEntityRelation.Complete.Resolved.ToUpdate> ExistingPersonPoliticalEntityRelations {
             get => existingPersonPoliticalEntityRelations;
@@ -184,21 +227,11 @@ public abstract record Person: Locatable, ResolvedNode, Node<Person.ToUpdate, Pe
         public List<InterPersonalRelation.From.Complete> NewInterPersonalRelationsFrom { get; set; } = new();
         public List<InterPersonalRelation.To.Complete> NewInterPersonalRelationsTo { get; set; } = new();
         public List<PersonOrganizationRelation.ForPerson.Complete.Resolved.ToCreate> NewPersonOrganizationRelations { get; } = new();
-        public override T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem)
-        {
-            return existingItem(this);
-        }
-        public override void Match(Action<ToUpdate> existingItem, Action<ToCreate> newItem)
-        {
-            existingItem(this);
-        }
+
     }
-    public sealed record ToCreate : Person, NewLocatable, ResolvedNewNode
+
+    public sealed record ForCreate: PersonDetails
     {
-        public override NodeDetails NodeDetails => NodeDetailsForCreate;
-        public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
-        public override LocatableDetails LocatableDetails => LocatableDetailsForCreate;
-        public required LocatableDetails.ForCreate LocatableDetailsForCreate { get; init; }
         public override IEnumerable<PersonPoliticalEntityRelation.Complete> PersonPoliticalEntityRelations => NewPersonPoliticalEntityRelations;
         public override IEnumerable<PersonOrganizationRelation.ForPerson.Complete> PersonOrganizationRelations => NewPersonOrganizationRelations;
         public override IEnumerable<InterPersonalRelation.From.Complete> InterPersonalRelationsFrom => NewInterPersonalRelationsFrom;
@@ -207,13 +240,7 @@ public abstract record Person: Locatable, ResolvedNode, Node<Person.ToUpdate, Pe
         public List<InterPersonalRelation.From.Complete> NewInterPersonalRelationsFrom { get; set; } = new();
         public List<InterPersonalRelation.To.Complete> NewInterPersonalRelationsTo { get; set; } = new();
         public List<PersonOrganizationRelation.ForPerson.Complete.Resolved.ToCreate> NewPersonOrganizationRelations { get; } = new();
-        public override T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem)
-        {
-            return newItem(this);
-        }
-        public override void Match(Action<ToUpdate> existingItem, Action<ToCreate> newItem)
-        {
-            newItem(this);
-        }
+
     }
+
 }

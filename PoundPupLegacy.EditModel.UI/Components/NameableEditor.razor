@@ -1,12 +1,12 @@
 ﻿@inherits EditorDetailBase
 @inject ITopicSearchService topicSearchService
 <label for="editor">Description</label>
-<CKEditor Id="editor" @bind-Value=@Model.NameableDetails.Description />
+<CKEditor Id="editor" @bind-Value=@Model.Description />
 
 @code {
     [Parameter]
     [EditorRequired]
-    public Nameable Model { get; set; } = default!;
+    public NameableDetails Model { get; set; } = default!;
 
     public override async Task<List<ErrorDetail>> Validate()
     {
