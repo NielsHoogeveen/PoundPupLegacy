@@ -283,7 +283,7 @@ internal sealed class PersonMigratorPPL(
                     InterPersonalRelationsToCreateFrom = new List<InterPersonalRelation.ToCreate.ForNewPersonFrom>(),
                     InterPersonalRelationsToCreateTo = new List<InterPersonalRelation.ToCreate.ForNewPersonTo>(),
                     PartyPoliticalEntityRelationsToCreate = new List<PartyPoliticalEntityRelation.ToCreate.ForNewParty>(),
-                    PersonOrganizationRelationToCreate = new List<PersonOrganizationRelation.ToCreate.ForNewPerson>(),
+                    PersonOrganizationRelationsToCreate = new List<PersonOrganizationRelation.ToCreate.ForNewPerson>(),
                     ProfessionalRolesToCreate = new List<ProfessionalRoleToCreateForNewPerson>(),
                 },
             };

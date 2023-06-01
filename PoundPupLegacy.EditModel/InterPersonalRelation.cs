@@ -203,9 +203,9 @@ public abstract record InterPersonalRelation : Relation
                 public sealed override string PersonFromName => PersonFrom.Name;
                 public sealed override string PersonToName => PersonTo.Name;
                 public sealed override PersonItem? PersonItemFrom => PersonFrom;
-                public sealed override To.Complete.ToCreateNewPerson SwapFromAndTo()
+                public sealed override To.Complete.ToCreateForNewPerson SwapFromAndTo()
                 {
-                    return new To.Complete.ToCreateNewPerson {
+                    return new To.Complete.ToCreateForNewPerson {
                         PersonFrom = PersonTo,
                         PersonTo = PersonFrom,
                         InterPersonalRelationType = InterPersonalRelationType,
@@ -361,7 +361,7 @@ public abstract record InterPersonalRelation : Relation
                 }
                 public sealed override Complete GetCompletedRelation(PersonListItem organizationListItemFrom)
                 {
-                    return new Complete.ToCreateNewPerson {
+                    return new Complete.ToCreateForNewPerson {
                         PersonFrom = organizationListItemFrom,
                         PersonTo = PersonTo,
                         InterPersonalRelationType = InterPersonalRelationType,
@@ -399,7 +399,7 @@ public abstract record InterPersonalRelation : Relation
                 return completedInterPersonalRelationTo(this);
             }
 
-            public sealed record ToCreateNewPerson : Complete, NewNode
+            public sealed record ToCreateForNewPerson : Complete, NewNode
             {
                 public override NodeDetails NodeDetails => NodeDetailsForCreate;
                 public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }

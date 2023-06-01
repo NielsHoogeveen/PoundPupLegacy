@@ -72,7 +72,7 @@ internal sealed class PersonCreator(
                 .Select(x => x.ResolveParty(id))
                 .ToAsyncEnumerable());
         await personOrganizationRelationCreator
-            .CreateAsync(element.PersonDetails.PersonOrganizationRelationToCreate
+            .CreateAsync(element.PersonDetails.PersonOrganizationRelationsToCreate
                 .Select(x => x.ResolvePerson(id))
                 .ToAsyncEnumerable());
     }

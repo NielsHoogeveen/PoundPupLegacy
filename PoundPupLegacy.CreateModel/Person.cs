@@ -42,7 +42,7 @@ public abstract record PersonDetails
     {
         public override IEnumerable<InterPersonalRelation> InterPersonalRelations => GetInterPersonalRelations();
         public override IEnumerable<PartyPoliticalEntityRelation> PartyPoliticalEntityRelations => PartyPoliticalEntityRelationsToCreate;
-        public override IEnumerable<PersonOrganizationRelation> PersonOrganizationRelations => PersonOrganizationRelationToCreate;
+        public override IEnumerable<PersonOrganizationRelation> PersonOrganizationRelations => PersonOrganizationRelationsToCreate;
         public required List<InterPersonalRelation.ToCreate.ForNewPersonFrom> InterPersonalRelationsToCreateFrom { get; init; }
         public required List<InterPersonalRelation.ToCreate.ForNewPersonTo> InterPersonalRelationsToCreateTo { get; init; }
         private IEnumerable<InterPersonalRelation> GetInterPersonalRelations()
@@ -55,7 +55,7 @@ public abstract record PersonDetails
             }
         }
         public required List<PartyPoliticalEntityRelation.ToCreate.ForNewParty> PartyPoliticalEntityRelationsToCreate { get; init; }
-        public required List<PersonOrganizationRelation.ToCreate.ForNewPerson> PersonOrganizationRelationToCreate { get; init; }
+        public required List<PersonOrganizationRelation.ToCreate.ForNewPerson> PersonOrganizationRelationsToCreate { get; init; }
 
         public required List<ProfessionalRoleToCreateForNewPerson> ProfessionalRolesToCreate { get; init; }
     }
@@ -63,13 +63,13 @@ public abstract record PersonDetails
     {
         public override IEnumerable<InterPersonalRelation> InterPersonalRelations => InterPersonalRelationsToCreate;
         public override IEnumerable<PartyPoliticalEntityRelation> PartyPoliticalEntityRelations => PartyPoliticalEntityRelationsToCreate;
-        public override IEnumerable<PersonOrganizationRelation> PersonOrganizationRelations => PersonOrganizationRelationToCreate;
-        public required List<InterPersonalRelation.ToCreate.ForExistingParticipants> InterPersonalRelationsToCreate { get; init; }
+        public override IEnumerable<PersonOrganizationRelation> PersonOrganizationRelations => PersonOrganizationRelationsToCreate;
+        public required List<InterPersonalRelation.ToCreate.ForExistingParticipants> InterPersonalRelationsToCreate { get; init; } 
         public required List<PartyPoliticalEntityRelation.ToCreate.ForExistingParty> PartyPoliticalEntityRelationsToCreate { get; init; }
-        public required List<PersonOrganizationRelation.ToCreate.ForExistingParticipants> PersonOrganizationRelationToCreate { get; init; }
+        public required List<PersonOrganizationRelation.ToCreate.ForExistingParticipants> PersonOrganizationRelationsToCreate { get; init; }
         public required List<InterPersonalRelation.ToUpdate> InterPersonalRelationToUpdates { get; init; }
         public required List<PartyPoliticalEntityRelation.ToUpdate> PartyPoliticalEntityRelationToUpdates { get; init; }
-        public required List<PersonOrganizationRelation.ToUpdate> PersonOrganizationRelationToUpdates { get; init; }
+        public required List<PersonOrganizationRelation.ToUpdate> PersonOrganizationRelationsToUpdates { get; init; }
         public required List<ProfessionalRoleToCreateForNewPerson> ProfessionalRolesToCreate { get; init; }
     }
 }
