@@ -7,7 +7,8 @@
     <h1>@Title</h1>
     <EditForm EditContext="@editContext" OnSubmit="@Submit">
         <DataAnnotationsValidator />
-                <button type="submit">Submit</button>
+        @ChildContent
+        <button type="submit">Submit</button>
     </EditForm>
 </div>
 @code {
@@ -23,8 +24,19 @@
     [EditorRequired]
     public string Title { get; set; } = default!;
 
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment? ChildContent { get; set; }
+
+
     private EditContext? editContext;
     private ValidationMessageStore? validationMessageStore;
+
+    protected override void OnInitialized()
+    {
+        editContext = new EditContext(Model);
+        validationMessageStore = new ValidationMessageStore(editContext);
+    }
 
     public async Task Submit()
     {

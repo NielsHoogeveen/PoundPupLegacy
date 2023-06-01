@@ -10,7 +10,7 @@ public abstract record Document : SimpleTextNode
         public required Identification.Possible Identification { get; init; }
         public required NodeDetails.ForCreate NodeDetails { get; init; }
     }
-    public sealed record DocumentToUpdate : Document, SimpleTextNodeToUpdate
+    public sealed record ToUpdate : Document, SimpleTextNodeToUpdate
     {
         public required Identification.Certain Identification { get; init; }
         public required NodeDetails.ForUpdate NodeDetails { get; init; }

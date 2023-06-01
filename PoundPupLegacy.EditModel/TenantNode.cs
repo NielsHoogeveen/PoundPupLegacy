@@ -24,7 +24,7 @@ public abstract record TenantNodeDetails
         }
         private List<TenantNode.ToUpdate> tenantNodesToUpdate = new();
 
-        public List<TenantNode.ToUpdate> TenantNodesToUpdate {
+        public required List<TenantNode.ToUpdate> TenantNodesToUpdate {
             get => tenantNodesToUpdate;
             init {
                 if (value is not null) {

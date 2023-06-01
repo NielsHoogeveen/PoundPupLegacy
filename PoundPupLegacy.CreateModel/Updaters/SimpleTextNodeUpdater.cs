@@ -1,20 +1,7 @@
 ﻿namespace PoundPupLegacy.CreateModel.Updaters;
 
-using Request = SimpleTextNodeToUpdate;
-internal sealed class SimpleTextNodeChangerFactory(
-    IDatabaseUpdaterFactory<Request> databaseUpdaterFactory,
-    NodeDetailsChangerFactory nodeDetailsChangerFactory) : IEntityChangerFactory<Request>
-{
-    public async Task<IEntityChanger<Request>> CreateAsync(IDbConnection connection)
-    {
-        return new NodeChanger<Request>(
-            await databaseUpdaterFactory.CreateAsync(connection),
-            await nodeDetailsChangerFactory.CreateAsync(connection)
-        );
-    }
-}
-
-internal sealed class SimpleTextNodeUpdaterFactory : DatabaseUpdaterFactory<Request>
+internal abstract class SimpleTextNodeUpdaterFactory<TRequest> : DatabaseUpdaterFactory<TRequest>
+    where TRequest: SimpleTextNodeToUpdate
 {
     private static readonly NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
     private static readonly NonNullableStringDatabaseParameter Text = new() { Name = "text" };
@@ -27,7 +14,7 @@ internal sealed class SimpleTextNodeUpdaterFactory : DatabaseUpdaterFactory<Requ
         update simple_text_node set text=@text, teaser=@teaser
         where id = @node_id;
         """;
-    protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
+    protected override IEnumerable<ParameterValue> GetParameterValues(TRequest request)
     {
         return new List<ParameterValue> {
             ParameterValue.Create(NodeId, request.Identification.Id),

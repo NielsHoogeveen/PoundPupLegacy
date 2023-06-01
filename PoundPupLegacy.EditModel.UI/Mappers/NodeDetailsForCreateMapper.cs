@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.EditModel.UI.Mappers;
 
 internal class NodeDetailsForCreateMapper(
-    IEnumerableMapper<Tags, int> termIdsToAddMapper,
+    IEnumerableMapper<Tags.ToCreate, int> termIdsToAddMapper,
     IEnumerableMapper<EditModel.TenantNode.ToCreateForNewNode, CreateModel.TenantNode.ToCreate.ForNewNode> tenantNodeMapper
     ) : IMapper<EditModel.NodeDetails.ForCreate, CreateModel.NodeDetails.ForCreate>
 {

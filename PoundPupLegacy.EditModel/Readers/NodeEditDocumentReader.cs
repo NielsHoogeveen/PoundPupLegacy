@@ -24,8 +24,10 @@ where TResponse : class, Node
         {TAGS_DOCUMENT_EDIT},
         {TENANT_NODES_DOCUMENT},
         {TENANTS_DOCUMENT},
-        {DOCUMENT_TYPES_DOCUMENT_EDIT},
         {ATTACHMENTS_DOCUMENT},
+        {IDENTIFICATION_DOCUMENT},
+        {NODE_DETAILS_DOCUMENT},
+        {DOCUMENT_TYPES_DOCUMENT_EDIT},
         {SUBDIVISIONS_DOCUMENT},
         {LOCATIONS_DOCUMENT},
         {COUNTRIES_DOCUMENT}
@@ -487,5 +489,49 @@ where TResponse : class, Node
             from system_group
         )
         """;
+    const string IDENTIFICATION_DOCUMENT = """
+        identification_document as (
+            select 
+                jsonb_build_object(
+                    'NodeId', 
+                    n.id,
+                    'UrlId', 
+                    @url_id
+                ) document,
+                n.id
+            from node n
+        )
+        """;
 
+    const string NODE_DETAILS_DOCUMENT = """
+        node_details_document as (
+            select 
+                jsonb_build_object(
+                   'NodeTypeName',
+                    nt.name,
+                    'NodeTypeId',
+                    nt.id,
+                    'PublisherId', 
+                    n.publisher_id,
+                    'OwnerId', 
+                    n.owner_id,
+                    'Title', 
+                    n.title,
+            		'TagsForUpdate', 
+                    (select document from tags_document),
+                    'TenantNodeDetailsForUpdate',
+                    json_build_object(
+                        'TenantNodesToUpdate',
+                        (select document from tenant_nodes_document)
+                    ),
+                    'Tenants',
+                    (select document from tenants_document),
+                    'Files',
+                    (select document from attachments_document)
+                ) document,
+                n.id
+            from node n
+            join node_type nt on nt.id = n.node_type_id
+        )
+        """;
 }

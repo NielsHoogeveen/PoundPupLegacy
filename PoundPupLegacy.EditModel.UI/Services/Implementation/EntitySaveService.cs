@@ -25,7 +25,7 @@ public static class EntitySaveServiceExensions
         services.AddTransient<IEntitySaveService<TUpdateModel, TCreateModel>> (serviceProvider => 
         {
             IDbConnection connection = serviceProvider.GetRequiredService<IDbConnection>();
-            ILogger logger = serviceProvider.GetRequiredService<ILogger>();
+            ILogger logger = serviceProvider.GetRequiredService<ILogger<TEditModel>>();
             IMapper<TUpdateModel, TDomainModelToUpdate> updateMapper = serviceProvider.GetRequiredService<IMapper<TUpdateModel, TDomainModelToUpdate>>();
             IMapper<TCreateModel, TDomainModelToCreate> createMapper = serviceProvider.GetRequiredService<IMapper<TCreateModel, TDomainModelToCreate>>();
             IEntityChangerFactory<TDomainModelToUpdate> entityChanger = serviceProvider.GetRequiredService<IEntityChangerFactory<TDomainModelToUpdate>>();

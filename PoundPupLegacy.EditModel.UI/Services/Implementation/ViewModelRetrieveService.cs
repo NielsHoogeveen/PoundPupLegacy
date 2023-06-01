@@ -17,7 +17,7 @@ public static class ViewModelRetrieveServiceExtension{
     where TViewModelUpdate : class, TViewModelEntity, ExistingNode
     {
         IDbConnection connection = serviceProvider.GetRequiredService<IDbConnection>();
-        ILogger logger = serviceProvider.GetRequiredService<ILogger>();
+        ILogger logger = serviceProvider.GetRequiredService<ILogger<TViewModelEntity>>();
         ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, TViewModelCreate> createViewModelReaderFactory = serviceProvider.GetRequiredService<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, TViewModelCreate>>();
         ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, TViewModelUpdate> updateViewModelReaderFactory = serviceProvider.GetRequiredService<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, TViewModelUpdate>>();
         return new ViewModelRetrieveService<TViewModelEntity, TViewModelUpdate, TViewModelCreate>(

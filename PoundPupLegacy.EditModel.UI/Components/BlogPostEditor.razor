@@ -7,8 +7,10 @@
         TResolveData="Unit"
         Model="Model"
         OnValidationResult="() => Validate()"
-        Title="Edit blogpost" Map="Map">
-        <NodeDetailsEditor Model="BlogPost.NodeDetails" @ref=nodeDetailsEditor>
+        Title="Edit blogpost">
+        <NodeDetailsEditor 
+            Model="BlogPost.NodeDetails" 
+            @ref=nodeDetailsEditor>
             <SimpleTextNodePropertiesEditor Model="BlogPost" @ref=simpleTextNodePropertiesEditor/>
         </NodeDetailsEditor>
     </NodeEditor>

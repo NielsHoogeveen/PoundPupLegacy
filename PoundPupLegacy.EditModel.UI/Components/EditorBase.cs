@@ -5,7 +5,7 @@ namespace PoundPupLegacy.EditModel.UI.Components;
 
 public abstract class EditorBase : ViewerBase
 {
-    [CascadingParameter(Name = "UserId")]
+    [CascadingParameter(Name = "NodeId")]
     public int? NodeId { get; set; }
 }
 

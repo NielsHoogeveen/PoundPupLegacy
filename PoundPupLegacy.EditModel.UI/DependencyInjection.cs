@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PoundPupLegacy.EditModel.UI.Services;
 using PoundPupLegacy.EditModel.UI.Services.Implementation;
 using PoundPupLegacy.CreateModel.Deleters;
+using PoundPupLegacy.EditModel.UI.Mappers;
 
 namespace PoundPupLegacy.EditModel.UI;
 
@@ -15,17 +16,19 @@ public static class DependencyInjection
         services.AddEditModelInserters();
         services.AddCreateModelUpdaters();
         services.AddCreateModelDeleters();
+        services.AddMappers();
         services.AddTransient<IAttachmentStoreService, AttachmentStoreService>();
         services.AddViewModelRetrieveService<AbuseCase, AbuseCase.ToUpdate, AbuseCase.ToCreate>();
+        services.AddViewModelRetrieveService<BlogPost, BlogPost.ToUpdate, BlogPost.ToCreate>();
         services.AddViewModelRetrieveService<ChildTraffickingCase, ChildTraffickingCase.ToUpdate, ChildTraffickingCase.ToCreate>();
         services.AddViewModelRetrieveService<CoercedAdoptionCase, CoercedAdoptionCase.ToUpdate, CoercedAdoptionCase.ToCreate>();
+        services.AddViewModelRetrieveService<Discussion, Discussion.ToUpdate, Discussion.ToCreate>();
         services.AddViewModelRetrieveService<DeportationCase, DeportationCase.ToUpdate, DeportationCase.ToCreate>();
+        services.AddViewModelRetrieveService<Document, Document.ToUpdate, Document.ToCreate>();
         services.AddViewModelRetrieveService<DisruptedPlacementCase, DisruptedPlacementCase.ToUpdate, DisruptedPlacementCase.ToCreate>();
         services.AddViewModelRetrieveService<FathersRightsViolationCase, FathersRightsViolationCase.ToUpdate, FathersRightsViolationCase.ToCreate>();
         services.AddViewModelRetrieveService<WrongfulMedicationCase, WrongfulMedicationCase.ToUpdate, WrongfulMedicationCase.ToCreate>();
         services.AddViewModelRetrieveService<WrongfulRemovalCase, WrongfulRemovalCase.ToUpdate, WrongfulRemovalCase.ToCreate>();
-        services.AddViewModelRetrieveService<BlogPost, BlogPost.ToUpdate, BlogPost.ToCreate>();
-        services.AddViewModelRetrieveService<Discussion, Discussion.ToUpdate, Discussion.ToCreate>();
         services.AddViewModelRetrieveService<Organization, Organization.ToUpdate, Organization.ToCreate>();
         services.AddViewModelRetrieveService<Person, Person.ToUpdate, Person.ToCreate>();
 
@@ -36,6 +39,14 @@ public static class DependencyInjection
             CreateModel.AbuseCase, 
             CreateModel.AbuseCase.ToUpdate, 
             CreateModel.AbuseCase.ToCreate>();
+
+        services.AddEntitySaveService<
+            BlogPost,
+            BlogPost.ToUpdate,
+            BlogPost.ToCreate,
+            CreateModel.BlogPost,
+            CreateModel.BlogPost.ToUpdate,
+            CreateModel.BlogPost.ToCreate>();
 
         services.AddEntitySaveService<
             ChildTraffickingCase,
@@ -62,12 +73,28 @@ public static class DependencyInjection
             CreateModel.DeportationCase.ToCreate>();
 
         services.AddEntitySaveService<
+            Discussion,
+            Discussion.ToUpdate,
+            Discussion.ToCreate,
+            CreateModel.Discussion,
+            CreateModel.Discussion.ToUpdate,
+            CreateModel.Discussion.ToCreate>();
+
+        services.AddEntitySaveService<
             DisruptedPlacementCase,
             DisruptedPlacementCase.ToUpdate,
             DisruptedPlacementCase.ToCreate,
             CreateModel.DisruptedPlacementCase,
             CreateModel.DisruptedPlacementCase.ToUpdate,
             CreateModel.DisruptedPlacementCase.ToCreate>();
+
+        services.AddEntitySaveService<
+            Document,
+            Document.ToUpdate,
+            Document.ToCreate,
+            CreateModel.Document,
+            CreateModel.Document.ToUpdate,
+            CreateModel.Document.ToCreate>();
 
         services.AddEntitySaveService<
             FathersRightsViolationCase,

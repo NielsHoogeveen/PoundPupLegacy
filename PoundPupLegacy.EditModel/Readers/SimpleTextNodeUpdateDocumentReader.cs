@@ -8,34 +8,22 @@ where TResponse : class, SimpleTextNode, ExistingNode
             {CTE_EDIT}
             select
                 jsonb_build_object(
-                    'NodeId', 
-                    n.id,
-                    'NodeTypeName',
-                    nt.name,
-                    'UrlId', 
-                    tn.url_id,
-                    'PublisherId', 
-                    n.publisher_id,
-                    'OwnerId', 
-                    n.owner_id,
-                    'Title', 
-                    n.title,
-                    'Text', 
-                    stn.text,
-            		'Tags', 
-                    (select document from tags_document),
-                    'TenantNodes',
-                    (select document from tenant_nodes_document),
-                    'Tenants',
-                    (select document from tenants_document),
-                    'Files',
-                    (select document from attachments_document)
+                    'NodeIdentification', 
+                    (select document from identification_document where id = n.id),
+                    'NodeDetailsForUpdate',
+                    (select document from node_details_document where id = n.id),
+                    'SimpleTextNodeDetails',
+                    json_build_object(
+                        'Text', 
+                        stn.text
+                    )
                 ) document
             from node n
-            join node_type nt on nt.id = n.node_type_id
             join simple_text_node stn on stn.id = n.id
             join tenant_node tn on tn.node_id = n.id
             where tn.tenant_id = @tenant_id and tn.url_id = @url_id and n.node_type_id = @node_type_id
         """;
+
+
 }
 
