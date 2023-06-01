@@ -48,8 +48,8 @@ public abstract record DeportationCase : Case, ResolvedNode, Node<DeportationCas
     {
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
         public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
-        public override LocatableDetails LocatableDetails => ExistingLocatableDetails;
-        public required LocatableDetails.ForUpdate ExistingLocatableDetails { get; init; }
+        public override LocatableDetails LocatableDetails => LocatableDetailsForUpdate;
+        public required LocatableDetails.ForUpdate LocatableDetailsForUpdate { get; init; }
         public required NodeIdentification NodeIdentification { get; init; }
         public override T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem)
         {

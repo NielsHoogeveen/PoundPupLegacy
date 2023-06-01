@@ -1,15 +1,14 @@
 ﻿using PoundPupLegacy.EditModel.UI.Services;
 
 namespace PoundPupLegacy.EditModel.UI.Mappers;
-
-internal class BlogPostToUpdateMapper(
+internal class DiscussionToUpdateMapper(
     ITextService textService,
     IMapper<EditModel.NodeDetails.ForUpdate, CreateModel.NodeDetails.ForUpdate> nodeDetailsMapper
-    ) : IMapper<EditModel.BlogPost.ToUpdate, CreateModel.BlogPost.ToUpdate>
+    ) : IMapper<EditModel.Discussion.ToUpdate, CreateModel.Discussion.ToUpdate>
 {
-    public CreateModel.BlogPost.ToUpdate Map(BlogPost.ToUpdate source)
+    public CreateModel.Discussion.ToUpdate Map(Discussion.ToUpdate source)
     {
-        return new CreateModel.BlogPost.ToUpdate {
+        return new CreateModel.Discussion.ToUpdate {
             Identification = new Identification.Certain {
                 Id = source.NodeIdentification.NodeId
             },

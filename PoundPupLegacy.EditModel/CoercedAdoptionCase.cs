@@ -43,8 +43,8 @@ public abstract record CoercedAdoptionCase : Case, ResolvedNode, Node<CoercedAdo
     {
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
         public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
-        public override LocatableDetails LocatableDetails => ExistingLocatableDetails;
-        public required LocatableDetails.ForUpdate ExistingLocatableDetails { get; init; }
+        public override LocatableDetails LocatableDetails => LocatableDetailsForUpdate;
+        public required LocatableDetails.ForUpdate LocatableDetailsForUpdate { get; init; }
         public required NodeIdentification NodeIdentification { get; init; }
         public override T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem)
         {
@@ -60,8 +60,8 @@ public abstract record CoercedAdoptionCase : Case, ResolvedNode, Node<CoercedAdo
     {
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
-        public override LocatableDetails LocatableDetails => NewLocatableDetails;
-        public required LocatableDetails.ForCreate NewLocatableDetails { get; init; }
+        public override LocatableDetails LocatableDetails => LocatableDetailsForCreate;
+        public required LocatableDetails.ForCreate LocatableDetailsForCreate { get; init; }
 
         public override T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem)
         {

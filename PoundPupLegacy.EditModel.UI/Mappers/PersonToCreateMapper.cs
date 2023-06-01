@@ -2,7 +2,7 @@
 
 namespace PoundPupLegacy.EditModel.UI.Mappers;
 
-internal class PersonCreateMapper(
+internal class PersonToCreateMapper(
     IMapper<EditModel.NodeDetails.ForCreate, CreateModel.NodeDetails.ForCreate> nodeDetailMapper,
     IMapper<EditModel.NameableDetails, CreateModel.NameableDetails.ForCreate> nameableDetailMapper,
     IEnumerableMapper<EditModel.PersonPoliticalEntityRelation.Complete.ToCreateForNewPerson, PartyPoliticalEntityRelation.ToCreate.ForNewParty> partyPolitcalEntityCreateMapper,

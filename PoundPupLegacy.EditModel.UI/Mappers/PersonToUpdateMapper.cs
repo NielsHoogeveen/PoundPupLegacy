@@ -2,7 +2,7 @@
 
 namespace PoundPupLegacy.EditModel.UI.Mappers;
 
-internal class PersonUpdateMapper(
+internal class PersonToUpdateMapper(
     IMapper<EditModel.NodeDetails.ForUpdate, CreateModel.NodeDetails.ForUpdate> nodeDetailMapper,
     IMapper<EditModel.NameableDetails, CreateModel.NameableDetails.ForUpdate> nameableDetailMapper,
     IEnumerableMapper<EditModel.InterPersonalRelation, CreateModel.InterPersonalRelation.ToCreate.ForExistingParticipants> interPersonalRelationToCreateMapper,
