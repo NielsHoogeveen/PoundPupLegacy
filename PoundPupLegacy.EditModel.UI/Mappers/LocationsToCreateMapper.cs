@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.EditModel.UI.Mappers;
 
-internal class LocationsToAddMapper : IEnumerableMapper<EditModel.Location.ToCreate, CreateModel.Location.ToCreate>
+internal class LocationsToCreateMapper : IEnumerableMapper<EditModel.Location.ToCreate, CreateModel.Location.ToCreate>
 {
     public IEnumerable<CreateModel.Location.ToCreate> Map(IEnumerable<Location.ToCreate> source)
     {

@@ -78,7 +78,7 @@ public abstract record PersonPoliticalEntityRelation : Relation
             public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
             public override Complete GetCompletedRelation(PoliticalEntityListItem politicalEntity)
             {
-                return new Complete.Resolved.ToCreate {
+                return new Complete.Resolved.ToCreateForExistingPerson {
                     Person = Person,
                     PoliticalEntity = politicalEntity,
                     NodeDetailsForCreate = NodeDetailsForCreate,
@@ -119,7 +119,7 @@ public abstract record PersonPoliticalEntityRelation : Relation
                 public override PersonItem? PersonItem => Person;
                 public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
             }
-            public sealed record ToCreate : Resolved, NewNode
+            public sealed record ToCreateForExistingPerson : Resolved, NewNode
             {
                 public override NodeDetails NodeDetails => NodeDetailsForCreate;
                 public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }

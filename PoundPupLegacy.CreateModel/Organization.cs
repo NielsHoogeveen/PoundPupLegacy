@@ -55,10 +55,13 @@ public abstract record OrganizationDetails
     }
     public sealed record ForUpdate : OrganizationDetails
     {
-        public override IEnumerable<InterOrganizationalRelation> InterOrganizationalRelations => InterOrganizationalRelationsToCreate;
+        public override IEnumerable<InterOrganizationalRelation> InterOrganizationalRelations => InterOrganizationalRelationsFromToCreate;
         public override IEnumerable<PartyPoliticalEntityRelation> PartyPoliticalEntityRelations => PartyPoliticalEntityRelationsToCreate;
         public override IEnumerable<PersonOrganizationRelation> PersonOrganizationRelations => PersonOrganizationRelationsToCreate;
-        public required List<InterOrganizationalRelation.ToCreate.ForExistingParticipants> InterOrganizationalRelationsToCreate { get; init; }
+        public required List<InterOrganizationalRelation.ToUpdate> InterOrganizationalRelationsFromToUpdate { get; init; }
+        public required List<InterOrganizationalRelation.ToUpdate> InterOrganizationalRelationsToToUpdate { get; init; }
+        public required List<InterOrganizationalRelation.ToCreate.ForExistingParticipants> InterOrganizationalRelationsFromToCreate { get; init; }
+        public required List<InterOrganizationalRelation.ToCreate.ForExistingParticipants> InterOrganizationalRelationsToToCreate { get; init; }
         public required List<PartyPoliticalEntityRelation.ToCreate.ForExistingParty> PartyPoliticalEntityRelationsToCreate { get; init; }
         public required List<PersonOrganizationRelation.ToCreate.ForExistingParticipants> PersonOrganizationRelationsToCreate { get; init; }
         public required List<PersonOrganizationRelation.ToUpdate> PersonOrganizationRelationsToUpdate { get; init; }

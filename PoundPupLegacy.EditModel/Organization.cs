@@ -19,6 +19,12 @@
 [JsonSerializable(typeof(InterOrganizationalRelation.To.Complete.Resolved.ToUpdate), TypeInfoPropertyName = "InterOrganizationalRelationToCompleteResolvedToUpdate")]
 [JsonSerializable(typeof(List<InterOrganizationalRelation.To.Complete.Resolved.ToUpdate>), TypeInfoPropertyName = "InterOrganizationalRelationListToCompleteResolvedToUpdate")]
 
+[JsonSerializable(typeof(InterOrganizationalRelation.From.Complete.Resolved.ToCreate), TypeInfoPropertyName = "InterOrganizationalRelationFromCompleteResolvedToCreate")]
+[JsonSerializable(typeof(List<InterOrganizationalRelation.From.Complete.Resolved.ToCreate>), TypeInfoPropertyName = "InterOrganizationalRelationListFromCompleteResolvedToCreate")]
+
+[JsonSerializable(typeof(InterOrganizationalRelation.To.Complete.Resolved.ToCreate), TypeInfoPropertyName = "InterOrganizationalRelationToCompleteResolvedToCreate")]
+[JsonSerializable(typeof(List<InterOrganizationalRelation.To.Complete.Resolved.ToCreate>), TypeInfoPropertyName = "InterOrganizationalRelationListToCompleteResolvedToCreate")]
+
 [JsonSerializable(typeof(IEnumerable<PersonOrganizationRelation.ForOrganization.Complete>), TypeInfoPropertyName = "PersonOrganizationRelationEnumerableForOrganizationComplete")]
 [JsonSerializable(typeof(PersonOrganizationRelation.ForOrganization.Complete), TypeInfoPropertyName = "PersonOrganizationRelationForOrganizationComplete")]
 [JsonSerializable(typeof(List<PersonOrganizationRelation.ForOrganization.Complete>), TypeInfoPropertyName = "PersonOrganizationRelationListForOrganizationComplete")]
@@ -68,19 +74,25 @@ public partial class OrganizationToUpdateJsonContext : JsonSerializerContext { }
 [JsonSerializable(typeof(InterOrganizationalRelation.To.Complete), TypeInfoPropertyName = "InterOrganizationalRelationToComplete")]
 [JsonSerializable(typeof(List<InterOrganizationalRelation.To.Complete>), TypeInfoPropertyName = "InterOrganizationalRelationListToComplete")]
 
-[JsonSerializable(typeof(IEnumerable<InterOrganizationalRelation.To.Complete.ToCreateForNewOrganization>), TypeInfoPropertyName = "InterOrganizationalRelationEnumerableToCompleteToCreateForNewOrganization")]
-[JsonSerializable(typeof(InterOrganizationalRelation.To.Complete.ToCreateForNewOrganization), TypeInfoPropertyName = "InterOrganizationalRelationToCompleteToCreateForNewOrganization")]
-[JsonSerializable(typeof(List<InterOrganizationalRelation.To.Complete.ToCreateForNewOrganization>), TypeInfoPropertyName = "InterOrganizationalRelationListToCompleteToCreateForNewOrganization")]
-
 [JsonSerializable(typeof(IEnumerable<InterOrganizationalRelation.From.Complete.ToCreateForNewOrganization>), TypeInfoPropertyName = "InterOrganizationalRelationEnumerableFromCompleteToCreateForNewOrganization")]
 [JsonSerializable(typeof(InterOrganizationalRelation.From.Complete.ToCreateForNewOrganization), TypeInfoPropertyName = "InterOrganizationalRelationToCompleteFromCreateForNewOrganization")]
 [JsonSerializable(typeof(List<InterOrganizationalRelation.From.Complete.ToCreateForNewOrganization>), TypeInfoPropertyName = "InterOrganizationalRelationListToCompleteFromCreateForNewOrganization")]
+
+[JsonSerializable(typeof(IEnumerable<InterOrganizationalRelation.To.Complete.ToCreateForNewOrganization>), TypeInfoPropertyName = "InterOrganizationalRelationEnumerableToCompleteToCreateForNewOrganization")]
+[JsonSerializable(typeof(InterOrganizationalRelation.To.Complete.ToCreateForNewOrganization), TypeInfoPropertyName = "InterOrganizationalRelationToCompleteToCreateForNewOrganization")]
+[JsonSerializable(typeof(List<InterOrganizationalRelation.To.Complete.ToCreateForNewOrganization>), TypeInfoPropertyName = "InterOrganizationalRelationListToCompleteToCreateForNewOrganization")]
 
 [JsonSerializable(typeof(InterOrganizationalRelation.From.Complete.Resolved.ToUpdate), TypeInfoPropertyName = "InterOrganizationalRelationFromCompleteResolvedToUpdate")]
 [JsonSerializable(typeof(List<InterOrganizationalRelation.From.Complete.Resolved.ToUpdate>), TypeInfoPropertyName = "InterOrganizationalRelationListFromCompleteResolvedToUpdate")]
 
 [JsonSerializable(typeof(InterOrganizationalRelation.To.Complete.Resolved.ToUpdate), TypeInfoPropertyName = "InterOrganizationalRelationToCompleteResolvedToUpdate")]
 [JsonSerializable(typeof(List<InterOrganizationalRelation.To.Complete.Resolved.ToUpdate>), TypeInfoPropertyName = "InterOrganizationalRelationListToCompleteResolvedToUpdate")]
+
+[JsonSerializable(typeof(InterOrganizationalRelation.From.Complete.Resolved.ToCreate), TypeInfoPropertyName = "InterOrganizationalRelationFromCompleteResolvedToCreate")]
+[JsonSerializable(typeof(List<InterOrganizationalRelation.From.Complete.Resolved.ToCreate>), TypeInfoPropertyName = "InterOrganizationalRelationListFromCompleteResolvedToCreate")]
+
+[JsonSerializable(typeof(InterOrganizationalRelation.To.Complete.Resolved.ToCreate), TypeInfoPropertyName = "InterOrganizationalRelationToCompleteResolvedToCreate")]
+[JsonSerializable(typeof(List<InterOrganizationalRelation.To.Complete.Resolved.ToCreate>), TypeInfoPropertyName = "InterOrganizationalRelationListToCompleteResolvedToCreate")]
 
 [JsonSerializable(typeof(IEnumerable<OrganizationPoliticalEntityRelation.Complete>), TypeInfoPropertyName = "OrganizationPoliticalEntityRelationEnumerableComplete")]
 [JsonSerializable(typeof(OrganizationPoliticalEntityRelation.Complete), TypeInfoPropertyName = "OrganizationPoliticalEntityRelationComplete")]
@@ -212,7 +224,7 @@ public abstract record OrganizationDetails
             }
         }
         private List<InterOrganizationalRelation.From.Complete.Resolved.ToUpdate> existingInterOrganizationalRelationsFrom = new();
-        public List<InterOrganizationalRelation.From.Complete.Resolved.ToUpdate> ExistingInterOrganizationalRelationsFrom {
+        public List<InterOrganizationalRelation.From.Complete.Resolved.ToUpdate> InterOrganizationalRelationsFromToUpdate {
             get => existingInterOrganizationalRelationsFrom;
             init {
                 if (value is not null) {
@@ -221,7 +233,7 @@ public abstract record OrganizationDetails
             }
         }
         private List<InterOrganizationalRelation.To.Complete.Resolved.ToUpdate> existingInterOrganizationalRelationsTo = new();
-        public List<InterOrganizationalRelation.To.Complete.Resolved.ToUpdate> ExistingInterOrganizationalRelationsTo {
+        public List<InterOrganizationalRelation.To.Complete.Resolved.ToUpdate> InterOrganizationalRelationsToToUpdate {
             get => existingInterOrganizationalRelationsTo;
             init {
                 if (value is not null) {
@@ -232,20 +244,20 @@ public abstract record OrganizationDetails
         public override IEnumerable<InterOrganizationalRelation.From.Complete> InterOrganizationalRelationsFrom => GetInterOrganizationalRelationsFrom();
         private IEnumerable<InterOrganizationalRelation.From.Complete> GetInterOrganizationalRelationsFrom()
         {
-            foreach (var elem in ExistingInterOrganizationalRelationsFrom) {
+            foreach (var elem in InterOrganizationalRelationsFromToUpdate) {
                 yield return elem;
             }
-            foreach (var elem in NewInterOrganizationalRelationsFrom) {
+            foreach (var elem in InterOrganizationalRelationsFromToCreate) {
                 yield return elem;
             }
         }
         public override IEnumerable<InterOrganizationalRelation.To.Complete> InterOrganizationalRelationsTo => GetInterOrganizationalRelationsTo();
         private IEnumerable<InterOrganizationalRelation.To.Complete> GetInterOrganizationalRelationsTo()
         {
-            foreach (var elem in ExistingInterOrganizationalRelationsTo) {
+            foreach (var elem in InterOrganizationalRelationsToToUpdate) {
                 yield return elem;
             }
-            foreach (var elem in NewInterOrganizationalRelationsTo) {
+            foreach (var elem in InterOrganizationalRelationsToToCreate) {
                 yield return elem;
             }
         }
@@ -279,8 +291,8 @@ public abstract record OrganizationDetails
             }
         }
         public List<OrganizationPoliticalEntityRelation.Complete.Resolved.ToCreateForExistingOrganization> OrganizationPoliticalEntityRelationsToCreate { get; } = new();
-        public List<InterOrganizationalRelation.From.Complete> NewInterOrganizationalRelationsFrom { get; } = new();
-        public List<InterOrganizationalRelation.To.Complete> NewInterOrganizationalRelationsTo { get; } = new();
+        public List<InterOrganizationalRelation.From.Complete.Resolved.ToCreate> InterOrganizationalRelationsFromToCreate { get; } = new();
+        public List<InterOrganizationalRelation.To.Complete.Resolved.ToCreate> InterOrganizationalRelationsToToCreate { get; } = new();
         public List<PersonOrganizationRelation.ForOrganization.Complete.Resolved.ToCreate> PersonOrganizationRelationsToCreate { get; } = new();
 
     }

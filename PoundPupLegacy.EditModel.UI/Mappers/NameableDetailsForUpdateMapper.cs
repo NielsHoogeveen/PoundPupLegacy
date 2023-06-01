@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.EditModel.UI.Mappers;
 
-internal class NameableDetailsToUpdateMapper : IMapper<EditModel.NameableDetails, CreateModel.NameableDetails.ForUpdate>
+internal class NameableDetailsForUpdateMapper : IMapper<EditModel.NameableDetails, CreateModel.NameableDetails.ForUpdate>
 {
     public CreateModel.NameableDetails.ForUpdate Map(EditModel.NameableDetails source)
     {

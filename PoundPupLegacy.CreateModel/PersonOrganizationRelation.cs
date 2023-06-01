@@ -11,7 +11,6 @@ public abstract record PersonOrganizationRelation: Node
         public required NodeDetails.ForCreate NodeDetails { get; init; }
         public sealed record ForNewPerson : ToCreate
         {
-            public required int? PersonId { get; set; }
             public required int OrganizationId { get; init; }
 
             public ForExistingParticipants ResolvePerson(int personId)
@@ -28,7 +27,6 @@ public abstract record PersonOrganizationRelation: Node
         public sealed record ForNewOrganization : ToCreate
         {
             public required int PersonId { get; set; }
-            public required int? OrganizationId { get; set; }
             public ForExistingParticipants ResolveOrganization(int organizationId)
             {
                 return new ForExistingParticipants {

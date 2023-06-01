@@ -37,8 +37,8 @@
 [JsonSerializable(typeof(PersonPoliticalEntityRelation.Complete.Resolved.ToUpdate), TypeInfoPropertyName = "PersonPoliticalEntityRelationCompleteResolvedToUpdate")]
 [JsonSerializable(typeof(List<PersonPoliticalEntityRelation.Complete.Resolved.ToUpdate>), TypeInfoPropertyName = "PersonPoliticalEntityRelationListCompleteResolvedToUpdate")]
 
-[JsonSerializable(typeof(List<PersonPoliticalEntityRelation.Complete.Resolved.ToCreate>), TypeInfoPropertyName = "PersonPoliticalEntityRelationListCompleteResolvedToCreate")]
-[JsonSerializable(typeof(PersonPoliticalEntityRelation.Complete.Resolved.ToCreate), TypeInfoPropertyName = "PersonPoliticalEntityRelationCompleteResolvedToCreate")]
+[JsonSerializable(typeof(List<PersonPoliticalEntityRelation.Complete.Resolved.ToCreateForExistingPerson>), TypeInfoPropertyName = "PersonPoliticalEntityRelationListCompleteResolvedToCreate")]
+[JsonSerializable(typeof(PersonPoliticalEntityRelation.Complete.Resolved.ToCreateForExistingPerson), TypeInfoPropertyName = "PersonPoliticalEntityRelationCompleteResolvedToCreate")]
 
 [JsonSerializable(typeof(InterPersonalRelation.From.Complete.ToCreateForNewPerson), TypeInfoPropertyName = "InterPersonalRelationFromCompleteToCreateForNewPerson")]
 [JsonSerializable(typeof(InterPersonalRelation.To.Complete.ToCreateForNewPerson), TypeInfoPropertyName = "InterPersonalRelationToCompleteToCreateForNewPerson")]
@@ -86,7 +86,7 @@ public partial class PersonToUpdateJsonContext : JsonSerializerContext { }
 [JsonSerializable(typeof(List<PersonOrganizationRelation.ForPerson.Complete.ToCreateForNewPerson>), TypeInfoPropertyName = "PersonOrganizationRelationListForPersonCompleteToCreateForNewPerson")]
 [JsonSerializable(typeof(PersonOrganizationRelation.ForPerson.Complete.ToCreateForNewPerson), TypeInfoPropertyName = "PersonOrganizationRelationForPersonCompleteToCreateForNewPerson")]
 
-[JsonSerializable(typeof(List<PersonPoliticalEntityRelation.Complete.Resolved.ToCreate>), TypeInfoPropertyName = "PersonPoliticalEntityRelationListCompleteResolvedToCreate")]
+[JsonSerializable(typeof(List<PersonPoliticalEntityRelation.Complete.Resolved.ToCreateForExistingPerson>), TypeInfoPropertyName = "PersonPoliticalEntityRelationListCompleteResolvedToCreate")]
 
 [JsonSerializable(typeof(IEnumerable<PersonOrganizationRelation.ForPerson.Complete>), TypeInfoPropertyName = "PersonOrganizationRelationEnumerableForPersonComplete")]
 [JsonSerializable(typeof(PersonOrganizationRelation.ForPerson.Complete), TypeInfoPropertyName = "PersonOrganizationRelationForPersonComplete")]
@@ -243,7 +243,7 @@ public abstract record PersonDetails
                 yield return elem;
             }
         }
-        public List<PersonPoliticalEntityRelation.Complete.Resolved.ToCreate> PersonPoliticalEntityRelationsToCreate { get; } = new();
+        public List<PersonPoliticalEntityRelation.Complete.Resolved.ToCreateForExistingPerson> PersonPoliticalEntityRelationsToCreate { get; } = new();
         public List<InterPersonalRelation.From.Complete> InterPersonalRelationsFromToCreate { get; set; } = new();
         public List<InterPersonalRelation.To.Complete> InterPersonalRelationsToToCreate { get; set; } = new();
         public List<PersonOrganizationRelation.ForPerson.Complete.Resolved.ToCreate> PersonOrganizationRelationsToCreate { get; } = new();
