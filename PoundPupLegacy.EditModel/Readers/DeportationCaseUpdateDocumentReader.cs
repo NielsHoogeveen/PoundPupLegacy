@@ -14,9 +14,9 @@ internal sealed class DeportationCaseUpdateDocumentReaderFactory : NodeUpdateDoc
                     (select document from identification_document where id = n.id),
                     'NodeDetailsForUpdate',
                     (select document from node_details_document where id = n.id),
-                    'NamebleDetails',
+                    'NameableDetails',
                     (select document from nameable_details_document where id = n.id),
-                    'LocationDetails',
+                    'LocatableDetailsForUpdate',
                     (select document from locatable_details_document where id = n.id),
                     'CaseDetails',
                     (select document from case_details_document where id = n.id),
@@ -45,7 +45,6 @@ internal sealed class DeportationCaseUpdateDocumentReaderFactory : NodeUpdateDoc
                     )
                 ) document
             from node n
-            join organization o on o.id = n.id
             join nameable nm on nm.id = n.id
             join "case" c on c.id = n.id
             join deportation_case dc on dc.id = c.id

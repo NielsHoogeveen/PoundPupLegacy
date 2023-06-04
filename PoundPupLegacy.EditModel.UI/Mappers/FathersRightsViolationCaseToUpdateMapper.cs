@@ -17,7 +17,7 @@ internal class FathersRightsViolationCaseToUpdateMapper(
             NodeDetails = nodeDetailsMapper.Map(viewModel.NodeDetailsForUpdate),
             NameableDetails = nameableDetailsMapper.Map(viewModel.NameableDetails),
             CaseDetails = caseDetailsMapper.Map(viewModel.CaseDetails),
-            LocatableDetails = locatableMapper.Map(viewModel.LocatableDetailsToUpdate),
+            LocatableDetails = locatableMapper.Map(viewModel.LocatableDetailsForUpdate),
         };
     }
 }

@@ -20,7 +20,7 @@ public static class DependencyInjection
         services.AddTransient<IAttachmentStoreService, AttachmentStoreService>();
         services.AddViewModelRetrieveService<AbuseCase, AbuseCase.ToUpdate, AbuseCase.ToCreate>();
         services.AddViewModelRetrieveService<BlogPost, BlogPost.ToUpdate, BlogPost.ToCreate>();
-        services.AddViewModelRetrieveService<ChildTraffickingCase, ChildTraffickingCase.ToUpdate, ChildTraffickingCase.ToCreate>();
+        services.AddViewModelRetrieveService<UnresolvedChildTraffickingCase, UnresolvedChildTraffickingCase.ToUpdate, UnresolvedChildTraffickingCase.ToCreate>();
         services.AddViewModelRetrieveService<CoercedAdoptionCase, CoercedAdoptionCase.ToUpdate, CoercedAdoptionCase.ToCreate>();
         services.AddViewModelRetrieveService<Discussion, Discussion.ToUpdate, Discussion.ToCreate>();
         services.AddViewModelRetrieveService<DeportationCase, DeportationCase.ToUpdate, DeportationCase.ToCreate>();
@@ -133,7 +133,7 @@ public static class DependencyInjection
             WrongfulRemovalCase.ToUpdate,
             WrongfulRemovalCase.ToCreate,
             CreateModel.WrongfulRemovalCase,
-            CreateModel.WrongfulMedicationCase.ToUpdate,
+            CreateModel.WrongfulRemovalCase.ToUpdate,
             CreateModel.WrongfulRemovalCase.ToCreate>();
 
         services.AddTransient<ILocationService, LocationService>();

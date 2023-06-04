@@ -849,7 +849,7 @@ internal static class SharedSql
         locatable_details_document as(
             select
                 jsonb_build_object(
-                    'Locations',
+                    'LocationsToUpdate',
                     (select document from locations_document ld where ld.id = l.id)
                 ) document,
                 l.id

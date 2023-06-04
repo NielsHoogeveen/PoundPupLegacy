@@ -22,7 +22,7 @@ public static class DependencyInjection
 
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, AbuseCase.ToUpdate>, AbuseCaseUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, BlogPost.ToUpdate>, BlogPostUpdateDocumentReaderFactory>();
-        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ChildTraffickingCase.ToUpdate>, ChildTraffickingCaseUpdateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, UnresolvedChildTraffickingCase.ToUpdate>, ChildTraffickingCaseUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, CoercedAdoptionCase.ToUpdate>, CoercedAdoptionCaseUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, DeportationCase.ToUpdate>, DeportationCaseUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Discussion.ToUpdate>, DiscussionUpdateDocumentReaderFactory>();

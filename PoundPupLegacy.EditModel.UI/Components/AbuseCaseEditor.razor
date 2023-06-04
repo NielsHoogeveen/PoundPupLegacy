@@ -1,11 +1,12 @@
 ﻿@inherits EntityEditorBase<AbuseCase.ToUpdate, AbuseCase.ToCreate, Unit>
 @if (Model is not null) {
-    <NodeEditor TCreateModel="AbuseCase.ToCreate"
-                 TUpdateModel="AbuseCase.ToUpdate"
-                 TResolveData="Unit"
-                 Model="Model"
-                 OnValidationResult="() => Validate()"
-                 Title="Edit coerced adoption case" Map="Map">
+    <NodeEditor 
+        TCreateModel=AbuseCase.ToCreate
+        TUpdateModel=AbuseCase.ToUpdate
+        TResolveData=Unit
+        Model=AbuseCase
+        Title="Edit abuse case"
+        OnValidationResult="() => Validate()">
         <NodeDetailsEditor Model="AbuseCase.NodeDetails" @ref=nodeDetailsEditor>
             <Top>
                 <NameableEditor Model="AbuseCase.NameableDetails" />

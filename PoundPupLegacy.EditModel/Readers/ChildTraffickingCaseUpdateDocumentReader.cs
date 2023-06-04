@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.EditModel.Readers;
 
-internal sealed class ChildTraffickingCaseUpdateDocumentReaderFactory : NodeUpdateDocumentReaderFactory<ChildTraffickingCase.ToUpdate>
+internal sealed class ChildTraffickingCaseUpdateDocumentReaderFactory : NodeUpdateDocumentReaderFactory<UnresolvedChildTraffickingCase.ToUpdate>
 {
     public override string Sql => SQL;
 
@@ -14,13 +14,13 @@ internal sealed class ChildTraffickingCaseUpdateDocumentReaderFactory : NodeUpda
                     (select document from identification_document where id = n.id),
                     'NodeDetailsForUpdate',
                     (select document from node_details_document where id = n.id),
-                    'NamebleDetails',
+                    'NameableDetails',
                     (select document from nameable_details_document where id = n.id),
-                    'LocationDetails',
+                    'LocatableDetailsForUpdate',
                     (select document from locatable_details_document where id = n.id),
                     'CaseDetails',
                     (select document from case_details_document where id = n.id),
-                    'ChildTraffickingCaseDetails',
+                    'ResolvedChildTraffickingCaseDetails',
                     jsonb_build_object(
                         'CountryFrom',
                         jsonb_build_object(

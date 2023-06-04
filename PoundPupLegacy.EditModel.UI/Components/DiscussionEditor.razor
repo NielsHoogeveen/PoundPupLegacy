@@ -1,0 +1,35 @@
+﻿@inherits EntityEditorBase<Discussion.ToUpdate, Discussion.ToCreate, Unit>
+@if (Model is not null)
+{
+    <NodeEditor 
+        TCreateModel="Discussion.ToCreate" 
+        TUpdateModel="Discussion.ToUpdate"
+        TResolveData="Unit"
+        Model="Model"
+        OnValidationResult="() => Validate()"
+        Title="Edit discussion">
+        <NodeDetailsEditor 
+            Model="Discussion.NodeDetails" 
+            @ref=nodeDetailsEditor>
+            <Top>
+                <SimpleTextNodePropertiesEditor Model="Discussion" @ref=simpleTextNodePropertiesEditor/>
+            </Top>
+        </NodeDetailsEditor>
+    </NodeEditor>
+}
+@code {
+    [Parameter]
+    [EditorRequired]
+    public Discussion Discussion { get; set; } = default!;
+
+    protected override Resolver<Discussion.ToUpdate, Discussion.ToCreate, Unit> Model => Discussion;
+
+    private NodeDetailsEditor? nodeDetailsEditor;
+    private SimpleTextNodePropertiesEditor? simpleTextNodePropertiesEditor;
+
+    protected override List<EditorDetailBase?> DetailsEditors => new() {
+        nodeDetailsEditor,
+        simpleTextNodePropertiesEditor
+    };
+    protected override Unit ResolveData => Unit.Instance;
+}

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(ChildTraffickingCase.ToUpdate), TypeInfoPropertyName = "ChildTraffickingCaseToUpdate")]
+[JsonSerializable(typeof(UnresolvedChildTraffickingCase.ToUpdate), TypeInfoPropertyName = "ChildTraffickingCaseToUpdate")]
 
 [JsonSerializable(typeof(LocatableDetails.ForUpdate), TypeInfoPropertyName = "LocatableDetailsForUpdate")]
 [JsonSerializable(typeof(Location.ToUpdate), TypeInfoPropertyName = "LocationDetailsForUpdate")]
@@ -14,6 +14,7 @@
 [JsonSerializable(typeof(List<Tags.ToUpdate>), TypeInfoPropertyName = "TagsListToUpdate")]
 public partial class ChildTraffickingCaseToUpdateJsonContext : JsonSerializerContext { }
 
+[JsonSerializable(typeof(UnresolvedChildTraffickingCase.ToCreate), TypeInfoPropertyName = "ChildTraffickingCaseToCreate")]
 [JsonSerializable(typeof(LocatableDetails.ForCreate), TypeInfoPropertyName = "LocatableDetailsCreate")]
 [JsonSerializable(typeof(Location.ToCreate), TypeInfoPropertyName = "LocationDetailsForCreate")]
 [JsonSerializable(typeof(List<Location.ToCreate>), TypeInfoPropertyName = "LocationDetailsListForCreate")]
@@ -52,7 +53,7 @@ public abstract record ChildTraffickingCase : Case, ResolvedNode, Node<ChildTraf
         public required LocatableDetails.ForUpdate LocatableDetailsForUpdate { get; init; }
         public required NodeIdentification NodeIdentification { get; init; }
         public override ChildTraffickingCaseDetails ChildTraffickingCaseDetails => ResolvedChildTraffickingCaseDetails;
-        public required ChildTraffickingCaseDetails.ResolvedChildTraffickingCaseDetails ResolvedChildTraffickingCaseDetails { get; init; }
+        public required ChildTraffickingCaseDetails.UnresolvedChildTraffickingCaseDetails ResolvedChildTraffickingCaseDetails { get; init; }
         public override T Match<T>(
             Func<ToUpdate, T> existingItem,
             Func<ToCreate, T> newItem
@@ -76,7 +77,7 @@ public abstract record ChildTraffickingCase : Case, ResolvedNode, Node<ChildTraf
         public required LocatableDetails.ForCreate LocatableDetailsForCreate { get; init; }
 
         public override ChildTraffickingCaseDetails ChildTraffickingCaseDetails => ResolvedChildTraffickingCaseDetails;
-        public required ChildTraffickingCaseDetails.ResolvedChildTraffickingCaseDetails ResolvedChildTraffickingCaseDetails { get; init; }
+        public required ChildTraffickingCaseDetails.UnresolvedChildTraffickingCaseDetails ResolvedChildTraffickingCaseDetails { get; init; }
         public override T Match<T>(
             Func<ToUpdate, T> existingItem,
             Func<ToCreate, T> newItem
@@ -124,7 +125,7 @@ public abstract record UnresolvedChildTraffickingCase : Case, Node<UnresolvedChi
         {
             return new ChildTraffickingCase.ToUpdate {
                 CaseDetails = CaseDetails,
-                ResolvedChildTraffickingCaseDetails = new ChildTraffickingCaseDetails.ResolvedChildTraffickingCaseDetails {
+                ResolvedChildTraffickingCaseDetails = new ChildTraffickingCaseDetails.UnresolvedChildTraffickingCaseDetails {
                     CountryFrom = countryFrom,
                     NumberOfChildrenInvolved = ChildTraffickingCaseDetails.NumberOfChildrenInvolved
                 },
@@ -134,7 +135,7 @@ public abstract record UnresolvedChildTraffickingCase : Case, Node<UnresolvedChi
                 NodeIdentification = NodeIdentification
             };
         }
-        public required ChildTraffickingCaseDetails.ResolvedChildTraffickingCaseDetails ResolvedChildTraffickingCaseDetails { get; init; }
+        public required ChildTraffickingCaseDetails.UnresolvedChildTraffickingCaseDetails ResolvedChildTraffickingCaseDetails { get; init; }
         public override T Match<T>(
             Func<ToUpdate, T> existingItem,
             Func<ToCreate, T> newItem
@@ -163,7 +164,7 @@ public abstract record UnresolvedChildTraffickingCase : Case, Node<UnresolvedChi
         {
             return new ChildTraffickingCase.ToCreate {
                 CaseDetails = CaseDetails,
-                ResolvedChildTraffickingCaseDetails = new ChildTraffickingCaseDetails.ResolvedChildTraffickingCaseDetails {
+                ResolvedChildTraffickingCaseDetails = new ChildTraffickingCaseDetails.UnresolvedChildTraffickingCaseDetails {
                     CountryFrom = countryFrom,
                     NumberOfChildrenInvolved = ChildTraffickingCaseDetails.NumberOfChildrenInvolved
                 },
@@ -197,7 +198,7 @@ public abstract record ChildTraffickingCaseDetails
     {
         public required CountryListItem? CountryFrom { get; set; }
     }
-    public sealed record ResolvedChildTraffickingCaseDetails : ChildTraffickingCaseDetails
+    public sealed record UnresolvedChildTraffickingCaseDetails : ChildTraffickingCaseDetails
     {
         public required CountryListItem CountryFrom { get; set; }
     }

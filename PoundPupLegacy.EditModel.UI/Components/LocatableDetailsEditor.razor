@@ -1,4 +1,4 @@
-﻿@inherits ViewerBase
+﻿@inherits EditorDetailBase
 @inject IDefaultCountryService DefaultCountryService
 
 @if (LocatableDetails.Locations.Any()) {
@@ -92,4 +92,14 @@
         locationToEdit = null;
         StateHasChanged();
     }
+    public override void OnTitleChange(string title)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override async Task<List<ErrorDetail>> Validate()
+    {
+        return await Task.FromResult(new List<ErrorDetail>());
+    }
+
 }

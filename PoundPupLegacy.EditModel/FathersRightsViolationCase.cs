@@ -44,9 +44,8 @@ public abstract record FathersRightsViolationCase : Case, ResolvedNode, Node<Fat
     {
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
         public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
-        public required TenantNodeDetails.ForUpdate ExistingTenantNodeDetails { get; init; }
-        public override LocatableDetails LocatableDetails => LocatableDetailsToUpdate;
-        public required LocatableDetails.ForUpdate LocatableDetailsToUpdate { get; init; }
+        public override LocatableDetails LocatableDetails => LocatableDetailsForUpdate;
+        public required LocatableDetails.ForUpdate LocatableDetailsForUpdate { get; init; }
         public required NodeIdentification NodeIdentification { get; init; }
         public override T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem)
         {
@@ -62,7 +61,6 @@ public abstract record FathersRightsViolationCase : Case, ResolvedNode, Node<Fat
     {
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
-        public required TenantNodeDetails.ForCreate NewTenantNodeDetails { get; init; }
         public override LocatableDetails LocatableDetails => LocatableDetailsForCreate;
         public required LocatableDetails.ForCreate LocatableDetailsForCreate { get; init; }
 

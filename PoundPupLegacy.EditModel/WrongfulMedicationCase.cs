@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(WrongfulMedicationCase.ToUpdate))]
+[JsonSerializable(typeof(WrongfulMedicationCase.ToUpdate), TypeInfoPropertyName = "WrongfulMedicationCaseToUpdate")]
 
 [JsonSerializable(typeof(LocatableDetails.ForUpdate), TypeInfoPropertyName = "LocatableDetailsForUpdate")]
 [JsonSerializable(typeof(Location.ToUpdate), TypeInfoPropertyName = "LocationDetailsForUpdate")]
@@ -43,8 +43,8 @@ public abstract record WrongfulMedicationCase : Case, ResolvedNode, Node<Wrongfu
     {
         public override NodeDetails NodeDetails => NodeDetailsForUpdate;
         public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
-        public override LocatableDetails LocatableDetails => LocatableDetailsToUpdate;
-        public required LocatableDetails.ForUpdate LocatableDetailsToUpdate { get; init; }
+        public override LocatableDetails LocatableDetails => LocatableDetailsForUpdate;
+        public required LocatableDetails.ForUpdate LocatableDetailsForUpdate { get; init; }
         public required NodeIdentification NodeIdentification { get; init; }
         public override T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem)
         {
