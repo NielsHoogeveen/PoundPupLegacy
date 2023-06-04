@@ -5,7 +5,7 @@ where TResponse : class, SimpleTextNode, ExistingNode
 {
     public override string Sql => SQL;
     protected const string SQL = $"""
-            {CTE_EDIT}
+            {SharedSql.NODE_UPDATE_CTE}
             select
                 jsonb_build_object(
                     'NodeIdentification', 
@@ -23,7 +23,5 @@ where TResponse : class, SimpleTextNode, ExistingNode
             join tenant_node tn on tn.node_id = n.id
             where tn.tenant_id = @tenant_id and tn.url_id = @url_id and n.node_type_id = @node_type_id
         """;
-
-
 }
 

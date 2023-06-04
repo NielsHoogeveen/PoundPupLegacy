@@ -7,44 +7,33 @@ internal sealed class DocumentUpdateDocumentReaderFactory : NodeUpdateDocumentRe
     protected override int NodeTypeId => Constants.DOCUMENT;
 
     const string SQL = $"""
-        {CTE_EDIT}
+        {SharedSql.NODE_UPDATE_CTE},
+        {SharedSql.DOCUMENT_TYPES_DOCUMENT_CREATE}
         select
             jsonb_build_object(
-        	    'NodeId',
-        	    d.id,
-                'NodeTypeName',
-                nt.name,
-                'UrlId',
-                tn.url_id,
-                'PublisherId', 
-                n.publisher_id,
-                'OwnerId', 
-                n.owner_id,
-                'Title',
-        	    n.title,
-        	    'SourceUrl',
-        	    d.source_url,
-        	    'Text',
-        	    stn.text,
-        	    'DocumentTypeId',
-                case 
-                    when d.document_type_id is null then 0
-                    else d.document_type_id
-                end,
-        	    'PublicationDateFrom',
-        	    lower(published),
-        	    'PublicationDateTo',
-        	    upper(published),
-                'DocumentTypes',
-                (select document from document_types_document),
-                'TenantNodes',
-                (select document from tenant_nodes_document),
-                'Tenants',
-                (select document from tenants_document),
-                'Files',
-                (select document from attachments_document),
-                'Tags',
-                (select document from tags_document)
+                'NodeIdentification', 
+                (select document from identification_document where id = n.id),
+                'NodeDetailsForUpdate',
+                (select document from node_details_document where id = n.id),
+                'SimpleTextNodeDetails',
+                json_build_object(
+                    'Text', 
+                    stn.text
+                ),
+                'DocumentDetails',
+                jsonb_build_object(
+        	        'DocumentTypeId',
+                    case 
+                        when d.document_type_id is null then 0
+                        else d.document_type_id
+                    end,
+        	        'PublicationDateFrom',
+        	        lower(published),
+        	        'PublicationDateTo',
+        	        upper(published),
+                    'DocumentTypes',
+                    (select document from document_types_document)
+                )
             ) document
         from document d
         join simple_text_node stn on stn.id = d.id

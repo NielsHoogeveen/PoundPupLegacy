@@ -7,7 +7,8 @@ internal sealed class DocumentCreateDocumentReaderFactory : NodeCreateDocumentRe
     protected override int NodeTypeId => Constants.DOCUMENT;
 
     private const string SQL = $"""
-            {CTE_CREATE}
+            {SharedSql.SIMPLE_TEXT_NODE_CREATE_CTE},
+            {SharedSql.DOCUMENT_TYPES_DOCUMENT_CREATE}
             select
                 jsonb_build_object(
                     'NodeId', 

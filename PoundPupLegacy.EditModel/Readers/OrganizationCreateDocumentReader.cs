@@ -7,7 +7,7 @@ internal sealed class OrganizationCreateDocumentReaderFactory : NodeCreateDocume
     protected override int NodeTypeId => Constants.ORGANIZATION;
 
     private const string SQL = $"""
-            {CTE_CREATE},
+            {SharedSql.PARTY_CREATE_CTE},
             {SharedSql.ORGANIZATION_TYPES_DOCUMENT},
             {SharedSql.INTER_ORGANIZATIONAL_RELATION_TYPES_DOCUMENT},
             {SharedSql.PERSON_ORGANIZATION_RELATION_TYPES_DOCUMENT},

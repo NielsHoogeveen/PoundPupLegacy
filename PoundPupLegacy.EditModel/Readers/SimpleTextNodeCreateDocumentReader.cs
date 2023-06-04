@@ -5,7 +5,7 @@ where TResponse : class, SimpleTextNode, NewNode
 {
     public override string Sql => SQL;
     private const string SQL = $"""
-            {CTE_CREATE}
+            {SharedSql.NODE_CREATE_CTE}
             select
                 jsonb_build_object(
                     'NodeId', 

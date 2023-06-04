@@ -7,7 +7,8 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
     protected override int NodeTypeId => Constants.PERSON;
 
     const string SQL = $"""
-            {CTE_EDIT},
+            {SharedSql.PARTY_UPDATE_CTE},
+            {SharedSql.COUNTRIES_DOCUMENT},
             {SharedSql.INTER_PERSONAL_RELATION_TYPES_DOCUMENT},
             {SharedSql.PERSON_PERSONAL_RELATION_TYPES_DOCUMENT},
             {SharedSql.PERSON_POLITICAL_ENTITY_RELATION_TYPES_DOCUMENT},

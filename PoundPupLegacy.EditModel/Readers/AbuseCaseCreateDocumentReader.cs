@@ -7,12 +7,11 @@ internal sealed class AbuseCaseCreateDocumentReaderFactory : NodeCreateDocumentR
     protected override int NodeTypeId => Constants.ABUSE_CASE;
 
     private const string SQL = $"""
-            {CTE_CREATE},
+            {SharedSql.CASE_CREATE_CTE},
             {SharedSql.FAMILY_SIZES_DOCUMENT},
             {SharedSql.CHILD_PLACEMENT_TYPES_DOCUMENT},
             {SharedSql.TYPES_OF_ABUSER_DOCUMENT},
-            {SharedSql.TYPES_OF_ABUSE_DOCUMENT},
-            {SharedSql.CASE_TYPE_CASE_PARTY_TYPE_DOCUMENT}
+            {SharedSql.TYPES_OF_ABUSE_DOCUMENT}
             select
                 jsonb_build_object(
                     'NodeId', 

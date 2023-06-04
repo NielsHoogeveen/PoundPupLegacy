@@ -7,7 +7,7 @@ internal sealed class PersonCreateDocumentReaderFactory : NodeCreateDocumentRead
     protected override int NodeTypeId => Constants.PERSON;
 
     private const string SQL = $"""
-            {CTE_CREATE},
+            {SharedSql.PARTY_CREATE_CTE},
             {SharedSql.INTER_PERSONAL_RELATION_TYPES_DOCUMENT},
             {SharedSql.PERSON_PERSONAL_RELATION_TYPES_DOCUMENT},
             {SharedSql.PERSON_POLITICAL_ENTITY_RELATION_TYPES_DOCUMENT}

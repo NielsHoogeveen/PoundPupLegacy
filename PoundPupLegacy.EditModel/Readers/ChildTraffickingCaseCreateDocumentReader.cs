@@ -7,8 +7,7 @@ internal sealed class ChildTraffickingCaseCreateDocumentReaderFactory : NodeCrea
     protected override int NodeTypeId => Constants.CHILD_TRAFFICKING_CASE;
 
     private const string SQL = $"""
-            {CTE_CREATE},
-            {SharedSql.CASE_TYPE_CASE_PARTY_TYPE_DOCUMENT}
+            {SharedSql.CASE_CREATE_CTE}
             select
                 jsonb_build_object(
                     'NodeId', 

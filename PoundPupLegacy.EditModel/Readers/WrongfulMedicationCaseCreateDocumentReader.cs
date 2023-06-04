@@ -7,8 +7,7 @@ internal sealed class WrongfulMedicationCaseCreateDocumentReaderFactory : NodeCr
     protected override int NodeTypeId => Constants.WRONGFUL_MEDICATION_CASE;
 
     private const string SQL = $"""
-            {CTE_CREATE},
-            {SharedSql.CASE_TYPE_CASE_PARTY_TYPE_DOCUMENT}
+            {SharedSql.CASE_CREATE_CTE}
             select
                 jsonb_build_object(
                     'NodeId', 

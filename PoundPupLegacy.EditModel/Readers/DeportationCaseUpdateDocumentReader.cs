@@ -7,58 +7,42 @@ internal sealed class DeportationCaseUpdateDocumentReaderFactory : NodeUpdateDoc
     protected override int NodeTypeId => Constants.DEPORTATION_CASE;
 
     const string SQL = $"""
-            {CTE_EDIT},    
-            {SharedSql.CASE_CASE_PARTY_DOCUMENT}
+            {SharedSql.CASE_UPDATE_CTE}
             select
                 jsonb_build_object(
-                    'NodeId', 
-                    n.id,
-                    'UrlId', 
-                    tn.url_id,
-                    'PublisherId', 
-                    n.publisher_id,
-                    'OwnerId', 
-                    n.owner_id,
-                    'Title' , 
-                    n.title,
-                    'Description', 
-                    nm.description,
-                    'Date',
-                    c.fuzzy_date,
-                    'SubdivisionFrom',
-                    case
-                        when n2.id is null then null
-                        else jsonb_build_object(
-                            'Id', 
-                            n2.id,
-                            'Name', 
-                            n2.title
-                        )
-                    end,
-                    'CountryTo',
-                    case
-                        when n1.id is null then null
-                        else jsonb_build_object(
-                            'Id', 
-                            n1.id,
-                            'Name', 
-                            n1.title
-                        )
-                    end,
-                    'VocabularyIdTagging',
-                    (select id from tagging_vocabulary),
-                    'Tags', 
-                    (select document from tags_document),
-                    'TenantNodes',
-                    (select document from tenant_nodes_document),
-                    'Tenants',
-                    (select document from tenants_document),
-                    'Files',
-                    (select document from attachments_document),
-                    'Locations',
-                    (select document from locations_document),
-                    'CasePartyTypesCaseParties',
-                    (select document from case_case_party_document)
+                    'NodeIdentification',
+                    (select document from identification_document where id = n.id),
+                    'NodeDetailsForUpdate',
+                    (select document from node_details_document where id = n.id),
+                    'NamebleDetails',
+                    (select document from nameable_details_document where id = n.id),
+                    'LocationDetails',
+                    (select document from locatable_details_document where id = n.id),
+                    'CaseDetails',
+                    (select document from case_details_document where id = n.id),
+                    'DeportationCaseDetails',
+                    jsonb_build_object(
+                        'SubdivisionFrom',
+                        case
+                            when n2.id is null then null
+                            else jsonb_build_object(
+                                'Id', 
+                                n2.id,
+                                'Name', 
+                                n2.title
+                            )
+                        end,
+                        'CountryTo',
+                        case
+                            when n1.id is null then null
+                            else jsonb_build_object(
+                                'Id', 
+                                n1.id,
+                                'Name', 
+                                n1.title
+                            )
+                        end
+                    )
                 ) document
             from node n
             join organization o on o.id = n.id
