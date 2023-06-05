@@ -5,7 +5,8 @@ namespace PoundPupLegacy.EditModel.UI.Mappers;
 internal class PersonToUpdateMapper(
     IMapper<EditModel.NodeDetails.ForUpdate, CreateModel.NodeDetails.ForUpdate> nodeDetailMapper,
     IMapper<EditModel.NameableDetails, CreateModel.NameableDetails.ForUpdate> nameableDetailMapper,
-    IEnumerableMapper<EditModel.InterPersonalRelation, CreateModel.InterPersonalRelation.ToCreate.ForExistingParticipants> interPersonalRelationToCreateMapper,
+    IEnumerableMapper<EditModel.InterPersonalRelation.From.Complete.Resolved.ToCreate, CreateModel.InterPersonalRelation.ToCreate.ForExistingParticipants> interPersonalRelationFromToCreateMapper,
+    IEnumerableMapper<EditModel.InterPersonalRelation.To.Complete.Resolved.ToCreate, CreateModel.InterPersonalRelation.ToCreate.ForExistingParticipants> interPersonalRelationToToCreateMapper,
     IEnumerableMapper<EditModel.PersonPoliticalEntityRelation.Complete.Resolved.ToCreateForExistingPerson, PartyPoliticalEntityRelation.ToCreate.ForExistingParty> partyPolitcalEntityCreateMapper,
     IEnumerableMapper<EditModel.PersonPoliticalEntityRelation.Complete.Resolved.ToUpdate, PartyPoliticalEntityRelation.ToUpdate> partyPoliticalEntityRelationUpdateMapper,
     IEnumerableMapper<EditModel.PersonOrganizationRelation.ForPerson.Complete.Resolved.ToCreate, CreateModel.PersonOrganizationRelation.ToCreate.ForExistingParticipants> personOrganizationRelationCreateMapper,
@@ -23,7 +24,8 @@ internal class PersonToUpdateMapper(
             NameableDetails = nameableDetailMapper.Map(source.NameableDetails),
             LocatableDetails = locatableDetailsMapper.Map(source.LocatableDetailsForUpdate),
             PersonDetails = new CreateModel.PersonDetails.ForUpdate {
-                InterPersonalRelationsToCreate = interPersonalRelationToCreateMapper.Map(source.PersonDetailsForUpdate.InterPersonalRelations).ToList(),
+                InterPersonalRelationsFromToCreate = interPersonalRelationFromToCreateMapper.Map(source.PersonDetailsForUpdate.InterPersonalRelationsFromToCreate).ToList(),
+                InterPersonalRelationsToToCreate = interPersonalRelationToToCreateMapper.Map(source.PersonDetailsForUpdate.InterPersonalRelationsToToCreate).ToList(),
                 PartyPoliticalEntityRelationsToCreate = partyPolitcalEntityCreateMapper.Map(source.PersonDetailsForUpdate.PersonPoliticalEntityRelationsToCreate).ToList(),
                 PartyPoliticalEntityRelationToUpdates = partyPoliticalEntityRelationUpdateMapper.Map(source.PersonDetailsForUpdate.PersonPoliticalEntityRelationsToUpdate).ToList(),
                 PersonOrganizationRelationsToCreate = personOrganizationRelationCreateMapper.Map(source.PersonDetailsForUpdate.PersonOrganizationRelationsToCreate).ToList(),

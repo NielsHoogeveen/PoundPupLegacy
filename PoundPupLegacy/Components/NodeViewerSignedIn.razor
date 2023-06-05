@@ -61,8 +61,14 @@
                 @if (Model is ViewModel.Models.FathersRightsViolationCase) {
                     <FathersRightsViolationCaseUpdater UrlId="Model.UrlId" />
                 }
+                @if (Model is ViewModel.Models.Organization) {
+                    <OrganizationUpdater UrlId="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.Person) {
+                    <PersonUpdater UrlId="Model.UrlId" />
+                }
                 @if (Model is ViewModel.Models.WrongfulMedicationCase) {
-                    <WrongfulMedicationCaseUpdater UrlId="Model.UrlId" />
+                <WrongfulMedicationCaseUpdater UrlId="Model.UrlId" />
                 }
                 @if (Model is ViewModel.Models.WrongfulRemovalCase) {
                     <WrongfulRemovalCaseUpdater UrlId="Model.UrlId" />

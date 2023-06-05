@@ -2,9 +2,9 @@
 
 internal class InterPersonalToCreateForNewRelationFromMapper(
     IMapper<EditModel.NodeDetails.ForCreate, CreateModel.NodeDetails.ForCreate> nodeDetailMapper
- ) : IEnumerableMapper<InterPersonalRelation.From.Complete.Resolved.ToCreate, CreateModel.InterPersonalRelation.ToCreate.ForNewPersonFrom>
+ ) : IEnumerableMapper<InterPersonalRelation.From.Complete.ToCreateForNewPerson, CreateModel.InterPersonalRelation.ToCreate.ForNewPersonFrom>
 {
-    public IEnumerable<CreateModel.InterPersonalRelation.ToCreate.ForNewPersonFrom> Map(IEnumerable<InterPersonalRelation.From.Complete.Resolved.ToCreate> source)
+    public IEnumerable<CreateModel.InterPersonalRelation.ToCreate.ForNewPersonFrom> Map(IEnumerable<InterPersonalRelation.From.Complete.ToCreateForNewPerson> source)
     {
         foreach (var relation in source) {
             var now = DateTime.Now;

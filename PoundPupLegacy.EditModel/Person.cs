@@ -15,6 +15,11 @@
 [JsonSerializable(typeof(InterPersonalRelation.To.Complete), TypeInfoPropertyName = "InterPersonalRelationToComplete")]
 [JsonSerializable(typeof(List<InterPersonalRelation.To.Complete>), TypeInfoPropertyName = "InterPersonalRelationListToComplete")]
 
+[JsonSerializable(typeof(InterPersonalRelation.From.Complete.Resolved.ToCreate), TypeInfoPropertyName = "InterPersonalRelationFromCompleteResolvedToCreate")]
+[JsonSerializable(typeof(List<InterPersonalRelation.From.Complete.Resolved.ToCreate>), TypeInfoPropertyName = "InterPersonalRelationListFromCompleteResolvedToCreate")]
+[JsonSerializable(typeof(InterPersonalRelation.To.Complete.Resolved.ToCreate), TypeInfoPropertyName = "InterPersonalRelationToCompleteResolvedToCreate")]
+[JsonSerializable(typeof(List<InterPersonalRelation.To.Complete.Resolved.ToCreate>), TypeInfoPropertyName = "InterPersonalRelationListToCompleteResolvedToCreate")]
+
 [JsonSerializable(typeof(InterPersonalRelation.From.Complete.Resolved.ToUpdate), TypeInfoPropertyName = "InterPersonalRelationFromCompleteResolvedToUpdate")]
 [JsonSerializable(typeof(List<InterPersonalRelation.From.Complete.Resolved.ToUpdate>), TypeInfoPropertyName = "InterPersonalRelationListFromCompleteResolvedToUpdate")]
 
@@ -244,8 +249,8 @@ public abstract record PersonDetails
             }
         }
         public List<PersonPoliticalEntityRelation.Complete.Resolved.ToCreateForExistingPerson> PersonPoliticalEntityRelationsToCreate { get; } = new();
-        public List<InterPersonalRelation.From.Complete> InterPersonalRelationsFromToCreate { get; set; } = new();
-        public List<InterPersonalRelation.To.Complete> InterPersonalRelationsToToCreate { get; set; } = new();
+        public List<InterPersonalRelation.From.Complete.Resolved.ToCreate> InterPersonalRelationsFromToCreate { get; set; } = new();
+        public List<InterPersonalRelation.To.Complete.Resolved.ToCreate> InterPersonalRelationsToToCreate { get; set; } = new();
         public List<PersonOrganizationRelation.ForPerson.Complete.Resolved.ToCreate> PersonOrganizationRelationsToCreate { get; } = new();
         public IEnumerable<InterPersonalRelation> InterPersonalRelations => GetInterPersonalRelations();
         private IEnumerable<InterPersonalRelation> GetInterPersonalRelations()

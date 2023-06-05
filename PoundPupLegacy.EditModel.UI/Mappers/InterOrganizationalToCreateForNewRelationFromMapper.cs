@@ -2,9 +2,9 @@
 
 internal class InterOrganizationalToCreateForNewRelationFromMapper(
     IMapper<EditModel.NodeDetails.ForCreate, CreateModel.NodeDetails.ForCreate> nodeDetailMapper
- ) : IEnumerableMapper<InterOrganizationalRelation.From.Complete.Resolved.ToCreate, CreateModel.InterOrganizationalRelation.ToCreate.ForNewOrganizationFrom>
+ ) : IEnumerableMapper<InterOrganizationalRelation.From.Complete.ToCreateForNewOrganization, CreateModel.InterOrganizationalRelation.ToCreate.ForNewOrganizationFrom>
 {
-    public IEnumerable<CreateModel.InterOrganizationalRelation.ToCreate.ForNewOrganizationFrom> Map(IEnumerable<InterOrganizationalRelation.From.Complete.Resolved.ToCreate> source)
+    public IEnumerable<CreateModel.InterOrganizationalRelation.ToCreate.ForNewOrganizationFrom> Map(IEnumerable<InterOrganizationalRelation.From.Complete.ToCreateForNewOrganization> source)
     {
         foreach (var relation in source) {
             var now = DateTime.Now;

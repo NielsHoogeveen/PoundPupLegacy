@@ -18,17 +18,17 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
             {SharedSql.ORGANIZATION_POLITICAL_ENTITY_RELATION_TYPES_DOCUMENT},
             {SharedSql.PERSON_ORGANIZATION_RELATIONS_DOCUMENT},
             {SharedSql.PARTY_POLITICAL_ENTITY_RELATIONS_DOCUMENT}
-            select
+            select 
                 jsonb_build_object(
                     'NodeIdentification',
                     (select document from identification_document where id = n.id),
                     'NodeDetailsForUpdate',
                     (select document from node_details_document where id = n.id),
-                    'NamebleDetails',
+                    'NameableDetails',
                     (select document from nameable_details_document where id = n.id),
-                    'LocationDetails',
+                    'LocatableDetailsForUpdate',
                     (select document from locatable_details_document where id = n.id),
-                    'OrganizationDetails',
+                    'OrganizationDetailsForUpdate',
                     jsonb_build_object(
                         'WebSiteUrl',
                         o.website_url,
@@ -38,13 +38,20 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
                         o.established,
                         'Termination',
                         o.terminated,
+                        'OrganizationItem',
+                        jsonb_build_object(
+                            'Id',
+                            n.id,
+                            'Name',
+                            n.title
+                        ),
                         'OrganizationOrganizationTypes',
                         (select document from organization_organization_types_document),
                         'OrganizationTypes',
                         (select document from organization_types_document),
                         'Countries',
                         (select document from countries_document),
-                        'PartyPoliticalEntityRelationTypes',
+                        'OrganizationPoliticalEntityRelationTypes',
                         (select document from organization_political_entity_relation_types_document),
                         'InterOrganizationalRelationTypes',
                         (select document from inter_organizational_relation_types_document),

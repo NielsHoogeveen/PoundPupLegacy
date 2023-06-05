@@ -190,9 +190,9 @@ public abstract record OrganizationDetails
     public required FuzzyDate? Establishment { get; set; }
     public required FuzzyDate? Termination { get; set; }
     public required List<OrganizationOrganizationType> OrganizationOrganizationTypes { get; init; }
-    public required List<OrganizationType> OrganizationTypes { get; init; }
+    public required List<OrganizationType> OrganizationTypes { get; init; } 
     public required List<InterOrganizationalRelationTypeListItem> InterOrganizationalRelationTypes { get; init; }
-    public required OrganizationItem OrganizationItem { get; init; }
+    public required OrganizationListItem OrganizationItem { get; init; }
     public abstract IEnumerable<PersonOrganizationRelation.ForOrganization.Complete> PersonOrganizationRelations { get; }
     public required List<PersonOrganizationRelationTypeListItem> PersonOrganizationRelationTypes { get; init; }
     public abstract IEnumerable<OrganizationPoliticalEntityRelation.Complete> OrganizationPoliticalEntityRelations { get; }

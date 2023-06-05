@@ -34,14 +34,14 @@ internal static class DependencyInjection
 
         services.AddTransient<IMapper<EditModel.FathersRightsViolationCase.ToUpdate, CreateModel.FathersRightsViolationCase.ToUpdate>, FathersRightsViolationCaseToUpdateMapper>();
         services.AddTransient<IMapper<EditModel.FathersRightsViolationCase.ToCreate, CreateModel.FathersRightsViolationCase.ToCreate>, FathersRightsViolationCaseToCreateMapper>();
-
+                                                
         services.AddTransient<IEnumerableMapper<EditModel.InterOrganizationalRelation.From.Complete.Resolved.ToUpdate, CreateModel.InterOrganizationalRelation.ToUpdate>,InterOrganizationalRelationsFromToUpdateMapper>();
         services.AddTransient<IEnumerableMapper<EditModel.InterOrganizationalRelation.To.Complete.Resolved.ToUpdate, CreateModel.InterOrganizationalRelation.ToUpdate>, InterOrganizationalRelationsToToUpdateMapper>();
 
         services.AddTransient<IEnumerableMapper<EditModel.InterOrganizationalRelation.From.Complete.Resolved.ToCreate, CreateModel.InterOrganizationalRelation.ToCreate.ForExistingParticipants>, InterOrganizationalToCreateForExistingRelationFromMapper>();
         services.AddTransient<IEnumerableMapper<EditModel.InterOrganizationalRelation.To.Complete.Resolved.ToCreate, CreateModel.InterOrganizationalRelation.ToCreate.ForExistingParticipants>, InterOrganizationalToCreateForExistingRelationToMapper>();
 
-        services.AddTransient<IEnumerableMapper<EditModel.InterOrganizationalRelation.From.Complete.Resolved.ToCreate, CreateModel.InterOrganizationalRelation.ToCreate.ForNewOrganizationFrom>, InterOrganizationalToCreateForNewRelationFromMapper>();
+        services.AddTransient<IEnumerableMapper<EditModel.InterOrganizationalRelation.From.Complete.ToCreateForNewOrganization, CreateModel.InterOrganizationalRelation.ToCreate.ForNewOrganizationFrom>, InterOrganizationalToCreateForNewRelationFromMapper>();
         services.AddTransient<IEnumerableMapper<EditModel.InterOrganizationalRelation.To.Complete.ToCreateForNewOrganization, CreateModel.InterOrganizationalRelation.ToCreate.ForNewOrganizationTo>, InterOrganizationalToCreateForNewRelationToMapper>();
 
         services.AddTransient<IEnumerableMapper<EditModel.InterPersonalRelation.From.Complete.Resolved.ToUpdate, CreateModel.InterPersonalRelation.ToUpdate>, InterPersonalRelationsFromToUpdateMapper>();
@@ -50,9 +50,9 @@ internal static class DependencyInjection
         services.AddTransient<IEnumerableMapper<EditModel.InterPersonalRelation.From.Complete.Resolved.ToCreate, CreateModel.InterPersonalRelation.ToCreate.ForExistingParticipants>, InterPersonalToCreateForExistingRelationFromMapper>();
         services.AddTransient<IEnumerableMapper<EditModel.InterPersonalRelation.To.Complete.Resolved.ToCreate, CreateModel.InterPersonalRelation.ToCreate.ForExistingParticipants>, InterPersonalToCreateForExistingRelationToMapper>();
 
-        services.AddTransient<IEnumerableMapper<EditModel.InterPersonalRelation.From.Complete.Resolved.ToCreate, CreateModel.InterPersonalRelation.ToCreate.ForNewPersonFrom>, InterPersonalToCreateForNewRelationFromMapper>();
+        services.AddTransient<IEnumerableMapper<EditModel.InterPersonalRelation.From.Complete.ToCreateForNewPerson, CreateModel.InterPersonalRelation.ToCreate.ForNewPersonFrom>, InterPersonalToCreateForNewRelationFromMapper>();
         services.AddTransient<IEnumerableMapper<EditModel.InterPersonalRelation.To.Complete.ToCreateForNewPerson, CreateModel.InterPersonalRelation.ToCreate.ForNewPersonTo>, InterPersonalToCreateForNewRelationToMapper>();
-
+        
 
         services.AddTransient<IMapper<EditModel.LocatableDetails.ForUpdate, CreateModel.LocatableDetails.ForUpdate>, LocatableDetailsForUpdateMapper>();
         services.AddTransient<IMapper<EditModel.LocatableDetails.ForCreate, CreateModel.LocatableDetails.ForCreate>, LocatableDetailsForCreateMapper>();
@@ -67,20 +67,21 @@ internal static class DependencyInjection
         services.AddTransient<IMapper<EditModel.NodeDetails.ForUpdate, CreateModel.NodeDetails.ForUpdate>, NodeDetailsForUpdateMapper>();
         services.AddTransient<IMapper<EditModel.NodeDetails.ForCreate, CreateModel.NodeDetails.ForCreate>, NodeDetailsForCreateMapper>();
 
-        //services.AddTransient<IMapper<EditModel.Organization.ToUpdate, CreateModel.OrganizationToUpdate>, OrganizationToUpdateMapper>();
-        //services.AddTransient<IMapper<EditModel.Organization.ToCreate, CreateModel.OrganizationToCreate>, OrganizationToCreateMapper>();
+        services.AddTransient<IMapper<EditModel.Organization.ToUpdate, CreateModel.OrganizationToUpdate>, OrganizationToUpdateMapper>();
+        services.AddTransient<IMapper<EditModel.Organization.ToCreate, CreateModel.OrganizationToCreate>, OrganizationToCreateMapper>();
 
         services.AddTransient<IEnumerableMapper<EditModel.OrganizationPoliticalEntityRelation.Complete.Resolved.ToUpdate, CreateModel.PartyPoliticalEntityRelation.ToUpdate>, OrganizationPoliticalEntityRelationToUpdate>();
         services.AddTransient<IEnumerableMapper<EditModel.OrganizationPoliticalEntityRelation.Complete.Resolved.ToCreateForExistingOrganization, CreateModel.PartyPoliticalEntityRelation.ToCreate.ForExistingParty>, OrganizationPoliticalEntityRelationToCreateForExistingOrganization>();
         services.AddTransient<IEnumerableMapper<EditModel.OrganizationPoliticalEntityRelation.Complete.ToCreateForNewOrganization, CreateModel.PartyPoliticalEntityRelation.ToCreate.ForNewParty>, OrganizationPoliticalEntityRelationToCreateForNewOrganization>();
 
-        //services.AddTransient<IMapper<EditModel.Person.ToUpdate, CreateModel.Person.ToUpdate>, PersonToUpdateMapper>();
-        //services.AddTransient<IMapper<EditModel.Person.ToCreate, CreateModel.Person.ToCreate>, PersonToCreateMapper>();
+        services.AddTransient<IMapper<EditModel.Person.ToUpdate, CreateModel.Person.ToUpdate>, PersonToUpdateMapper>();
+        services.AddTransient<IMapper<EditModel.Person.ToCreate, CreateModel.Person.ToCreate>, PersonToCreateMapper>();
 
-        services.AddTransient<IEnumerableMapper<EditModel.PersonOrganizationRelation.ForOrganization.Complete.Resolved.ToUpdate, CreateModel.PersonOrganizationRelation.ToUpdate>, PersonOrganizationRelationToUpdate>();
+        services.AddTransient<IEnumerableMapper<EditModel.PersonOrganizationRelation.ForOrganization.Complete.Resolved.ToUpdate, CreateModel.PersonOrganizationRelation.ToUpdate>, PersonOrganizationRelationToUpdateForOrganization>();
         services.AddTransient<IEnumerableMapper<EditModel.PersonOrganizationRelation.ForOrganization.Complete.Resolved.ToCreate, CreateModel.PersonOrganizationRelation.ToCreate.ForExistingParticipants>, PersonOrganizationRelationToCreateForExistingOrganization>();
         services.AddTransient<IEnumerableMapper<EditModel.PersonOrganizationRelation.ForOrganization.Complete.ToCreateForNewOrganization, CreateModel.PersonOrganizationRelation.ToCreate.ForNewOrganization>, PersonOrganizationRelationToCreateForNewOrganization>();
 
+        services.AddTransient<IEnumerableMapper<EditModel.PersonOrganizationRelation.ForPerson.Complete.Resolved.ToUpdate, CreateModel.PersonOrganizationRelation.ToUpdate>, PersonOrganizationRelationToUpdateForPerson>();
         services.AddTransient<IEnumerableMapper<EditModel.PersonOrganizationRelation.ForPerson.Complete.Resolved.ToCreate, CreateModel.PersonOrganizationRelation.ToCreate.ForExistingParticipants>, PersonOrganizationRelationToCreateForExistingPerson>();
         services.AddTransient<IEnumerableMapper<EditModel.PersonOrganizationRelation.ForPerson.Complete.ToCreateForNewPerson, CreateModel.PersonOrganizationRelation.ToCreate.ForNewPerson>, PersonOrganizationRelationToCreateForNewPerson>();
 

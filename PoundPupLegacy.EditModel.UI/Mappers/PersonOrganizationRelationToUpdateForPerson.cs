@@ -1,10 +1,10 @@
 ﻿namespace PoundPupLegacy.EditModel.UI.Mappers;
 
-internal class PersonOrganizationRelationToUpdate(
+internal class PersonOrganizationRelationToUpdateForPerson(
         IMapper<EditModel.NodeDetails.ForUpdate, CreateModel.NodeDetails.ForUpdate> nodeDetailMapper
-) : IEnumerableMapper<EditModel.PersonOrganizationRelation.ForOrganization.Complete.Resolved.ToUpdate, CreateModel.PersonOrganizationRelation.ToUpdate>
+) : IEnumerableMapper<EditModel.PersonOrganizationRelation.ForPerson.Complete.Resolved.ToUpdate, CreateModel.PersonOrganizationRelation.ToUpdate>
 {
-    public IEnumerable<CreateModel.PersonOrganizationRelation.ToUpdate> Map(IEnumerable<PersonOrganizationRelation.ForOrganization.Complete.Resolved.ToUpdate> source)
+    public IEnumerable<CreateModel.PersonOrganizationRelation.ToUpdate> Map(IEnumerable<PersonOrganizationRelation.ForPerson.Complete.Resolved.ToUpdate> source)
     {
         foreach(var element in source) {
             yield return new CreateModel.PersonOrganizationRelation.ToUpdate {

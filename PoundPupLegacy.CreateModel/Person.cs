@@ -61,10 +61,21 @@ public abstract record PersonDetails
     }
     public sealed record ForUpdate : PersonDetails
     {
-        public override IEnumerable<InterPersonalRelation> InterPersonalRelations => InterPersonalRelationsToCreate;
+        public override IEnumerable<InterPersonalRelation> InterPersonalRelations => GetInterPersonalRelations();
+
+        private IEnumerable<InterPersonalRelation> GetInterPersonalRelations()
+        {
+            foreach(var elem in InterPersonalRelationsFromToCreate) {
+                yield return elem;
+            }
+            foreach (var elem in InterPersonalRelationsToToCreate) {
+                yield return elem;
+            }
+        }
         public override IEnumerable<PartyPoliticalEntityRelation> PartyPoliticalEntityRelations => PartyPoliticalEntityRelationsToCreate;
         public override IEnumerable<PersonOrganizationRelation> PersonOrganizationRelations => PersonOrganizationRelationsToCreate;
-        public required List<InterPersonalRelation.ToCreate.ForExistingParticipants> InterPersonalRelationsToCreate { get; init; } 
+        public required List<InterPersonalRelation.ToCreate.ForExistingParticipants> InterPersonalRelationsFromToCreate { get; init; }
+        public required List<InterPersonalRelation.ToCreate.ForExistingParticipants> InterPersonalRelationsToToCreate { get; init; }
         public required List<PartyPoliticalEntityRelation.ToCreate.ForExistingParty> PartyPoliticalEntityRelationsToCreate { get; init; }
         public required List<PersonOrganizationRelation.ToCreate.ForExistingParticipants> PersonOrganizationRelationsToCreate { get; init; }
         public required List<InterPersonalRelation.ToUpdate> InterPersonalRelationToUpdates { get; init; }
