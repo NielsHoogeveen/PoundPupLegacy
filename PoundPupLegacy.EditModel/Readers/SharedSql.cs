@@ -199,9 +199,36 @@ internal static class SharedSql
                 jsonb_agg(
                     jsonb_build_object(
                         'NodeIdentification',
-                        (select document from identification_document where id = node_id),
+                        jsonb_build_object(
+                            'NodeId', 
+                            node_id,
+                            'UrlId', 
+                            url_id
+                        ),
                         'NodeDetailsForUpdate',
-                        (select document from node_details_document where id = node_id),
+                        jsonb_build_object(
+                           'NodeTypeName',
+                            node_type_name,
+                            'NodeTypeId',
+                            node_type_id,
+                            'PublisherId', 
+                            publisher_id,
+                            'OwnerId', 
+                            owner_id,
+                            'Title', 
+                            title,
+            		        'TagsForUpdate', 
+                            null,
+                            'TenantNodeDetailsForUpdate',
+                            json_build_object(
+                                'TenantNodesToUpdate',
+                                null
+                            ),
+                            'Tenants',
+                            null,
+                            'Files',
+                            null
+                        ),
                         'Party',
                         jsonb_build_object(
                             'Id',
@@ -251,6 +278,7 @@ internal static class SharedSql
                     publisher_id,
                     owner_id,
                     node_type_name,
+                    node_type_id,
                     url_id,
                     party_id,
                     party_name,
@@ -275,6 +303,7 @@ internal static class SharedSql
                         n.publisher_id,
                         n.owner_id,
                         nt.name node_type_name,
+                        nt.id node_type_id,
                         tn2.url_id,
                         r.party_id,
                         n1.title party_name,
@@ -377,9 +406,36 @@ internal static class SharedSql
                 jsonb_agg(
                     jsonb_build_object(
                         'NodeIdentification',
-                        (select document from identification_document where id = node_id),
+                        jsonb_build_object(
+                            'NodeId', 
+                            node_id,
+                            'UrlId', 
+                            url_id
+                        ),
                         'NodeDetailsForUpdate',
-                        (select document from node_details_document where id = node_id),
+                        jsonb_build_object(
+                           'NodeTypeName',
+                            node_type_name,
+                            'NodeTypeId',
+                            node_type_id,
+                            'PublisherId', 
+                            publisher_id,
+                            'OwnerId', 
+                            owner_id,
+                            'Title', 
+                            title,
+            		        'TagsForUpdate', 
+                            null,
+                            'TenantNodeDetailsForUpdate',
+                            json_build_object(
+                                'TenantNodesToUpdate',
+                                null
+                            ),
+                            'Tenants',
+                            null,
+                            'Files',
+                            null
+                        ),
                         'Person',
                         jsonb_build_object(
                             'Id',
@@ -439,6 +495,7 @@ internal static class SharedSql
                     publisher_id,
                     owner_id,
                     node_type_name,
+                    node_type_id,
                     url_id,
                     person_id,
                     person_name,
@@ -465,6 +522,7 @@ internal static class SharedSql
                         n.publisher_id,
                         n.owner_id,
                         nt.name node_type_name,
+                        nt.id node_type_id,
                         tn2.url_id,
                         r.person_id,
                         n1.title person_name,

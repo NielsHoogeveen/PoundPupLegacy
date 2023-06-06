@@ -81,9 +81,36 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
                 jsonb_agg(
         	        jsonb_build_object(
                         'NodeIdentification',
-                        (select document from identification_document where id = node_id),
+                        jsonb_build_object(
+                            'NodeId', 
+                            node_id,
+                            'UrlId', 
+                            url_id
+                        ),
                         'NodeDetailsForUpdate',
-                        (select document from node_details_document where id = node_id),
+                        jsonb_build_object(
+                           'NodeTypeName',
+                            node_type_name,
+                            'NodeTypeId',
+                            node_type_id,
+                            'PublisherId', 
+                            publisher_id,
+                            'OwnerId', 
+                            owner_id,
+                            'Title', 
+                            title,
+            		        'TagsForUpdate', 
+                            null,
+                            'TenantNodeDetailsForUpdate',
+                            json_build_object(
+                                'TenantNodesToUpdate',
+                                null
+                            ),
+                            'Tenants',
+                            null,
+                            'Files',
+                            null
+                        ),
                         'OrganizationFrom',
                         jsonb_build_object(
                             'Id',
@@ -150,6 +177,7 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
                     publisher_id,
                     owner_id,
                     node_type_name,
+                    node_type_id,
                     url_id,
                     organization_id_from,
                     organization_name_from,
@@ -179,6 +207,7 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
                         n.publisher_id,
                         n.owner_id,
                         nt.name node_type_name,
+                        nt.id node_type_id,
                         tn2.url_id,
                         r.organization_id_from,
                         n1.title organization_name_from,
@@ -285,9 +314,36 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
                 jsonb_agg(
         	        jsonb_build_object(
                         'NodeIdentification',
-                        (select document from identification_document where id = node_id),
+                        jsonb_build_object(
+                            'NodeId', 
+                            node_id,
+                            'UrlId', 
+                            url_id
+                        ),
                         'NodeDetailsForUpdate',
-                        (select document from node_details_document where id = node_id),
+                        jsonb_build_object(
+                           'NodeTypeName',
+                            node_type_name,
+                            'NodeTypeId',
+                            node_type_id,
+                            'PublisherId', 
+                            publisher_id,
+                            'OwnerId', 
+                            owner_id,
+                            'Title', 
+                            title,
+            		        'TagsForUpdate', 
+                            null,
+                            'TenantNodeDetailsForUpdate',
+                            json_build_object(
+                                'TenantNodesToUpdate',
+                                null
+                            ),
+                            'Tenants',
+                            null,
+                            'Files',
+                            null
+                        ),
                         'OrganizationFrom',
                         jsonb_build_object(
                             'Id',
@@ -355,6 +411,7 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
                     publisher_id,
                     owner_id,
                     node_type_name,
+                    node_type_id,
                     url_id,
                     organization_id_from,
                     organization_name_from,
@@ -384,6 +441,7 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
                         n.publisher_id,
                         n.owner_id,
                         nt.name node_type_name,
+                        nt.id node_type_id,
                         tn2.url_id,
                         r.organization_id_from,
                         n1.title organization_name_from,
