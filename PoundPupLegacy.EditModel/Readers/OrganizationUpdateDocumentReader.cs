@@ -57,13 +57,13 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
                         (select document from inter_organizational_relation_types_document),
                         'PersonOrganizationRelationTypes',
                         (select document from person_organization_relation_types_document),
-                        'ExistingPersonOrganizationRelations',
+                        'PersonOrganizationRelationsToUpdate',
                         (select document from person_organization_relations_document),
-                        'ExistingPartyPoliticalEntityRelations',
+                        'OrganizationPoliticalEntityRelationsToUpdate',
                         (select document from party_political_entity_relations_document),
-                        'ExistingInterOrganizationalRelationsFrom',
+                        'InterOrganizationalRelationsFromToUpdate',
                         (select document from inter_organizational_relations_from_document),
-                        'ExistingInterOrganizationalRelationsTo',
+                        'InterOrganizationalRelationsToToUpdate',
                         (select document from inter_organizational_relations_to_document)
                     )
                 ) document
@@ -80,20 +80,10 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
             select
                 jsonb_agg(
         	        jsonb_build_object(
-        		        'NodeId',
-        		        node_id,
-                        'Title',
-                        title,
-                        'PublisherId',
-                        publisher_id,
-                        'OwnerId',
-                        owner_id,
-                        'NodeTypeName',
-                        node_type_name,
-                        'UrlId',
-                        url_id,
-                        'HasBeenStored',
-                        true,
+                        'NodeIdentification',
+                        (select document from identification_document where id = node_id),
+                        'NodeDetailsForUpdate',
+                        (select document from node_details_document where id = node_id),
                         'OrganizationFrom',
                         jsonb_build_object(
                             'Id',
@@ -108,49 +98,49 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
                             'Name',
                             organization_name_to
                         ),
-        		        'InterOrganizationalRelationType',
+                        'InterOrganizationalRelationDetails',
                         jsonb_build_object(
-                            'Id',
-                            inter_organizational_relation_type_id,
-                            'Name',
-                            inter_organizational_relation_type_name
+        		            'InterOrganizationalRelationType',
+                            jsonb_build_object(
+                                'Id',
+                                inter_organizational_relation_type_id,
+                                'Name',
+                                inter_organizational_relation_type_name
+                            ),
+        		            'GeographicalEntity',
+                            case 
+                                when geographical_entity_id is null then  null
+                                else jsonb_build_object(
+                                    'Id',
+                                    geographical_entity_id,
+                                    'Name',
+                                    geographical_entity_name
+                                )
+                            end,
+        		            'MoneyInvolved',
+        		            money_involved,
+        		            'NumberOfChildrenInvolved',
+        		            number_of_children_involved
                         ),
-        		        'ProofDocument',
-                        case
-                            when document_id_proof is null then null
-                            else jsonb_build_object(
-                                'Id',
-                                document_id_proof,
-                                'Name',
-                                document_title_proof
-                            )
-                        end,
-        		        'GeographicalEntity',
-                        case 
-                            when geographical_entity_id is null then  null
-                            else jsonb_build_object(
-                                'Id',
-                                geographical_entity_id,
-                                'Name',
-                                geographical_entity_name
-                            )
-                        end,
-        		        'MoneyInvolved',
-        		        money_involved,
-        		        'NumberOfChildrenInvolved',
-        		        number_of_children_involved,
-        		        'DateFrom',
-        		        date_from,
-        		        'DateTo',
-        		        date_to,
-        		        'Description',
-        		        description,
-                        'SettableRelationSideThisOrganization',
-                        settable_relation_side_this_organization,
-                        'Tags',
-                        null,
-                        'Files',
-                        null
+                        'RelationDetails',
+                        jsonb_build_object(
+        		            'ProofDocument',
+                            case
+                                when document_id_proof is null then null
+                                else jsonb_build_object(
+                                    'Id',
+                                    document_id_proof,
+                                    'Name',
+                                    document_title_proof
+                                )
+                            end,
+        		            'DateFrom',
+        		            date_from,
+        		            'DateTo',
+        		            date_to,
+        		            'Description',
+        		            description
+                        )
         	        )
                 ) "document"
             from(
@@ -294,20 +284,10 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
             select
                 jsonb_agg(
         	        jsonb_build_object(
-        		        'NodeId',
-        		        node_id,
-                        'Title',
-                        title,
-                        'PublisherId',
-                        publisher_id,
-                        'OwnerId',
-                        owner_id,
-                        'NodeTypeName',
-                        node_type_name,
-                        'UrlId',
-                        url_id,
-                        'HasBeenStored',
-                        true,
+                        'NodeIdentification',
+                        (select document from identification_document where id = node_id),
+                        'NodeDetailsForUpdate',
+                        (select document from node_details_document where id = node_id),
                         'OrganizationFrom',
                         jsonb_build_object(
                             'Id',
@@ -322,51 +302,52 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
                             'Name',
                             organization_name_to
                         ),
-        		        'InterOrganizationalRelationType',
+                        'InterOrganizationalRelationDetails',
                         jsonb_build_object(
-                            'Id',
-                            inter_organizational_relation_type_id,
-                            'Name',
-                            inter_organizational_relation_type_name
+        		            'InterOrganizationalRelationType',
+                            jsonb_build_object(
+                                'Id',
+                                inter_organizational_relation_type_id,
+                                'Name',
+                                inter_organizational_relation_type_name
+                            ),
+        		            'GeographicalEntity',
+                            case 
+                                when geographical_entity_id is null then  null
+                                else jsonb_build_object(
+                                    'Id',
+                                    geographical_entity_id,
+                                    'Name',
+                                    geographical_entity_name
+                                )
+                            end,
+        		            'MoneyInvolved',
+        		            money_involved,
+        		            'NumberOfChildrenInvolved',
+        		            number_of_children_involved
                         ),
-        		        'ProofDocument',
-                        case
-                            when document_id_proof is null then null
-                            else jsonb_build_object(
-                                'Id',
-                                document_id_proof,
-                                'Name',
-                                document_title_proof
-                            )
-                        end,
-        		        'GeographicalEntity',
-                        case 
-                            when geographical_entity_id is null then  null
-                            else jsonb_build_object(
-                                'Id',
-                                geographical_entity_id,
-                                'Name',
-                                geographical_entity_name
-                            )
-                        end,
-        		        'MoneyInvolved',
-        		        money_involved,
-        		        'NumberOfChildrenInvolved',
-        		        number_of_children_involved,
-        		        'DateFrom',
-        		        date_from,
-        		        'DateTo',
-        		        date_to,
-        		        'Description',
-        		        description,
-                        'SettableRelationSideThisOrganization',
-                        settable_relation_side_this_organization,
-                        'Tags',
-                        null,
-                        'Files',
-                        null
+                        'RelationDetails',
+                        jsonb_build_object(
+        		            'ProofDocument',
+                            case
+                                when document_id_proof is null then null
+                                else jsonb_build_object(
+                                    'Id',
+                                    document_id_proof,
+                                    'Name',
+                                    document_title_proof
+                                )
+                            end,
+        		            'DateFrom',
+        		            date_from,
+        		            'DateTo',
+        		            date_to,
+        		            'Description',
+        		            description
+                        )
         	        )
                 ) "document"
+        
             from(
                 select
                     node_id,

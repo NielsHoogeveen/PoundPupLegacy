@@ -198,18 +198,10 @@ internal static class SharedSql
             select
                 jsonb_agg(
                     jsonb_build_object(
-                        'NodeId',
-                        node_id,
-                        'Title',
-                        title,
-                        'PublisherId',
-                        publisher_id,
-                        'OwnerId',
-                        owner_id,
-                        'NodeTypeName',
-                        node_type_name,
-                        'UrlId',
-                        url_id,
+                        'NodeIdentification',
+                        (select document from identification_document where id = node_id),
+                        'NodeDetailsForUpdate',
+                        (select document from node_details_document where id = node_id),
                         'Party',
                         jsonb_build_object(
                             'Id',
@@ -231,26 +223,25 @@ internal static class SharedSql
                             'Name',
                             party_political_entity_relation_type_name
                         ),
-                        'ProofDocument',
-                        case
-                            when document_id_proof is null then null
-                            else jsonb_build_object(
-                                'Id',
-                                document_id_proof,
-                                'Name',
-                                document_title_proof
-                            )
-                        end,
-                        'DateFrom',
-                        date_from,
-                        'DateTo',
-                        date_to,
-                        'Description',
-                        description,
-                        'Tags',
-                        null,
-                        'Files',
-                        null
+                        'RelationDetails',
+                        jsonb_build_object(
+                            'ProofDocument',
+                            case
+                                when document_id_proof is null then null
+                                else jsonb_build_object(
+                                    'Id',
+                                    document_id_proof,
+                                    'Name',
+                                    document_title_proof
+                                )
+                            end,
+                            'DateFrom',
+                            date_from,
+                            'DateTo',
+                            date_to,
+                            'Description',
+                            description
+                        )
                     )
                 ) "document"
             from(
@@ -385,18 +376,10 @@ internal static class SharedSql
             select
                 jsonb_agg(
                     jsonb_build_object(
-                	    'NodeId',
-                	    node_id,
-                        'Title',
-                        title,
-                        'PublisherId',
-                        publisher_id,
-                        'OwnerId',
-                        owner_id,
-                        'NodeTypeName',
-                        node_type_name,
-                        'UrlId',
-                        url_id,
+                        'NodeIdentification',
+                        (select document from identification_document where id = node_id),
+                        'NodeDetailsForUpdate',
+                        (select document from node_details_document where id = node_id),
                         'Person',
                         jsonb_build_object(
                             'Id',
@@ -418,36 +401,35 @@ internal static class SharedSql
                             'Name',
                             person_organization_relation_type_name
                         ),
-                	    'ProofDocument',
-                        case
-                            when document_id_proof is null then null
-                            else jsonb_build_object(
-                                'Id',
-                                document_id_proof,
-                                'Name',
-                                document_title_proof
-                            )
-                        end,
-                	    'GeographicalEntity',
-                        case 
-                            when geographical_entity_id is null then  null
-                            else jsonb_build_object(
-                                'Id',
-                                geographical_entity_id,
-                                'Name',
-                                geographical_entity_name
-                            )
-                        end,
-                	    'DateFrom',
-                	    date_from,
-                	    'DateTo',
-                	    date_to,
-                	    'Description',
-                	    description,
-                        'Tags',
-                        null,
-                        'Files',
-                        null
+                        'RelationDetails',
+                        jsonb_build_object(
+                	        'ProofDocument',
+                            case
+                                when document_id_proof is null then null
+                                else jsonb_build_object(
+                                    'Id',
+                                    document_id_proof,
+                                    'Name',
+                                    document_title_proof
+                                )
+                            end,
+                	        'GeographicalEntity',
+                            case 
+                                when geographical_entity_id is null then  null
+                                else jsonb_build_object(
+                                    'Id',
+                                    geographical_entity_id,
+                                    'Name',
+                                    geographical_entity_name
+                                )
+                            end,
+                	        'DateFrom',
+                	        date_from,
+                	        'DateTo',
+                	        date_to,
+                	        'Description',
+                	        description
+                        )
                     )
                 ) "document"
             from(

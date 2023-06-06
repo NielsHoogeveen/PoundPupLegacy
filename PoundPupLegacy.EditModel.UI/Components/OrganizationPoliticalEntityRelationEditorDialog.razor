@@ -77,7 +77,7 @@
     {
         editContext = new EditContext(Relation);
         validationMessageStore = new ValidationMessageStore(editContext);
-        RelationType = RelationTypes.First(x => x.Id == Relation.OrganizationPoliticalEntityRelationType.Id);
+        RelationType = RelationTypes.First(x => x.Id == Relation.PartyPoliticalEntityRelationType.Id);
     }
 
     private void OnChangeRelationType(ChangeEventArgs args)

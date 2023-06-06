@@ -19,7 +19,7 @@ internal class OrganizationPoliticalEntityRelationToCreateForNewOrganization(
                         ? new DateTimeRange(null, null)
                         : element.RelationDetails.DateRange,
                     DocumentIdProof = element.RelationDetails.ProofDocument?.Id,
-                    PartyPoliticalEntityRelationTypeId = element.OrganizationPoliticalEntityRelationType.Id,
+                    PartyPoliticalEntityRelationTypeId = element.PartyPoliticalEntityRelationType.Id,
                     PoliticalEntityId = element.PoliticalEntity.Id
                 }
             };

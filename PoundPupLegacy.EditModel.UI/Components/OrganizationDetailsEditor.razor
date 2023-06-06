@@ -46,7 +46,7 @@
     public override void OnTitleChange(string title)
     {
         foreach (var relation in OrganizationDetails.OrganizationPoliticalEntityRelations.OfType<OrganizationPoliticalEntityRelation.Complete.Resolved.ToUpdate>()) {
-            relation.Organization.Name = title;
+            relation.Party.Name = title;
         };
         foreach (var relation in OrganizationDetails.OrganizationPoliticalEntityRelations.OfType<OrganizationPoliticalEntityRelation.Complete.Resolved.ToCreateForExistingOrganization>()) {
             relation.Organization.Name = title;

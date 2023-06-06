@@ -13,7 +13,7 @@ public static class OrganizationPoliticalEntityRelationExtension
     {
         return new OrganizationPoliticalEntityRelation.Incomplete.ToCreateForExistingOrganization {
             Organization = organizationListItem,
-            OrganizationPoliticalEntityRelationType = relationType,
+            PartyPoliticalEntityRelationType = relationType,
             PoliticalEntity = null,
             NodeDetailsForCreate = NodeDetails.EmptyInstance(49, "organization political entity relation", ownerId, publishedId),
             RelationDetails = RelationDetails.EmptyInstance,
@@ -23,7 +23,7 @@ public static class OrganizationPoliticalEntityRelationExtension
     {
         return new OrganizationPoliticalEntityRelation.Incomplete.ToCreateForNewOrganization {
             Organization = organizationName,
-            OrganizationPoliticalEntityRelationType = relationType,
+            PartyPoliticalEntityRelationType = relationType,
             PoliticalEntity = null,
             NodeDetailsForCreate = NodeDetails.EmptyInstance(49, "organization political entity relation", ownerId, publishedId),
             RelationDetails = RelationDetails.EmptyInstance,
@@ -50,7 +50,7 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
      );
     public required RelationDetails RelationDetails { get; init; }
     public abstract NodeDetails NodeDetails { get; }
-    public required OrganizationPoliticalEntityRelationTypeListItem OrganizationPoliticalEntityRelationType { get; set; }
+    public required OrganizationPoliticalEntityRelationTypeListItem PartyPoliticalEntityRelationType { get; set; }
 
     public abstract OrganizationItem? OrganizationItem { get; }
     public abstract PoliticalEntityListItem? PoliticalEntityItem { get; }
@@ -92,7 +92,7 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
                     Organization = Organization,
                     PoliticalEntity = politicalEntity,
                     NodeDetailsForCreate = NodeDetailsForCreate,
-                    OrganizationPoliticalEntityRelationType = OrganizationPoliticalEntityRelationType,
+                    PartyPoliticalEntityRelationType = PartyPoliticalEntityRelationType,
                     RelationDetails = RelationDetails
                 };
             }
@@ -120,7 +120,7 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
                     Organization = Organization,
                     PoliticalEntity = politicalEntity,
                     NodeDetailsForCreate = NodeDetailsForCreate,
-                    OrganizationPoliticalEntityRelationType = OrganizationPoliticalEntityRelationType,
+                    PartyPoliticalEntityRelationType = PartyPoliticalEntityRelationType,
                     RelationDetails = RelationDetails
                 };
             }
@@ -159,11 +159,11 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
                 {
                     return existingOrganizationPoliticalEntityRelation(this);
                 }
-                public required OrganizationListItem Organization { get; set; }
+                public required OrganizationListItem Party { get; set; }
                 public required PoliticalEntityListItem PoliticalEntity { get; set; }
-                public override string OrganizationName => Organization.Name; 
+                public override string OrganizationName => Party.Name; 
                 public override string PoliticalEntityName => PoliticalEntity.Name;
-                public override OrganizationItem? OrganizationItem => Organization;
+                public override OrganizationItem? OrganizationItem => Party;
                 public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
             }
             public sealed record ToCreateForExistingOrganization : Resolved, NewNode

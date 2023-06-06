@@ -2,10 +2,10 @@
 @inherits EditorDetailBase
 
 <div class="relations-editor">
-    @if (typeof(TRelation).Name.EndsWith("From")){
+    @if (typeof(TRelation) == typeof(InterOrganizationalRelation.From.Complete)){
         <h4>Relations between this organization and another one</h4>
     }
-    @if (typeof(TRelation).Name.EndsWith("To")) {
+    @if (typeof(TRelation) == typeof(InterOrganizationalRelation.To.Complete)) {
         <h4>Relations between another organization and this one</h4>
     }
     @if (Relations.Any()) {
