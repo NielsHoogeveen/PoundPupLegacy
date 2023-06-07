@@ -27,7 +27,7 @@ internal class PersonToUpdateMapper(
                 InterPersonalRelationsFromToCreate = interPersonalRelationFromToCreateMapper.Map(source.PersonDetailsForUpdate.InterPersonalRelationsFromToCreate).ToList(),
                 InterPersonalRelationsToToCreate = interPersonalRelationToToCreateMapper.Map(source.PersonDetailsForUpdate.InterPersonalRelationsToToCreate).ToList(),
                 PartyPoliticalEntityRelationsToCreate = partyPolitcalEntityCreateMapper.Map(source.PersonDetailsForUpdate.PersonPoliticalEntityRelationsToCreate).ToList(),
-                PartyPoliticalEntityRelationToUpdates = partyPoliticalEntityRelationUpdateMapper.Map(source.PersonDetailsForUpdate.PersonPoliticalEntityRelationsToUpdate).ToList(),
+                PartyPoliticalEntityRelationToUpdates = partyPoliticalEntityRelationUpdateMapper.Map(source.PersonDetailsForUpdate.PartyPoliticalEntityRelationsToUpdate).ToList(),
                 PersonOrganizationRelationsToCreate = personOrganizationRelationCreateMapper.Map(source.PersonDetailsForUpdate.PersonOrganizationRelationsToCreate).ToList(),
                 PersonOrganizationRelationsToUpdates = personOrganizationRelationUpdateMapper.Map(source.PersonDetailsForUpdate.PersonOrganizationRelationsToUpdate).ToList(),
                 Bioguide = null,

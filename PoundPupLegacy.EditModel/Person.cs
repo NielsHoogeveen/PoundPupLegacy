@@ -173,7 +173,7 @@ public abstract record PersonDetails
     public sealed record ForUpdate: PersonDetails
     {
         private List<PersonPoliticalEntityRelation.Complete.Resolved.ToUpdate> existingPersonPoliticalEntityRelations = new();
-        public List<PersonPoliticalEntityRelation.Complete.Resolved.ToUpdate> PersonPoliticalEntityRelationsToUpdate {
+        public List<PersonPoliticalEntityRelation.Complete.Resolved.ToUpdate> PartyPoliticalEntityRelationsToUpdate {
             get => existingPersonPoliticalEntityRelations;
             init {
                 if (value is not null) {
@@ -184,7 +184,7 @@ public abstract record PersonDetails
         public override IEnumerable<PersonPoliticalEntityRelation.Complete> PersonPoliticalEntityRelations => GetPersonPoliticalEntityRelations();
         private IEnumerable<PersonPoliticalEntityRelation.Complete> GetPersonPoliticalEntityRelations()
         {
-            foreach (var elem in PersonPoliticalEntityRelationsToUpdate) {
+            foreach (var elem in PartyPoliticalEntityRelationsToUpdate) {
                 yield return elem;
             }
             foreach (var elem in PersonPoliticalEntityRelationsToCreate) {
@@ -210,7 +210,7 @@ public abstract record PersonDetails
             }
         }
         private List<InterPersonalRelation.To.Complete.Resolved.ToUpdate> existingInterPersonalRelationsTo = new();
-        public List<InterPersonalRelation.To.Complete.Resolved.ToUpdate> InterPersonalRelationsToUpdate {
+        public List<InterPersonalRelation.To.Complete.Resolved.ToUpdate> InterPersonalRelationsToToUpdate {
             get => existingInterPersonalRelationsTo;
             init {
                 if (value is not null) {
@@ -231,7 +231,7 @@ public abstract record PersonDetails
         public override IEnumerable<InterPersonalRelation.To.Complete> InterPersonalRelationsTo => GetInterPersonalRelationsTo();
         private IEnumerable<InterPersonalRelation.To.Complete> GetInterPersonalRelationsTo()
         {
-            foreach (var elem in InterPersonalRelationsToUpdate) {
+            foreach (var elem in InterPersonalRelationsToToUpdate) {
                 yield return elem;
             }
             foreach (var elem in InterPersonalRelationsToToCreate) {

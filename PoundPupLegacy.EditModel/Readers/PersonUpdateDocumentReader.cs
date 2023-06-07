@@ -16,7 +16,7 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
             {INTER_PERSONAL_RELATIONS_TO_DOCUMENT},
             {SharedSql.PERSON_ORGANIZATION_RELATIONS_DOCUMENT},
             {SharedSql.PARTY_POLITICAL_ENTITY_RELATIONS_DOCUMENT}
-                    select
+                select
                 jsonb_build_object(
                     'NodeIdentification',
                     (select document from identification_document where id = n.id),
@@ -38,13 +38,13 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                         (select document from person_organization_relation_types_document),
                         'PersonPoliticalEntityRelationTypes',
                         (select document from person_political_entity_relation_types_document),
-                        'ExistingInterPersonalRelationsFrom',
+                        'InterPersonalRelationsFromToUpdate',
                         (select document from inter_personal_relations_from_document),
-                        'ExistingInterPersonalRelationsTo',
+                        'InterPersonalRelationsToToUpdate',
                         (select document from inter_personal_relations_to_document),
-                        'ExistingPersonOrganizationRelations',
+                        'PersonOrganizationRelationsToUpdate',
                         (select document from person_organization_relations_document),
-                        'ExistingPartyPoliticalEntityRelations',
+                        'PartyPoliticalEntityRelationsToUpdate',
                         (select document from party_political_entity_relations_document)
                     )
                 ) document
@@ -60,18 +60,37 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
             select
                 jsonb_agg(
         	        jsonb_build_object(
-        		        'NodeId',
-        		        node_id,
-                        'Title',
-                        title,
-                        'PublisherId',
-                        publisher_id,
-                        'OwnerId',
-                        owner_id,
-                        'NodeTypeName',
-                        node_type_name,
-                        'UrlId',
-                        url_id,
+                        'NodeIdentification',
+                        jsonb_build_object(
+                            'NodeId', 
+                            node_id,
+                            'UrlId', 
+                            url_id
+                        ),
+                        'NodeDetailsForUpdate',
+                        jsonb_build_object(
+                           'NodeTypeName',
+                            node_type_name,
+                            'NodeTypeId',
+                            node_type_id,
+                            'PublisherId', 
+                            publisher_id,
+                            'OwnerId', 
+                            owner_id,
+                            'Title', 
+                            title,
+            		        'TagsForUpdate', 
+                            null,
+                            'TenantNodeDetailsForUpdate',
+                            json_build_object(
+                                'TenantNodesToUpdate',
+                                null
+                            ),
+                            'Tenants',
+                            null,
+                            'Files',
+                            null
+                        ),
                         'PersonFrom',
                         jsonb_build_object(
                             'Id',
@@ -79,8 +98,6 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                             'Name',
         		            person_name_from
                         ),
-                        'HasBeenStored',
-                        true,
         		        'PersonTo',
                         jsonb_build_object(
                             'Id',
@@ -95,26 +112,25 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                             'Name',
                             inter_personal_relation_type_name
                         ),
-        		        'ProofDocument',
-                        case
-                            when document_id_proof is null then null
-                            else jsonb_build_object(
-                                'Id',
-                                document_id_proof,
-                                'Name',
-                                document_title_proof
-                            )
-                        end,
-        		        'DateFrom',
-        		        date_from,
-        		        'DateTo',
-        		        date_to,
-        		        'Description',
-        		        description,
-                        'Tags',
-                        null,
-                        'Files',
-                        null
+                        'RelationDetails',
+                        jsonb_build_object(
+        		            'ProofDocument',
+                            case
+                                when document_id_proof is null then null
+                                else jsonb_build_object(
+                                    'Id',
+                                    document_id_proof,
+                                    'Name',
+                                    document_title_proof
+                                )
+                            end,
+        		            'DateFrom',
+        		            date_from,
+        		            'DateTo',
+        		            date_to,
+        		            'Description',
+        		            description
+                        )
         	        )
                 ) "document"
             from(
@@ -124,6 +140,7 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                     publisher_id,
                     owner_id,
                     node_type_name,
+                    node_type_id,
                     url_id,
                     person_id_from,
                     person_name_from,
@@ -148,6 +165,7 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                         n.publisher_id,
                         n.owner_id,
                         nt.name node_type_name,
+                        nt.id node_type_id,
                         tn2.url_id,
                         r.person_id_from,
                         n1.title person_name_from,
@@ -248,18 +266,37 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
             select
                 jsonb_agg(
         	        jsonb_build_object(
-        		        'NodeId',
-        		        node_id,
-                        'Title',
-                        title,
-                        'PublisherId',
-                        publisher_id,
-                        'OwnerId',
-                        owner_id,
-                        'NodeTypeName',
-                        node_type_name,
-                        'UrlId',
-                        url_id,
+                        'NodeIdentification',
+                        jsonb_build_object(
+                            'NodeId', 
+                            node_id,
+                            'UrlId', 
+                            url_id
+                        ),
+                        'NodeDetailsForUpdate',
+                        jsonb_build_object(
+                           'NodeTypeName',
+                            node_type_name,
+                            'NodeTypeId',
+                            node_type_id,
+                            'PublisherId', 
+                            publisher_id,
+                            'OwnerId', 
+                            owner_id,
+                            'Title', 
+                            title,
+            		        'TagsForUpdate', 
+                            null,
+                            'TenantNodeDetailsForUpdate',
+                            json_build_object(
+                                'TenantNodesToUpdate',
+                                null
+                            ),
+                            'Tenants',
+                            null,
+                            'Files',
+                            null
+                        ),
                         'PersonFrom',
                         jsonb_build_object(
                             'Id',
@@ -267,8 +304,6 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                             'Name',
         		            person_name_from
                         ),
-                        'HasBeenStored',
-                        true,
         		        'PersonTo',
                         jsonb_build_object(
                             'Id',
@@ -283,35 +318,35 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                             'Name',
                             inter_personal_relation_type_name
                         ),
-        		        'ProofDocument',
-                        case
-                            when document_id_proof is null then null
-                            else jsonb_build_object(
-                                'Id',
-                                document_id_proof,
-                                'Name',
-                                document_title_proof
-                            )
-                        end,
-        		        'DateFrom',
-        		        date_from,
-        		        'DateTo',
-        		        date_to,
-        		        'Description',
-        		        description,
-                        'Tags',
-                        null,
-                        'Files',
-                        null
+                        'RelationDetails',
+                        jsonb_build_object(
+        		            'ProofDocument',
+                            case
+                                when document_id_proof is null then null
+                                else jsonb_build_object(
+                                    'Id',
+                                    document_id_proof,
+                                    'Name',
+                                    document_title_proof
+                                )
+                            end,
+        		            'DateFrom',
+        		            date_from,
+        		            'DateTo',
+        		            date_to,
+        		            'Description',
+        		            description
+                        )
         	        )
                 ) "document"
-            from(
+                from(
                 select
                     node_id,
                     title,
                     publisher_id,
                     owner_id,
                     node_type_name,
+                    node_type_id,
                     url_id,
                     person_id_from,
                     person_name_from,
@@ -336,6 +371,7 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                         n.publisher_id,
                         n.owner_id,
                         nt.name node_type_name,
+                        nt.id node_type_id,
                         tn2.url_id,
                         r.person_id_from,
                         n1.title person_name_from,

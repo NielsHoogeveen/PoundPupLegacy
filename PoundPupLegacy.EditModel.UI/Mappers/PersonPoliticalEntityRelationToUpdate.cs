@@ -14,13 +14,13 @@ internal class PersonPoliticalEntityRelationToUpdate(
                     Id = element.NodeIdentification.NodeId,
                 },
                 NodeDetails = nodeDetailMapper.Map(element.NodeDetailsForUpdate),
-                PartyId = element.Person.Id,
+                PartyId = element.Party.Id,
                 PartyPoliticalEntityRelationDetails = new PartyPoliticalEntityRelationDetails {
                     DateRange = element.RelationDetails.DateRange is null
                         ? new DateTimeRange(null, null)
                         : element.RelationDetails.DateRange,
                     DocumentIdProof = element.RelationDetails.ProofDocument?.Id,
-                    PartyPoliticalEntityRelationTypeId = element.PersonPoliticalEntityRelationType.Id,
+                    PartyPoliticalEntityRelationTypeId = element.PartyPoliticalEntityRelationType.Id,
                     PoliticalEntityId = element.PoliticalEntity.Id,
                 }
             };

@@ -6,7 +6,7 @@ public static class PersonPoliticalEntityRelationExtensions
     {
         return new PersonPoliticalEntityRelation.Incomplete.ToCreateForExistingPerson {
             Person = personListItem,
-            PersonPoliticalEntityRelationType = relationType,        
+            PartyPoliticalEntityRelationType = relationType,        
             RelationDetails = RelationDetails.EmptyInstance,
             NodeDetailsForCreate = NodeDetails.EmptyInstance(49, "person political entity relation", ownerId, publisherId),
             PoliticalEntity = null
@@ -16,7 +16,7 @@ public static class PersonPoliticalEntityRelationExtensions
     {
         return new PersonPoliticalEntityRelation.Incomplete.ToCreateForNewPerson {
             Person = personName,
-            PersonPoliticalEntityRelationType = relationType,        
+            PartyPoliticalEntityRelationType = relationType,        
             RelationDetails = RelationDetails.EmptyInstance,
             NodeDetailsForCreate = NodeDetails.EmptyInstance(49, "person political entity relation", ownerId, publisherId),
             PoliticalEntity = null
@@ -30,7 +30,7 @@ public abstract record PersonPoliticalEntityRelation : Relation
 
     public required RelationDetails RelationDetails { get; init; }
     public abstract NodeDetails NodeDetails { get; }
-    public required PersonPoliticalEntityRelationTypeListItem PersonPoliticalEntityRelationType { get; set; }
+    public required PersonPoliticalEntityRelationTypeListItem PartyPoliticalEntityRelationType { get; set; }
 
     [RequireNamedArgs]
     public abstract T Match<T>(
@@ -65,7 +65,7 @@ public abstract record PersonPoliticalEntityRelation : Relation
                     Person = Person,
                     PoliticalEntity = politicalEntity,
                     NodeDetailsForCreate = NodeDetailsForCreate,
-                    PersonPoliticalEntityRelationType = PersonPoliticalEntityRelationType,
+                    PartyPoliticalEntityRelationType = PartyPoliticalEntityRelationType,
                     RelationDetails = RelationDetails
                 };
             }
@@ -82,7 +82,7 @@ public abstract record PersonPoliticalEntityRelation : Relation
                     Person = Person,
                     PoliticalEntity = politicalEntity,
                     NodeDetailsForCreate = NodeDetailsForCreate,
-                    PersonPoliticalEntityRelationType = PersonPoliticalEntityRelationType,
+                    PartyPoliticalEntityRelationType = PartyPoliticalEntityRelationType,
                     RelationDetails = RelationDetails
                 };
             }
@@ -112,11 +112,11 @@ public abstract record PersonPoliticalEntityRelation : Relation
                 public required NodeIdentification NodeIdentification { get; init; }
                 public int NodeId { get; init; }
                 public int UrlId { get; set; }
-                public required PersonListItem Person { get; set; }
+                public required PersonListItem Party { get; set; }
                 public required PoliticalEntityListItem PoliticalEntity { get; set; }
-                public override string PersonName => Person.Name;
+                public override string PersonName => Party.Name;
                 public override string PoliticalEntityName => PoliticalEntity.Name;
-                public override PersonItem? PersonItem => Person;
+                public override PersonItem? PersonItem => Party;
                 public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
             }
             public sealed record ToCreateForExistingPerson : Resolved, NewNode
