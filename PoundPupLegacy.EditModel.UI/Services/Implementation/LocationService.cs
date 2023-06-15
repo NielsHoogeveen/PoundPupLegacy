@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System.Net.Http.Json;
 using System.Text;
 
@@ -7,6 +8,7 @@ namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 internal sealed class LocationService(
         IDbConnection connection,
         ILogger<LocationService> logger,
+        IConfiguration configuration,
         IEnumerableDatabaseReaderFactory<SubdivisionListItemsReaderRequest, SubdivisionListItem> subdivisionListItemReaderFactory,
         IEnumerableDatabaseReaderFactory<CountryListItemsReaderRequest, CountryListItem> countryListItemReaderFactory
         ) : DatabaseService(connection, logger), ILocationService
@@ -42,8 +44,8 @@ internal sealed class LocationService(
         }
     }
 
-    private const string GOOGLE_API_ADDRESS = "https://maps.googleapis.com/maps/api/geocode/json?";
-    private const string GOOGLE_API_KEY = "AIzaSyDz40b_l25vytdmQGVnOFTqHVakmaZ6QCE";
+    //private const string GOOGLE_API_ADDRESS = "https://maps.googleapis.com/maps/api/geocode/json?";
+    //private const string GOOGLE_API_KEY = "AIzaSyDz40b_l25vytdmQGVnOFTqHVakmaZ6QCE";
     public async Task<Location> ValidateLocationAsync(Location location)
     {
         HttpClient client = new();
@@ -67,7 +69,7 @@ internal sealed class LocationService(
         addressBuilder.Append(location.CountryName.Replace(" ", "$20"));
 
         var address = addressBuilder.ToString();
-        var url = $"{GOOGLE_API_ADDRESS}address={address}&key={GOOGLE_API_KEY}";
+        var url = $"{configuration.GetValue<string>("GoogleApiAddress")}address={address}&key={configuration.GetValue<string>("GoogleApiKey")}";
         var response = await client.GetAsync(url);
         var responseLocation = new Location.ToUpdate {
             Street = null,
