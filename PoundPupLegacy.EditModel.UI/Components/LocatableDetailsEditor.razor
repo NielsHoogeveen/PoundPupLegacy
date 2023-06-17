@@ -45,11 +45,6 @@
 
     private Location? locationToEdit = null;
 
-    private int? NodeId => LocatableDetails switch {
-        ExistingNode n => n.NodeIdentification.NodeId,
-        _ => null
-    };
-
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();

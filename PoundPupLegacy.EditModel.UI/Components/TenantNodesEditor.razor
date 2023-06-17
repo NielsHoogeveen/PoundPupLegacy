@@ -90,11 +90,6 @@
     [EditorRequired]
     public NodeDetails NodeDetails { get; set; } = default!;
 
-    private int? NodeId => NodeDetails switch {
-        ExistingNode n => n.NodeIdentification.NodeId,
-        _ => null
-    };
-
     protected override async Task OnInitializedAsync()
     {
         await Task.CompletedTask;

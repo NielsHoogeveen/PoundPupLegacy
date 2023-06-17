@@ -7,7 +7,7 @@ internal partial class Program
 {
     internal const string ConnectionStringMariaDbPPL = "server=localhost;userid=root;Password=root;database=ppl";
     internal const string ConnectionStringMariaDbCPCT = "server=localhost;userid=root;Password=root;database=cpct";
-    internal const string ConnectStringPostgresql = "Host=localhost;Username=niels;Password=niels;Database=ppl;Include Error Detail=True";
+    internal const string ConnectStringPostgresql = "Host=184.107.108.149;Username=niels;Password=niels;Database=ppl;Include Error Detail=True";
 
     static async Task Main(string[] args)
     {
