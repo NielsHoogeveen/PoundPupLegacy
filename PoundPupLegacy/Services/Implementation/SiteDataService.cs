@@ -107,6 +107,12 @@ internal sealed class SiteDataService(
     public int GetTenantId(Uri uri)
     {
         var domainName = uri.Host;
+        if(domainName == "184.107.108.149") {
+            return 1;
+        }
+        if(domainName == "188.116.4.114") {
+            return 6;
+        }
         if (domainName == "localhost") {
             var localHostTenantString = configuration["LocalHostTenant"];
             if (localHostTenantString is null) {
