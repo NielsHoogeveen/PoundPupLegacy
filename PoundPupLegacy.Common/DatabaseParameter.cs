@@ -325,6 +325,26 @@ public sealed record NonNullableStringDatabaseParameter : DatabaseParameter<stri
     }
 
 }
+
+public sealed record SearchStringDatabaseParameter : DatabaseParameter<string>
+{
+    public override bool IsNullable => false;
+
+    public override NpgsqlDbType ParameterType => NpgsqlDbType.Varchar;
+
+    public override void Set(string value, NpgsqlCommand command)
+    {
+        var str = value;
+        while (str.Contains("  ")) {
+            str = str.Replace("  ", " ");
+        }
+        str = str.Replace(" ", " & ");
+        str = str.Replace("& and &", " & ");
+        str = str.Replace("& or &", " | ");
+        SetParameter(str, command);
+    }
+
+}
 public sealed record TrimmingNonNullableStringDatabaseParameter : DatabaseParameter<string>
 {
     public override bool IsNullable => false;

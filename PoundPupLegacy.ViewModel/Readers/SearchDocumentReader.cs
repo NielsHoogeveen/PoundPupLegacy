@@ -17,7 +17,7 @@ internal sealed class SearchDocumentReaderFactory : SingleItemDatabaseReaderFact
     private static readonly NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
     private static readonly NonNullableIntegerDatabaseParameter LimitParameter = new() { Name = "limit" };
     private static readonly NonNullableIntegerDatabaseParameter OffsetParameter = new() { Name = "offset" };
-    private static readonly NonNullableStringDatabaseParameter SearchStringParameter = new() { Name = "search_string" };
+    private static readonly SearchStringDatabaseParameter SearchStringParameter = new() { Name = "search_string" };
 
     private static readonly FieldValueReader<SearchResult> DocumentReader = new() { Name = "document" };
 
