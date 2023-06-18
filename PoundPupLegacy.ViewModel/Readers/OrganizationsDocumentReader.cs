@@ -71,7 +71,7 @@ internal sealed class OrganizationsDocumentReaderFactory : SingleItemDatabaseRea
                                 tn.node_id "id"
                             from organization_type ot
                             join node n on n.id = ot.id
-                            join tenant_node tn on tn.node_id = n.id and tn.tenant_id = 1
+                            join tenant_node tn on tn.node_id = n.id and tn.tenant_id = @tenant_id
                             ORDER BY n.title
                         ) x
                 ),
@@ -162,7 +162,7 @@ internal sealed class OrganizationsDocumentReaderFactory : SingleItemDatabaseRea
                                 where tn.tenant_id = @tenant_id
                             ) ll on ll.locatable_id = o.id
                             left join organization_organization_type oot on oot.organization_id = o.id
-            	            WHERE tn.tenant_id = 1 and n.title ilike @pattern 
+            	            WHERE tn.tenant_id = @tenant_id and n.title ilike @pattern 
                             AND (@country_id is null or ll.url_id = @country_id)
                             AND (@organization_type_id is null or oot.organization_type_id = @organization_type_id)
             	            ORDER BY n.title

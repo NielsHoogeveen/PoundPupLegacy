@@ -1,10 +1,13 @@
-﻿using SearchOption = PoundPupLegacy.Common.SearchOption;
+﻿using Microsoft.Extensions.Primitives;
+using SearchOption = PoundPupLegacy.Common.SearchOption;
 
 namespace PoundPupLegacy.ViewModel.UI.Components;
 public abstract partial class PagedSearchViewer<TListEntry> : PagedViewerBase<PagedSearchListSettings, TListEntry>
     where TListEntry : ListEntry
 {
     protected sealed override PagedSearchListSettings PagedListSettings { get; } = new PagedSearchListSettings();
+
+    protected abstract void SetPagedListSettings(Dictionary<string, StringValues> parsedQuery);
 
     protected sealed override async Task InitializeAsync(bool isReloading)
     {
@@ -30,6 +33,7 @@ public abstract partial class PagedSearchViewer<TListEntry> : PagedViewerBase<Pa
             else {
                 PagedListSettings.SearchOption = SearchOption.Contains;
             }
+            SetPagedListSettings(parsedQuery);
         }
         await base.InitializeAsync(isReloading);
     }

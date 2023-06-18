@@ -1,4 +1,5 @@
-﻿@inherits PagedSearchViewer<PersonListEntry>
+﻿@using Microsoft.Extensions.Primitives
+@inherits PagedSearchViewer<PersonListEntry>
 @inject IFetchPersonService PersonService
 <BreadCrumElementViewer Model="BreadCrumElements" />
 <SearchForm 
@@ -11,6 +12,11 @@
     SelectPage="SelectPage" />
 @code {
     protected override int PageSize => 50;
+
+    protected override void SetPagedListSettings(Dictionary<string, StringValues> parsedQuery)
+    {
+
+    }
 
     protected override async Task<IPagedList<PersonListEntry>> GetListEntriesAsync()
     {

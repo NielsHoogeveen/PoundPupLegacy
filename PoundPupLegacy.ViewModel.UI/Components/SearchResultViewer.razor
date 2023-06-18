@@ -1,9 +1,15 @@
-﻿@inherits PagedSearchViewer<SearchResultListEntry>
+﻿@using Microsoft.Extensions.Primitives
+@inherits PagedSearchViewer<SearchResultListEntry>
 @inject IFetchSearchService FetchSearchService
 <TeaserListViewer ListEntries="ListEntries" PagedListSettings="PagedListSettings" SelectPage="SelectPage"/>
 @code {
 
     protected override int PageSize => 25;
+    protected override void SetPagedListSettings(Dictionary<string, StringValues> parsedQuery)
+    {
+
+    }
+
 
     protected override async Task<IPagedList<SearchResultListEntry>> GetListEntriesAsync()
     {

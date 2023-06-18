@@ -1,4 +1,5 @@
 ﻿@inherits PagedSearchViewer<OrganizationListEntry>
+@using Microsoft.Extensions.Primitives
 @inject IFetchOrganizationsService FetchOrganizationsService
 <BreadCrumElementViewer Model="BreadCrumElements" />
 <SearchForm PagedSearchListSettings="PagedListSettings" OnSearch="OnSearch">
@@ -49,7 +50,21 @@
         }
         return items;
     }
-
+    protected override void SetPagedListSettings(Dictionary<string, StringValues> parsedQuery)
+    {
+        if(parsedQuery.TryGetValue("country", out var countryIdValue)) {
+            if (int.TryParse(countryIdValue, out int providedCountryId)) {
+                CountryId = providedCountryId;
+                AddCountryToQueryString(providedCountryId);
+            }
+        }
+        if(parsedQuery.TryGetValue("organization_type", out var organizationTypeIdValue)) {
+            if (int.TryParse(organizationTypeIdValue, out int providedOrganizationTypeId)) {
+                OrganizationTypeId = providedOrganizationTypeId;
+                AddOrganizationTypeToQueryString(providedOrganizationTypeId);
+            }
+        }
+    }
     protected override async Task<IPagedList<OrganizationListEntry>> GetListEntriesAsync()
     {
         var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
@@ -69,26 +84,35 @@
         return organizationSearch.Organizations;
     }
 
-    private async Task OnSelectCountry(int id)
+    private void AddCountryToQueryString(int id)
     {
-        CountryId = id;
         if (PagedListSettings.QueryString == string.Empty) {
             PagedListSettings.QueryString = $"country={id}";
         }
         else {
             PagedListSettings.QueryString = $"{PagedListSettings.QueryString}&country={id}";
         }
+    }
+    private async Task OnSelectCountry(int id)
+    {
+        CountryId = id;
+        AddCountryToQueryString(id);
         await Reload();
     }
-    private async Task OnSelectOrganizationType(int id)
+
+    private void AddOrganizationTypeToQueryString(int id)
     {
-        OrganizationTypeId = id;
         if (PagedListSettings.QueryString == string.Empty) {
             PagedListSettings.QueryString = $"organization_type={id}";
         }
         else {
             PagedListSettings.QueryString = $"{PagedListSettings.QueryString}&organization_type={id}";
         }
+    }
+    private async Task OnSelectOrganizationType(int id)
+    {
+        OrganizationTypeId = id;
+        AddOrganizationTypeToQueryString(id);
         await Reload();
     }
 
