@@ -51,6 +51,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             {DISCUSSION_BREADCRUM_DOCUMENT},
             {PAGE_BREADCRUM_DOCUMENT},
             {ORGANIZATION_BREADCRUM_DOCUMENT},
+            {PERSON_BREADCRUM_DOCUMENT},
             {DOCUMENT_BREADCRUM_DOCUMENT},
             {POLL_BREADCRUM_DOCUMENT},
             {ABUSE_CASE_BREADCRUM_DOCUMENT},
@@ -1790,6 +1791,33 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             ) bces
         )
         """;
+    const string PERSON_BREADCRUM_DOCUMENT = """
+        person_bread_crum_document AS (
+            SELECT jsonb_agg(
+                jsonb_build_object(
+                    'Path', url,
+                    'Title', "name"
+                ) 
+            ) document
+            FROM(
+            SELECT
+        	    url,
+        	    "name"
+            FROM(
+                SELECT 
+                    '/home' url, 
+                    'Home' "name", 
+                    0 "order"
+                UNION
+                SELECT 
+                    '/persons', 
+                    'persons', 
+                    1
+                ) bce
+                ORDER BY bce."order"
+            ) bces
+        )
+        """;
 
     const string COUNTRY_SUBDIVISIONS_DOCUMENT = """
         country_subdivisions_document as (
@@ -3251,7 +3279,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     'Label',
                     full_name
                 ),
-                'BreadCrumElements', (SELECT document FROM organization_bread_crum_document),
+                'BreadCrumElements', (SELECT document FROM person_bread_crum_document),
                 'Tags', (SELECT document FROM tags_document),
                 'CommentListItems', (SELECT document FROM  comments_document),
                 'Documents', (SELECT document FROM documents_document),
