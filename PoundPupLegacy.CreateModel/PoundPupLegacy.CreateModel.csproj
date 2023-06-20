@@ -16,4 +16,8 @@
     <ProjectReference Include="..\PoundPupLegacy.Common\PoundPupLegacy.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DatabaseUpgrade\SQL\" />
+  </ItemGroup>
+
 </Project>

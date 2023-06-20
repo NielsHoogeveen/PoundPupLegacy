@@ -24,7 +24,7 @@
         {
 
 
-            if (!(elem is NodeTerm.ForUpdate existingNodeTerm && existingNodeTerm.HasBeenDeleted)) {
+            if (!(elem is NodeTerm.ForUpdate existingNodeTerm && existingNodeTerm.NodeTermStatus == NodeTermStatus.Removed)) {
                 <div class="tag-element">
                         <span class="tag-element-name">@elem.Name</span>
                     <button type="button" @onclick="() => SetTagToDeleted(elem.TermId)">delete</button>
@@ -51,12 +51,21 @@
         {
             switch (NodeTypeTags.Entries.FirstOrDefault(x => x.TermId == termId)) {
                 case NodeTerm.ForUpdate existingNodeTerm:
-                    if (existingNodeTerm.HasBeenDeleted) {
-                        existingNodeTerm.HasBeenDeleted = false;
+                    if (existingNodeTerm.NodeTermStatus == NodeTermStatus.Removed) {
+                        existingNodeTerm.NodeTermStatus = NodeTermStatus.Existing;
                     }
                     break;
                 case null:
-                    NodeTypeTags.EntriesToCreate.Add(tag);
+                    NodeTypeTags.Match(
+                        c => c.EntriesToCreate.Add(tag),
+                        u => u.EntriesToUpdate.Add(new NodeTerm.ForUpdate {
+                                TermId = tag.TermId,
+                                NodeTermStatus = NodeTermStatus.New,
+                                Name = tag.Name,
+                                NodeTypeId = tag.NodeTypeId,
+                                NodeId = NodeId!.Value
+                            })
+                    );
                     break;
                 default:
                     break;
@@ -84,19 +93,24 @@
 
     private void SetTagToDeleted(int termId)
     {
-        
-        var elem = NodeTypeTags.Entries.FirstOrDefault(x => x.TermId == termId);
-        if (elem is not null)
-        {
-            if (elem is NodeTerm.ForUpdate existingNodeTerm)
-            {
-                existingNodeTerm.HasBeenDeleted = true;
+
+        NodeTypeTags.Match(
+            c => {
+                var newEntry = c.EntriesToCreate.First(x => x.TermId == termId);
+                c.EntriesToCreate.Remove(newEntry);
+            },
+            u => {
+                var updateEntry = u.EntriesToUpdate.First(x => x.TermId == termId);
+                switch (updateEntry.NodeTermStatus) {
+                    case NodeTermStatus.Existing:
+                        updateEntry.NodeTermStatus = NodeTermStatus.Removed;
+                        break;
+                    case NodeTermStatus.New:
+                        u.EntriesToUpdate.Remove(updateEntry);
+                        break;
+                }
             }
-            else if (elem is NodeTerm.ForCreate newNodeTerm)
-            {
-                NodeTypeTags.EntriesToCreate.Remove(newNodeTerm);
-            }
-            StateHasChanged();
-        }
+        );
+        StateHasChanged();
     }
 }

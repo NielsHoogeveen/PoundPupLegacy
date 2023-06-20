@@ -16,31 +16,37 @@ public abstract record Tags
 
     public abstract IEnumerable<NodeTerm> Entries { get; }
 
-    private List<NodeTerm.ForCreate> entries = new();
-    public List<NodeTerm.ForCreate> EntriesToCreate { get => entries; init { if (value is not null) entries = value; } }
-
+    public abstract void Match(Action<ToCreate> toCreate, Action<ToUpdate> toUpdate);
+    
     public sealed record ToCreate: Tags
-   {
-
+    {
+        private List<NodeTerm.ForCreate> entries = new();
+        public List<NodeTerm.ForCreate> EntriesToCreate { get => entries; init { if (value is not null) entries = value; } }
         public override IEnumerable<NodeTerm> Entries => EntriesToCreate;
+
+        public override void Match(Action<ToCreate> toCreate, Action<ToUpdate> toUpdate)
+        {
+            toCreate(this);
+        }
     }
     public sealed record ToUpdate: Tags
     {
         private List<NodeTerm.ForUpdate> entriesToUpdate = new();
         public List<NodeTerm.ForUpdate> EntriesToUpdate { get => entriesToUpdate; init { if (value is not null) entriesToUpdate = value; } }
-        public override IEnumerable<NodeTerm> Entries => GetEntries();
+        public override IEnumerable<NodeTerm> Entries => EntriesToUpdate;
 
-        public IEnumerable<NodeTerm> GetEntries()
+        public override void Match(Action<ToCreate> toCreate, Action<ToUpdate> toUpdate)
         {
-            foreach(var elem in EntriesToUpdate) {
-                yield return elem;
-            }
-            foreach (var elem in EntriesToCreate) {
-                yield return elem;
-            }
+            toUpdate(this);
         }
     }
+}
 
+public enum NodeTermStatus
+{
+    Existing, 
+    New,
+    Removed
 }
 
 public abstract record NodeTerm
@@ -61,7 +67,7 @@ public abstract record NodeTerm
     {
         public required int NodeId { get; set; }
 
-        public bool HasBeenDeleted { get; set; } = false;
+        public NodeTermStatus NodeTermStatus { get; set; } = NodeTermStatus.Existing;
 
         public override T Match<T>(
             Func<ForUpdate, T> existingNodeTerm,

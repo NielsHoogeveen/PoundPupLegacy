@@ -38,7 +38,7 @@ internal sealed class PersonCreateDocumentReaderFactory : NodeCreateDocumentRead
                     'Files',
                     null,
                     'Tags',
-                    (select document from tags_document),
+                    (select document from tags_for_create_document),
                     'InterPersonalRelationTypes',
                     (select document from inter_personal_relation_types_document),
                     'PersonOrganizationRelationTypes',

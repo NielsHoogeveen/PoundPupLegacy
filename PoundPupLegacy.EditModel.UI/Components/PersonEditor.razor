@@ -6,7 +6,10 @@
                  Model="Model"
                  OnValidationResult="() => Validate()"
                  Title="Edit person">
-        <NodeDetailsEditor Model="Person.NodeDetails" @ref=nodeDetailsEditor>
+        <NodeDetailsEditor 
+            Model="Person.NodeDetails"
+            OnTitleChanged="OnTitleChanged"
+            @ref=nodeDetailsEditor>
             <Top>
                 <NameableEditor Model="Person.NameableDetails" />
             </Top>

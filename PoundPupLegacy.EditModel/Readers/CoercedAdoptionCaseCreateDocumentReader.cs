@@ -34,7 +34,7 @@ internal sealed class CoercedAdoptionCaseCreateDocumentReaderFactory : NodeCreat
                     'Files',
                     null,
                     'Tags',
-                    (select document from tags_document),
+                    (select document from tags_for_create_document),
                     'CasePartyTypesCaseParties',
                     (select document from case_type_case_party_type_document)
                 ) document

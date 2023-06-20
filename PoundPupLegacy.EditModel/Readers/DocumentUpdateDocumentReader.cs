@@ -8,13 +8,14 @@ internal sealed class DocumentUpdateDocumentReaderFactory : NodeUpdateDocumentRe
 
     const string SQL = $"""
         {SharedSql.NODE_UPDATE_CTE},
+        {SharedSql.DOCUMENT_TYPES},
         {SharedSql.DOCUMENT_TYPES_DOCUMENT_CREATE}
         select
             jsonb_build_object(
                 'NodeIdentification', 
-                (select document from identification_document where id = n.id),
+                (select document from identification_for_update_document where id = n.id),
                 'NodeDetailsForUpdate',
-                (select document from node_details_document where id = n.id),
+                (select document from node_details_for_update_document where id = n.id),
                 'SimpleTextNodeDetails',
                 json_build_object(
                     'Text', 

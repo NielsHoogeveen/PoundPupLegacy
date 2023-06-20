@@ -5,7 +5,10 @@
         TResolveData="CountryListItem"
         OnValidationResult="() => Validate()"
         Title="Edit child trafficking case">
-    <NodeDetailsEditor Model="ChildTraffickingCase.NodeDetails" @ref=nodeDetailsEditor>
+    <NodeDetailsEditor 
+        Model="ChildTraffickingCase.NodeDetails"
+        OnTitleChanged="OnTitleChanged"
+        @ref=nodeDetailsEditor>
         <Top>
             <NameableEditor Model="ChildTraffickingCase.NameableDetails" />
         </Top>

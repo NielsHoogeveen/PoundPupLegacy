@@ -6,7 +6,10 @@
                  Model="Model"
                  OnValidationResult="() => Validate()"
                 Title="Edit wrongful medication case">
-        <NodeDetailsEditor Model="WrongfulMedicationCase.NodeDetails" @ref=nodeDetailsEditor>
+        <NodeDetailsEditor 
+            Model="WrongfulMedicationCase.NodeDetails"
+            OnTitleChanged="OnTitleChanged"
+            @ref=nodeDetailsEditor>
             <Top>
                 <NameableEditor Model="WrongfulMedicationCase.NameableDetails" />
             </Top>

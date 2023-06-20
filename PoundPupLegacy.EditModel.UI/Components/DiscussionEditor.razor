@@ -9,7 +9,8 @@
         OnValidationResult="() => Validate()"
         Title="Edit discussion">
         <NodeDetailsEditor 
-            Model="Discussion.NodeDetails" 
+            Model="Discussion.NodeDetails"
+            OnTitleChanged="OnTitleChanged"
             @ref=nodeDetailsEditor>
             <Top>
                 <SimpleTextNodePropertiesEditor Model="Discussion" @ref=simpleTextNodePropertiesEditor/>

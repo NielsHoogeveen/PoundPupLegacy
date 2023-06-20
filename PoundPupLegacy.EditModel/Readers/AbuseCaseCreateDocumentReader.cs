@@ -14,29 +14,10 @@ internal sealed class AbuseCaseCreateDocumentReaderFactory : NodeCreateDocumentR
             {SharedSql.TYPES_OF_ABUSE_DOCUMENT}
             select
                 jsonb_build_object(
-                    'NodeId', 
-                    null,
-                    'NodeTypeName',
-                    nt.name,
-                    'UrlId', 
-                    null,
-                    'PublisherId',
-                    @user_id,
-                    'OwnerId',
-                    @tenant_id,
-                    'Title', 
-                    '',
-                    'Text', 
-                    '',
-            		'Tags', null,
-                    'TenantNodes',
-                    null,
-                    'Tenants',
-                    (select document from tenants_document),
-                    'Files',
-                    null,
-                    'Tags',
-                    (select document from tags_document),
+                    jsonb_build_object(
+                        'NodeDetailsForCreate',
+                        (select document from node_details_for_create_document)
+                    ),
                     'VocabularyIdTagging',
                     (select id from tagging_vocabulary),
                     'CasePartyTypesCaseParties',

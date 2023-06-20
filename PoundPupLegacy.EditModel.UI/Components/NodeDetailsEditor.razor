@@ -24,15 +24,18 @@
     [Parameter]
     public RenderFragment? Bottom { get; set; }
 
+    [Parameter]
+    public Action<string> OnTitleChanged { get; set; } = default!;
 
     public void OnTitleChange(ChangeEventArgs args)
     {
-        throw new NotImplementedException();
+        if(args.Value is string str) {
+            OnTitleChanged(str);
+        }
     }
 
     public override void OnTitleChange(string title)
     {
-        throw new NotImplementedException();
     }
 
     public override async Task<List<ErrorDetail>> Validate()

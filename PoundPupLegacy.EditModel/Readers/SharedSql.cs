@@ -5,19 +5,20 @@ internal static class SharedSql
     internal const string NODE_UPDATE_CTE = $"""
         WITH
         {TAGGING_VOCABULARY},
-        {TAGS_DOCUMENT_EDIT},
+        {TAGS_DOCUMENT_UPDATE},
         {TENANT_NODES_DOCUMENT},
         {TENANTS_DOCUMENT},
         {ATTACHMENTS_DOCUMENT},
-        {IDENTIFICATION_DOCUMENT},
-        {NODE_DETAILS_DOCUMENT}
+        {IDENTIFICATION_FOR_UPDATE_DOCUMENT},
+        {NODE_DETAILS_FOR_UPDATE_DOCUMENT}
         """;
 
     internal const string NODE_CREATE_CTE = $"""
         WITH
         {TAGGING_VOCABULARY},
         {TENANTS_DOCUMENT},
-        {TAGS_DOCUMENT_CREATE}
+        {TAGS_DOCUMENT_CREATE},
+        {NODE_DETAILS_FOR_CREATE_DOCUMENT}
         """;
 
 
@@ -897,7 +898,7 @@ internal static class SharedSql
         )
         """;
     const string TAGS_DOCUMENT_CREATE = """
-        tags_document as (
+        tags_for_create_document as (
             select
             jsonb_agg(
         	    jsonb_build_object(
@@ -925,8 +926,8 @@ internal static class SharedSql
         )
         """;
 
-    const string TAGS_DOCUMENT_EDIT = """
-        tags_document as (
+    const string TAGS_DOCUMENT_UPDATE = """
+        tags_for_update_document as (
             select
             jsonb_agg(
         	    jsonb_build_object(
@@ -937,7 +938,7 @@ internal static class SharedSql
         			    'TagLabelName',
         			    tag_label_name
         		    ),
-        		    'Entries',
+        		    'EntriesToUpdate',
         		    tags
         	    )
             ) "document"
@@ -975,24 +976,35 @@ internal static class SharedSql
             ) x        
         )
         """;
-   internal const string DOCUMENT_TYPES_DOCUMENT_CREATE = """
-        document_types_document as (
+
+    internal const string DOCUMENT_TYPES = """
+        document_types as (
             select
-                jsonb_agg(
-        	        jsonb_build_object(
-        		        'Id',
-        		        n.id,
-        		        'Name',
-        		        n.title,
-                        'IsSelected',
-                        case when n.title = 'News paper article' then true else false end
-        	        )
-                ) document
+        	    n.id,
+        	    n.title,
+                case when n.title = 'News paper article' then true else false end is_selected
             from document_type dt
             join term t on t.nameable_id = dt.id
             join tenant_node tn on tn.node_id = t.vocabulary_id
             join node n on n.id = dt.id 
             where tn.url_id = 42416 and tn.tenant_id = 1
+        )
+        """;
+
+    internal const string DOCUMENT_TYPES_DOCUMENT_CREATE = """
+        document_types_document as (
+            select
+                jsonb_agg(
+        	        jsonb_build_object(
+        		        'Id',
+        		        id,
+        		        'Name',
+        		        title,
+                        'IsSelected',
+                        is_selected
+        	        )
+                ) document
+            from document_types
         )
         """;
 
@@ -1283,8 +1295,8 @@ internal static class SharedSql
             from system_group
         )
         """;
-    const string IDENTIFICATION_DOCUMENT = """
-        identification_document as (
+    const string IDENTIFICATION_FOR_UPDATE_DOCUMENT = """
+        identification_for_update_document as (
             select 
                 jsonb_build_object(
                     'NodeId', 
@@ -1297,8 +1309,39 @@ internal static class SharedSql
         )
         """;
 
-    const string NODE_DETAILS_DOCUMENT = """
-        node_details_document as (
+    const string NODE_DETAILS_FOR_CREATE_DOCUMENT = """
+        node_details_for_create_document as (
+            select 
+                jsonb_build_object(
+                   'NodeTypeName',
+                    nt.name,
+                    'NodeTypeId',
+                    nt.id,
+                    'PublisherId', 
+                    @user_id,
+                    'OwnerId', 
+                    @tenant_id,
+                    'Title', 
+                    '',
+                    'Tenants',
+                    (select document from tenants_document),
+                    'Files',
+                    null,
+                    'TagsToCreate',
+                    (select document from tags_for_create_document),
+                    'TenantNodeDetailsForCreate',
+                    jsonb_build_object(
+                        'TenantNodesToAdd',
+                        null
+                    )
+                ) document
+            from node_type nt 
+            where nt.id = @node_type_id
+        )
+        """;
+
+    const string NODE_DETAILS_FOR_UPDATE_DOCUMENT = """
+        node_details_for_update_document as (
             select 
                 jsonb_build_object(
                    'NodeTypeName',
@@ -1312,7 +1355,7 @@ internal static class SharedSql
                     'Title', 
                     n.title,
             		'TagsForUpdate', 
-                    (select document from tags_document),
+                    (select document from tags_for_update_document),
                     'TenantNodeDetailsForUpdate',
                     json_build_object(
                         'TenantNodesToUpdate',

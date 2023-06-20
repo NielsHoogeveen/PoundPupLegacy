@@ -1427,23 +1427,64 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 ) as document
             FROM (
                 select
-                    case 
-                        when tn2.url_path is null then '/node/' || tn2.url_id
-                        else '/' || tn2.url_path
-                    end path,
-                    t.name,
-                    case
-                        when nmt.tag_label_name is not null then nmt.tag_label_name
-                        else nt2.name
-                    end node_type_name
-                FROM node_term nt 
-                JOIN tenant_node tn on tn.node_id = nt.node_id
-                JOIN term t on t.id = nt.term_id
-                join node n on n.id = t.nameable_id
-                join node_type nt2 on nt2.id = n.node_type_id
-                left join nameable_type nmt on nmt.id = n.node_type_id
-                JOIN tenant_node tn2 on tn2.node_id = t.nameable_id and tn2.tenant_id = @tenant_id and tn2.publication_status_id = 1
-                WHERE tn.url_id = @url_id and tn.tenant_id = @tenant_id and tn.publication_status_id = 1
+                path,
+                name,
+                node_type_name
+                from
+                (
+                    select
+                        case 
+                            when tn.url_path is null then '/node/' || tn.url_id
+                            else '/' || tn.url_path
+                        end path,
+                        t.name,
+                        case
+                            when nmt.tag_label_name is not null then nmt.tag_label_name
+                            else nt2.name
+                        end node_type_name,
+                        case
+                            when tn.publication_status_id = 0 then (
+                                select
+                                    case 
+                                        when count(*) > 0 then 0
+                                        else -1
+                                    end status
+                                from user_group_user_role_user ugu
+                                join user_group ug on ug.id = ugu.user_group_id
+                                WHERE ugu.user_group_id = 
+                                case
+                                    when tn.subgroup_id is null then tn.tenant_id 
+                                    else tn.subgroup_id 
+                                end 
+                                AND ugu.user_role_id = ug.administrator_role_id
+                                AND ugu.user_id = @user_id
+                            )
+                            when tn.publication_status_id = 1 then 1
+                            when tn.publication_status_id = 2 then (
+                                select
+                                    case 
+                                        when count(*) > 0 then 1
+                                        else -1
+                                    end status
+                                from user_group_user_role_user ugu
+                                WHERE ugu.user_group_id = 
+                                    case
+                                        when tn.subgroup_id is null then tn.tenant_id 
+                                        else tn.subgroup_id 
+                                    end
+                                    AND ugu.user_id = @user_id
+                                )
+                        end status	
+                    FROM node_term nt 
+                    JOIN tenant_node tn2 on tn2.node_id = nt.node_id
+                    JOIN term t on t.id = nt.term_id
+                    join node n on n.id = t.nameable_id
+                    join node_type nt2 on nt2.id = n.node_type_id
+                    left join nameable_type nmt on nmt.id = n.node_type_id
+                    JOIN tenant_node tn on tn.node_id = t.nameable_id and tn.tenant_id = tn2.tenant_id
+                    WHERE tn2.url_id = @url_id and tn2.tenant_id = @tenant_id
+                ) t
+                where t.status <> -1
             ) t
         )
         """;

@@ -6,7 +6,10 @@
                  TResolveData="Unit"
                  OnValidationResult="() => Validate()"
                  Title="Edit deportation case">
-        <NodeDetailsEditor Model="DeportationCase.NodeDetails" @ref=nodeDetailsEditor>
+        <NodeDetailsEditor 
+            Model="DeportationCase.NodeDetails"
+            OnTitleChanged="OnTitleChanged"
+            @ref=nodeDetailsEditor>
             <Top>
                 <NameableEditor Model="DeportationCase.NameableDetails" />
             </Top>

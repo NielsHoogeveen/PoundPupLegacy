@@ -10,6 +10,7 @@
         Title="Edit blogpost">
         <NodeDetailsEditor 
             Model="BlogPost.NodeDetails" 
+            OnTitleChanged="OnTitleChanged"
             @ref=nodeDetailsEditor>
             <Top>
                 <SimpleTextNodePropertiesEditor Model="BlogPost" @ref=simpleTextNodePropertiesEditor/>

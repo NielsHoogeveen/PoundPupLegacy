@@ -8,34 +8,28 @@ internal sealed class DocumentCreateDocumentReaderFactory : NodeCreateDocumentRe
 
     private const string SQL = $"""
             {SharedSql.SIMPLE_TEXT_NODE_CREATE_CTE},
+            {SharedSql.DOCUMENT_TYPES},
             {SharedSql.DOCUMENT_TYPES_DOCUMENT_CREATE}
             select
                 jsonb_build_object(
-                    'NodeId', 
-                    null,
-                    'NodeTypeName',
-                    nt.name,
-                    'UrlId', 
-                    null,
-                    'PublisherId',
-                    @user_id,
-                    'OwnerId',
-                    @tenant_id,
-                    'Title', 
-                    '',
-                    'Text', 
-                    '',
-            		'Tags', null,
-                    'TenantNodes',
-                    null,
-                    'Tenants',
-                    (select document from tenants_document),
-                    'Files',
-                    null,
-                    'DocumentTypes',
-                    (select document from document_types_document),
-                    'Tags',
-                    (select document from tags_document)
+                    'NodeDetailsForCreate',
+                    (select document from node_details_for_create_document),
+                    'SimpleTextNodeDetails',
+                    json_build_object(
+                        'Text', 
+                        ''
+                    ),
+                    'DocumentDetails',
+                    jsonb_build_object(
+        	            'DocumentTypeId',
+                        (select id from document_types where is_selected = true),
+        	            'PublicationDateFrom',
+        	            null,
+        	            'PublicationDateTo',
+        	            null,
+                        'DocumentTypes',
+                        (select document from document_types_document)
+                    )
                 ) document
                 from node_type nt
                 where nt.id = @node_type_id

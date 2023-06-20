@@ -6,7 +6,10 @@
                 Model="Model"
                 OnValidationResult="() => Validate()"
                 Title="Edit disrupted placement case">
-        <NodeDetailsEditor Model="DisruptedPlacementCase.NodeDetails" @ref=nodeDetailsEditor>
+        <NodeDetailsEditor 
+            Model="DisruptedPlacementCase.NodeDetails"
+            OnTitleChanged="OnTitleChanged"
+            @ref=nodeDetailsEditor>
             <Top>
                 <NameableEditor Model="DisruptedPlacementCase.NameableDetails" />
             </Top>

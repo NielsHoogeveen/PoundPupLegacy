@@ -38,7 +38,7 @@ internal sealed class OrganizationCreateDocumentReaderFactory : NodeCreateDocume
                     'VocabularyIdTagging',
                     (select id from tagging_vocabulary),
                     'Tags',
-                    (select document from tags_document),
+                    (select document from tags_for_create_document),
                     'OrganizationTypes',
                     (select document from organization_types_document),
                     'PartyPoliticalEntityRelationTypes',

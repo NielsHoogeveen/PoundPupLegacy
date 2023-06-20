@@ -26,6 +26,10 @@ public abstract class EntityEditorBase<TUpdateModel, TCreateModel, TResolveData>
 
     protected abstract TResolveData ResolveData { get; }
 
+    protected virtual void OnTitleChanged(string title)
+    {
+    }
+
     protected async Task<ValidationResult<TUpdateModel, TCreateModel>> Validate()
     {
         var errors = new List<ErrorDetail>();

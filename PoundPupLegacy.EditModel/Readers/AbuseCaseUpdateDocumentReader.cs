@@ -17,9 +17,9 @@ internal sealed class AbuseCaseUpdateDocumentReaderFactory : NodeUpdateDocumentR
             select
                 jsonb_build_object(
                     'NodeIdentification',
-                    (select document from identification_document where id = n.id),
+                    (select document from identification_for_update_document where id = n.id),
                     'NodeDetailsForUpdate',
-                    (select document from node_details_document where id = n.id),
+                    (select document from node_details_for_update_document where id = n.id),
                     'NameableDetails',
                     (select document from nameable_details_document where id = n.id),
                     'LocatableDetailsForUpdate',

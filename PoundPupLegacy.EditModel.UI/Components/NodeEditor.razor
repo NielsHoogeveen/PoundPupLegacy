@@ -3,6 +3,7 @@
 @typeparam TResolveData
 @inject IJSRuntime JSRuntime
 @inject IEntitySaveService<TUpdateModel, TCreateModel> editService
+@inject NavigationManager NavigationManager
 <div class="editor-form">
     <h1>@Title</h1>
     <EditForm EditContext="@editContext" OnSubmit="@Submit">
@@ -47,10 +48,11 @@
     }
     private async Task Save(ValidationResult<TUpdateModel, TCreateModel>.Success success)
     {
-        await success.Node.Match(
+        var nodeId = await success.Node.Match(
             async update => await editService.SaveAsync(update),
             async create => await editService.SaveAsync(create)
         );
+        NavigationManager.NavigateTo($"/node/{nodeId}", true);
     }
     private async Task HandleErrors(ValidationResult<TUpdateModel, TCreateModel>.Error error)
     {
