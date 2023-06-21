@@ -1,9 +1,10 @@
 ﻿@using PoundPupLegacy.ViewModel.Models
 @using PoundPupLegacy.ViewModel.UI.Services
 @using PoundPupLegacy.Services
-
 @inherits Viewer
 @inject IFetchNodeService NodeDataService
+@inject INodeAccessService NodeAccessService
+
 @if (Node is not null) {
     <CascadingValue Value="@Id" Name="NodeId">
         <CascadingValue Value="@Node.UrlId" Name="UrlId">
@@ -45,5 +46,8 @@
             id: Id, 
             userId: UserId, 
             tenantId: TenantId);
+        if(UserId != 0 && Node is not null) {
+            await NodeAccessService.Log(UserId, TenantId, Node.NodeId);
+        }
     }
 }

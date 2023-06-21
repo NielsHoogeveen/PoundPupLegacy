@@ -92,6 +92,7 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<MultiQuestionPollPollQuestion>, MultiQuestionPollPollQuestionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<NameableToCreate>, NameableInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<NameableTypeToAdd>, NameableTypeInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<NodeAccess>, NodeAccessInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<NodeFile>, NodeFileInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<NodeToCreate>, NodeInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<ResolvedNodeTermToAdd>, NodeTermInserterFactory>();

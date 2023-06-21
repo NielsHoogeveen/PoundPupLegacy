@@ -13,7 +13,8 @@ input ~ .tab {
 /* hide contents */
 /* show contents only for selected tab */
 #tab1:checked ~ .tab.content1,
-#tab2:checked ~ .tab.content2 {
+#tab2:checked ~ .tab.content2,
+#tab3:checked ~ .tab.content3{
     display: block;
     padding: 0;
 }
@@ -44,4 +45,14 @@ input.tab-button ~ .tab { /* grey line between tab and contents */
     padding: 0.5em;
     margin-bottom: 1em;
     margin-top:0.5em;
+}
+.node-access{
+    width: 50%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.node-access .header {
+    background-color: grey;
+    color: white;
 }

@@ -16,6 +16,8 @@ public sealed class Program
     {
         IJsonTypeInfoResolver[] resolvers = new IJsonTypeInfoResolver[] {
             Models.MenuItemJsonContext.Default,
+            Models.NamedActionJsonContext.Default,
+            Models.NodeAccessJsonContext.Default,
             Models.TenantJsonContext.Default,
             Models.TenantNodeJsonContext.Default,
             Models.UserTenantActionJsonContext.Default,
@@ -243,6 +245,19 @@ public sealed class Program
         builder.Services.AddApplicationServices();
         builder.Services.AddQuartz(q => {
             // base Quartz scheduler, job and trigger configuration
+            q.UseMicrosoftDependencyInjectionJobFactory();
+            q.UseSimpleTypeLoader();
+            q.UseInMemoryStore();
+            q.UseDefaultThreadPool(tp =>
+            {
+                tp.MaxConcurrency = 1;
+            });
+            q.ScheduleJob<INodeAccessService>(trigger => trigger
+            .WithIdentity("1")
+            .StartAt(DateBuilder.EvenSecondDate(DateTimeOffset.UtcNow.AddSeconds(7)))
+            .WithDailyTimeIntervalSchedule(x => x.WithInterval(10, IntervalUnit.Second))
+            .WithDescription("Flushing node access to database")
+        );
         });
 
         // ASP.NET Core hosting

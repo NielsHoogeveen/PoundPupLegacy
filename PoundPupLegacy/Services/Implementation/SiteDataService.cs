@@ -13,6 +13,7 @@ internal sealed class SiteDataService(
     IDbConnection connection,
     ILogger<SiteDataService> logger,
     IConfiguration configuration,
+    IEnumerableDatabaseReaderFactory<NamedActionsReaderRequest, NamedAction> namedActionsReaderFactory,
     IEnumerableDatabaseReaderFactory<TenantsReaderRequest, Tenant> tenantsReaderFactory,
     IEnumerableDatabaseReaderFactory<TenantNodesReaderRequest, TenantNode> tenantNodesReaderFactory,
     IEnumerableDatabaseReaderFactory<MenuItemsReaderRequest, UserTenantMenuItems> menuItemsReaderFactory,
@@ -23,19 +24,18 @@ internal sealed class SiteDataService(
 {
     private record Data
     {
+        public required HashSet<NamedAction> NamedActions { get; init; }
         public required HashSet<UserTenantAction> UserTenantActions { get; init; }
-
         public required HashSet<UserTenantEditAction> UserTenantEditActions { get; init; }
         public required HashSet<UserTenantEditOwnAction> UserTenantEditOwnActions { get; init; }
-
         public required Dictionary<(int, int), List<MenuItem>> UserMenus { get; init; }
-
         public required List<Tenant> Tenants { get; init; }
 
     }
     private Data _data = new Data {
         Tenants = new List<Tenant>(),
         UserMenus = new Dictionary<(int, int), List<MenuItem>>(),
+        NamedActions = new HashSet<NamedAction>(),
         UserTenantActions = new HashSet<UserTenantAction>(),
         UserTenantEditActions = new HashSet<UserTenantEditAction>(),
         UserTenantEditOwnActions = new HashSet<UserTenantEditOwnAction>()
@@ -50,6 +50,7 @@ internal sealed class SiteDataService(
     {
         logger.LogInformation("Loading site data");
         var data = new Data {
+            NamedActions = await LoadNamedActionsAsync(),
             Tenants = await LoadTenantsAsync(),
             UserMenus = await LoadUserMenusAsync(),
             UserTenantActions = await LoadUserTenantActionsAsync(),
@@ -68,6 +69,7 @@ internal sealed class SiteDataService(
     {
         var data = new Data {
             Tenants = await LoadTenantsAsync(),
+            NamedActions = _data.NamedActions,
             UserMenus = _data.UserMenus,
             UserTenantActions = _data.UserTenantActions,
             UserTenantEditActions = _data.UserTenantEditActions,
@@ -102,6 +104,14 @@ internal sealed class SiteDataService(
                 Action = path
             }
         );
+    }
+
+    public bool CanViewNodeAccess(int userId, int tenantId)
+    {
+        if(_data.NamedActions.Where(x => x.UserId == userId && x.TenantId == tenantId).Any()) {
+            return true;
+        }
+        return false;
     }
 
     public int GetTenantId(Uri uri)
@@ -197,6 +207,21 @@ internal sealed class SiteDataService(
             return userMenus;
         });
     }
+
+    private async Task<HashSet<NamedAction>> LoadNamedActionsAsync()
+    {
+        var sw = Stopwatch.StartNew();
+        var namedActions = new HashSet<NamedAction>();
+        return await WithConnection(async (connection) => {
+            await using var reader = await namedActionsReaderFactory.CreateAsync(connection);
+            await foreach (var item in reader.ReadAsync(new NamedActionsReaderRequest())) {
+                namedActions.Add(item);
+            }
+            logger.LogInformation($"Loaded named actions in {sw.ElapsedMilliseconds}ms");
+            return namedActions;
+        });
+    }
+
     private async Task<HashSet<UserTenantEditAction>> LoadUserTenantEditActionsAsync()
     {
         var sw = Stopwatch.StartNew();

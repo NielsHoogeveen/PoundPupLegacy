@@ -425,6 +425,18 @@ public sealed record NonNullableDateTimeDatabaseParameter : DatabaseParameter<Da
     }
 
 }
+public sealed record NonNullableDateTimeWithTimeZoneDatabaseParameter : DatabaseParameter<DateTime>
+{
+    public override bool IsNullable => false;
+
+    public override NpgsqlDbType ParameterType => NpgsqlDbType.TimestampTz;
+
+    public override void Set(DateTime value, NpgsqlCommand command)
+    {
+        SetParameter(value, command);
+    }
+
+}
 public sealed record NullableDateRangeDatabaseParameter : DatabaseParameter<DateTimeRange?>
 {
     public override bool IsNullable => true;

@@ -21,6 +21,8 @@ public static class DependencyInjection
         services.AddTransient<IAuthenticationService, AuthenticationService>();
         services.AddTransient<IUserService, UserService>();
         services.AddSingleton<ISiteDataService, SiteDataService>();
+        services.AddSingleton<INodeAccessReadService, NodeAccessReadService>();
+        services.AddSingleton<INodeAccessService, NodeAccessService>();
         services.AddTransient<ITenantRefreshService, TenantRefreshService>();
         services.AddTransient<IDefaultCountryService, DefaultCountryService>();
     }

@@ -1,8 +1,10 @@
 ﻿@using PoundPupLegacy.Services
+@using PoundPupLegacy.Readers
+@using PoundPupLegacy.Models
 @inherits Viewer
 @inject ISiteDataService siteDataService
 @inject IUserService userService
-    
+@inject INodeAccessReadService nodeAccessReadService
 
 <NodeContentViewer Model="Model">
 
@@ -13,7 +15,7 @@
             <input class="tab-button" type="radio" name="tabs" id="tab1"checked />
         }
         else {
-            <input class="tab-button" type="radio" name="tabs" id="tab1" @onclick="ToggleDisplayMode" />
+            <input class="tab-button" type="radio" name="tabs" id="tab1" @onclick="() => SwitchDisplayMode(DisplayMode.View)" />
         }
         <label for="tab1">View</label>
         @if (displayMode == DisplayMode.Edit)
@@ -21,9 +23,18 @@
             <input class="tab-button" type="radio" name="tabs" id="tab2" checked />
         }
         else {
-            <input class="tab-button" type="radio" name="tabs" id="tab2" @onclick="ToggleDisplayMode" />
+            <input class="tab-button" type="radio" name="tabs" id="tab2" @onclick="() => SwitchDisplayMode(DisplayMode.Edit)" />
         }
         <label for="tab2">Edit</label>
+        @if (CanViewNodeAccess) {
+            @if (displayMode == DisplayMode.NodeAccess) {
+                <input class="tab-button" type="radio" name="tabs" id="tab3" checked />
+            }
+            else {
+                <input class="tab-button" type="radio" name="tabs" id="tab3" @onclick="() => SwitchDisplayMode(DisplayMode.NodeAccess)" />
+            }
+            <label for="tab3">Access</label>
+        }
     }   
     <div class=" tab content1">
         <NodeDetailsViewer Model="Model" />
@@ -74,8 +85,28 @@
                     <WrongfulRemovalCaseUpdater UrlId="Model.UrlId" />
                 }
             </ArticleViewer>
-        </div>
+            </div>
         </CascadingValue>
+    }
+    @if (CanViewNodeAccess) {
+        <div class="tab content3">
+            <div class="node-access">
+                <div class="header">
+                    User
+                </div>
+                <div class="header">
+                    Date/time
+                </div>
+            @foreach(var nodeAccess in nodeAccesses) {
+                <div>
+                    @nodeAccess.Name
+                </div>
+                <div>
+                    @nodeAccess.DateTime.ToString("MMM dd, yyyy HH:mm:ss tt \"GMT\"zzz")
+                </div>
+            }
+            </div>
+        </div>
     }
     <CommentsViewer Model="Model.Comments"/>
 </NodeContentViewer>
@@ -84,13 +115,21 @@
     [EditorRequired]
     public ViewModel.Models.Node Model { get; set; } = default!;
 
+    private List<NodeAccess> nodeAccesses = new List<NodeAccess>();
+
     private DisplayMode displayMode = DisplayMode.View;
 
-    private enum DisplayMode { View, Edit }
+    private enum DisplayMode { View, Edit, NodeAccess }
 
-    private void ToggleDisplayMode()
+    private void SwitchDisplayMode(DisplayMode mode)
     {
-        displayMode = displayMode == DisplayMode.View ? DisplayMode.Edit : DisplayMode.View;
+        displayMode = mode;
         StateHasChanged();
     }
+    protected override async Task OnInitializedAsync()
+    {
+        nodeAccesses = await nodeAccessReadService.ReadNodeAccess(Model.NodeId);
+    }
+
+    private bool CanViewNodeAccess => siteDataService.CanViewNodeAccess(userId: UserId, tenantId: TenantId);
 }

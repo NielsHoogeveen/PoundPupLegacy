@@ -18,6 +18,9 @@ public interface ISiteDataService
     [RequireNamedArgs]
     bool CanEdit(Node node, int userId, int tenantId);
 
+    [RequireNamedArgs]
+    bool CanViewNodeAccess(int userId, int tenantId);
+
     int GetTenantId(Uri uri);
 
     int? GetIdForUrlPath(string urlPath, int tenantId);
