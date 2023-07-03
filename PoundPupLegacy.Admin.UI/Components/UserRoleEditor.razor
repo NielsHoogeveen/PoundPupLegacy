@@ -1,0 +1,14 @@
+﻿@inherits ViewerBase
+@using PoundPupLegacy.Admin.View
+<div class="user-roles">
+@foreach(var userRole in UserRoles) {
+    <div class="user-role-name">@userRole.UserRoleName</div>
+    @foreach(var user in userRole.Users) {
+        <div class="user-name">@user.Name</div>
+    }
+}
+</div>
+@code {
+    [Parameter]
+    public List<UserRole> UserRoles { get; set; } = new List<UserRole>();
+}

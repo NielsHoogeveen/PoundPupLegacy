@@ -5,8 +5,8 @@ public interface IAnonimousUserCreator
     Task CreateAsync(IDbConnection connection);
 }
 internal sealed class AnonimousUserCreator(
-    IDatabaseInserterFactory<Principal> principalInserterFactory,
-    IDatabaseInserterFactory<Publisher> publisherInserterFactory
+    IDatabaseInserterFactory<PrincipalToCreate> principalInserterFactory,
+    IDatabaseInserterFactory<PublisherToCreate> publisherInserterFactory
 ) : IAnonimousUserCreator
 {
     public async Task CreateAsync(IDbConnection connection)

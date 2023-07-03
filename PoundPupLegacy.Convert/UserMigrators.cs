@@ -10,10 +10,10 @@ internal sealed class UserMigrator(
     IEntityCreatorFactory<Tenant> tenantCreatorFactory,
     IEntityCreatorFactory<ContentSharingGroup> contentSharingGroupCreatorFactory,
     IEntityCreatorFactory<Subgroup> subgroupCreatorFactory,
-    IEntityCreatorFactory<User> userCreatorFactory,
+    IEntityCreatorFactory<User.ToCreate> userCreatorFactory,
     IEntityCreatorFactory<Collective> collectiveCreatorFactory,
     IEntityCreatorFactory<CollectiveUser> collectiveUserCreatorFactory,
-    IEntityCreatorFactory<UserGroupUserRoleUser> userGroupUserRoleUserCreatorFactory
+    IEntityCreatorFactory<UserRoleUser> userGroupUserRoleUserCreatorFactory
 ) : MigratorPPL(databaseConnections)
 {
     protected override string Name => "users";
@@ -237,67 +237,55 @@ internal sealed class UserMigrator(
         };
     }
 
-    private static async IAsyncEnumerable<UserGroupUserRoleUser> GetUserGroupUserRoleUsers()
+    private static async IAsyncEnumerable<UserRoleUser> GetUserGroupUserRoleUsers()
     {
         await Task.CompletedTask;
-        yield return new UserGroupUserRoleUser {
-            UserGroupId = Constants.OWNER_SYSTEM,
+        yield return new UserRoleUser {
             UserRoleId = Constants.SYSTEM_ADMINISTRATOR,
             UserId = Constants.USER_ADMINISTRATOR
         };
 
-        yield return new UserGroupUserRoleUser {
-            UserGroupId = Constants.PPL,
+        yield return new UserRoleUser {
             UserRoleId = Constants.PPL_ADMINISTRATOR,
             UserId = Constants.USER_ADMINISTRATOR
         };
-        yield return new UserGroupUserRoleUser {
-            UserGroupId = Constants.PPL,
+        yield return new UserRoleUser {
             UserRoleId = Constants.PPL_ADMINISTRATOR,
             UserId = Constants.USER_KERRY
         };
-        yield return new UserGroupUserRoleUser {
-            UserGroupId = Constants.PPL,
+        yield return new UserRoleUser {
             UserRoleId = Constants.PPL_EDITOR,
             UserId = Constants.USER_NIELS
         };
-        yield return new UserGroupUserRoleUser {
-            UserGroupId = Constants.CPCT,
+        yield return new UserRoleUser {
             UserRoleId = Constants.CPCT_ADMINISTRATOR,
             UserId = Constants.USER_ADMINISTRATOR
         };
-        yield return new UserGroupUserRoleUser {
-            UserGroupId = Constants.CPCT,
+        yield return new UserRoleUser {
             UserRoleId = Constants.CPCT_ADMINISTRATOR,
             UserId = Constants.USER_ROELIE
         };
-        yield return new UserGroupUserRoleUser {
-            UserGroupId = Constants.CPCT,
+        yield return new UserRoleUser {
             UserRoleId = Constants.CPCT_EDITOR,
             UserId = Constants.USER_NIELS
         };
-        yield return new UserGroupUserRoleUser {
-            UserGroupId = Constants.OWNER_GEOGRAPHY,
+        yield return new UserRoleUser {
             UserRoleId = Constants.GEOGRAPHY_ADMINISTRATOR,
             UserId = Constants.USER_ADMINISTRATOR
         };
-        yield return new UserGroupUserRoleUser {
-            UserGroupId = Constants.OWNER_PARTIES,
+        yield return new UserRoleUser {
             UserRoleId = Constants.PARTIES_ADMINISTRATOR,
             UserId = Constants.USER_ADMINISTRATOR
         };
-        yield return new UserGroupUserRoleUser {
-            UserGroupId = Constants.OWNER_CASES,
+        yield return new UserRoleUser {
             UserRoleId = Constants.CASES_ADMINISTRATOR,
             UserId = Constants.USER_ADMINISTRATOR
         };
-        yield return new UserGroupUserRoleUser {
-            UserGroupId = Constants.OWNER_DOCUMENTATION,
+        yield return new UserRoleUser {
             UserRoleId = Constants.DOCUMENTATION_ADMINISTRATOR,
             UserId = Constants.USER_ADMINISTRATOR
         };
-        yield return new UserGroupUserRoleUser {
-            UserGroupId = Constants.ADULT_AFTERMATH,
+        yield return new UserRoleUser {
             UserRoleId = Constants.ADULT_AFTERMATH_ADMINSTRATOR,
             UserId = Constants.USER_ADMINISTRATOR
         };
@@ -377,14 +365,13 @@ internal sealed class UserMigrator(
         await collectiveCreator.CreateAsync(GetCollectives());
         await collectiveUserCreator.CreateAsync(GetCollectiveUsers());
         await userGroupUserRoleUserCreator.CreateAsync(GetUserGroupUserRoleUsers());
-        await userGroupUserRoleUserCreator.CreateAsync(ReadUsers().Select(x => new UserGroupUserRoleUser { UserGroupId = Constants.PPL, UserRoleId = Constants.PPL_MEMBER, UserId = (int)x.Identification.Id! }));
-        await userGroupUserRoleUserCreator.CreateAsync(ReadUsers().Select(x => new UserGroupUserRoleUser { UserGroupId = Constants.PPL, UserRoleId = Constants.PPL_EVERYONE, UserId = (int)x.Identification.Id! }));
-        await userGroupUserRoleUserCreator.CreateAsync(new List<int> { 137, 136, 135, 134, 131, 2, 1 }.Select(x => new UserGroupUserRoleUser { UserGroupId = Constants.CPCT, UserRoleId = Constants.CPCT_MEMBER, UserId = x }).ToAsyncEnumerable());
+        await userGroupUserRoleUserCreator.CreateAsync(ReadUsers().Select(x => new UserRoleUser { UserRoleId = Constants.PPL_MEMBER, UserId = (int)x.Identification.Id! }));
+        await userGroupUserRoleUserCreator.CreateAsync(ReadUsers().Select(x => new UserRoleUser { UserRoleId = Constants.PPL_EVERYONE, UserId = (int)x.Identification.Id! }));
+        await userGroupUserRoleUserCreator.CreateAsync(new List<int> { 137, 136, 135, 134, 131, 2, 1 }.Select(x => new UserRoleUser { UserRoleId = Constants.CPCT_MEMBER, UserId = x }).ToAsyncEnumerable());
         await userGroupUserRoleUserCreator.CreateAsync(ReadAdultAftermathMembers());
 
     }
-    private async IAsyncEnumerable<User
-> ReadUsers()
+    private async IAsyncEnumerable<User.ToCreate> ReadUsers()
     {
         using var readCommand = _mySqlConnection.CreateCommand();
         readCommand.CommandType = CommandType.Text;
@@ -445,7 +432,7 @@ internal sealed class UserMigrator(
             var animalWithing = reader.IsDBNull("animal_within") ? null : reader.GetString("animal_within") == "" ? null : reader.GetString("animal_within");
             var relationToChildPlacement = reader.IsDBNull("relation_to_child_placement") ? "Other" : reader.GetString("relation_to_child_placement");
             var avatar = reader.IsDBNull("avatar") ? null : reader.GetString("avatar") == "" ? null : reader.GetString("avatar");
-            yield return new User {
+            yield return new User.ToCreate {
                 Identification = new Identification.Possible {
                     Id = reader.GetInt32("id"),
                 },
@@ -458,12 +445,14 @@ internal sealed class UserMigrator(
                 Password = reader.GetString("password"),
                 Avatar = avatar,
                 UserStatusId = reader.GetInt32("user_status_id"),
+                ExpiryDateTime = null,
+                UserRoleIds = new List<int>(),
             };
         }
         await reader.CloseAsync();
     }
 
-    private async IAsyncEnumerable<UserGroupUserRoleUser> ReadAdultAftermathMembers()
+    private async IAsyncEnumerable<UserRoleUser> ReadAdultAftermathMembers()
     {
 
         using var readCommand = _mySqlConnection.CreateCommand();
@@ -484,8 +473,7 @@ internal sealed class UserMigrator(
         var reader = await readCommand.ExecuteReaderAsync();
 
         while (reader.Read()) {
-            yield return new UserGroupUserRoleUser {
-                UserGroupId = Constants.ADULT_AFTERMATH,
+            yield return new UserRoleUser {
                 UserId = reader.GetInt32("uid"),
                 UserRoleId = reader.GetInt32("access_role_id")
             };

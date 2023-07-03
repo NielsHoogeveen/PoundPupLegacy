@@ -1,0 +1,11 @@
+.admin {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    flex: 0;
+}
+label{
+    height: 1em;
+}
+.admin div{
+    height: 1em;
+}

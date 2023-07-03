@@ -1,4 +1,5 @@
-﻿using PoundPupLegacy.CreateModel;
+﻿using PoundPupLegacy.Admin.UI;
+using PoundPupLegacy.CreateModel;
 using PoundPupLegacy.EditModel.Readers;
 using PoundPupLegacy.EditModel.UI;
 using PoundPupLegacy.EditModel.UI.Services;
@@ -17,6 +18,7 @@ public static class DependencyInjection
         services.AddViewModels();
         services.AddEditModels();
         services.AddCreateModelAccessors();
+        services.AddAdminServices();
 
         services.AddTransient<IAuthenticationService, AuthenticationService>();
         services.AddTransient<IUserService, UserService>();

@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = Principal;
+using Request = PrincipalToCreate;
 
 public class PrincipalInserterFactory : ConditionalAutoGenerateIdDatabaseInserterFactory<Request>
 {

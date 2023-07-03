@@ -17,6 +17,7 @@
     <PackageReference Include="RequireNamedArguments" Version="0.0.2.1" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PoundPupLegacy.Admin.View\PoundPupLegacy.Admin.View.csproj" />
     <ProjectReference Include="..\PoundPupLegacy.Common.UI\PoundPupLegacy.Common.UI.csproj" />
     <ProjectReference Include="..\PoundPupLegacy.CreateModel\PoundPupLegacy.CreateModel.csproj" />
     <ProjectReference Include="..\PoundPupLegacy.EditModel\PoundPupLegacy.EditModel.csproj" />

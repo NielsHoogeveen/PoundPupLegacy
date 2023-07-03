@@ -14,6 +14,7 @@ public static class DependencyInjection
         services.AddTransient<IEnumerableDatabaseReaderFactory<TenantNodesReaderRequest, TenantNode>, TenantNodesReaderFactory>();
         services.AddTransient<IEnumerableDatabaseReaderFactory<TenantsReaderRequest, Tenant>, TenantsReaderFactory>();
         services.AddTransient<IEnumerableDatabaseReaderFactory<UserTenantActionReaderRequest, UserTenantAction>, UserTenantActionReaderFactory>();
+        services.AddTransient<IEnumerableDatabaseReaderFactory<UserTenantCreateActionReaderRequest, UserTenantCreateAction>, UserTenantCreateActionReaderFactory>();
         services.AddTransient<IEnumerableDatabaseReaderFactory<UserTenantEditActionReaderRequest, UserTenantEditAction>, UserTenantEditActionReaderFactory>();
         services.AddTransient<IEnumerableDatabaseReaderFactory<UserTenantEditOwnActionReaderRequest, UserTenantEditOwnAction>, UserTenantEditOwnActionReaderFactory>();
     }

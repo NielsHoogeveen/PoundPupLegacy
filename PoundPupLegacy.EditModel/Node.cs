@@ -51,7 +51,7 @@ public abstract record NodeDetails
         OwnerId = ownerId,
         PublisherId = publisherId,
         TagsToCreate = new List<Tags.ToCreate>(),
-        Tenants = new List<Tenant>(),
+        Tenants = new List<TenantDetails>(),
         Title = "",
         TenantNodeDetailsForCreate = new TenantNodeDetails.ForCreate {
             TenantNodesToAdd = new List<TenantNode.ToCreateForNewNode>(),
@@ -65,8 +65,8 @@ public abstract record NodeDetails
 
     public abstract IEnumerable<Tags> Tags { get; }
 
-    private List<Tenant> tenants = new();
-    public List<Tenant> Tenants {
+    private List<TenantDetails> tenants = new();
+    public List<TenantDetails> Tenants {
         get => tenants;
         init {
             if (value is not null) {

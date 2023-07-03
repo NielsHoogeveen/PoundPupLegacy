@@ -114,10 +114,10 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<PollQuestionToCreate>, PollQuestionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<PollStatus>, PollStatusInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<PollVote>, PollVoteInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<Principal>, PrincipalInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<PrincipalToCreate>, PrincipalInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<ProfessionalRoleToCreateForExistingPerson>, ProfessionalRoleInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<Profession.ToCreate>, ProfessionInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<Publisher>, PublisherInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<PublisherToCreate>, PublisherInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<PublicationStatus>, PublicationStatusInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<PublishingUserGroup>, PublishingUserGroupInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<Representative.ToCreateForExistingPerson>, RepresentativeInserterFactory>();
@@ -149,9 +149,9 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<UnitedStatesPoliticalPartyAffiliation.ToCreate>, UnitedStatesPoliticalPartyAffliationInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<UnitedStatesPoliticalParty.ToCreate>, UnitedStatesPoliticalPartyInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<UserGroup>, UserGroupInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<UserGroupUserRoleUser>, UserGroupUserRoleUserInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<User>, UserInserterFactory>();
-        services.AddTransient<IDatabaseInserterFactory<UserRole>, UserRoleInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<UserRoleUser>, UserRoleUserInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<User.ToCreate>, UserInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<UserRoleToCreate>, UserRoleInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<ViewNodeTypeListAction>, ViewNodeTypeListActionInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<Vocabulary.ToCreate>, VocabularyInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<WrongfulMedicationCase.ToCreate>, WrongfulMedicationCaseInserterFactory>();

@@ -1,8 +1,8 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class CollectiveCreatorFactory(
-    IDatabaseInserterFactory<Principal> principalInserterFactory,
-    IDatabaseInserterFactory<Publisher> publisherInserterFactory,
+    IDatabaseInserterFactory<PrincipalToCreate> principalInserterFactory,
+    IDatabaseInserterFactory<PublisherToCreate> publisherInserterFactory,
     IDatabaseInserterFactory<Collective> collectiveInserterFactory
 ) : IEntityCreatorFactory<Collective>
 {

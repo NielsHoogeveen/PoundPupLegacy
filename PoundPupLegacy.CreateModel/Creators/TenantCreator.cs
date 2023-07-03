@@ -6,8 +6,8 @@ internal sealed class TenantCreatorFactory(
     IDatabaseInserterFactory<PublishingUserGroup> publishingUserGroupInserterFactory,
     IDatabaseInserterFactory<Tenant> tenantInserterFactory,
     IDatabaseInserterFactory<AccessRole> accessRoleInserterFactory,
-    IDatabaseInserterFactory<Principal> principalInserterFactory,
-    IDatabaseInserterFactory<UserRole> userRoleInserterFactory,
+    IDatabaseInserterFactory<PrincipalToCreate> principalInserterFactory,
+    IDatabaseInserterFactory<UserRoleToCreate> userRoleInserterFactory,
     IDatabaseInserterFactory<AdministratorRole> administratorRoleInserterFactory
 ) : IEntityCreatorFactory<Tenant>
 {
@@ -28,9 +28,9 @@ internal sealed class TenantCreatorFactory(
 }
 internal class TenantCreator(
     List<IDatabaseInserter<Tenant>> inserters,
-    IDatabaseInserter<Principal> principalInserter,
+    IDatabaseInserter<PrincipalToCreate> principalInserter,
     IDatabaseInserter<AccessRole> accessRoleInserter,
-    IDatabaseInserter<UserRole> userRoleInserter,
+    IDatabaseInserter<UserRoleToCreate> userRoleInserter,
     IDatabaseInserter<AdministratorRole> administratorRoleInserter
 ) : InsertingEntityCreator<Tenant>(inserters)
 {

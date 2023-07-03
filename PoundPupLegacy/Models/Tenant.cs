@@ -19,7 +19,7 @@ public sealed record Tenant
 
     public required string? Logo { get; init; }
 
-    public required string? SubTitle { get; init; }
+    public required string? Subtitle { get; init; }
 
     public required string? FooterText { get; init; }
 

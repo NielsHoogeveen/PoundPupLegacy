@@ -3,8 +3,8 @@ internal sealed class SystemGroupCreatorFactory(
     IDatabaseInserterFactory<SystemGroup> systemGroupInserterFactory,
     IDatabaseInserterFactory<UserGroup> userGroupInserterFactory,
     IDatabaseInserterFactory<Owner> ownerInserterFactory,
-    IDatabaseInserterFactory<Principal> principalInserterFactory,
-    IDatabaseInserterFactory<UserRole> userRoleInserterFactory,
+    IDatabaseInserterFactory<PrincipalToCreate> principalInserterFactory,
+    IDatabaseInserterFactory<UserRoleToCreate> userRoleInserterFactory,
     IDatabaseInserterFactory<AccessRole> accessRoleInserterFactory,
     IDatabaseInserterFactory<AdministratorRole> administratorRoleInserterFactory,
     IEntityCreatorFactory<Vocabulary.ToCreate> vocabularyCreatorFactory
@@ -27,8 +27,8 @@ internal class SystemGroupCreator(
     IDatabaseInserter<UserGroup> userGroupInserter,
     IDatabaseInserter<Owner> ownerInserter,
     IDatabaseInserter<SystemGroup> systemGroupInserter,
-    IDatabaseInserter<Principal> principalInserter,
-    IDatabaseInserter<UserRole> userRoleInserter,
+    IDatabaseInserter<PrincipalToCreate> principalInserter,
+    IDatabaseInserter<UserRoleToCreate> userRoleInserter,
     IDatabaseInserter<AccessRole> accessRoleInserter,
     IDatabaseInserter<AdministratorRole> administratorRoleInserter,
     IEntityCreator<Vocabulary.ToCreate> vocabularyCreator

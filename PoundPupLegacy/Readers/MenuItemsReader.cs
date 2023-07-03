@@ -67,8 +67,14 @@ internal sealed class MenuItemsReaderFactory : EnumerableDatabaseReaderFactory<R
             'MenuItems', 
             jsonb_agg(
         	    jsonb_build_object(
-        		    'Path', path,
-        		    'Title', "name"
+                    'MenuItemId',
+                    menu_item_id,
+                    'ActionId',
+                    action_id,
+        		    'Path', 
+                    path,
+        		    'Title', 
+                    "name"
         	    )
             )
         
@@ -80,6 +86,8 @@ internal sealed class MenuItemsReaderFactory : EnumerableDatabaseReaderFactory<R
         	select 
         	ua.user_id,
         	ua.tenant_id,
+            ua.action_id,
+            mi.id menu_item_id,
         	mi.weight,
         	case 
         		when ba.path is not null then ba.path
@@ -97,6 +105,8 @@ internal sealed class MenuItemsReaderFactory : EnumerableDatabaseReaderFactory<R
         	distinct
         	ug.user_id,
         	tn.tenant_id,
+            null::integer action_id,
+            mi.id menu_item_id,
         	weight,
         	case 
         		when tn.url_path is  null then '/node/' || tn.url_id
@@ -112,6 +122,8 @@ internal sealed class MenuItemsReaderFactory : EnumerableDatabaseReaderFactory<R
         	distinct
         	0 user_id,
         	tn.tenant_id,
+            null::integer action_id,
+            mi.id menu_item_id,
         	weight,
         	case 
         		when tn.url_path is  null then '/node/' || tn.url_id

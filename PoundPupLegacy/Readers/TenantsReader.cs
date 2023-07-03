@@ -57,7 +57,7 @@ internal sealed class TenantsReaderFactory : EnumerableDatabaseReaderFactory<Req
             FrontPageText = FrontPageText.GetValue(reader),
             Logo = Logo.GetValue(reader),
             CssFile = CssFile.GetValue(reader),
-            SubTitle = SubTitle.GetValue(reader),
+            Subtitle = SubTitle.GetValue(reader),
             FooterText = FooterText.GetValue(reader),
         };
     }

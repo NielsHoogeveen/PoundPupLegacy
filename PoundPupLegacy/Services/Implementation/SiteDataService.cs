@@ -1,5 +1,4 @@
 ﻿using Microsoft.ApplicationInsights.AspNetCore.Extensions;
-using Npgsql;
 using PoundPupLegacy.Common;
 using PoundPupLegacy.Models;
 using PoundPupLegacy.Readers;
@@ -17,6 +16,7 @@ internal sealed class SiteDataService(
     IEnumerableDatabaseReaderFactory<TenantsReaderRequest, Tenant> tenantsReaderFactory,
     IEnumerableDatabaseReaderFactory<TenantNodesReaderRequest, TenantNode> tenantNodesReaderFactory,
     IEnumerableDatabaseReaderFactory<MenuItemsReaderRequest, UserTenantMenuItems> menuItemsReaderFactory,
+    IEnumerableDatabaseReaderFactory<UserTenantCreateActionReaderRequest, UserTenantCreateAction> userTenantCreateActionReaderFactory,
     IEnumerableDatabaseReaderFactory<UserTenantEditActionReaderRequest, UserTenantEditAction> userTenantEditActionReaderFactory,
     IEnumerableDatabaseReaderFactory<UserTenantEditOwnActionReaderRequest, UserTenantEditOwnAction> userTenantEditOwnActionReaderFactory,
     IEnumerableDatabaseReaderFactory<UserTenantActionReaderRequest, UserTenantAction> userTenantActionReaderFactory
@@ -26,6 +26,7 @@ internal sealed class SiteDataService(
     {
         public required HashSet<NamedAction> NamedActions { get; init; }
         public required HashSet<UserTenantAction> UserTenantActions { get; init; }
+        public required HashSet<UserTenantCreateAction> UserTenantCreateActions { get; init; }
         public required HashSet<UserTenantEditAction> UserTenantEditActions { get; init; }
         public required HashSet<UserTenantEditOwnAction> UserTenantEditOwnActions { get; init; }
         public required Dictionary<(int, int), List<MenuItem>> UserMenus { get; init; }
@@ -37,6 +38,7 @@ internal sealed class SiteDataService(
         UserMenus = new Dictionary<(int, int), List<MenuItem>>(),
         NamedActions = new HashSet<NamedAction>(),
         UserTenantActions = new HashSet<UserTenantAction>(),
+        UserTenantCreateActions = new HashSet<UserTenantCreateAction>(),
         UserTenantEditActions = new HashSet<UserTenantEditAction>(),
         UserTenantEditOwnActions = new HashSet<UserTenantEditOwnAction>()
     };
@@ -54,6 +56,7 @@ internal sealed class SiteDataService(
             Tenants = await LoadTenantsAsync(),
             UserMenus = await LoadUserMenusAsync(),
             UserTenantActions = await LoadUserTenantActionsAsync(),
+            UserTenantCreateActions = await LoadUserTenantCreateActionsAsync(),
             UserTenantEditActions = await LoadUserTenantEditActionsAsync(),
             UserTenantEditOwnActions = await LoadUserTenantEditOwnActionsAsync(),
         };
@@ -72,6 +75,7 @@ internal sealed class SiteDataService(
             NamedActions = _data.NamedActions,
             UserMenus = _data.UserMenus,
             UserTenantActions = _data.UserTenantActions,
+            UserTenantCreateActions = _data.UserTenantCreateActions,
             UserTenantEditActions = _data.UserTenantEditActions,
             UserTenantEditOwnActions = _data.UserTenantEditOwnActions,
         };
@@ -221,6 +225,19 @@ internal sealed class SiteDataService(
             return namedActions;
         });
     }
+    private async Task<HashSet<UserTenantCreateAction>> LoadUserTenantCreateActionsAsync()
+    {
+        var sw = Stopwatch.StartNew();
+        var userTenantActions = new HashSet<UserTenantCreateAction>();
+        return await WithConnection(async (connection) => {
+            await using var reader = await userTenantCreateActionReaderFactory.CreateAsync(connection);
+            await foreach (var item in reader.ReadAsync(new UserTenantCreateActionReaderRequest())) {
+                userTenantActions.Add(item);
+            }
+            logger.LogInformation($"Loaded user privileges in {sw.ElapsedMilliseconds}ms");
+            return userTenantActions;
+        });
+    }
 
     private async Task<HashSet<UserTenantEditAction>> LoadUserTenantEditActionsAsync()
     {
@@ -273,11 +290,11 @@ internal sealed class SiteDataService(
     }
     public bool CanEdit(Node node, int userId, int tenantId)
     {
-        if (_data.UserTenantEditActions.Contains(new UserTenantEditAction { UserId = userId, TenantId = tenantId, NodeTypeId = node.NodeTypeId })) {
+        if (_data.UserTenantEditActions.Where(x => x.UserId == userId && x.TenantId == tenantId && x.NodeTypeId == node.NodeTypeId).Any()) {
             return true;
         }
         if (node.Authoring.Id == userId) {
-            if (_data.UserTenantEditOwnActions.Contains(new UserTenantEditOwnAction { UserId = userId, TenantId = tenantId, NodeTypeId = node.NodeTypeId })) {
+            if (_data.UserTenantEditOwnActions.Where(x => x.UserId == userId && x.TenantId == tenantId && x.NodeTypeId == node.NodeTypeId).Any()) {
                 return true;
             }
         }
@@ -291,7 +308,7 @@ internal sealed class SiteDataService(
 
     public string? GetSubTitle(int tenantId)
     {
-        return _data.Tenants.First(x => x.Id == tenantId).SubTitle;
+        return _data.Tenants.First(x => x.Id == tenantId).Subtitle;
     }
 
     public string? GetFooterText(int tenantId)

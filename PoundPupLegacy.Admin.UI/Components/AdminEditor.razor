@@ -1,0 +1,31 @@
+﻿@using PoundPupLegacy.Admin.View
+@using PoundPupLegacy.Admin.UI.Services
+@inherits ViewerBase
+@inject ITenantRetrieveService tenantRetrieveService
+<div class="admin">
+@if(Tenant is not null) {
+    <label>Domain name</label>
+    <div>@Tenant.DomainName</div>
+    <label>Default country</label>
+    <div>@Tenant.CountryNameDefault</div>
+    <label>Css file</label>
+    <div>@Tenant.CssFile</div>
+    <label>Footer text</label>
+    <div>@((MarkupString)Tenant.FooterText)</div>
+    <label>Frontpage text</label>
+    <div>@((MarkupString)Tenant.FrontPageText)</div>
+    <label>Subtitle</label>
+    <div>@Tenant.Subtitle</div>
+    <label>Logo</label>
+    <div>@Tenant.Logo</div>
+    <UserRoleEditor UserRoles="Tenant.UserRoles" />
+}
+</div>
+@code {
+    private Tenant? Tenant { get; set; } 
+
+    protected override async Task OnInitializedAsync()
+    {
+        Tenant = await tenantRetrieveService.GetTenant(TenantId);
+    }
+}

@@ -43,5 +43,6 @@ public static class DependencyInjection
         services.AddTransient<IEnumerableDatabaseReaderFactory<SubdivisionListItemsReaderRequest, SubdivisionListItem>, SubdivisionListItemsReaderFactory>();
         services.AddTransient<IEnumerableDatabaseReaderFactory<TagDocumentsReaderRequest, NodeTerm.ForCreate>, TagDocumentsReaderFactory>();
         services.AddTransient<IDoesRecordExistDatabaseReaderFactory<TopicExistsRequest>, TopicExistsFactory>();
+
     }
 }

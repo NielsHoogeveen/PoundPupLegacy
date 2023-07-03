@@ -1,8 +1,8 @@
 ﻿namespace PoundPupLegacy.CreateModel.Creators;
 
 internal sealed class AccessRoleCreatorFactory(
-    IDatabaseInserterFactory<Principal> principalInserterFactory,
-    IDatabaseInserterFactory<UserRole> userRoleInserterFactory,
+    IDatabaseInserterFactory<PrincipalToCreate> principalInserterFactory,
+    IDatabaseInserterFactory<UserRoleToCreate> userRoleInserterFactory,
     IDatabaseInserterFactory<AccessRole> accessRoleInserterFactory
 ) : IEntityCreatorFactory<AccessRole>
 {

@@ -4,8 +4,8 @@ internal sealed class ContentSharingGroupCreatorFactory(
     IDatabaseInserterFactory<UserGroup> userGroupInserterFactory,
     IDatabaseInserterFactory<Owner> ownerInserterFactory,
     IDatabaseInserterFactory<ContentSharingGroup> contentSharingGroupInserterFactory,
-    IDatabaseInserterFactory<Principal> principalInserterFactory,
-    IDatabaseInserterFactory<UserRole> userRoleInserterFactory,
+    IDatabaseInserterFactory<PrincipalToCreate> principalInserterFactory,
+    IDatabaseInserterFactory<UserRoleToCreate> userRoleInserterFactory,
     IDatabaseInserterFactory<AccessRole> accessRoleInserterFactory,
     IDatabaseInserterFactory<AdministratorRole> administratorRoleInserterFactory
 ) : IEntityCreatorFactory<ContentSharingGroup>
@@ -26,8 +26,8 @@ internal sealed class ContentSharingGroupCreatorFactory(
 
 public class ContentSharingGroupCreator(
     List<IDatabaseInserter<ContentSharingGroup>> inserters,
-    IDatabaseInserter<Principal> principalInserter,
-    IDatabaseInserter<UserRole> userRoleInserter,
+    IDatabaseInserter<PrincipalToCreate> principalInserter,
+    IDatabaseInserter<UserRoleToCreate> userRoleInserter,
     IDatabaseInserter<AccessRole> accessRoleInserter,
     IDatabaseInserter<AdministratorRole> administratorRoleInserter    
 ) : InsertingEntityCreator<ContentSharingGroup>(inserters)

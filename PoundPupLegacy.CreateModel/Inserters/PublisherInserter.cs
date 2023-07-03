@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = Publisher;
+using Request = PublisherToCreate;
 
 public class PublisherInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {

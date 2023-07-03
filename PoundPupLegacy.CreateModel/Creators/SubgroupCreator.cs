@@ -4,8 +4,8 @@ internal sealed class SubgroupCreatorFactory(
     IDatabaseInserterFactory<Subgroup> subgroupInserterFactory,
     IDatabaseInserterFactory<UserGroup> userGroupInserterFactory,
     IDatabaseInserterFactory<PublishingUserGroup> publishingUserGroupInserterFactory,
-    IDatabaseInserterFactory<Principal> principalInserterFactory,
-    IDatabaseInserterFactory<UserRole> userRoleInserterFactory,
+    IDatabaseInserterFactory<PrincipalToCreate> principalInserterFactory,
+    IDatabaseInserterFactory<UserRoleToCreate> userRoleInserterFactory,
     IDatabaseInserterFactory<AccessRole> accessRoleInserterFactory,
     IDatabaseInserterFactory<AdministratorRole> administratorRoleInserterFactory
 ) : IEntityCreatorFactory<Subgroup>
@@ -27,8 +27,8 @@ internal sealed class SubgroupCreatorFactory(
 
 internal class SubgroupCreator(
     List<IDatabaseInserter<Subgroup>> inserters,
-    IDatabaseInserter<Principal> principalInserter,
-    IDatabaseInserter<UserRole> userRoleInserter,
+    IDatabaseInserter<PrincipalToCreate> principalInserter,
+    IDatabaseInserter<UserRoleToCreate> userRoleInserter,
     IDatabaseInserter<AccessRole> accessRoleInserter,
     IDatabaseInserter<AdministratorRole> administratorRoleInserter
 

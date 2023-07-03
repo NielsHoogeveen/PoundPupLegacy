@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.FileProviders;
 using Npgsql;
 using PoundPupLegacy.Common;
-using PoundPupLegacy.EditModel;
 using PoundPupLegacy.Services;
 using Quartz;
 using System.Data;
@@ -168,7 +167,8 @@ public sealed class Program
             EditModel.SubdivisionListItemJsonContext.Default,
             EditModel.SubgroupJsonContext.Default,
             EditModel.TagNodeTypeJsonContext.Default,
-            EditModel.TenantJsonContext.Default,
+            
+            EditModel.TenantDetailsJsonContext.Default,
             EditModel.ExistingTenantNodeJsonContext.Default,
             EditModel.TermJsonContext.Default,
             EditModel.WrongfulMedicationCaseToUpdateJsonContext.Default,
@@ -180,7 +180,9 @@ public sealed class Program
             EditModel.TypeOfAbuseJsonContext.Default,
             EditModel.TypeOfAbuserJsonContext.Default,
             EditModel.OrganizationListItemJsonContext.Default,
-            EditModel.PersonListItemJsonContext.Default
+            EditModel.PersonListItemJsonContext.Default,
+
+            Admin.View.TenantJsonContext.Default
         };
 
         var builder = WebApplication.CreateBuilder(args);

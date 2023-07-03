@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel;
 
-public sealed record AccessRole : UserRole
+public sealed record AccessRole : UserRoleToCreate, PossiblyIdentifiable
 {
     public required string Name { get; init; }
 

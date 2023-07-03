@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.CreateModel.Inserters;
 
-using Request = UserRole;
+using Request = UserRoleToCreate;
 
 public class UserRoleInserterFactory : IdentifiableDatabaseInserterFactory<Request>
 {
