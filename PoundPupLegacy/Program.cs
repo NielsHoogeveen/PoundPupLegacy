@@ -4,6 +4,7 @@ using Npgsql;
 using PoundPupLegacy.Common;
 using PoundPupLegacy.Services;
 using Quartz;
+using Quartz.AspNetCore;
 using System.Data;
 using System.Text.Json.Serialization.Metadata;
 

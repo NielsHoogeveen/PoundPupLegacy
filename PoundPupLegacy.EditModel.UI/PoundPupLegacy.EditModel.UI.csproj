@@ -23,6 +23,6 @@
     <ProjectReference Include="..\PoundPupLegacy.CreateModel\PoundPupLegacy.CreateModel.csproj" />
     <ProjectReference Include="..\PoundPupLegacy.EditModel\PoundPupLegacy.EditModel.csproj" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0-preview.6.23329.7" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.49" />
   </ItemGroup>
 </Project>
