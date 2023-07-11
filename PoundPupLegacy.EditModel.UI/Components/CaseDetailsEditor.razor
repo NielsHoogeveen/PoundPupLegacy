@@ -1,0 +1,9 @@
+﻿@using PoundPupLegacy.EditModel
+<div>
+    <CaseCasePartiesEditor Model="CaseDetails.CasePartyTypesCaseParties" />
+</div>
+@code {
+    [Parameter]
+    [EditorRequired]
+    public CaseDetails CaseDetails { get; set; } = default!;
+}

@@ -6,8 +6,8 @@ public record CasePartyTypeCaseParties
     public required int? CaseId { get; init; }
     public required int CasePartyTypeId { get; init; }
     public required string CasePartyTypeName { get; init; }
-    public required string? OrganizationsText { get; init; }
-    public required string? PersonsText { get; init; }
+    public required string? OrganizationsText { get; set; }
+    public required string? PersonsText { get; set; }
 
     private List<OrganizationCaseParty> organizations = new List<OrganizationCaseParty>();
 

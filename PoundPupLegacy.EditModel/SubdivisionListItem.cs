@@ -3,9 +3,6 @@
 [JsonSerializable(typeof(SubdivisionListItem))]
 public partial class SubdivisionListItemJsonContext : JsonSerializerContext { }
 
-public sealed record SubdivisionListItem : EditListItem
+public sealed record SubdivisionListItem : EditListItemBase<SubdivisionListItem>
 {
-    public required int Id { get; init; }
-
-    public required string Name { get; init; }
 }

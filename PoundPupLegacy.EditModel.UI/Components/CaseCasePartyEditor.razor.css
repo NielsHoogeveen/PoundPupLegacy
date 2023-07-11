@@ -1,0 +1,65 @@
+h5 {
+    font-size: 110%;
+    margin: 0;
+    text-transform: capitalize;
+}
+
+.case-party-type-case-parties {
+    padding: 0.25em 0.25em 1em 0.25em;
+    margin: 0 0 1em 0;
+    border-bottom: solid thin #ccc;
+}
+
+.field-group {
+    display: grid;
+    grid-template-columns: 8em auto;
+    padding-top: 0.5em;
+}
+
+label {
+    font-weight: bold;
+}
+
+label::after {
+    content: ":";
+}
+
+.persons, .organizations {
+    padding-top: 0.5em;
+}
+
+.person, .organization {
+    display: grid;
+    grid-template-columns: auto 8em;
+    column-gap: 5%;
+}
+
+button {
+    margin: 0.25em;
+    padding: 0.5em 1em;
+    border: 0;
+    background-color: var(--button-color);
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: var(--button-hover-color);
+}
+
+.explanation {
+    margin-top: 0.5em;
+    font-size: 60%;
+    font-weight: lighter;
+}
+
+.selector {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.text-input, .selector {
+    display: grid;
+    grid-template-columns: 99%;
+}

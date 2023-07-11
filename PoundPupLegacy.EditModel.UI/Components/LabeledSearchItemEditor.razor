@@ -1,27 +1,14 @@
 ﻿@inherits ViewerBase
 @typeparam T where T: class, EditListItem
 @inject ISearchService<T> SearchService
-
-    @if (EnableEdit) {
-        <input type="text" class="item-search" @bind="@itemSearch" @oninput="OnSetItemSearch" />
-        @if (options.Any()) {
-            <div class="options">
-                @foreach (var elem in options) {
-                    <div class="option" @onclick="() => SelectItem(elem.Id)">@elem.Name</div>
-                }
-            </div>
-        }
-    }
-    @if (Value is not null)
-    {
-        <div class="name-and-clear-button">
-            <div>@Value.Name</div>
-            @if (!IsMandatory) {
-                <button type="button" @onclick="Clear">Clear</button>
-            }
-    
-        </div>
-    }
+<div class="form-group">
+    <label>@Label</label>
+    <SearchItemEditor
+        Value="@Value"
+        ValueChanged="@ValueChanged"
+        EnableEdit="@EnableEdit"
+        IsMandatory="@IsMandatory" />
+</div>
 @code {
     [Parameter]
     public T? Value { get; set; } = default!;
@@ -36,6 +23,10 @@
     [Parameter]
     [EditorRequired]
     public bool IsMandatory { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public string Label { get; set; } = string.Empty;
 
     T[] options = Array.Empty<T>();
 

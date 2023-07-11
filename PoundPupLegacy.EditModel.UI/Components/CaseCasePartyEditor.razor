@@ -1,0 +1,125 @@
+﻿@using PoundPupLegacy.EditModel.UI.Services
+
+<div class="case-party-type-case-parties">
+    <h5>@Model.CasePartyTypeName</h5>
+    <div>
+        <div class="field-group">
+            <label>Organizations</label>
+            <div>
+                <div class="text-input">
+                    <InputText type="text" @bind-Value="@Model.OrganizationsText" />
+                    <div class="explanation">Names of organizations that are not in the database</div>
+                </div>
+                <div class="organizations">
+                    <div class="organization">
+                        <div class="selector">
+                            <SearchItemEditor 
+                                T="OrganizationListItem"
+                                ValueChanged="OnSelectOrganization"
+                                IsMandatory="true"
+                                Value="organizationListItem"
+                                EnableEdit="true" />
+
+                            <div class="explanation">Select organization from the database</div>
+                        </div>
+                        <div>&nbsp;</div>
+                    </div>
+                    @foreach (var organization in Model.Organizations) {
+                        <div class="organization">
+                            <div>@organization.Organization.Name</div>
+                            <button type="button" @onclick="() => DeleteOrganization(organization)">Delete</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="field-group">
+            <label>Persons</label>
+            <div>
+                <div class="text-input">
+                    <InputText type="text" @bind-Value="@Model.PersonsText" />
+                    <div class="explanation">Names of persons that are not in the database</div>
+                </div>
+                <div class="persons">
+                    <div class="person">
+                        <div class="selector">
+                            <SearchItemEditor 
+                                T="PersonListItem"
+                                IsMandatory="true"
+                                Value="personListItem"
+                                ValueChanged="OnSelectPerson"
+                                EnableEdit="true"/>
+                            <div class="explanation">Select person from the database</div>
+                        </div>
+                        <div>&nbsp;</div>
+                    </div>
+                    @foreach (var person in Model.Persons) {
+                        <div class="person">
+                            <div>@person.Person.Name</div>
+                            <button type="button" @onclick="() => DeletePerson(person)">Delete</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public CasePartyTypeCaseParties Model { get; set; } = default!;
+
+    private OrganizationListItem organizationListItem = default!;
+
+    private PersonListItem personListItem = default!;
+
+
+    private void OnSelectOrganization(OrganizationListItem organization)
+    {
+        if(Model.Organizations.FirstOrDefault(x => x.Organization.Id == organization.Id) is null) {
+            Model.Organizations.Add(new OrganizationCaseParty {
+                Organization = organization,
+                HasBeenStored = false,
+                HasBeenDeleted = false
+            });
+            Model.Organizations.Sort();
+        }
+    }
+    private void OnSelectPerson(PersonListItem person)
+    {
+        if (Model.Persons.FirstOrDefault(x => x.Person.Id == person.Id) is null) {
+            Model.Persons.Add(new PersonCaseParty {
+                    Person = person,
+                    HasBeenStored = false,
+                    HasBeenDeleted = false
+                });
+            Model.Organizations.Sort();
+        }
+    }
+
+    private void DeleteOrganization(OrganizationCaseParty organization)
+    {
+        if (organization.HasBeenStored)
+        {
+            organization.HasBeenDeleted = true;
+        }
+        else 
+        {
+            Model.Organizations.Remove(organization);
+        }
+        Model.Organizations.Sort();
+    }
+    private void DeletePerson(PersonCaseParty person)
+    {
+        if (person.HasBeenStored)
+        {
+            person.HasBeenDeleted = true;
+        }
+        else
+        {
+            Model.Persons.Remove(person);
+        }
+        Model.Persons.Sort();
+    }
+}

@@ -31,11 +31,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.ViewModel.UI
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.EditModel.UI", "PoundPupLegacy.EditModel.UI\PoundPupLegacy.EditModel.UI.csproj", "{1C79DBCA-07CF-4AE6-A759-2E3C3ED120F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoundPupLegacy.Admin.View", "PoundPupLegacy.Admin.View\PoundPupLegacy.Admin.View.csproj", "{620D7283-BC7E-4408-9981-0E4098198B48}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.Admin.View", "PoundPupLegacy.Admin.View\PoundPupLegacy.Admin.View.csproj", "{620D7283-BC7E-4408-9981-0E4098198B48}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoundPupLegacy.Admin.Edit", "PoundPupLegacy.Admin.Edit\PoundPupLegacy.Admin.Edit.csproj", "{3F580C5B-80A1-4139-8F53-A4F2DFC6A02C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.Admin.Edit", "PoundPupLegacy.Admin.Edit\PoundPupLegacy.Admin.Edit.csproj", "{3F580C5B-80A1-4139-8F53-A4F2DFC6A02C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoundPupLegacy.Admin.UI", "PoundPupLegacy.Admin.UI\PoundPupLegacy.Admin.UI.csproj", "{6B0977B8-8065-4E7E-B238-C33B3FB3D3E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.Admin.UI", "PoundPupLegacy.Admin.UI\PoundPupLegacy.Admin.UI.csproj", "{6B0977B8-8065-4E7E-B238-C33B3FB3D3E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

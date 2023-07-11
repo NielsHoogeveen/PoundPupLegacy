@@ -19,19 +19,19 @@
                 }
             </select>
         </div>
-        <SearchItemEditor T="OrganizationListItem"
+        <LabeledSearchItemEditor T="OrganizationListItem"
             IsMandatory="true"
             @bind-Value="Relation.OrganizationItem"
             EnableEdit="true"
             Label="Organization" />
 
-        <SearchItemEditor 
+        <LabeledSearchItemEditor 
             T="GeographicalEntityListItem"
             IsMandatory="false"
             @bind-Value="Relation.GeographicalEntity"
             EnableEdit="true"
             Label="Geographical entity" />
-        <SearchItemEditor T="DocumentListItem"
+        <LabeledSearchItemEditor T="DocumentListItem"
             IsMandatory="false"
             @bind-Value="Relation.RelationDetails.ProofDocument"
             EnableEdit="true"

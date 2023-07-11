@@ -34,6 +34,13 @@ public abstract record OrganizationItem
         {
             return organizationListItem(this);
         }
+        public int CompareTo(EditListItem? other)
+        {
+            if (other is null)
+                return -1;
+            return Name.CompareTo(other.Name);
+        }
+
     }
     public sealed record OrganizationName : OrganizationItem, NamedOnly
     {
@@ -60,7 +67,7 @@ public abstract record PersonItem
         Func<PersonListItem, T> personListItem,
         Func<PersonName, T> personName);
 
-    public sealed record PersonListItem : PersonItem, EditListItem
+    public sealed record PersonListItem : PersonItem, EditListItem, IComparable<PersonListItem>
     {
         public required int Id { get; init; }
         public required override string Name { get; set; }
@@ -69,6 +76,12 @@ public abstract record PersonItem
             Func<PersonName, T> personName)
         {
             return personListItem(this);
+        }
+        public int CompareTo(PersonListItem? other)
+        {
+            if (other is null)
+                return -1;
+            return Name.CompareTo(other.Name);
         }
     }
     public sealed record PersonName : PersonItem, NamedOnly

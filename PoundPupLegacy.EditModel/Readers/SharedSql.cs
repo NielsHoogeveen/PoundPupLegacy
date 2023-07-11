@@ -756,6 +756,8 @@ internal static class SharedSql
         					    'Name',
         					    cpo.organization_name
                             ),
+                            'HasBeenStored',
+                            true,
                             'HasBeenDeleted',
                             false
                 		)
@@ -773,6 +775,8 @@ internal static class SharedSql
         					    'Name',
         					    cpp.person_name
         				    ),
+                            'HasBeenStored',
+                            true,
                             'HasBeenDeleted',
                             false
                         )

@@ -9,7 +9,7 @@
             </div>
         }
         @if (RelationContext.RelationToEdit.OrganizationItemFrom is OrganizationListItem organizationListItemFrom) {
-            <SearchItemEditor T="OrganizationListItem"
+            <LabeledSearchItemEditor T="OrganizationListItem"
                 IsMandatory="true"
                 @bind-Value="organizationListItemFrom"
                 EnableEdit="false"
@@ -34,18 +34,18 @@
             }
 
         </div>
-        <SearchItemEditor T="OrganizationListItem"
+        <LabeledSearchItemEditor T="OrganizationListItem"
             IsMandatory="true"
             @bind-Value="RelationContext.RelationToEdit.OrganizationItemTo"
             EnableEdit="true"
             Label="Organization to"/>
-        <SearchItemEditor 
+        <LabeledSearchItemEditor 
             T="GeographicalEntityListItem"
             IsMandatory="false"
             @bind-Value="RelationContext.RelationToEdit.InterOrganizationalRelationDetails.GeographicalEntity"
             EnableEdit="true"
             Label="Geographical entity" />
-        <SearchItemEditor T="DocumentListItem"
+        <LabeledSearchItemEditor T="DocumentListItem"
             IsMandatory="false"
         @bind-Value="RelationContext.RelationToEdit.RelationDetails.ProofDocument"
             EnableEdit="true"

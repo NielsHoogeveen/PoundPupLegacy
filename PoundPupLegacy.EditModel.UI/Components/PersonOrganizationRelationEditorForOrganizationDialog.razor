@@ -2,7 +2,7 @@
 @inject IJSRuntime JSRuntime
 @if(Relation is not null) {
     <EditForm EditContext="editContext">
-        <SearchItemEditor T="PersonListItem"
+        <LabeledSearchItemEditor T="PersonListItem"
             IsMandatory="true"
             @bind-Value="Relation.PersonItem"
             EnableEdit=true
@@ -30,20 +30,20 @@
             </div>
         }
         @if (Relation.OrganizationItem is OrganizationListItem organiztionListItem) {
-            <SearchItemEditor T="OrganizationListItem"
+            <LabeledSearchItemEditor T="OrganizationListItem"
             IsMandatory="true"
             @bind-Value="organiztionListItem"
             EnableEdit="false"
             Label="Organization" />
         }
 
-        <SearchItemEditor 
+        <LabeledSearchItemEditor 
             T="GeographicalEntityListItem"
             IsMandatory="false"
             @bind-Value="Relation.GeographicalEntity"
             EnableEdit="true"
             Label="Geographical entity" />
-        <SearchItemEditor T="DocumentListItem"
+        <LabeledSearchItemEditor T="DocumentListItem"
             IsMandatory="false"
             @bind-Value="Relation.RelationDetails.ProofDocument"
             EnableEdit="true"

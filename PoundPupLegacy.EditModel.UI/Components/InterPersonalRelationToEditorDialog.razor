@@ -1,7 +1,7 @@
 ﻿@inject ILocationService LocationService
 @inject IJSRuntime JSRuntime
 @if(editContext is not null){
-    <SearchItemEditor T="PersonListItem"
+    <LabeledSearchItemEditor T="PersonListItem"
         IsMandatory="true"
         @bind-Value="RelationContext.RelationToEdit.PersonItemFrom"
         EnableEdit="true"
@@ -33,13 +33,13 @@
     }
     @if (RelationContext.RelationToEdit.PersonItemTo is PersonListItem personListItemTo) {
 
-        <SearchItemEditor T="PersonListItem"
+        <LabeledSearchItemEditor T="PersonListItem"
             IsMandatory="true"
             @bind-Value="personListItemTo"
             EnableEdit="false"
             Label="Person to"/>
     }
-    <SearchItemEditor T="DocumentListItem"
+    <LabeledSearchItemEditor T="DocumentListItem"
         IsMandatory="false"
         @bind-Value="RelationContext.RelationToEdit.RelationDetails.ProofDocument"
         EnableEdit="true"

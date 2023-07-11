@@ -3,9 +3,7 @@
 [JsonSerializable(typeof(InterPersonalRelationTypeListItem))]
 public partial class InterPersonalRelationTypeListItemJsonContext : JsonSerializerContext { }
 
-public sealed record InterPersonalRelationTypeListItem : EditListItem
+public sealed record InterPersonalRelationTypeListItem : EditListItemBase<InterPersonalRelationTypeListItem>
 {
-    public required int Id { get; init; }
-    public required string Name { get; init; }
     public bool IsSymmetric { get; init; }
 }

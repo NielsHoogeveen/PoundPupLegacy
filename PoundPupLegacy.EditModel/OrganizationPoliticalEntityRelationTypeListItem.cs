@@ -3,8 +3,6 @@
 [JsonSerializable(typeof(OrganizationPoliticalEntityRelationTypeListItem))]
 public partial class OrganizationPoliticalEntityRelationTypeListItemJsonContext : JsonSerializerContext { }
 
-public sealed record OrganizationPoliticalEntityRelationTypeListItem : EditListItem
+public sealed record OrganizationPoliticalEntityRelationTypeListItem : EditListItemBase<OrganizationPoliticalEntityRelationTypeListItem>
 {
-    public required int Id { get; init; }
-    public required string Name { get; init; }
 }

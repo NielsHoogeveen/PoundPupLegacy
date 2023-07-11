@@ -2,7 +2,7 @@
 @inject IJSRuntime JSRuntime
 @if(editContext is not null){
     <div class="dialog-content">
-        <SearchItemEditor T="OrganizationListItem"
+        <LabeledSearchItemEditor T="OrganizationListItem"
             IsMandatory="true"
             @bind-Value="RelationContext.RelationToEdit.OrganizationItemFrom"
             EnableEdit="true"
@@ -34,19 +34,19 @@
         }
         @if (RelationContext.RelationToEdit.OrganizationItemTo is OrganizationListItem organizationListItemTo) {
 
-            <SearchItemEditor T="OrganizationListItem"
+            <LabeledSearchItemEditor T="OrganizationListItem"
                 IsMandatory="true"
                 @bind-Value="organizationListItemTo"
                 EnableEdit="false"
                 Label="Organization to"/>
         }
-        <SearchItemEditor 
+        <LabeledSearchItemEditor 
             T="GeographicalEntityListItem"
             IsMandatory="false"
             @bind-Value="RelationContext.RelationToEdit.InterOrganizationalRelationDetails.GeographicalEntity"
             EnableEdit="true"
             Label="Geographical entity" />
-        <SearchItemEditor T="DocumentListItem"
+        <LabeledSearchItemEditor T="DocumentListItem"
             IsMandatory="false"
             @bind-Value="RelationContext.RelationToEdit.RelationDetails.ProofDocument"
             EnableEdit="true"

@@ -8,7 +8,7 @@
         </div>
     }
     @if (RelationContext.RelationToEdit.PersonItemFrom is PersonListItem personListItemFrom) {
-        <SearchItemEditor T="PersonListItem"
+        <LabeledSearchItemEditor T="PersonListItem"
                           IsMandatory="true"
         @bind-Value="personListItemFrom"
                           EnableEdit="false"
@@ -33,13 +33,13 @@
         }
 
     </div>
-    <SearchItemEditor 
+    <LabeledSearchItemEditor 
         T="PersonListItem"
         IsMandatory="true"
     @bind-Value="RelationContext.RelationToEdit.PersonItemTo"
         EnableEdit="true"
         Label="Person to" />
-    <SearchItemEditor 
+    <LabeledSearchItemEditor 
         T="DocumentListItem"
         IsMandatory="false"
         @bind-Value="RelationContext.RelationToEdit.RelationDetails.ProofDocument"

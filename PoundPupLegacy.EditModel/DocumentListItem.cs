@@ -3,8 +3,6 @@
 [JsonSerializable(typeof(DocumentListItem))]
 public partial class DocumentListItemJsonContext : JsonSerializerContext { }
 
-public sealed record DocumentListItem : EditListItem
+public sealed record DocumentListItem : EditListItemBase<DocumentListItem>
 {
-    public required int Id { get; init; }
-    public required string Name { get; init; }
 }

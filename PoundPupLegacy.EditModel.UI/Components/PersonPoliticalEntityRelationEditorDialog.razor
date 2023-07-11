@@ -9,7 +9,7 @@
             </div>
         }
         @if (Relation.PersonItem is PersonListItem partyListItem) {
-            <SearchItemEditor T="PersonListItem"
+            <LabeledSearchItemEditor T="PersonListItem"
             IsMandatory="true"
             @bind-Value="partyListItem"
             EnableEdit="false"
@@ -31,14 +31,14 @@
             </div>
         </div>
         @if (Relation.PoliticalEntityItem is PoliticalEntityListItem politicalEntityListItem) {
-            <SearchItemEditor T="PoliticalEntityListItem"
+            <LabeledSearchItemEditor T="PoliticalEntityListItem"
             IsMandatory="true"
             @bind-Value="politicalEntityListItem"
             EnableEdit="true"
             Label="Political entity" />
         }
 
-        <SearchItemEditor T="DocumentListItem"
+        <LabeledSearchItemEditor T="DocumentListItem"
             IsMandatory="false"
             @bind-Value="Relation.RelationDetails.ProofDocument"
             EnableEdit="true"
