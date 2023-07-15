@@ -1,4 +1,4 @@
-﻿using PoundPupLegacy.CreateModel;
+﻿using PoundPupLegacy.DomainModel;
 
 namespace PoundPupLegacy.EditModel.Mappers;
 

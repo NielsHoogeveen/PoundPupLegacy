@@ -1,6 +1,8 @@
-﻿namespace PoundPupLegacy.CreateModel.Updaters;
+﻿using PoundPupLegacy.DomainModel;
 
-using PoundPupLegacy.CreateModel.Creators;
+namespace PoundPupLegacy.DomainModel.Updaters;
+
+using PoundPupLegacy.DomainModel.Creators;
 using Request = FathersRightsViolationCase.ToUpdate;
 internal sealed class FathersRightsViolationCaseChangerFactory(
     IDatabaseUpdaterFactory<Request> databaseUpdaterFactory,

@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class UnitedStatesCongressionalMeetingCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
@@ -12,7 +12,7 @@ internal sealed class UnitedStatesCongressionalMeetingCreatorFactory(
 {
     public async Task<IEntityCreator<UnitedStatesCongressionalMeeting.ToCreate>> CreateAsync(IDbConnection connection) =>
         new NameableCreator<UnitedStatesCongressionalMeeting.ToCreate>(
-            new() 
+            new()
             {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 
 public sealed record SystemGroup : UserGroup, Owner
 {
@@ -17,5 +17,5 @@ public sealed record SystemGroup : UserGroup, Owner
         get => new Identification.Possible { Id = Constants.OWNER_SYSTEM };
         init {
         }
-    } 
+    }
 }

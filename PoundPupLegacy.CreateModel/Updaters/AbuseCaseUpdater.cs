@@ -1,7 +1,9 @@
-﻿namespace PoundPupLegacy.CreateModel.Updaters;
+﻿using PoundPupLegacy.DomainModel;
+
+namespace PoundPupLegacy.DomainModel.Updaters;
 
 using PoundPupLegacy.Common;
-using PoundPupLegacy.CreateModel.Creators;
+using PoundPupLegacy.DomainModel.Creators;
 using System.Data;
 using System.Threading.Tasks;
 using Request = AbuseCase.ToUpdate;

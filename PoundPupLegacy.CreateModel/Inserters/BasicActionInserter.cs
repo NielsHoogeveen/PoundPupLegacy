@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Inserters;
+﻿namespace PoundPupLegacy.DomainModel.Inserters;
 
 using Request = BasicAction;
 internal sealed class BasicActionInserterFactory : IdentifiableDatabaseInserterFactory<Request>

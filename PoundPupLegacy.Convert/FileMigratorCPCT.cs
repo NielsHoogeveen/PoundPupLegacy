@@ -1,11 +1,14 @@
-﻿using File = PoundPupLegacy.CreateModel.File;
+﻿using PoundPupLegacy.DomainModel;
+using PoundPupLegacy.DomainModel.Creators;
+using PoundPupLegacy.DomainModel.Readers;
+using File = PoundPupLegacy.DomainModel.File;
 
 namespace PoundPupLegacy.Convert;
 
 internal sealed class FileMigratorCPCT(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory,
-    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, CreateModel.TenantNode.ToCreate.ForExistingNode> tenantNodeReaderByUrlIdFactory,
+    ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreate.ForExistingNode> tenantNodeReaderByUrlIdFactory,
     IEntityCreatorFactory<File> fileCreatorFactory
 ) : MigratorCPCT(
     databaseConnections, 

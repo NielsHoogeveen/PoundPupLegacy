@@ -1,6 +1,6 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 
-public abstract record BasicNode: Node
+public abstract record BasicNode : Node
 {
     private BasicNode() { }
     public sealed record ToCreate : BasicNode, NodeToCreate

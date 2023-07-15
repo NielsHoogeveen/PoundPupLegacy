@@ -1,6 +1,6 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 
-public abstract record TypeOfAbuser: Nameable
+public abstract record TypeOfAbuser : Nameable
 {
     private TypeOfAbuser() { }
     public sealed record ToCreate : TypeOfAbuser, NameableToCreate

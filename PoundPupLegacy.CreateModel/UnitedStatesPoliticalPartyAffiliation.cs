@@ -1,6 +1,6 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 
-public abstract record UnitedStatesPoliticalPartyAffiliation: Nameable
+public abstract record UnitedStatesPoliticalPartyAffiliation : Nameable
 {
     private UnitedStatesPoliticalPartyAffiliation() { }
     public required UnitedStatesPoliticalPartyAffliationDetails UnitedStatesPoliticalPartyAffliationDetails { get; init; }

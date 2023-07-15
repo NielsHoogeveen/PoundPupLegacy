@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 public sealed record SenatorSenateBillAction : NodeToCreate
 {
     public required SenatorSenateBillActionDetails SenatorSenateBillActionDetails { get; init; }

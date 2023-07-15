@@ -1,6 +1,6 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 
-public abstract record InterOrganizationalRelation: Node
+public abstract record InterOrganizationalRelation : Node
 {
     private InterOrganizationalRelation() { }
     public required InterOrganizationalRelationDetails InterOrganizationalRelationDetails { get; init; }

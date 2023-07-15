@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 
 public abstract record BoundCountry : Country, ISOCodedSubdivision
 {
@@ -25,6 +25,6 @@ public abstract record BoundCountry : Country, ISOCodedSubdivision
 public sealed record BoundCountryDetails
 {
     public required int BindingCountryId { get; init; }
-   
+
 }
 

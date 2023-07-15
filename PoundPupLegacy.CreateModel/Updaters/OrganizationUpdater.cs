@@ -1,6 +1,7 @@
-﻿namespace PoundPupLegacy.CreateModel.Updaters;
+﻿namespace PoundPupLegacy.DomainModel.Updaters;
 
-using PoundPupLegacy.CreateModel.Creators;
+using PoundPupLegacy.DomainModel;
+using PoundPupLegacy.DomainModel.Creators;
 using Request = OrganizationToUpdate;
 internal sealed class OrganizationChangerFactory(
     IDatabaseUpdaterFactory<Request> databaseUpdaterFactory,

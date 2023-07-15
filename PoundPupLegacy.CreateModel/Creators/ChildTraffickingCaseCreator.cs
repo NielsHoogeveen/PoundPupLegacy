@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class ChildTraffickingCaseCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
@@ -16,7 +16,7 @@ internal sealed class ChildTraffickingCaseCreatorFactory(
 {
     public async Task<IEntityCreator<ChildTraffickingCase.ToCreate>> CreateAsync(IDbConnection connection) =>
         new CaseCreator<ChildTraffickingCase.ToCreate>(
-            new () {
+            new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),
                 await documentableInserterFactory.CreateAsync(connection),

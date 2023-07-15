@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PoundPupLegacy.CreateModel\PoundPupLegacy.CreateModel.csproj" />
+    <ProjectReference Include="..\PoundPupLegacy.CreateModel\PoundPupLegacy.DomainModel.csproj" />
     <ProjectReference Include="..\PoundPupLegacy.EditModel\PoundPupLegacy.EditModel.csproj" />
   </ItemGroup>
 

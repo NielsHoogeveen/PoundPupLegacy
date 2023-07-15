@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿using PoundPupLegacy.DomainModel;
+
+namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class AccessRoleCreatorFactory(
     IDatabaseInserterFactory<PrincipalToCreate> principalInserterFactory,
@@ -8,7 +10,7 @@ internal sealed class AccessRoleCreatorFactory(
 {
 
     public async Task<IEntityCreator<AccessRole>> CreateAsync(IDbConnection connection) =>
-        new InsertingEntityCreator<AccessRole>(new () {
+        new InsertingEntityCreator<AccessRole>(new() {
             await principalInserterFactory.CreateAsync(connection),
             await userRoleInserterFactory.CreateAsync(connection),
             await accessRoleInserterFactory.CreateAsync(connection)

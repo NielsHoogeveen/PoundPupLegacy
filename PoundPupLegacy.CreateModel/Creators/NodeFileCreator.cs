@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿using PoundPupLegacy.DomainModel;
+
+namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class NodeFileCreatorFactory(
     IDatabaseInserterFactory<NodeFile> nodeFileInserterFactory

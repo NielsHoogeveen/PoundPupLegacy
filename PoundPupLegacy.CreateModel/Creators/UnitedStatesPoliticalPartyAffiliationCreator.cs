@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class UnitedStatesPoliticalPartyAffliationCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,

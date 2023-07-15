@@ -1,4 +1,6 @@
-﻿using PoundPupLegacy.CreateModel;
+﻿using PoundPupLegacy.DomainModel;
+using PoundPupLegacy.DomainModel.Creators;
+using PoundPupLegacy.DomainModel.Readers;
 
 namespace PoundPupLegacy.Convert;
 

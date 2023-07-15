@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using PoundPupLegacy.DomainModel;
 
-namespace PoundPupLegacy.CreateModel.Readers;
+namespace PoundPupLegacy.DomainModel.Readers;
 
 internal static class DependencyInjection
 {
-    internal static void AddCreateModelReaders(this IServiceCollection services)
+    internal static void AddDomainModelReaders(this IServiceCollection services)
     {
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<ActionIdReaderByPathRequest, int>, ActionIdReaderByPathFactory>();
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<CreateNodeActionIdReaderByNodeTypeIdRequest, int>, CreateNodeActionIdReaderByNodeTypeIdFactory>();
@@ -26,5 +27,5 @@ internal static class DependencyInjection
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<TermNameReaderByNameableIdRequest, string>, TermNameReaderByNameableIdFactory>();
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<VocabularyIdReaderByOwnerAndNameRequest, int>, VocabularyIdReaderByOwnerAndNameFactory>();
     }
-    
+
 }

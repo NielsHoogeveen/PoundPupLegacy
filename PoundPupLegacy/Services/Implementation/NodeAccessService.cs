@@ -1,5 +1,5 @@
 ﻿using PoundPupLegacy.Common;
-using PoundPupLegacy.CreateModel;
+using PoundPupLegacy.DomainModel;
 using Quartz;
 using System.Data;
 using System.Data.Common;

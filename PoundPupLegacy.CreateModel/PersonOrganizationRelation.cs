@@ -1,6 +1,6 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 
-public abstract record PersonOrganizationRelation: Node
+public abstract record PersonOrganizationRelation : Node
 {
     private PersonOrganizationRelation() { }
     public required PersonOrganizationRelationDetails PersonOrganizationRelationDetails { get; init; }

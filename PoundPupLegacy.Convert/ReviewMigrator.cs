@@ -1,4 +1,7 @@
-﻿namespace PoundPupLegacy.Convert;
+﻿using PoundPupLegacy.DomainModel;
+using PoundPupLegacy.DomainModel.Creators;
+
+namespace PoundPupLegacy.Convert;
 
 internal sealed class ReviewMigrator(
         IDatabaseConnections databaseConnections,

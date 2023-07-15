@@ -1,16 +1,16 @@
 ﻿namespace PoundPupLegacy.EditModel.Mappers;
 
 internal class WrongfulRemovalCaseToCreateMapper(
-    IMapper<NodeDetails.ForCreate, CreateModel.NodeDetails.ForCreate> nodeDetailsMapper,
-    IMapper<NameableDetails, CreateModel.NameableDetails.ForCreate> nameableMapper,
-    IMapper<LocatableDetails.ForCreate, CreateModel.LocatableDetails.ForCreate> locatableMapper,
-    IMapper<CaseDetails, CreateModel.CaseDetails.CaseDetailsForCreate> caseDetailMapper
-) : IMapper<WrongfulRemovalCase.ToCreate, CreateModel.WrongfulRemovalCase.ToCreate>
+    IMapper<NodeDetails.ForCreate, DomainModel.NodeDetails.ForCreate> nodeDetailsMapper,
+    IMapper<NameableDetails, DomainModel.NameableDetails.ForCreate> nameableMapper,
+    IMapper<LocatableDetails.ForCreate, DomainModel.LocatableDetails.ForCreate> locatableMapper,
+    IMapper<CaseDetails, DomainModel.CaseDetails.CaseDetailsForCreate> caseDetailMapper
+) : IMapper<WrongfulRemovalCase.ToCreate, DomainModel.WrongfulRemovalCase.ToCreate>
 {
-    public CreateModel.WrongfulRemovalCase.ToCreate Map(WrongfulRemovalCase.ToCreate viewModel)
+    public DomainModel.WrongfulRemovalCase.ToCreate Map(WrongfulRemovalCase.ToCreate viewModel)
     {
         var now = DateTime.Now;
-        return new CreateModel.WrongfulRemovalCase.ToCreate {
+        return new DomainModel.WrongfulRemovalCase.ToCreate {
             Identification = new Identification.Possible { Id = null },
             NodeDetails = nodeDetailsMapper.Map(viewModel.NodeDetailsForCreate),
             NameableDetails = nameableMapper.Map(viewModel.NameableDetails),

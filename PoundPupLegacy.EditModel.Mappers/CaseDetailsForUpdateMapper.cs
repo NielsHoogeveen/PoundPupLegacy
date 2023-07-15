@@ -1,15 +1,17 @@
-﻿namespace PoundPupLegacy.EditModel.Mappers;
+﻿using PoundPupLegacy.DomainModel;
 
-internal class CaseDetailsForUpdateMapper : IMapper<CaseDetails, CreateModel.CaseDetails.CaseDetailsForUpdate>
+namespace PoundPupLegacy.EditModel.Mappers;
+
+internal class CaseDetailsForUpdateMapper : IMapper<CaseDetails, DomainModel.CaseDetails.CaseDetailsForUpdate>
 {
-    public CreateModel.CaseDetails.CaseDetailsForUpdate Map(CaseDetails source)
+    public DomainModel.CaseDetails.CaseDetailsForUpdate Map(CaseDetails source)
     {
-        return new CreateModel.CaseDetails.CaseDetailsForUpdate {
+        return new DomainModel.CaseDetails.CaseDetailsForUpdate {
             Date = source.Date,
-            CasePartiesToAdd = source.CasePartyTypesCaseParties.Where(x => !x.Id.HasValue).Select(x => new CreateModel.CaseCaseParties.ToCreate.ForExistingCase {
+            CasePartiesToAdd = source.CasePartyTypesCaseParties.Where(x => !x.Id.HasValue).Select(x => new CaseCaseParties.ToCreate.ForExistingCase {
                 CaseId = x.CaseId!.Value,
                 CasePartyTypeId = x.CasePartyTypeId,
-                CaseParties = new CreateModel.CaseParties.ToCreate {
+                CaseParties = new CaseParties.ToCreate {
                     Identification = new Identification.Possible { Id = null },
                     Organizations = x.OrganizationsText,
                     Persons = x.PersonsText,
@@ -17,10 +19,10 @@ internal class CaseDetailsForUpdateMapper : IMapper<CaseDetails, CreateModel.Cas
                     PersonIds = x.Persons.Where(x => !x.HasBeenStored).Select(x => x.Person.Id).ToList()
                 }
             }).ToList(),
-            CasePartiesToUpdate = source.CasePartyTypesCaseParties.Where(x => x.Id.HasValue).Select(x => new CreateModel.CaseCaseParties.ToUpdate {
+            CasePartiesToUpdate = source.CasePartyTypesCaseParties.Where(x => x.Id.HasValue).Select(x => new CaseCaseParties.ToUpdate {
                 CaseId = x.CaseId!.Value,
                 CasePartyTypeId = x.CasePartyTypeId,
-                CaseParties = new CreateModel.CaseParties.ToUpdate {
+                CaseParties = new CaseParties.ToUpdate {
                     Identification = new Identification.Certain { Id = x.Id!.Value },
                     Organizations = x.OrganizationsText,
                     Persons = x.PersonsText,

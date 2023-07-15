@@ -1,6 +1,6 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 
-public abstract record PartyPoliticalEntityRelation: Node
+public abstract record PartyPoliticalEntityRelation : Node
 {
     private PartyPoliticalEntityRelation() { }
     public required PartyPoliticalEntityRelationDetails PartyPoliticalEntityRelationDetails { get; init; }
@@ -26,7 +26,7 @@ public abstract record PartyPoliticalEntityRelation: Node
             }
         }
     }
-    public sealed record ToUpdate: PartyPoliticalEntityRelation, NodeToUpdate
+    public sealed record ToUpdate : PartyPoliticalEntityRelation, NodeToUpdate
     {
         public required int PartyId { get; init; }
         public required Identification.Certain Identification { get; init; }

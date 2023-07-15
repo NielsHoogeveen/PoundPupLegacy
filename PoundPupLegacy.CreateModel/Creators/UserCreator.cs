@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿using PoundPupLegacy.DomainModel;
+
+namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class UserCreatorFactory(
     IDatabaseInserterFactory<PrincipalToCreate> principalInserterFactory,
@@ -25,8 +27,7 @@ internal sealed class UserCreator(
     public override async Task ProcessAsync(User.ToCreate element)
     {
         await base.ProcessAsync(element);
-        foreach(var role in element.UserRoleIds) 
-        {
+        foreach (var role in element.UserRoleIds) {
             await userGroupUserRoleUserInserter.InsertAsync(new UserRoleUser {
                 UserRoleId = role,
                 UserId = element.Identification.Id!.Value

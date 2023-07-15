@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class InterOrganizationalRelationCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
@@ -8,7 +8,7 @@ internal sealed class InterOrganizationalRelationCreatorFactory(
 {
     public async Task<IEntityCreator<InterOrganizationalRelation.ToCreate.ForExistingParticipants>> CreateAsync(IDbConnection connection) =>
         new NodeCreator<InterOrganizationalRelation.ToCreate.ForExistingParticipants>(
-            new() 
+            new()
             {
                 await nodeInserterFactory.CreateAsync(connection),
                 await interOrganizationalRelationInserterFactory.CreateAsync(connection)

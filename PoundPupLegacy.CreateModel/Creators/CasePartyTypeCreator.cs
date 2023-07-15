@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿using PoundPupLegacy.DomainModel;
+
+namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class CasePartyTypeCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
@@ -11,7 +13,7 @@ internal sealed class CasePartyTypeCreatorFactory(
 {
     public async Task<IEntityCreator<CasePartyType.ToCreate>> CreateAsync(IDbConnection connection) =>
         new NameableCreator<CasePartyType.ToCreate>(
-            new () {
+            new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),
                 await nameableInserterFactory.CreateAsync(connection),

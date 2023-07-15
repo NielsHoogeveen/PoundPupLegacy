@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace PoundPupLegacy.CreateModel.Inserters;
+namespace PoundPupLegacy.DomainModel.Inserters;
 
 internal static class DependencyInjection
 {
-    internal static void AddCreateModelInserters(this IServiceCollection services)
+    internal static void AddDomainModelInserters(this IServiceCollection services)
     {
         services.AddTransient<IDatabaseInserterFactory<AbuseCase.ToCreate>, AbuseCaseInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<AbuseCaseTypeOfAbuse>, AbuseCaseTypeOfAbuseInserterFactory>();

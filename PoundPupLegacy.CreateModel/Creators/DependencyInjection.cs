@@ -1,12 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using PoundPupLegacy.DomainModel.Inserters;
 
-namespace PoundPupLegacy.CreateModel.Creators;
+namespace PoundPupLegacy.DomainModel.Creators;
 
 internal static class DependencyInjection
 {
-    internal static void AddCreateModelCreators(this IServiceCollection services)
+    internal static void AddDomainModelCreators(this IServiceCollection services)
     {
-        services.AddCreateModelInserters();
+        services.AddDomainModelInserters();
         services.AddTransient<NodeDetailsCreatorFactory>();
         services.AddTransient<TermCreatorFactory>();
         services.AddTransient<LocatableDetailsCreatorFactory>();

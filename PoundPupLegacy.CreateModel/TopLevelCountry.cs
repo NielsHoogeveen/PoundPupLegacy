@@ -1,10 +1,10 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 
 public interface TopLevelCountryToUpdate : TopLevelCountry, CountryToUpdate
 {
 }
-public interface TopLevelCountryToCreate: TopLevelCountry, CountryToCreate 
-{ 
+public interface TopLevelCountryToCreate : TopLevelCountry, CountryToCreate
+{
 }
 public interface TopLevelCountry : Country
 {

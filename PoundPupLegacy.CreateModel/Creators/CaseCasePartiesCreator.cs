@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class CaseCasePartiesCreatorFactory(
     IDatabaseInserterFactory<CaseParties.ToCreate> casePartiesInserterFactory,
@@ -50,4 +50,3 @@ public class CaseCasePartiesCreator(
         await casePartiesPersonInserter.DisposeAsync();
     }
 }
-  

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Hosting;
 using MySqlConnector;
 using Npgsql;
+using PoundPupLegacy.DomainModel;
 
 namespace PoundPupLegacy.Convert;
 internal partial class Program
@@ -20,7 +21,7 @@ internal partial class Program
 
         using IHost host = Host.CreateDefaultBuilder(args)
             .ConfigureServices(services => {
-                services.AddCreateModelAccessors();
+                services.AddDomainModelAccessors();
                 var connections = new DatabaseConnections {
                     MysqlConnectionCPCT = mysqlConnectionCPCT,
                     MysqlConnectionPPL = mysqlConnectionPPL,

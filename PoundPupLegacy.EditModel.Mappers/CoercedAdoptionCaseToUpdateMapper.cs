@@ -1,16 +1,16 @@
 ﻿namespace PoundPupLegacy.EditModel.Mappers;
 
 internal class CoercedAdoptionCaseToUpdateMapper(
-    IMapper<NodeDetails.ForUpdate, CreateModel.NodeDetails.ForUpdate> nodeDetailsMapper,
-    IMapper<NameableDetails, CreateModel.NameableDetails.ForUpdate> nameableDetailsMapper,
-    IMapper<LocatableDetails.ForUpdate, CreateModel.LocatableDetails.ForUpdate> locatableMapper,
-    IMapper<CaseDetails, CreateModel.CaseDetails.CaseDetailsForUpdate> caseDetailsMapper
-    ) : IMapper<CoercedAdoptionCase.ToUpdate, CreateModel.CoercedAdoptionCase.ToUpdate>
+    IMapper<NodeDetails.ForUpdate, DomainModel.NodeDetails.ForUpdate> nodeDetailsMapper,
+    IMapper<NameableDetails, DomainModel.NameableDetails.ForUpdate> nameableDetailsMapper,
+    IMapper<LocatableDetails.ForUpdate, DomainModel.LocatableDetails.ForUpdate> locatableMapper,
+    IMapper<CaseDetails, DomainModel.CaseDetails.CaseDetailsForUpdate> caseDetailsMapper
+    ) : IMapper<CoercedAdoptionCase.ToUpdate, DomainModel.CoercedAdoptionCase.ToUpdate>
 {
-    public CreateModel.CoercedAdoptionCase.ToUpdate Map(CoercedAdoptionCase.ToUpdate viewModel)
+    public DomainModel.CoercedAdoptionCase.ToUpdate Map(CoercedAdoptionCase.ToUpdate viewModel)
     {
         var now = DateTime.Now;
-        return new CreateModel.CoercedAdoptionCase.ToUpdate {
+        return new DomainModel.CoercedAdoptionCase.ToUpdate {
             Identification = new Identification.Certain {
                 Id = viewModel.NodeIdentification.NodeId
             },

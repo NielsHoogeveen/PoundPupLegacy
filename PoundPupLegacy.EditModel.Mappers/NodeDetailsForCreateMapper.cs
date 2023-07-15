@@ -2,13 +2,13 @@
 
 internal class NodeDetailsForCreateMapper(
     IEnumerableMapper<Tags.ToCreate, int> termIdsToAddMapper,
-    IEnumerableMapper<TenantNode.ToCreateForNewNode, CreateModel.TenantNode.ToCreate.ForNewNode> tenantNodeMapper
-    ) : IMapper<NodeDetails.ForCreate, CreateModel.NodeDetails.ForCreate>
+    IEnumerableMapper<TenantNode.ToCreateForNewNode, DomainModel.TenantNode.ToCreate.ForNewNode> tenantNodeMapper
+    ) : IMapper<NodeDetails.ForCreate, DomainModel.NodeDetails.ForCreate>
 {
-    public CreateModel.NodeDetails.ForCreate Map(NodeDetails.ForCreate source)
+    public DomainModel.NodeDetails.ForCreate Map(NodeDetails.ForCreate source)
     {
         var now = DateTime.Now;
-        return new CreateModel.NodeDetails.ForCreate {
+        return new DomainModel.NodeDetails.ForCreate {
             AuthoringStatusId = 1,
             ChangedDateTime = now,
             CreatedDateTime = now,

@@ -1,6 +1,6 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿namespace PoundPupLegacy.DomainModel.Creators;
 
-public interface IEntityCreator<T>: IAsyncDisposable
+public interface IEntityCreator<T> : IAsyncDisposable
 {
     Task CreateAsync(IAsyncEnumerable<T> elements);
     Task CreateAsync(T element);
@@ -45,7 +45,7 @@ public class LocatableDetailsCreator(
 {
     public async Task Process(LocatableToCreate locatable)
     {
-        foreach(var location in locatable.LocatableDetails.Locations) {
+        foreach (var location in locatable.LocatableDetails.Locations) {
             await locationInserter.InsertAsync(location);
             await locationLocatableInserter.InsertAsync(new LocationLocatable {
                 LocatableId = locatable.Identification.Id!.Value,
@@ -69,10 +69,9 @@ public class TermCreator(
     {
         await base.ProcessAsync(element);
         foreach (var parent in element.ParentTermIds) {
-            await termHierarchyInserter.InsertAsync(new TermHierarchy 
-            { 
-                TermIdPartent = parent, 
-                TermIdChild = element.Identification.Id!.Value 
+            await termHierarchyInserter.InsertAsync(new TermHierarchy {
+                TermIdPartent = parent,
+                TermIdChild = element.Identification.Id!.Value
             });
         }
     }
@@ -163,7 +162,7 @@ public class NodeDetailsCreatorFactory(
     IDatabaseInserterFactory<ResolvedNodeTermToAdd> nodeTermInserterFactory,
     IDatabaseInserterFactory<TenantNode.ToCreate.ForExistingNode> tenantNodeInserterFactory
 )
-{ 
+{
     public async Task<NodeDetailsCreator> CreateAsync(IDbConnection connection)
     {
         return new NodeDetailsCreator(
@@ -181,14 +180,12 @@ public class NodeDetailsCreator(
     public async Task ProcessAsync(NodeToCreate element, int id)
     {
         foreach (var nodeTermId in element.NodeDetails.TermIds) {
-            await nodeTermInserter.InsertAsync(new ResolvedNodeTermToAdd 
-            { 
-                NodeId = id, 
-                TermId = nodeTermId 
+            await nodeTermInserter.InsertAsync(new ResolvedNodeTermToAdd {
+                NodeId = id,
+                TermId = nodeTermId
             });
         }
-        foreach(var tenantNode in element.NodeDetails.TenantNodes)
-        { 
+        foreach (var tenantNode in element.NodeDetails.TenantNodes) {
             await tenantNodeInserter.InsertAsync(tenantNode.ResolveNodeId(id));
         }
     }
@@ -205,7 +202,7 @@ public class NodeCreator<T>(
     NodeDetailsCreator nodeDetailsCreator
 
 ) : InsertingEntityCreator<T>(inserters)
-    where T: class, NodeToCreate
+    where T : class, NodeToCreate
 {
     public virtual async Task ProcessAsync(T element, int id)
     {

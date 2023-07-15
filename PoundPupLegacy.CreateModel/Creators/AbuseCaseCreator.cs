@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿namespace PoundPupLegacy.DomainModel.Creators;
 
 public class AbuseCaseCreatorFactory(
 
@@ -17,9 +17,9 @@ public class AbuseCaseCreatorFactory(
     IEntityCreatorFactory<AbuseCaseTypeOfAbuser> abuseCaseTypeOfAbuserCreatorFactory
 ) : IEntityCreatorFactory<AbuseCase.ToCreate>
 {
-    public async Task<IEntityCreator<AbuseCase.ToCreate>> CreateAsync(IDbConnection connection) => 
+    public async Task<IEntityCreator<AbuseCase.ToCreate>> CreateAsync(IDbConnection connection) =>
         new AbuseCaseCreator(
-            new () {
+            new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),
                 await documentableInserterFactory.CreateAsync(connection),

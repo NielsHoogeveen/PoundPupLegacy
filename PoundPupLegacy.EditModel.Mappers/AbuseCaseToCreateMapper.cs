@@ -1,17 +1,17 @@
 ﻿namespace PoundPupLegacy.EditModel.Mappers;
 
 internal class AbuseCaseToCreateMapper(
-    IMapper<NodeDetails.ForCreate, CreateModel.NodeDetails.ForCreate> nodeDetailsMapper,
-    IMapper<NameableDetails, CreateModel.NameableDetails.ForCreate> nameableMapper,
-    IMapper<LocatableDetails.ForCreate, CreateModel.LocatableDetails.ForCreate> locatableMapper,
-    IMapper<CaseDetails, CreateModel.CaseDetails.CaseDetailsForCreate> caseDetailMapper,
-    IMapper<AbuseCaseDetails, CreateModel.AbuseCaseDetails> abuseCaseDetailsMapper
-) : IMapper<AbuseCase.ToCreate, CreateModel.AbuseCase.ToCreate>
+    IMapper<NodeDetails.ForCreate, DomainModel.NodeDetails.ForCreate> nodeDetailsMapper,
+    IMapper<NameableDetails, DomainModel.NameableDetails.ForCreate> nameableMapper,
+    IMapper<LocatableDetails.ForCreate, DomainModel.LocatableDetails.ForCreate> locatableMapper,
+    IMapper<CaseDetails, DomainModel.CaseDetails.CaseDetailsForCreate> caseDetailMapper,
+    IMapper<AbuseCaseDetails, DomainModel.AbuseCaseDetails> abuseCaseDetailsMapper
+) : IMapper<AbuseCase.ToCreate, DomainModel.AbuseCase.ToCreate>
 {
-    public CreateModel.AbuseCase.ToCreate Map(AbuseCase.ToCreate viewModel)
+    public DomainModel.AbuseCase.ToCreate Map(AbuseCase.ToCreate viewModel)
     {
         var now = DateTime.Now;
-        return new CreateModel.AbuseCase.ToCreate {
+        return new DomainModel.AbuseCase.ToCreate {
             Identification = new Identification.Possible { Id = null },
             NodeDetails = nodeDetailsMapper.Map(viewModel.NodeDetailsForCreate),
             NameableDetails = nameableMapper.Map(viewModel.NameableDetails),

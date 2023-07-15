@@ -1,7 +1,7 @@
-﻿namespace PoundPupLegacy.CreateModel.Updaters;
+﻿namespace PoundPupLegacy.DomainModel.Updaters;
 
 internal abstract class SimpleTextNodeUpdaterFactory<TRequest> : DatabaseUpdaterFactory<TRequest>
-    where TRequest: SimpleTextNodeToUpdate
+    where TRequest : SimpleTextNodeToUpdate
 {
     private static readonly NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
     private static readonly NonNullableStringDatabaseParameter Text = new() { Name = "text" };

@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿using PoundPupLegacy.DomainModel;
+
+namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class RepresentativeHouseBillActionCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
@@ -6,7 +8,7 @@ internal sealed class RepresentativeHouseBillActionCreatorFactory(
     NodeDetailsCreatorFactory nodeDetailsCreatorFactory
 ) : IEntityCreatorFactory<RepresentativeHouseBillAction>
 {
-    public async Task<IEntityCreator<RepresentativeHouseBillAction>> CreateAsync(IDbConnection connection) => 
+    public async Task<IEntityCreator<RepresentativeHouseBillAction>> CreateAsync(IDbConnection connection) =>
         new NodeCreator<RepresentativeHouseBillAction>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),

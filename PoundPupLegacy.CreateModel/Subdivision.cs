@@ -1,9 +1,9 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 
 public interface SubdivisionToUpdate : Subdivision, GeographicalEntityToUpdate
 {
 }
-public interface SubdivisionToCreate: Subdivision, GeographicalEntityToCreate
+public interface SubdivisionToCreate : Subdivision, GeographicalEntityToCreate
 {
 }
 public interface Subdivision : GeographicalEntity

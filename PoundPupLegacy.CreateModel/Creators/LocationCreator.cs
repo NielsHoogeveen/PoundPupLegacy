@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class LocationCreatorFactory(
     IDatabaseInserterFactory<Location.ToCreate> locationInserterFactory
@@ -6,7 +6,7 @@ internal sealed class LocationCreatorFactory(
 {
     public async Task<IEntityCreator<Location.ToCreate>> CreateAsync(IDbConnection connection) =>
         new InsertingEntityCreator<Location.ToCreate>(
-            new() 
+            new()
             {
                 await locationInserterFactory.CreateAsync(connection)
             }

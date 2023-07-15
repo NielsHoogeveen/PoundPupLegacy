@@ -1,16 +1,16 @@
 ﻿namespace PoundPupLegacy.EditModel.Mappers;
 
 internal class DeportationCaseToUpdateMapper(
-    IMapper<NodeDetails.ForUpdate, CreateModel.NodeDetails.ForUpdate> nodeDetailsMapper,
-    IMapper<NameableDetails, CreateModel.NameableDetails.ForUpdate> nameableDetailsMapper,
-    IMapper<LocatableDetails.ForUpdate, CreateModel.LocatableDetails.ForUpdate> locatableMapper,
-    IMapper<CaseDetails, CreateModel.CaseDetails.CaseDetailsForUpdate> caseDetailsMapper
-    ) : IMapper<DeportationCase.ToUpdate, CreateModel.DeportationCase.ToUpdate>
+    IMapper<NodeDetails.ForUpdate, DomainModel.NodeDetails.ForUpdate> nodeDetailsMapper,
+    IMapper<NameableDetails, DomainModel.NameableDetails.ForUpdate> nameableDetailsMapper,
+    IMapper<LocatableDetails.ForUpdate, DomainModel.LocatableDetails.ForUpdate> locatableMapper,
+    IMapper<CaseDetails, DomainModel.CaseDetails.CaseDetailsForUpdate> caseDetailsMapper
+    ) : IMapper<DeportationCase.ToUpdate, DomainModel.DeportationCase.ToUpdate>
 {
-    public CreateModel.DeportationCase.ToUpdate Map(DeportationCase.ToUpdate viewModel)
+    public DomainModel.DeportationCase.ToUpdate Map(DeportationCase.ToUpdate viewModel)
     {
         var now = DateTime.Now;
-        return new CreateModel.DeportationCase.ToUpdate {
+        return new DomainModel.DeportationCase.ToUpdate {
             Identification = new Identification.Certain {
                 Id = viewModel.NodeIdentification.NodeId
             },
@@ -18,7 +18,7 @@ internal class DeportationCaseToUpdateMapper(
             NameableDetails = nameableDetailsMapper.Map(viewModel.NameableDetails),
             CaseDetails = caseDetailsMapper.Map(viewModel.CaseDetails),
             LocatableDetails = locatableMapper.Map(viewModel.LocatableDetailsForUpdate),
-            DeportationCaseDetails = new CreateModel.DeportationCaseDetails {
+            DeportationCaseDetails = new DomainModel.DeportationCaseDetails {
                 CountryIdTo = viewModel.DeportationCaseDetails.CountryTo?.Id,
                 SubdivisionIdFrom = viewModel.DeportationCaseDetails.SubdivisionFrom?.Id,
             }

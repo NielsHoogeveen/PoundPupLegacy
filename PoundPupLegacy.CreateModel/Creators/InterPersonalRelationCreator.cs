@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class InterPersonalRelationCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
@@ -8,7 +8,7 @@ internal sealed class InterPersonalRelationCreatorFactory(
 {
     public async Task<IEntityCreator<InterPersonalRelation.ToCreate.ForExistingParticipants>> CreateAsync(IDbConnection connection) =>
         new NodeCreator<InterPersonalRelation.ToCreate.ForExistingParticipants>(
-            new() 
+            new()
             {
                 await nodeInserterFactory.CreateAsync(connection),
                 await interPersonalRelationInserterFactory.CreateAsync(connection)

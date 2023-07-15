@@ -1,8 +1,8 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 public interface ISOCodedSubdivisionToUpdate : ISOCodedSubdivision, SubdivisionToUpdate, PoliticalEntityToUpdate
 {
 }
-public interface ISOCodedSubdivisionToCreate: ISOCodedSubdivision, SubdivisionToCreate, PoliticalEntityToCreate
+public interface ISOCodedSubdivisionToCreate : ISOCodedSubdivision, SubdivisionToCreate, PoliticalEntityToCreate
 {
 }
 public interface ISOCodedSubdivision : Subdivision, PoliticalEntity

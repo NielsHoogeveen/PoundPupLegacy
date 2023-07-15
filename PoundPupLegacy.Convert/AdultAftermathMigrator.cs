@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.Convert;
+﻿using PoundPupLegacy.DomainModel.Readers;
+
+namespace PoundPupLegacy.Convert;
 internal sealed class AdultAftermathMigrator(
     IDatabaseConnections databaseConnections,
     IMandatorySingleItemDatabaseReaderFactory<NodeIdReaderByUrlIdRequest, int> nodeIdReaderFactory

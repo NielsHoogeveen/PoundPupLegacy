@@ -1,10 +1,10 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 
-public interface PrincipalToCreate: Principal, PossiblyIdentifiable
+public interface PrincipalToCreate : Principal, PossiblyIdentifiable
 {
 }
 
-public interface PrincipalToUpdate: Principal, CertainlyIdentifiable
+public interface PrincipalToUpdate : Principal, CertainlyIdentifiable
 {
 }
 

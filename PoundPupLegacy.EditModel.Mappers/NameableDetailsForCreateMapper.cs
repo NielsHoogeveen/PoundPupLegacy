@@ -1,13 +1,13 @@
 ﻿namespace PoundPupLegacy.EditModel.Mappers;
 
-internal class NameableDetailsForCreateMapper : IMapper<NameableDetails, CreateModel.NameableDetails.ForCreate>
+internal class NameableDetailsForCreateMapper : IMapper<NameableDetails, DomainModel.NameableDetails.ForCreate>
 {
-    public CreateModel.NameableDetails.ForCreate Map(NameableDetails source)
+    public DomainModel.NameableDetails.ForCreate Map(NameableDetails source)
     {
-        return new CreateModel.NameableDetails.ForCreate {
+        return new DomainModel.NameableDetails.ForCreate {
             Description = source.Description,
             FileIdTileImage = null,
-            Terms = new List<CreateModel.Term.ToCreateForNewNameable>(),
+            Terms = new List<DomainModel.Term.ToCreateForNewNameable>(),
         };
     }
 }

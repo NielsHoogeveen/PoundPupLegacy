@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Deleters;
+﻿namespace PoundPupLegacy.DomainModel.Deleters;
 
 using Request = CasePartiesPersonDeleterRequest;
 
@@ -12,7 +12,7 @@ internal sealed class CasePartiesPersonDeleterFactory : DatabaseDeleterFactory<R
 {
     private static NonNullableIntegerDatabaseParameter CasePartiesId = new() { Name = "case_parties_id" };
     private static NonNullableIntegerDatabaseParameter PersonId = new() { Name = "person_id" };
-    
+
 
     public override string Sql => SQL;
 

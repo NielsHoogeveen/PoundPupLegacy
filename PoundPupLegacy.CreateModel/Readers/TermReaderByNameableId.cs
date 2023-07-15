@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Readers;
+﻿namespace PoundPupLegacy.DomainModel.Readers;
 
 using Request = TermNameReaderByNameableIdRequest;
 

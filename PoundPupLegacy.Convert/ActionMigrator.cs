@@ -1,4 +1,6 @@
-﻿using static PoundPupLegacy.Common.Identification;
+﻿using PoundPupLegacy.DomainModel;
+using PoundPupLegacy.DomainModel.Creators;
+using static PoundPupLegacy.Common.Identification;
 
 namespace PoundPupLegacy.Convert;
 

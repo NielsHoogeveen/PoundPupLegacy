@@ -1,10 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using PoundPupLegacy.DomainModel;
 
-namespace PoundPupLegacy.CreateModel.Deleters;
+namespace PoundPupLegacy.DomainModel.Deleters;
 
 public static class DependencyInjection
 {
-    public static void AddCreateModelDeleters(this IServiceCollection services)
+    public static void AddDomainModelDeleters(this IServiceCollection services)
     {
         services.AddTransient<IDatabaseDeleterFactory<FileDeleterRequest>, FileDeleterFactory>();
         services.AddTransient<IDatabaseDeleterFactory<NodeTermToRemove>, NodeTermDeleterFactory>();

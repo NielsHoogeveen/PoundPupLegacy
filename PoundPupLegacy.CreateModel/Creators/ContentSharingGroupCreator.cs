@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class ContentSharingGroupCreatorFactory(
     IDatabaseInserterFactory<UserGroup> userGroupInserterFactory,
@@ -12,7 +12,7 @@ internal sealed class ContentSharingGroupCreatorFactory(
 {
     public async Task<IEntityCreator<ContentSharingGroup>> CreateAsync(IDbConnection connection) =>
         new ContentSharingGroupCreator(
-            new () {
+            new() {
                 await userGroupInserterFactory.CreateAsync(connection),
                 await ownerInserterFactory.CreateAsync(connection),
                 await contentSharingGroupInserterFactory.CreateAsync(connection)
@@ -29,7 +29,7 @@ public class ContentSharingGroupCreator(
     IDatabaseInserter<PrincipalToCreate> principalInserter,
     IDatabaseInserter<UserRoleToCreate> userRoleInserter,
     IDatabaseInserter<AccessRole> accessRoleInserter,
-    IDatabaseInserter<AdministratorRole> administratorRoleInserter    
+    IDatabaseInserter<AdministratorRole> administratorRoleInserter
 ) : InsertingEntityCreator<ContentSharingGroup>(inserters)
 {
     public override async Task ProcessAsync(ContentSharingGroup element)

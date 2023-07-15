@@ -1,5 +1,4 @@
-﻿
-namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 
 public interface PollQuestionToCreate : PollQuestion, SimpleTextNodeToCreate
 {
@@ -9,7 +8,7 @@ public interface PollQuestionToUpdate : PollQuestion, SimpleTextNodeToUpdate
 }
 public interface PollQuestion : SimpleTextNode
 {
-    PollQuestionDetails PollQuestionDetails {get;}
+    PollQuestionDetails PollQuestionDetails { get; }
 }
 public sealed record PollQuestionDetails
 {

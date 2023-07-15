@@ -1,10 +1,10 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 
 public interface NameableToUpdate : Nameable, SearchableToUpdate
 {
     NameableDetails.ForUpdate NameableDetails { get; }
 }
-public interface NameableToCreate: Nameable, SearchableToCreate
+public interface NameableToCreate : Nameable, SearchableToCreate
 {
     NameableDetails.ForCreate NameableDetails { get; }
 }
@@ -16,7 +16,7 @@ public abstract record NameableDetails
     private NameableDetails() { }
     public required string Description { get; init; }
     public required int? FileIdTileImage { get; init; }
-    public sealed record ForCreate: NameableDetails
+    public sealed record ForCreate : NameableDetails
     {
         public required List<Term.ToCreateForNewNameable> Terms { get; init; }
     }

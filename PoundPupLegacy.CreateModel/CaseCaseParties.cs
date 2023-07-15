@@ -1,6 +1,6 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 
-public abstract record CaseCaseParties: IRequest 
+public abstract record CaseCaseParties : IRequest
 {
     private CaseCaseParties() { }
     public required int CasePartyTypeId { get; init; }

@@ -1,22 +1,22 @@
 ﻿namespace PoundPupLegacy.EditModel.Mappers;
 
 internal class ChildTraffickingCaseToCreateMapper(
-    IMapper<NodeDetails.ForCreate, CreateModel.NodeDetails.ForCreate> nodeDetailsMapper,
-    IMapper<NameableDetails, CreateModel.NameableDetails.ForCreate> nameableMapper,
-    IMapper<LocatableDetails.ForCreate, CreateModel.LocatableDetails.ForCreate> locatableMapper,
-    IMapper<CaseDetails, CreateModel.CaseDetails.CaseDetailsForCreate> caseDetailMapper
-) : IMapper<ChildTraffickingCase.ToCreate, CreateModel.ChildTraffickingCase.ToCreate>
+    IMapper<NodeDetails.ForCreate, DomainModel.NodeDetails.ForCreate> nodeDetailsMapper,
+    IMapper<NameableDetails, DomainModel.NameableDetails.ForCreate> nameableMapper,
+    IMapper<LocatableDetails.ForCreate, DomainModel.LocatableDetails.ForCreate> locatableMapper,
+    IMapper<CaseDetails, DomainModel.CaseDetails.CaseDetailsForCreate> caseDetailMapper
+) : IMapper<ChildTraffickingCase.ToCreate, DomainModel.ChildTraffickingCase.ToCreate>
 {
-    public CreateModel.ChildTraffickingCase.ToCreate Map(ChildTraffickingCase.ToCreate viewModel)
+    public DomainModel.ChildTraffickingCase.ToCreate Map(ChildTraffickingCase.ToCreate viewModel)
     {
         var now = DateTime.Now;
-        return new CreateModel.ChildTraffickingCase.ToCreate {
+        return new DomainModel.ChildTraffickingCase.ToCreate {
             Identification = new Identification.Possible { Id = null },
             NodeDetails = nodeDetailsMapper.Map(viewModel.NodeDetailsForCreate),
             NameableDetails = nameableMapper.Map(viewModel.NameableDetails),
             LocatableDetails = locatableMapper.Map(viewModel.LocatableDetailsForCreate),
             CaseDetails = caseDetailMapper.Map(viewModel.CaseDetails),
-            ChildTraffickingCaseDetails = new CreateModel.ChildTraffickingCaseDetails {
+            ChildTraffickingCaseDetails = new DomainModel.ChildTraffickingCaseDetails {
                 NumberOfChildrenInvolved = viewModel.ResolvedChildTraffickingCaseDetails.NumberOfChildrenInvolved,
                 CountryIdFrom = viewModel.ResolvedChildTraffickingCaseDetails.CountryFrom.Id,
             }

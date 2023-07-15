@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class CollectiveCreatorFactory(
     IDatabaseInserterFactory<PrincipalToCreate> principalInserterFactory,
@@ -6,8 +6,8 @@ internal sealed class CollectiveCreatorFactory(
     IDatabaseInserterFactory<Collective> collectiveInserterFactory
 ) : IEntityCreatorFactory<Collective>
 {
-    public async Task<IEntityCreator<Collective>> CreateAsync(IDbConnection connection) => 
-        new InsertingEntityCreator<Collective>(new () {
+    public async Task<IEntityCreator<Collective>> CreateAsync(IDbConnection connection) =>
+        new InsertingEntityCreator<Collective>(new() {
             await principalInserterFactory.CreateAsync(connection),
             await publisherInserterFactory.CreateAsync(connection),
             await collectiveInserterFactory.CreateAsync(connection)

@@ -1,9 +1,9 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 
 public abstract record BasicOrganization : Organization
 {
     private BasicOrganization() { }
-  
+
     public sealed record ToCreate : BasicOrganization, OrganizationToCreate
     {
         public required Identification.Possible Identification { get; init; }
@@ -18,6 +18,6 @@ public abstract record BasicOrganization : Organization
         public required NodeDetails.ForUpdate NodeDetails { get; init; }
         public required NameableDetails.ForUpdate NameableDetails { get; init; }
         public required LocatableDetails.ForUpdate LocatableDetails { get; init; }
-        public required OrganizationDetails.ForUpdate OrganizationDetails { get; init; }   
+        public required OrganizationDetails.ForUpdate OrganizationDetails { get; init; }
     }
 }

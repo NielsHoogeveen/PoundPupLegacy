@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class ViewNodeTypeListActionCreatorFactory(
     IDatabaseInserterFactory<ViewNodeTypeListAction> viewNodeTypeListActionInserterFactory
@@ -9,5 +9,5 @@ internal sealed class ViewNodeTypeListActionCreatorFactory(
         {
             await viewNodeTypeListActionInserterFactory.CreateAsync(connection)
         });
-        
+
 }

@@ -1,6 +1,8 @@
-﻿namespace PoundPupLegacy.CreateModel.Updaters;
+﻿using PoundPupLegacy.DomainModel;
 
-using PoundPupLegacy.CreateModel.Creators;
+namespace PoundPupLegacy.DomainModel.Updaters;
+
+using PoundPupLegacy.DomainModel.Creators;
 using Request = WrongfulRemovalCase.ToUpdate;
 internal sealed class WrongfulRemovalCaseChangerFactory(
     IDatabaseUpdaterFactory<Request> databaseUpdaterFactory,

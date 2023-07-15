@@ -1,4 +1,4 @@
-﻿using PoundPupLegacy.CreateModel.Deleters;
+﻿using PoundPupLegacy.DomainModel.Deleters;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 

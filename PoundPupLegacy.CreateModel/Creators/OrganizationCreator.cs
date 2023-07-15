@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class OrganizationCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeIntererFactory,
@@ -20,7 +20,7 @@ internal sealed class OrganizationCreatorFactory(
 {
     public async Task<IEntityCreator<OrganizationToCreate>> CreateAsync(IDbConnection connection) =>
         new OrganizationCreator(
-            new ()
+            new()
             {
                 await nodeIntererFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),
@@ -50,7 +50,7 @@ public class OrganizationCreator(
     IEntityCreator<InterOrganizationalRelation.ToCreate.ForExistingParticipants> interOrganizationalRelationCreator,
     IEntityCreator<PersonOrganizationRelation.ToCreate.ForExistingParticipants> personOrganizationRelationCreator,
     IEntityCreator<PartyPoliticalEntityRelation.ToCreate.ForExistingParty> partyPoliticalRelationCreator
-    ) : LocatableCreator<OrganizationToCreate>(inserter, nodeDetailsCreator, nameableDetailsCreator, locatableDetailsCreator) 
+    ) : LocatableCreator<OrganizationToCreate>(inserter, nodeDetailsCreator, nameableDetailsCreator, locatableDetailsCreator)
 {
     public override async Task ProcessAsync(OrganizationToCreate element, int id)
     {
@@ -59,7 +59,7 @@ public class OrganizationCreator(
             await unitedStatesPoliticalPartyInserter.InsertAsync(pp);
         }
         foreach (var organizationTypeId in element.OrganizationDetails.OrganizationTypeIds) {
-            await organizationOrganizationTypeInserter.InsertAsync(new OrganizationOrganizationType{
+            await organizationOrganizationTypeInserter.InsertAsync(new OrganizationOrganizationType {
                 OrganizationId = id,
                 OrganizationTypeId = organizationTypeId
             });
@@ -88,6 +88,6 @@ public class OrganizationCreator(
         await organizationOrganizationTypeInserter.DisposeAsync();
         await interOrganizationalRelationCreator.DisposeAsync();
         await personOrganizationRelationCreator.DisposeAsync();
-        await partyPoliticalRelationCreator.DisposeAsync();      
+        await partyPoliticalRelationCreator.DisposeAsync();
     }
 }

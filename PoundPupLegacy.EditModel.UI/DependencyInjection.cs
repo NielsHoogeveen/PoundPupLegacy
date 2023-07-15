@@ -1,10 +1,11 @@
 ﻿global using PoundPupLegacy.Common;
-using PoundPupLegacy.CreateModel.Updaters;
 using Microsoft.Extensions.DependencyInjection;
 using PoundPupLegacy.EditModel.UI.Services;
 using PoundPupLegacy.EditModel.UI.Services.Implementation;
-using PoundPupLegacy.CreateModel.Deleters;
 using PoundPupLegacy.EditModel.Mappers;
+using PoundPupLegacy.DomainModel.Updaters;
+using PoundPupLegacy.DomainModel;
+using PoundPupLegacy.DomainModel.Deleters;
 
 namespace PoundPupLegacy.EditModel.UI;
 
@@ -14,8 +15,8 @@ public static class DependencyInjection
     {
         services.AddEditModelReaders();
         services.AddEditModelInserters();
-        services.AddCreateModelUpdaters();
-        services.AddCreateModelDeleters();
+        services.AddDomainModelUpdaters();
+        services.AddDomainModelDeleters();
         services.AddMappers();
         services.AddTransient<IAttachmentStoreService, AttachmentStoreService>();
         services.AddViewModelRetrieveService<AbuseCase, AbuseCase.ToUpdate, AbuseCase.ToCreate>();
@@ -35,106 +36,106 @@ public static class DependencyInjection
         services.AddEntitySaveService<
             AbuseCase, 
             AbuseCase.ToUpdate, 
-            AbuseCase.ToCreate, 
-            CreateModel.AbuseCase, 
-            CreateModel.AbuseCase.ToUpdate, 
-            CreateModel.AbuseCase.ToCreate>();
+            AbuseCase.ToCreate,
+            DomainModel.AbuseCase,
+            DomainModel.AbuseCase.ToUpdate,
+            DomainModel.AbuseCase.ToCreate>();
 
         services.AddEntitySaveService<
             BlogPost,
             BlogPost.ToUpdate,
             BlogPost.ToCreate,
-            CreateModel.BlogPost,
-            CreateModel.BlogPost.ToUpdate,
-            CreateModel.BlogPost.ToCreate>();
+            DomainModel.BlogPost,
+            DomainModel.BlogPost.ToUpdate,
+            DomainModel.BlogPost.ToCreate>();
 
         services.AddEntitySaveService<
             ChildTraffickingCase,
             ChildTraffickingCase.ToUpdate,
             ChildTraffickingCase.ToCreate,
-            CreateModel.ChildTraffickingCase,
-            CreateModel.ChildTraffickingCase.ToUpdate,
-            CreateModel.ChildTraffickingCase.ToCreate>();
+            DomainModel.ChildTraffickingCase,
+            DomainModel.ChildTraffickingCase.ToUpdate,
+            DomainModel.ChildTraffickingCase.ToCreate>();
 
         services.AddEntitySaveService<
             CoercedAdoptionCase,
             CoercedAdoptionCase.ToUpdate,
             CoercedAdoptionCase.ToCreate,
-            CreateModel.CoercedAdoptionCase,
-            CreateModel.CoercedAdoptionCase.ToUpdate,
-            CreateModel.CoercedAdoptionCase.ToCreate>();
+            DomainModel.CoercedAdoptionCase,
+            DomainModel.CoercedAdoptionCase.ToUpdate,
+            DomainModel.CoercedAdoptionCase.ToCreate>();
 
         services.AddEntitySaveService<
             DeportationCase,
             DeportationCase.ToUpdate,
             DeportationCase.ToCreate,
-            CreateModel.DeportationCase,
-            CreateModel.DeportationCase.ToUpdate,
-            CreateModel.DeportationCase.ToCreate>();
+            DomainModel.DeportationCase,
+            DomainModel.DeportationCase.ToUpdate,
+            DomainModel.DeportationCase.ToCreate>();
 
         services.AddEntitySaveService<
             Discussion,
             Discussion.ToUpdate,
             Discussion.ToCreate,
-            CreateModel.Discussion,
-            CreateModel.Discussion.ToUpdate,
-            CreateModel.Discussion.ToCreate>();
+            DomainModel.Discussion,
+            DomainModel.Discussion.ToUpdate,
+            DomainModel.Discussion.ToCreate>();
 
         services.AddEntitySaveService<
             DisruptedPlacementCase,
             DisruptedPlacementCase.ToUpdate,
             DisruptedPlacementCase.ToCreate,
-            CreateModel.DisruptedPlacementCase,
-            CreateModel.DisruptedPlacementCase.ToUpdate,
-            CreateModel.DisruptedPlacementCase.ToCreate>();
+            DomainModel.DisruptedPlacementCase,
+            DomainModel.DisruptedPlacementCase.ToUpdate,
+            DomainModel.DisruptedPlacementCase.ToCreate>();
 
         services.AddEntitySaveService<
             Document,
             Document.ToUpdate,
             Document.ToCreate,
-            CreateModel.Document,
-            CreateModel.Document.ToUpdate,
-            CreateModel.Document.ToCreate>();
+            DomainModel.Document,
+            DomainModel.Document.ToUpdate,
+            DomainModel.Document.ToCreate>();
 
         services.AddEntitySaveService<
             FathersRightsViolationCase,
             FathersRightsViolationCase.ToUpdate,
             FathersRightsViolationCase.ToCreate,
-            CreateModel.FathersRightsViolationCase,
-            CreateModel.FathersRightsViolationCase.ToUpdate,
-            CreateModel.FathersRightsViolationCase.ToCreate>();
+            DomainModel.FathersRightsViolationCase,
+            DomainModel.FathersRightsViolationCase.ToUpdate,
+            DomainModel.FathersRightsViolationCase.ToCreate>();
 
         services.AddEntitySaveService<
             Organization,
             Organization.ToUpdate,
             Organization.ToCreate,
-            CreateModel.Organization,
-            CreateModel.OrganizationToUpdate,
-            CreateModel.OrganizationToCreate>();
+            DomainModel.Organization,
+            OrganizationToUpdate,
+            OrganizationToCreate>();
 
         services.AddEntitySaveService<
             Person,
             Person.ToUpdate,
             Person.ToCreate,
-            CreateModel.Person,
-            CreateModel.Person.ToUpdate,
-            CreateModel.Person.ToCreate>();
+            DomainModel.Person,
+            DomainModel.Person.ToUpdate,
+            DomainModel.Person.ToCreate>();
 
         services.AddEntitySaveService<
             WrongfulMedicationCase,
             WrongfulMedicationCase.ToUpdate,
             WrongfulMedicationCase.ToCreate,
-            CreateModel.WrongfulMedicationCase,
-            CreateModel.WrongfulMedicationCase.ToUpdate,
-            CreateModel.WrongfulMedicationCase.ToCreate>();
+            DomainModel.WrongfulMedicationCase,
+            DomainModel.WrongfulMedicationCase.ToUpdate,
+            DomainModel.WrongfulMedicationCase.ToCreate>();
 
         services.AddEntitySaveService<
             WrongfulRemovalCase,
             WrongfulRemovalCase.ToUpdate,
             WrongfulRemovalCase.ToCreate,
-            CreateModel.WrongfulRemovalCase,
-            CreateModel.WrongfulRemovalCase.ToUpdate,
-            CreateModel.WrongfulRemovalCase.ToCreate>();
+            DomainModel.WrongfulRemovalCase,
+            DomainModel.WrongfulRemovalCase.ToUpdate,
+            DomainModel.WrongfulRemovalCase.ToCreate>();
 
         services.AddTransient<ILocationService, LocationService>();
         services.AddTransient<ISaveService<IEnumerable<File>>, FilesSaveService>();

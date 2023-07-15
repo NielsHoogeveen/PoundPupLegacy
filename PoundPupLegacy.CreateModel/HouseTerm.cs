@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 
 public abstract record HouseTerm : CongressionalTerm
 {
@@ -48,11 +48,11 @@ public abstract record HouseTermDetails
     public required int? District { get; init; }
     public required DateTimeRange DateTimeRange { get; init; }
 
-    public sealed record ForExistingRepresentative: HouseTermDetails
+    public sealed record ForExistingRepresentative : HouseTermDetails
     {
         public required int RepresentativeId { get; init; }
     }
-    public sealed record ForNewRepresentative: HouseTermDetails
+    public sealed record ForNewRepresentative : HouseTermDetails
     {
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿using PoundPupLegacy.DomainModel;
+
+namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class ProfessionCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
@@ -9,7 +11,7 @@ internal sealed class ProfessionCreatorFactory(
     TermCreatorFactory nameableDetailsCreatorFactory
 ) : IEntityCreatorFactory<Profession.ToCreate>
 {
-    public async Task<IEntityCreator<Profession.ToCreate>> CreateAsync(IDbConnection connection) => 
+    public async Task<IEntityCreator<Profession.ToCreate>> CreateAsync(IDbConnection connection) =>
         new NameableCreator<Profession.ToCreate>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),

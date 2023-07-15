@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Inserters;
+﻿namespace PoundPupLegacy.DomainModel.Inserters;
 
 internal static class SingleIdInserterFactory
 {
@@ -82,7 +82,7 @@ internal abstract class SingleIdInserterFactory<T> : IDatabaseInserterFactory<T>
     }
 
 }
-internal sealed class SingleIdInserter<T> : DatabaseAccessor<T>, IDatabaseInserter<T> 
+internal sealed class SingleIdInserter<T> : DatabaseAccessor<T>, IDatabaseInserter<T>
     where T : PossiblyIdentifiable
 {
 

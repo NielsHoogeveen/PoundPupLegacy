@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Inserters;
+﻿namespace PoundPupLegacy.DomainModel.Inserters;
 
 internal sealed class SenatorInserterFactory : SingleIdInserterFactory<Senator.ToCreateForExistingPerson>
 {

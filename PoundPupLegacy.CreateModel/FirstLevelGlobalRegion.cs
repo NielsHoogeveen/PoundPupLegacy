@@ -1,10 +1,10 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 
 public abstract record FirstLevelGlobalRegion : GlobalRegion
 {
     private FirstLevelGlobalRegion() { }
     public required GlobalRegionDetails GlobalRegionDetails { get; init; }
-   
+
     public sealed record ToCreate : FirstLevelGlobalRegion, GlobalRegionToCreate
     {
         public required Identification.Possible Identification { get; init; }

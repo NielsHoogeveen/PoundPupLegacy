@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 
 public interface ProfessionalRoleToCreateForNewPerson : ProfessionalRole, PossiblyIdentifiable
 {
@@ -23,7 +23,7 @@ public abstract record ProfessionalRoleDetails
 
     public required int ProfessionId { get; init; }
 
-    public sealed record ProfessionalRoleDetailsForCreateOfNewPerson: ProfessionalRoleDetails
+    public sealed record ProfessionalRoleDetailsForCreateOfNewPerson : ProfessionalRoleDetails
     {
         public required int? Id { get; set; }
 
@@ -37,12 +37,12 @@ public abstract record ProfessionalRoleDetails
             };
         }
     }
-    public sealed record ProfessionalRoleDetailsForCreateOfExistingPerson: ProfessionalRoleDetails
+    public sealed record ProfessionalRoleDetailsForCreateOfExistingPerson : ProfessionalRoleDetails
     {
         public required int? Id { get; set; }
         public required int PersonId { get; init; }
     }
-    public sealed record ProfessionalRoleDetailsForUpdate: ProfessionalRoleDetails
+    public sealed record ProfessionalRoleDetailsForUpdate : ProfessionalRoleDetails
     {
         public required int Id { get; init; }
 

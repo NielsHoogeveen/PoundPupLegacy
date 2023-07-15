@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using PoundPupLegacy.CreateModel.Updaters;
+using PoundPupLegacy.DomainModel;
+using PoundPupLegacy.DomainModel.Creators;
+using PoundPupLegacy.DomainModel.Updaters;
 using PoundPupLegacy.EditModel.Mappers;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
@@ -18,9 +20,9 @@ public static class EntitySaveServiceExensions
     where TEditModel : class, Node
     where TUpdateModel : class, TEditModel, ExistingNode
     where TCreateModel : class, TEditModel, ResolvedNewNode
-    where TDomainModel : class, CreateModel.Node
-    where TDomainModelToUpdate : class, CreateModel.NodeToUpdate
-    where TDomainModelToCreate : class, CreateModel.NodeToCreate
+    where TDomainModel : class, DomainModel.Node
+    where TDomainModelToUpdate : class, NodeToUpdate
+    where TDomainModelToCreate : class, NodeToCreate
     {
         services.AddTransient<IEntitySaveService<TUpdateModel, TCreateModel>> (serviceProvider => 
         {
@@ -71,9 +73,9 @@ internal class EntitySaveService<
     where TEditModel : class, Node
     where TCreateModel: class, TEditModel, ResolvedNewNode
     where TUpdateModel: class, TEditModel, ExistingNode
-    where TDomainModel: class, CreateModel.Node
-    where TDomainModelToCreate: class, CreateModel.NodeToCreate
-    where TDomainModelToUpdate : class, CreateModel.NodeToUpdate
+    where TDomainModel: class, DomainModel.Node
+    where TDomainModelToCreate: class, NodeToCreate
+    where TDomainModelToUpdate : class, NodeToUpdate
 {
 
     public async Task<int> SaveAsync(TCreateModel node)

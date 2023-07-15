@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using PoundPupLegacy.CreateModel;
+using PoundPupLegacy.DomainModel;
+using PoundPupLegacy.DomainModel.Creators;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
@@ -10,7 +11,7 @@ internal sealed class AttachmentStoreService(
     IDbConnection connection,
     ILogger<AttachmentStoreService> logger,
     IConfiguration configuration,
-    IEntityCreatorFactory<CreateModel.File> fileCreatorFactory
+    IEntityCreatorFactory<DomainModel.File> fileCreatorFactory
 ) : DatabaseService(connection, logger), IAttachmentStoreService
 {
     public async Task<int?> StoreFile(IFormFile file)
@@ -31,7 +32,7 @@ internal sealed class AttachmentStoreService(
                 var fullName = attachmentsLocation + "\\" + fileName;
                 await using FileStream fs = new(fullName, FileMode.Create);
                 await file.CopyToAsync(fs);
-                var fm = new CreateModel.File {
+                var fm = new DomainModel.File {
                     Identification = new Identification.Possible {
                         Id = null,
                     },
@@ -42,7 +43,7 @@ internal sealed class AttachmentStoreService(
                     TenantFiles = new List<TenantFile>()
                 };
                 await using var fileCreator = await fileCreatorFactory.CreateAsync(connection);
-                await fileCreator.CreateAsync(new List<CreateModel.File> { fm }.ToAsyncEnumerable());
+                await fileCreator.CreateAsync(new List<DomainModel.File> { fm }.ToAsyncEnumerable());
                 return fm.Identification.Id;
             });
         }

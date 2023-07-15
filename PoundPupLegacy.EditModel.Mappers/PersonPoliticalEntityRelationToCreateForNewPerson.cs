@@ -1,9 +1,9 @@
-﻿using PoundPupLegacy.CreateModel;
+﻿using PoundPupLegacy.DomainModel;
 
 namespace PoundPupLegacy.EditModel.Mappers;
 
 internal class PersonPoliticalEntityRelationToCreateForNewPerson(
-    IMapper<NodeDetails.ForCreate, CreateModel.NodeDetails.ForCreate> nodeDetailMapper
+    IMapper<NodeDetails.ForCreate, DomainModel.NodeDetails.ForCreate> nodeDetailMapper
     ) : IEnumerableMapper<PersonPoliticalEntityRelation.Complete.ToCreateForNewPerson, PartyPoliticalEntityRelation.ToCreate.ForNewParty>
 {
     public IEnumerable<PartyPoliticalEntityRelation.ToCreate.ForNewParty> Map(IEnumerable<PersonPoliticalEntityRelation.Complete.ToCreateForNewPerson> source)

@@ -1,5 +1,5 @@
-﻿namespace PoundPupLegacy.CreateModel;
-public sealed record RepresentativeHouseBillAction: NodeToCreate
+﻿namespace PoundPupLegacy.DomainModel;
+public sealed record RepresentativeHouseBillAction : NodeToCreate
 {
     public required RepresentativeHouseBillActionDetails RepresentativeHouseBillActionDetails { get; init; }
     public required Identification.Possible Identification { get; init; }

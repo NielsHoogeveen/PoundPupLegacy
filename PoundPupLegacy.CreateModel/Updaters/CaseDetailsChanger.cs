@@ -1,8 +1,8 @@
-﻿using PoundPupLegacy.CreateModel.Creators;
-using PoundPupLegacy.CreateModel.Deleters;
-using static PoundPupLegacy.CreateModel.CaseDetails;
+﻿using PoundPupLegacy.DomainModel.Creators;
+using PoundPupLegacy.DomainModel.Deleters;
+using static PoundPupLegacy.DomainModel.CaseDetails;
 
-namespace PoundPupLegacy.CreateModel.Updaters;
+namespace PoundPupLegacy.DomainModel.Updaters;
 
 public class CaseDetailsChangerFactory(
     IDatabaseUpdaterFactory<CaseParties.ToUpdate> casePartyUpdaterFactory,
@@ -39,12 +39,10 @@ public class CaseDetailsChanger(
 {
     public async Task Process(CaseToUpdate caseDetails)
     {
-        foreach(var caseParty in caseDetails.CaseDetails.CasePartiesToAdd) 
-        {
+        foreach (var caseParty in caseDetails.CaseDetails.CasePartiesToAdd) {
             await caseCasePartiesCreator.CreateAsync(caseParty);
         }
-        foreach(var caseParty in caseDetails.CaseDetails.CasePartiesToUpdate) 
-        {
+        foreach (var caseParty in caseDetails.CaseDetails.CasePartiesToUpdate) {
             await casePartyUpdater.UpdateAsync(caseParty.CaseParties);
             foreach (var organizationId in caseParty.CaseParties.OrganizationIdsToRemove) {
                 await organizationDeleter.DeleteAsync(new CasePartiesOrganizationDeleterRequest {
@@ -52,11 +50,10 @@ public class CaseDetailsChanger(
                     OrganizationId = organizationId
                 });
             }
-            foreach (var personId in caseParty.CaseParties.PersonIdsToRemove) 
-            {
-                await personDeleter.DeleteAsync(new CasePartiesPersonDeleterRequest { 
-                    CasePartiesId = caseParty.CaseParties.Identification.Id, 
-                    PersonId = personId 
+            foreach (var personId in caseParty.CaseParties.PersonIdsToRemove) {
+                await personDeleter.DeleteAsync(new CasePartiesPersonDeleterRequest {
+                    CasePartiesId = caseParty.CaseParties.Identification.Id,
+                    PersonId = personId
                 });
             }
             foreach (var organizationId in caseParty.CaseParties.OrganizationIdsToAdd) {

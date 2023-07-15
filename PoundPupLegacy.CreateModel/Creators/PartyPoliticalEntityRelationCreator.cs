@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class PartyPoliticalEntityRelationCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
@@ -8,7 +8,7 @@ internal sealed class PartyPoliticalEntityRelationCreatorFactory(
 {
     public async Task<IEntityCreator<PartyPoliticalEntityRelation.ToCreate.ForExistingParty>> CreateAsync(IDbConnection connection) =>
         new NodeCreator<PartyPoliticalEntityRelation.ToCreate.ForExistingParty>(
-            new (){
+            new(){
                 await nodeInserterFactory.CreateAsync(connection),
                 await partyPoliticalEntityRelationInserterFactory.CreateAsync(connection)
             },

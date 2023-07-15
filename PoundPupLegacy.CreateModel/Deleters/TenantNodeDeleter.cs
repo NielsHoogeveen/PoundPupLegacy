@@ -1,8 +1,8 @@
-﻿namespace PoundPupLegacy.CreateModel.Deleters;
+﻿namespace PoundPupLegacy.DomainModel.Deleters;
 
 using Request = TenantNodeToDelete;
 
-public record TenantNodeToDelete: IRequest
+public record TenantNodeToDelete : IRequest
 {
     public required int Id { get; init; }
 }

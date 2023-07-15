@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 
 public abstract record Representative : MemberOfCongress
 {
@@ -34,12 +34,12 @@ public abstract record Representative : MemberOfCongress
 public abstract record RepresentativeDetails
 {
     public abstract IEnumerable<HouseTerm> HouseTerms { get; }
-    public sealed record ForCreate: RepresentativeDetails
+    public sealed record ForCreate : RepresentativeDetails
     {
-        public override IEnumerable<HouseTerm.ToCreateForNewRepresenatative> HouseTerms => HouseTermToCreate;  
-        public required List<HouseTerm.ToCreateForNewRepresenatative> HouseTermToCreate { get; init;}
+        public override IEnumerable<HouseTerm.ToCreateForNewRepresenatative> HouseTerms => HouseTermToCreate;
+        public required List<HouseTerm.ToCreateForNewRepresenatative> HouseTermToCreate { get; init; }
     }
-    public sealed record ForUpdate: RepresentativeDetails
+    public sealed record ForUpdate : RepresentativeDetails
     {
         public override IEnumerable<HouseTerm> HouseTerms => HouseTermToUpdate;
         public required List<HouseTerm.HouseTermToUpdate> HouseTermToUpdate { get; init; }

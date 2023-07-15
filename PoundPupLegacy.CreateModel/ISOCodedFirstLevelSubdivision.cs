@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 public interface ISOCodedFirstLevelSubdivisionToUpdate : ISOCodedFirstLevelSubdivision, FirstLevelSubdivisionToUpdate, ISOCodedSubdivisionToUpdate
 {
 }

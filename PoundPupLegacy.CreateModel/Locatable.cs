@@ -1,11 +1,11 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 
 public interface LocatableToUpdate : Locatable, NameableToUpdate, DocumentableToUpdate
 {
     LocatableDetails.ForUpdate LocatableDetails { get; }
 }
 
-public interface LocatableToCreate: Locatable, NameableToCreate,DocumentableToCreate 
+public interface LocatableToCreate : Locatable, NameableToCreate, DocumentableToCreate
 {
     LocatableDetails.ForCreate LocatableDetails { get; }
 }

@@ -1,10 +1,10 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 
 public interface CountryToUpdate : Country, PoliticalEntityToUpdate
 {
 }
 
-public interface CountryToCreate: Country, PoliticalEntityToCreate
+public interface CountryToCreate : Country, PoliticalEntityToCreate
 {
 }
 

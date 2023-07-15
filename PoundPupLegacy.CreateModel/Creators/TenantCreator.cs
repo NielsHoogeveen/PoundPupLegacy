@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class TenantCreatorFactory(
     IDatabaseInserterFactory<UserGroup> userGroupInserterFactory,
@@ -13,7 +13,7 @@ internal sealed class TenantCreatorFactory(
 {
     public async Task<IEntityCreator<Tenant>> CreateAsync(IDbConnection connection) =>
         new TenantCreator(
-            new() 
+            new()
             {
                 await userGroupInserterFactory.CreateAsync(connection),
                 await ownerInserterFactory.CreateAsync(connection),

@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Deleters;
+﻿namespace PoundPupLegacy.DomainModel.Deleters;
 
 using Request = FileDeleterRequest;
 

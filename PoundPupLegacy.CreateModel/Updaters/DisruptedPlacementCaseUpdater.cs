@@ -1,6 +1,6 @@
-﻿namespace PoundPupLegacy.CreateModel.Updaters;
+﻿namespace PoundPupLegacy.DomainModel.Updaters;
 
-using PoundPupLegacy.CreateModel.Creators;
+using PoundPupLegacy.DomainModel.Creators;
 using Request = DisruptedPlacementCase.ToUpdate;
 internal sealed class DisruptedPlacementCaseChangerFactory(
     IDatabaseUpdaterFactory<Request> databaseUpdaterFactory,

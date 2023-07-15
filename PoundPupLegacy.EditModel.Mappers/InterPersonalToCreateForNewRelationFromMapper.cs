@@ -1,20 +1,20 @@
 ﻿namespace PoundPupLegacy.EditModel.Mappers;
 
 internal class InterPersonalToCreateForNewRelationFromMapper(
-    IMapper<NodeDetails.ForCreate, CreateModel.NodeDetails.ForCreate> nodeDetailMapper
- ) : IEnumerableMapper<InterPersonalRelation.From.Complete.ToCreateForNewPerson, CreateModel.InterPersonalRelation.ToCreate.ForNewPersonFrom>
+    IMapper<NodeDetails.ForCreate, DomainModel.NodeDetails.ForCreate> nodeDetailMapper
+ ) : IEnumerableMapper<InterPersonalRelation.From.Complete.ToCreateForNewPerson, DomainModel.InterPersonalRelation.ToCreate.ForNewPersonFrom>
 {
-    public IEnumerable<CreateModel.InterPersonalRelation.ToCreate.ForNewPersonFrom> Map(IEnumerable<InterPersonalRelation.From.Complete.ToCreateForNewPerson> source)
+    public IEnumerable<DomainModel.InterPersonalRelation.ToCreate.ForNewPersonFrom> Map(IEnumerable<InterPersonalRelation.From.Complete.ToCreateForNewPerson> source)
     {
         foreach (var relation in source) {
             var now = DateTime.Now;
-            yield return new CreateModel.InterPersonalRelation.ToCreate.ForNewPersonFrom {
+            yield return new DomainModel.InterPersonalRelation.ToCreate.ForNewPersonFrom {
                 Identification = new Identification.Possible {
                     Id = null,
                 },
                 NodeDetails = nodeDetailMapper.Map(relation.NodeDetailsForCreate),
                 PersonIdTo = relation.PersonTo.Id,
-                InterPersonalRelationDetails = new CreateModel.InterPersonalRelationDetails {
+                InterPersonalRelationDetails = new DomainModel.InterPersonalRelationDetails {
                     InterPersonalRelationTypeId = relation.InterPersonalRelationType.Id,
                     DateRange = relation.RelationDetails.DateRange is null ? new DateTimeRange(null, null) : relation.RelationDetails.DateRange,
                     DocumentIdProof = relation.RelationDetails.ProofDocument?.Id,

@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class CountryAndFirstAndSecondLevelSubdivisionCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
@@ -24,7 +24,7 @@ internal sealed class CountryAndFirstAndSecondLevelSubdivisionCreatorFactory(
 {
     public async Task<IEntityCreator<CountryAndFirstAndSecondLevelSubdivision.ToCreate>> CreateAsync(IDbConnection connection) =>
         new NameableCreator<CountryAndFirstAndSecondLevelSubdivision.ToCreate>(
-            new () {
+            new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),
                 await documentableInserterFactory.CreateAsync(connection),

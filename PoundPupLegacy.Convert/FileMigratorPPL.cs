@@ -1,5 +1,6 @@
-﻿using PoundPupLegacy.CreateModel.Creators;
-using File = PoundPupLegacy.CreateModel.File;
+﻿using PoundPupLegacy.DomainModel;
+using PoundPupLegacy.DomainModel.Creators;
+using File = PoundPupLegacy.DomainModel.File;
 
 namespace PoundPupLegacy.Convert;
 

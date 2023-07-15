@@ -1,14 +1,16 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using PoundPupLegacy.CreateModel.Creators;
+using PoundPupLegacy.DomainModel.Creators;
+using PoundPupLegacy.DomainModel.Inserters;
+using PoundPupLegacy.DomainModel.Readers;
 
-namespace PoundPupLegacy.CreateModel;
+namespace PoundPupLegacy.DomainModel;
 
 public static class DependencyInjection
 {
-    public static void AddCreateModelAccessors(this IServiceCollection services)
+    public static void AddDomainModelAccessors(this IServiceCollection services)
     {
-        services.AddCreateModelInserters();
-        services.AddCreateModelCreators();
-        services.AddCreateModelReaders();
+        services.AddDomainModelInserters();
+        services.AddDomainModelCreators();
+        services.AddDomainModelReaders();
     }
 }

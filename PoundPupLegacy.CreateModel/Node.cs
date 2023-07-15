@@ -1,6 +1,6 @@
-﻿using PoundPupLegacy.CreateModel.Deleters;
+﻿using PoundPupLegacy.DomainModel.Deleters;
 
-namespace PoundPupLegacy.CreateModel;
+namespace PoundPupLegacy.DomainModel;
 
 public interface NodeToUpdate : Node, CertainlyIdentifiable
 {
@@ -11,16 +11,17 @@ public interface NodeToCreate : Node, PossiblyIdentifiable
 {
     NodeDetails.ForCreate NodeDetails { get; init; }
 }
-public interface Node: Identifiable 
+public interface Node : Identifiable
 {
 }
 
-public abstract record NodeDetails{
+public abstract record NodeDetails
+{
     private NodeDetails() { }
     public required DateTime ChangedDateTime { get; init; }
     public required string Title { get; init; }
     public required int AuthoringStatusId { get; init; }
-    public sealed record ForCreate: NodeDetails
+    public sealed record ForCreate : NodeDetails
     {
         public required int PublisherId { get; init; }
         public required DateTime CreatedDateTime { get; init; }

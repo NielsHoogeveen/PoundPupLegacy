@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\PoundPupLegacy.Common\PoundPupLegacy.Common.csproj" />
-    <ProjectReference Include="..\PoundPupLegacy.CreateModel\PoundPupLegacy.CreateModel.csproj" />
+    <ProjectReference Include="..\PoundPupLegacy.CreateModel\PoundPupLegacy.DomainModel.csproj" />
   </ItemGroup>
 
 </Project>

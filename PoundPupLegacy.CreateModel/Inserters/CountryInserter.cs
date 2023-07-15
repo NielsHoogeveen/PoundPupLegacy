@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Inserters;
+﻿namespace PoundPupLegacy.DomainModel.Inserters;
 
 using Request = CountryToCreate;
 
@@ -11,7 +11,7 @@ internal sealed class CountryInserterFactory : IdentifiableDatabaseInserterFacto
     private static readonly NullableStringDatabaseParameter IncomeRequirements = new() { Name = "income_requirements" };
     private static readonly NullableStringDatabaseParameter HealthRequirements = new() { Name = "health_requirements" };
     private static readonly NullableStringDatabaseParameter OtherRequirements = new() { Name = "other_requirements" };
-   
+
 
     public override string TableName => "country";
 

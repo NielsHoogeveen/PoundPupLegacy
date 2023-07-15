@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 
 public interface CongressionalTermToUpdate : CongressionalTerm, DocumentableToUpdate
 {
@@ -13,11 +13,11 @@ public interface CongressionalTerm : Documentable
 }
 public abstract record CongressionalTermDetails
 {
-    public sealed record CongressionalTermDetailsForCreate: CongressionalTermDetails
+    public sealed record CongressionalTermDetailsForCreate : CongressionalTermDetails
     {
         public required List<CongressionalTermPoliticalPartyAffiliation.ToCreateForNewTerm> PartyAffiliations { get; init; }
     }
-    public sealed record CongressionalTermDetailsForUpdate: CongressionalTermDetails
+    public sealed record CongressionalTermDetailsForUpdate : CongressionalTermDetails
     {
 
     }

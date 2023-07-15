@@ -1,6 +1,6 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 
-public interface PublisherToCreate: Publisher, PrincipalToCreate
+public interface PublisherToCreate : Publisher, PrincipalToCreate
 {
 
 }

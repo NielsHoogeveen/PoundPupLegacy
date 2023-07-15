@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class BlogPostCreatorFactory(
         IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
@@ -10,7 +10,7 @@ internal sealed class BlogPostCreatorFactory(
 {
     public async Task<IEntityCreator<BlogPost.ToCreate>> CreateAsync(IDbConnection connection) =>
         new NodeCreator<BlogPost.ToCreate>(
-            new () {
+            new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),
                 await simpleTextNodeInserterFactory.CreateAsync(connection),

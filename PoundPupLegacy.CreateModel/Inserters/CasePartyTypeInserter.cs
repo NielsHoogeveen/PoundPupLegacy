@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.CreateModel.Inserters;
+﻿using PoundPupLegacy.DomainModel;
+
+namespace PoundPupLegacy.DomainModel.Inserters;
 
 internal sealed class CasePartyTypeInserterFactory : SingleIdInserterFactory<CasePartyType.ToCreate>
 {

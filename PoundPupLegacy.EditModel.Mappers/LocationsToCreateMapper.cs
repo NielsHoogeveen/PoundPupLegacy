@@ -1,11 +1,11 @@
 ﻿namespace PoundPupLegacy.EditModel.Mappers;
 
-internal class LocationsToCreateMapper : IEnumerableMapper<Location.ToCreate, CreateModel.Location.ToCreate>
+internal class LocationsToCreateMapper : IEnumerableMapper<Location.ToCreate, DomainModel.Location.ToCreate>
 {
-    public IEnumerable<CreateModel.Location.ToCreate> Map(IEnumerable<Location.ToCreate> source)
+    public IEnumerable<DomainModel.Location.ToCreate> Map(IEnumerable<Location.ToCreate> source)
     {
         foreach (var location in source) {
-            yield return new CreateModel.Location.ToCreate {
+            yield return new DomainModel.Location.ToCreate {
                 Identification = new Identification.Possible {
                     Id = null,
                 },

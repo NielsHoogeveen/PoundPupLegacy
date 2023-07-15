@@ -1,6 +1,7 @@
 ﻿using PoundPupLegacy.Common;
+using PoundPupLegacy.DomainModel;
 
-namespace PoundPupLegacy.CreateModel.Updaters;
+namespace PoundPupLegacy.DomainModel.Updaters;
 
 internal sealed class BlogPostChangerFactory(
     IDatabaseUpdaterFactory<BlogPost.ToUpdate> databaseUpdaterFactory,

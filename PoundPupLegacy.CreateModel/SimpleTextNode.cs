@@ -1,9 +1,9 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 public interface SimpleTextNodeToUpdate : SimpleTextNode, SearchableToUpdate
 {
 }
-public interface SimpleTextNodeToCreate : SimpleTextNode, SearchableToCreate 
-{ 
+public interface SimpleTextNodeToCreate : SimpleTextNode, SearchableToCreate
+{
 }
 public interface SimpleTextNode : Searchable
 {
@@ -11,7 +11,7 @@ public interface SimpleTextNode : Searchable
 }
 
 public sealed record SimpleTextNodeDetails
-{ 
+{
     public required string Text { get; init; }
     public required string Teaser { get; init; }
 }

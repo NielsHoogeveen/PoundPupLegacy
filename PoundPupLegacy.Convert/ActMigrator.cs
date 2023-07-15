@@ -1,4 +1,8 @@
-﻿namespace PoundPupLegacy.Convert;
+﻿using PoundPupLegacy.DomainModel;
+using PoundPupLegacy.DomainModel.Creators;
+using PoundPupLegacy.DomainModel.Readers;
+
+namespace PoundPupLegacy.Convert;
 
 internal sealed class ActMigrator(
     IDatabaseConnections databaseConnections,
@@ -115,7 +119,7 @@ internal sealed class ActMigrator(
 
         while (await reader.ReadAsync()) {
 
-            var vocabularyNames = new List<CreateModel.Term.ToCreateForNewNameable>();
+            var vocabularyNames = new List<Term.ToCreateForNewNameable>();
 
             var id = reader.GetInt32("id");
             var title = reader.GetString("title");
@@ -134,7 +138,7 @@ internal sealed class ActMigrator(
                         VocabularyId = vocabularyId
                     }));
                 }
-                vocabularyNames.Add(new CreateModel.Term.ToCreateForNewNameable {
+                vocabularyNames.Add(new Term.ToCreateForNewNameable {
                     Identification = new Identification.Possible {
                         Id = null,
                     },
@@ -144,7 +148,7 @@ internal sealed class ActMigrator(
                 });
             }
             else {
-                vocabularyNames.Add(new CreateModel.Term.ToCreateForNewNameable {
+                vocabularyNames.Add(new Term.ToCreateForNewNameable {
                     Identification = new Identification.Possible {
                         Id = null,
                     },

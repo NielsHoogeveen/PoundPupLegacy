@@ -1,16 +1,16 @@
 ﻿namespace PoundPupLegacy.EditModel.Mappers;
 
 internal class WrongfulRemovalCaseToUpdateMapper(
-    IMapper<NodeDetails.ForUpdate, CreateModel.NodeDetails.ForUpdate> nodeDetailsMapper,
-    IMapper<NameableDetails, CreateModel.NameableDetails.ForUpdate> nameableDetailsMapper,
-    IMapper<LocatableDetails.ForUpdate, CreateModel.LocatableDetails.ForUpdate> locatableMapper,
-    IMapper<CaseDetails, CreateModel.CaseDetails.CaseDetailsForUpdate> caseDetailsMapper
-    ) : IMapper<WrongfulRemovalCase.ToUpdate, CreateModel.WrongfulRemovalCase.ToUpdate>
+    IMapper<NodeDetails.ForUpdate, DomainModel.NodeDetails.ForUpdate> nodeDetailsMapper,
+    IMapper<NameableDetails, DomainModel.NameableDetails.ForUpdate> nameableDetailsMapper,
+    IMapper<LocatableDetails.ForUpdate, DomainModel.LocatableDetails.ForUpdate> locatableMapper,
+    IMapper<CaseDetails, DomainModel.CaseDetails.CaseDetailsForUpdate> caseDetailsMapper
+    ) : IMapper<WrongfulRemovalCase.ToUpdate, DomainModel.WrongfulRemovalCase.ToUpdate>
 {
-    public CreateModel.WrongfulRemovalCase.ToUpdate Map(WrongfulRemovalCase.ToUpdate viewModel)
+    public DomainModel.WrongfulRemovalCase.ToUpdate Map(WrongfulRemovalCase.ToUpdate viewModel)
     {
         var now = DateTime.Now;
-        return new CreateModel.WrongfulRemovalCase.ToUpdate {
+        return new DomainModel.WrongfulRemovalCase.ToUpdate {
             Identification = new Identification.Certain {
                 Id = viewModel.NodeIdentification.NodeId
             },

@@ -1,7 +1,7 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class FamilySizeCreatorFactory(
-    
+
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
     IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
     IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,

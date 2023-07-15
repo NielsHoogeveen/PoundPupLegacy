@@ -1,7 +1,7 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class DenominationCreatorFactory(
-    
+
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
     IDatabaseInserterFactory<SearchableToCreate> searchableInserterFactory,
     IDatabaseInserterFactory<NameableToCreate> nameableInserterFactory,
@@ -12,7 +12,7 @@ internal sealed class DenominationCreatorFactory(
 {
     public async Task<IEntityCreator<Denomination.ToCreate>> CreateAsync(IDbConnection connection) =>
         new NameableCreator<Denomination.ToCreate>(
-            new ()
+            new()
             {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),

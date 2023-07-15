@@ -1,4 +1,7 @@
-﻿using System.Collections.Immutable;
+﻿using PoundPupLegacy.DomainModel;
+using PoundPupLegacy.DomainModel.Creators;
+using PoundPupLegacy.DomainModel.Readers;
+using System.Collections.Immutable;
 using System.Net.Http.Headers;
 
 namespace PoundPupLegacy.Convert;

@@ -1,6 +1,7 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 
-public abstract record Location {
+public abstract record Location
+{
     private Location() { }
     public required string? Street { get; init; }
     public required string? Additional { get; init; }

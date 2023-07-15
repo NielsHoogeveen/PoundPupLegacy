@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿using PoundPupLegacy.DomainModel;
+
+namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class CaseTypeCreatorFactory(
     IDatabaseInserterFactory<NodeTypeToAdd> nodeTypeInserterFactory,
@@ -13,7 +15,7 @@ internal sealed class CaseTypeCreatorFactory(
                 await nodeTypeInserterFactory.CreateAsync(connection),
                 await nameableTypeInserterFactory.CreateAsync(connection),
                 await caseTypeInserterFactory.CreateAsync(connection)
-                
+
             },
             await caseTypeCasePartyTypeInserterFactory.CreateAsync(connection)
         );

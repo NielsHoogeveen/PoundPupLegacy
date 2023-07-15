@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.CreateModel.Inserters;
+﻿using PoundPupLegacy.DomainModel;
+
+namespace PoundPupLegacy.DomainModel.Inserters;
 
 using Request = ViewNodeTypeListAction;
 internal sealed class ViewNodeTypeListActionInserterFactory : BasicDatabaseInserterFactory<Request>

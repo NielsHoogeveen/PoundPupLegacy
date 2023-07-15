@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 
 public interface OrganizationToUpdate : Organization, PartyToUpdate
 {
@@ -8,7 +8,7 @@ public interface OrganizationToCreate : Organization, PartyToCreate
 {
     OrganizationDetails.ForCreate OrganizationDetails { get; }
 }
-public interface Organization: Party
+public interface Organization : Party
 {
 }
 
@@ -25,7 +25,7 @@ public abstract record OrganizationDetails
     public abstract T Match<T>(Func<ForCreate, T> create, Func<ForUpdate, T> update);
     public abstract void Match(Action<ForCreate> create, Action<ForUpdate> update);
 
-    public sealed record ForCreate: OrganizationDetails 
+    public sealed record ForCreate : OrganizationDetails
     {
         public override IEnumerable<InterOrganizationalRelation> InterOrganizationalRelations => GetInterOrganizationalRelations();
         public override IEnumerable<PartyPoliticalEntityRelation> PartyPoliticalEntityRelations => PartyPoliticalEntityRelationsToCreate;
@@ -34,10 +34,10 @@ public abstract record OrganizationDetails
         public required List<InterOrganizationalRelation.ToCreate.ForNewOrganizationTo> InterOrganizationalRelationsTo { get; init; }
         private IEnumerable<InterOrganizationalRelation> GetInterOrganizationalRelations()
         {
-            foreach(var relation in InterOrganizationalRelationsFrom) {
+            foreach (var relation in InterOrganizationalRelationsFrom) {
                 yield return relation;
             }
-            foreach(var relation in InterOrganizationalRelationsTo) {
+            foreach (var relation in InterOrganizationalRelationsTo) {
                 yield return relation;
             }
         }

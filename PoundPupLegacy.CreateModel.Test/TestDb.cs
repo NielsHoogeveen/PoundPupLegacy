@@ -1,5 +1,5 @@
 using PoundPupLegacy.Common.Test;
-using PoundPupLegacy.CreateModel;
+using PoundPupLegacy.DomainModel;
 using System.Runtime.CompilerServices;
 using Xunit.Abstractions;
 

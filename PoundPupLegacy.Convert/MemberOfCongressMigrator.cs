@@ -1,5 +1,8 @@
-﻿using System.Text.Json;
-using File = PoundPupLegacy.CreateModel.File;
+﻿using PoundPupLegacy.DomainModel;
+using PoundPupLegacy.DomainModel.Creators;
+using PoundPupLegacy.DomainModel.Readers;
+using System.Text.Json;
+using File = PoundPupLegacy.DomainModel.File;
 
 namespace PoundPupLegacy.Convert;
 internal class MemberOfCongressMigrator(
@@ -548,7 +551,7 @@ internal class MemberOfCongressMigrator(
 
                     }
                     var title = memberOfCongress.name.official_full is null ? $"{memberOfCongress.name.first} {memberOfCongress.name.middle} {memberOfCongress.name.last} {memberOfCongress.name.suffix}".Replace("  ", " ") : memberOfCongress.name.official_full;
-                    var vocabularyNames = new List<CreateModel.Term.ToCreateForNewNameable> {
+                    var vocabularyNames = new List<Term.ToCreateForNewNameable> {
                         new Term.ToCreateForNewNameable {
                             Identification = new Identification.Possible {
                                 Id = null

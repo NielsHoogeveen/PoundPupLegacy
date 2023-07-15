@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class BasicActionCreatorFactory(
     IDatabaseInserterFactory<Action> actionInserterFactory,
@@ -6,7 +6,7 @@ internal sealed class BasicActionCreatorFactory(
 ) : IEntityCreatorFactory<BasicAction>
 {
     public async Task<IEntityCreator<BasicAction>> CreateAsync(IDbConnection connection) =>
-        new InsertingEntityCreator<BasicAction>(new () {
+        new InsertingEntityCreator<BasicAction>(new() {
             await actionInserterFactory.CreateAsync(connection),
             await basicActionInserterFactory.CreateAsync(connection)
         });

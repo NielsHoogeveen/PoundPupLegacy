@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 
 public abstract record CongressionalTermPoliticalPartyAffiliation : Documentable, Searchable
 {
@@ -36,15 +36,15 @@ public abstract record CongressionalTermPoliticalPartyAffiliation : Documentable
 public abstract record CongressionalTermPoliticalPartyAffiliationDetails
 {
     private CongressionalTermPoliticalPartyAffiliationDetails() { }
-    
+
     public required int PoliticalPartyAffiliationId { get; init; }
     public required DateTimeRange DateTimeRange { get; init; }
 
-    public sealed record CongressionalTermPoliticalPartyAffiliationDetailsResolved: CongressionalTermPoliticalPartyAffiliationDetails
+    public sealed record CongressionalTermPoliticalPartyAffiliationDetailsResolved : CongressionalTermPoliticalPartyAffiliationDetails
     {
         public required int CongressionalTermId { get; set; }
     }
-    public sealed record CongressionalTermPoliticalPartyAffiliationDetailsUnresolved: CongressionalTermPoliticalPartyAffiliationDetails
+    public sealed record CongressionalTermPoliticalPartyAffiliationDetailsUnresolved : CongressionalTermPoliticalPartyAffiliationDetails
     {
         public CongressionalTermPoliticalPartyAffiliationDetailsResolved ResolveCongressionalTerm(int congressionalTermId)
         {

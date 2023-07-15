@@ -1,12 +1,14 @@
-﻿namespace PoundPupLegacy.EditModel.Mappers;
+﻿using PoundPupLegacy.DomainModel;
 
-internal class CaseDetailsForCreateMapper : IMapper<CaseDetails, CreateModel.CaseDetails.CaseDetailsForCreate>
+namespace PoundPupLegacy.EditModel.Mappers;
+
+internal class CaseDetailsForCreateMapper : IMapper<CaseDetails, DomainModel.CaseDetails.CaseDetailsForCreate>
 {
-    public CreateModel.CaseDetails.CaseDetailsForCreate Map(CaseDetails source)
+    public DomainModel.CaseDetails.CaseDetailsForCreate Map(CaseDetails source)
     {
-        return new CreateModel.CaseDetails.CaseDetailsForCreate {
+        return new DomainModel.CaseDetails.CaseDetailsForCreate {
             Date = source.Date,
-            CaseCaseParties = new List<CreateModel.CaseCaseParties.ToCreate.ForNewCase>(),
+            CaseCaseParties = new List<CaseCaseParties.ToCreate.ForNewCase>(),
         };
     }
 }

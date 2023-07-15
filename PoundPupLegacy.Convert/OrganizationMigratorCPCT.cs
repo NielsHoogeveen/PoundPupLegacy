@@ -1,4 +1,8 @@
-﻿namespace PoundPupLegacy.Convert;
+﻿using PoundPupLegacy.DomainModel;
+using PoundPupLegacy.DomainModel.Creators;
+using PoundPupLegacy.DomainModel.Readers;
+
+namespace PoundPupLegacy.Convert;
 
 internal sealed class OrganizationMigratorCPCT(
     IDatabaseConnections databaseConnections,

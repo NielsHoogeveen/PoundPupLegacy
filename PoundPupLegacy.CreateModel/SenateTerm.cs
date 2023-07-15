@@ -1,9 +1,9 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 
 public abstract record SenateTerm : CongressionalTerm
 {
     private SenateTerm() { }
-    
+
     public sealed record ToCreateForExistingSenator : SenateTerm, CongressionalTermToCreate
     {
         public required SenateTermDetails.ForExistingSenator SenateTermDetails { get; init; }
@@ -46,10 +46,10 @@ public abstract record SenateTermDetails
     public required int SubdivisionId { get; init; }
     public required DateTimeRange DateTimeRange { get; init; }
 
-    public sealed record ForNewSenator: SenateTermDetails
+    public sealed record ForNewSenator : SenateTermDetails
     {
     }
-    public sealed record ForExistingSenator: SenateTermDetails
+    public sealed record ForExistingSenator : SenateTermDetails
     {
         public required int SenatorId { get; init; }
     }

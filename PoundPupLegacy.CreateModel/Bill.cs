@@ -1,8 +1,8 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 public interface BillToUpdate : Bill, NameableToUpdate, DocumentableToUpdate
 {
 }
-public interface BillToCreate: Bill, NameableToCreate, DocumentableToCreate
+public interface BillToCreate : Bill, NameableToCreate, DocumentableToCreate
 {
 }
 

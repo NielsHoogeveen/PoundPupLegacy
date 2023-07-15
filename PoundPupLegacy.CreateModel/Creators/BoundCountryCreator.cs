@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class BoundCountryCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
@@ -18,7 +18,7 @@ internal sealed class BoundCountryCreatorFactory(
 {
     public async Task<IEntityCreator<BoundCountry.ToCreate>> CreateAsync(IDbConnection connection) =>
         new NameableCreator<BoundCountry.ToCreate>(
-            new () {
+            new() {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),
                 await documentableInserterFactory.CreateAsync(connection),

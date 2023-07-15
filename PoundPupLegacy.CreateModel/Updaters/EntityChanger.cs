@@ -1,7 +1,7 @@
-﻿using PoundPupLegacy.CreateModel.Creators;
-using PoundPupLegacy.CreateModel.Deleters;
+﻿using PoundPupLegacy.DomainModel.Creators;
+using PoundPupLegacy.DomainModel.Deleters;
 
-namespace PoundPupLegacy.CreateModel.Updaters;
+namespace PoundPupLegacy.DomainModel.Updaters;
 public interface IEntityUpdater<T>
     where T : NodeToUpdate
 {
@@ -25,7 +25,7 @@ public class NodeDetailsChangerFactory(
             await nodeTermInserterFactory.CreateAsync(connection),
             await nodeTermDeleterFactory.CreateAsync(connection)
         );
-    } 
+    }
 }
 
 public class NodeDetailsChanger(
@@ -71,7 +71,7 @@ public interface IEntityChangerFactory<T>
     Task<IEntityChanger<T>> CreateAsync(IDbConnection connection);
 }
 
-public interface IEntityChanger<T>: IAsyncDisposable
+public interface IEntityChanger<T> : IAsyncDisposable
 {
     Task UpdateAsync(T request);
 }
@@ -144,15 +144,15 @@ public class NodeChanger<T>(
 }
 
 public class EntityChanger<T>(
-): IAsyncDisposable, IEntityChanger<T>
+) : IAsyncDisposable, IEntityChanger<T>
     where T : NodeToUpdate
 {
-    protected virtual async Task Process(T request) 
+    protected virtual async Task Process(T request)
     {
         await Task.CompletedTask;
     }
-    public Task UpdateAsync(T request) 
-    { 
+    public Task UpdateAsync(T request)
+    {
         return Process(request);
     }
 

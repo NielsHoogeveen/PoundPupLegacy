@@ -1,19 +1,19 @@
 ﻿namespace PoundPupLegacy.EditModel.Mappers;
 
 internal class PersonOrganizationRelationToCreateForNewOrganization(
-    IMapper<NodeDetails.ForCreate, CreateModel.NodeDetails.ForCreate> nodeDetailMapper
-) : IEnumerableMapper<PersonOrganizationRelation.ForOrganization.Complete.ToCreateForNewOrganization, CreateModel.PersonOrganizationRelation.ToCreate.ForNewOrganization>
+    IMapper<NodeDetails.ForCreate, DomainModel.NodeDetails.ForCreate> nodeDetailMapper
+) : IEnumerableMapper<PersonOrganizationRelation.ForOrganization.Complete.ToCreateForNewOrganization, DomainModel.PersonOrganizationRelation.ToCreate.ForNewOrganization>
 {
-    public IEnumerable<CreateModel.PersonOrganizationRelation.ToCreate.ForNewOrganization> Map(IEnumerable<PersonOrganizationRelation.ForOrganization.Complete.ToCreateForNewOrganization> source)
+    public IEnumerable<DomainModel.PersonOrganizationRelation.ToCreate.ForNewOrganization> Map(IEnumerable<PersonOrganizationRelation.ForOrganization.Complete.ToCreateForNewOrganization> source)
     {
         foreach (var element in source) {
-            yield return new CreateModel.PersonOrganizationRelation.ToCreate.ForNewOrganization {
+            yield return new DomainModel.PersonOrganizationRelation.ToCreate.ForNewOrganization {
                 Identification = new Identification.Possible {
                     Id = null,
                 },
                 NodeDetails = nodeDetailMapper.Map(element.NodeDetailsForCreate),
                 PersonId = element.Person.Id,
-                PersonOrganizationRelationDetails = new CreateModel.PersonOrganizationRelationDetails {
+                PersonOrganizationRelationDetails = new DomainModel.PersonOrganizationRelationDetails {
                     DateRange = element.RelationDetails.DateRange is null
                         ? new DateTimeRange(null, null)
                         : element.RelationDetails.DateRange,

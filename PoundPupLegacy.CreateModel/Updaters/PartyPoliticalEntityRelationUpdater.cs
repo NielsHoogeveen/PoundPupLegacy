@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Updaters;
+﻿namespace PoundPupLegacy.DomainModel.Updaters;
 
 using Request = PartyPoliticalEntityRelation.ToUpdate;
 

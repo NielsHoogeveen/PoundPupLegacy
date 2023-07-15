@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Inserters;
+﻿namespace PoundPupLegacy.DomainModel.Inserters;
 
 using Request = CongressionalTermPoliticalPartyAffiliation.ToCreateForExistingTerm;
 internal sealed class CongressionalTermPoliticalPartyAffiliationInserterFactory : IdentifiableDatabaseInserterFactory<Request>

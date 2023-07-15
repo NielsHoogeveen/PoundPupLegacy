@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿using PoundPupLegacy.DomainModel;
+
+namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class SecondLevelGlobalRegionCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
@@ -12,7 +14,7 @@ internal sealed class SecondLevelGlobalRegionCreatorFactory(
     TermCreatorFactory nameableDetailsCreatorFactory
 ) : IEntityCreatorFactory<SecondLevelGlobalRegion.ToCreate>
 {
-    public async Task<IEntityCreator<SecondLevelGlobalRegion.ToCreate>> CreateAsync(IDbConnection connection) => 
+    public async Task<IEntityCreator<SecondLevelGlobalRegion.ToCreate>> CreateAsync(IDbConnection connection) =>
         new NameableCreator<SecondLevelGlobalRegion.ToCreate>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),

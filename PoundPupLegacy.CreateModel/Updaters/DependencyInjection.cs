@@ -1,11 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using PoundPupLegacy.Common;
 
-namespace PoundPupLegacy.CreateModel.Updaters;
+namespace PoundPupLegacy.DomainModel.Updaters;
 
 public static class DependencyInjection
 {
-    public static void AddCreateModelUpdaters(this IServiceCollection services)
+    public static void AddDomainModelUpdaters(this IServiceCollection services)
     {
         services.AddTransient<NodeDetailsChangerFactory>();
         services.AddTransient<CaseDetailsChangerFactory>();

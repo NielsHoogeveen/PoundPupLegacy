@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class MultiQuestionPollCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
@@ -13,7 +13,7 @@ internal sealed class MultiQuestionPollCreatorFactory(
 {
     public async Task<IEntityCreator<MultiQuestionPoll.ToCreate>> CreateAsync(IDbConnection connection) =>
         new MultiQuestionPollCreator(
-            new (){
+            new(){
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),
                 await simpleTextNodeInserterFactory.CreateAsync(connection),

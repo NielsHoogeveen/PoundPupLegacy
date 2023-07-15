@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 
 public abstract record Person : Party
 {
@@ -38,7 +38,7 @@ public abstract record PersonDetails
     public abstract IEnumerable<PartyPoliticalEntityRelation> PartyPoliticalEntityRelations { get; }
     public abstract IEnumerable<PersonOrganizationRelation> PersonOrganizationRelations { get; }
 
-    public sealed record ForCreate: PersonDetails
+    public sealed record ForCreate : PersonDetails
     {
         public override IEnumerable<InterPersonalRelation> InterPersonalRelations => GetInterPersonalRelations();
         public override IEnumerable<PartyPoliticalEntityRelation> PartyPoliticalEntityRelations => PartyPoliticalEntityRelationsToCreate;
@@ -47,8 +47,8 @@ public abstract record PersonDetails
         public required List<InterPersonalRelation.ToCreate.ForNewPersonTo> InterPersonalRelationsToCreateTo { get; init; }
         private IEnumerable<InterPersonalRelation> GetInterPersonalRelations()
         {
-            foreach(var relation in InterPersonalRelationsToCreateFrom) {
-                  yield return relation;
+            foreach (var relation in InterPersonalRelationsToCreateFrom) {
+                yield return relation;
             }
             foreach (var relation in InterPersonalRelationsToCreateTo) {
                 yield return relation;
@@ -65,7 +65,7 @@ public abstract record PersonDetails
 
         private IEnumerable<InterPersonalRelation> GetInterPersonalRelations()
         {
-            foreach(var elem in InterPersonalRelationsFromToCreate) {
+            foreach (var elem in InterPersonalRelationsFromToCreate) {
                 yield return elem;
             }
             foreach (var elem in InterPersonalRelationsToToCreate) {

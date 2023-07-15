@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class SubdivisionTypeCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
@@ -9,7 +9,7 @@ internal sealed class SubdivisionTypeCreatorFactory(
     TermCreatorFactory nameableDetailsCreatorFactory
 ) : IEntityCreatorFactory<SubdivisionType.ToCreate>
 {
-    public async Task<IEntityCreator<SubdivisionType.ToCreate>> CreateAsync(IDbConnection connection) => 
+    public async Task<IEntityCreator<SubdivisionType.ToCreate>> CreateAsync(IDbConnection connection) =>
         new NameableCreator<SubdivisionType.ToCreate>(
             new() {
                 await nodeInserterFactory.CreateAsync(connection),

@@ -1,10 +1,10 @@
 ﻿namespace PoundPupLegacy.EditModel.Mappers;
 
-internal class AbuseCaseDetailsMapper : IMapper<AbuseCaseDetails, CreateModel.AbuseCaseDetails>
+internal class AbuseCaseDetailsMapper : IMapper<AbuseCaseDetails, DomainModel.AbuseCaseDetails>
 {
-    public CreateModel.AbuseCaseDetails Map(AbuseCaseDetails source)
+    public DomainModel.AbuseCaseDetails Map(AbuseCaseDetails source)
     {
-        return new CreateModel.AbuseCaseDetails {
+        return new DomainModel.AbuseCaseDetails {
             ChildPlacementTypeId = source.ChildPlacementTypeId,
             TypeOfAbuseIds = source.TypesOfAbuse.Select(x => x.Id).ToList(),
             TypeOfAbuserIds = source.TypesOfAbuser.Select(x => x.Id).ToList(),

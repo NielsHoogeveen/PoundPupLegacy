@@ -1,6 +1,7 @@
-﻿namespace PoundPupLegacy.CreateModel.Updaters;
+﻿namespace PoundPupLegacy.DomainModel.Updaters;
 
-using PoundPupLegacy.CreateModel.Creators;
+using PoundPupLegacy.DomainModel;
+using PoundPupLegacy.DomainModel.Creators;
 using Request = Person.ToUpdate;
 
 internal sealed class PersonChangerFactory(
@@ -41,32 +42,25 @@ public sealed class PersonChanger(
     protected override async Task Process(Request request)
     {
         await base.Process(request);
-        foreach (var personOrganizationRelations in request.PersonDetails.PersonOrganizationRelationsToCreate) 
-        {
+        foreach (var personOrganizationRelations in request.PersonDetails.PersonOrganizationRelationsToCreate) {
             await personOrganizationRelationCreator.CreateAsync(personOrganizationRelations);
         }
-        foreach (var personOrganizationRelations in request.PersonDetails.PersonOrganizationRelationsToUpdates) 
-        {
+        foreach (var personOrganizationRelations in request.PersonDetails.PersonOrganizationRelationsToUpdates) {
             await personOrganizationRelationUpdater.UpdateAsync(personOrganizationRelations);
         }
-        foreach(var interPersonalRelations in request.PersonDetails.InterPersonalRelationToUpdates) 
-        {
+        foreach (var interPersonalRelations in request.PersonDetails.InterPersonalRelationToUpdates) {
             await interPersonalRelationsUpdater.UpdateAsync(interPersonalRelations);
         }
-        foreach (var interPersonalRelations in request.PersonDetails.InterPersonalRelationsFromToCreate) 
-        {
+        foreach (var interPersonalRelations in request.PersonDetails.InterPersonalRelationsFromToCreate) {
             await interPersonalRelationsCreator.CreateAsync(interPersonalRelations);
         }
-        foreach (var interPersonalRelations in request.PersonDetails.InterPersonalRelationsToToCreate) 
-        {
+        foreach (var interPersonalRelations in request.PersonDetails.InterPersonalRelationsToToCreate) {
             await interPersonalRelationsCreator.CreateAsync(interPersonalRelations);
         }
-        foreach(var partyPoliticalEntityRelation in request.PersonDetails.PartyPoliticalEntityRelationToUpdate) 
-        {
+        foreach (var partyPoliticalEntityRelation in request.PersonDetails.PartyPoliticalEntityRelationToUpdate) {
             await partyPoliticalEntityUpdater.UpdateAsync(partyPoliticalEntityRelation);
         }
-        foreach (var partyPoliticalEntityRelation in request.PersonDetails.PartyPoliticalEntityRelationsToCreate) 
-        {
+        foreach (var partyPoliticalEntityRelation in request.PersonDetails.PartyPoliticalEntityRelationsToCreate) {
             await partyPoliticalEntityCreator.CreateAsync(partyPoliticalEntityRelation);
         }
     }

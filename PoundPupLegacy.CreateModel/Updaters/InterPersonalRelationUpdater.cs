@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.CreateModel.Updaters;
+﻿using PoundPupLegacy.DomainModel;
+
+namespace PoundPupLegacy.DomainModel.Updaters;
 
 using Request = InterPersonalRelation.ToUpdate;
 

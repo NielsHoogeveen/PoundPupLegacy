@@ -1,4 +1,6 @@
-﻿using PoundPupLegacy.CreateModel.Creators;
+﻿using PoundPupLegacy.DomainModel;
+using PoundPupLegacy.DomainModel.Creators;
+using PoundPupLegacy.DomainModel.Readers;
 using System.Xml.Linq;
 
 namespace PoundPupLegacy.Convert;

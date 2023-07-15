@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿using PoundPupLegacy.DomainModel;
+
+namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class PersonCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
@@ -20,7 +22,7 @@ internal sealed class PersonCreatorFactory(
 {
     public async Task<IEntityCreator<Person.ToCreate>> CreateAsync(IDbConnection connection) =>
         new PersonCreator(
-            new() 
+            new()
             {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),
@@ -49,7 +51,7 @@ internal sealed class PersonCreator(
     IEntityCreator<PersonOrganizationRelation.ToCreate.ForExistingParticipants> personOrganizationRelationCreator,
     IEntityCreator<InterPersonalRelation.ToCreate.ForExistingParticipants> interPersonalRelationCreator,
     IEntityCreator<PartyPoliticalEntityRelation.ToCreate.ForExistingParty> partyPoliticalRelationCreator
-) : 
+) :
     LocatableCreator<Person.ToCreate>(inserters, nodeDetailsCreator, nameableDetailsCreator, locatableDetailsCreator)
 {
     public override async Task ProcessAsync(Person.ToCreate element, int id)

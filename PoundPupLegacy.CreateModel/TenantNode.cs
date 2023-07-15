@@ -1,6 +1,6 @@
-﻿namespace PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.DomainModel;
 
-public abstract record TenantNode: IRequest
+public abstract record TenantNode : IRequest
 {
     private TenantNode() { }
     public required int TenantId { get; init; }
@@ -11,7 +11,7 @@ public abstract record TenantNode: IRequest
     {
         public required Identification.Certain Identification { get; init; }
     }
-    public abstract record ToCreate: TenantNode, PossiblyIdentifiable
+    public abstract record ToCreate : TenantNode, PossiblyIdentifiable
     {
         private ToCreate() { }
         public required Identification.Possible Identification { get; init; }

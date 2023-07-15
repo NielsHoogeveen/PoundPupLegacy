@@ -1,16 +1,16 @@
 ﻿namespace PoundPupLegacy.EditModel.Mappers;
 
 internal class FathersRightsViolationCaseToUpdateMapper(
-    IMapper<NodeDetails.ForUpdate, CreateModel.NodeDetails.ForUpdate> nodeDetailsMapper,
-    IMapper<NameableDetails, CreateModel.NameableDetails.ForUpdate> nameableDetailsMapper,
-    IMapper<LocatableDetails.ForUpdate, CreateModel.LocatableDetails.ForUpdate> locatableMapper,
-    IMapper<CaseDetails, CreateModel.CaseDetails.CaseDetailsForUpdate> caseDetailsMapper
-    ) : IMapper<FathersRightsViolationCase.ToUpdate, CreateModel.FathersRightsViolationCase.ToUpdate>
+    IMapper<NodeDetails.ForUpdate, DomainModel.NodeDetails.ForUpdate> nodeDetailsMapper,
+    IMapper<NameableDetails, DomainModel.NameableDetails.ForUpdate> nameableDetailsMapper,
+    IMapper<LocatableDetails.ForUpdate, DomainModel.LocatableDetails.ForUpdate> locatableMapper,
+    IMapper<CaseDetails, DomainModel.CaseDetails.CaseDetailsForUpdate> caseDetailsMapper
+    ) : IMapper<FathersRightsViolationCase.ToUpdate, DomainModel.FathersRightsViolationCase.ToUpdate>
 {
-    public CreateModel.FathersRightsViolationCase.ToUpdate Map(FathersRightsViolationCase.ToUpdate viewModel)
+    public DomainModel.FathersRightsViolationCase.ToUpdate Map(FathersRightsViolationCase.ToUpdate viewModel)
     {
         var now = DateTime.Now;
-        return new CreateModel.FathersRightsViolationCase.ToUpdate {
+        return new DomainModel.FathersRightsViolationCase.ToUpdate {
             Identification = new Identification.Certain {
                 Id = viewModel.NodeIdentification.NodeId
             },

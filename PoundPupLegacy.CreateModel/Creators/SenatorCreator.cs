@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿using PoundPupLegacy.DomainModel;
+
+namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class SenatorCreatorFactory(
     IDatabaseInserterFactory<ProfessionalRoleToCreateForExistingPerson> professionalRoleInserterFactory,
@@ -8,8 +10,8 @@ internal sealed class SenatorCreatorFactory(
 ) : IEntityCreatorFactory<Senator.ToCreateForExistingPerson>
 {
     public async Task<IEntityCreator<Senator.ToCreateForExistingPerson>> CreateAsync(IDbConnection connection) =>
-        new SenatorCreator( 
-            new ()
+        new SenatorCreator(
+            new()
             {
                 await professionalRoleInserterFactory.CreateAsync(connection),
                 await memberOfCongressInserterFactory.CreateAsync(connection),

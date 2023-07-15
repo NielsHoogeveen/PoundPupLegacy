@@ -1,16 +1,16 @@
 ﻿namespace PoundPupLegacy.EditModel.Mappers;
 
 internal class DisruptedPlacementCaseToUpdateMapper(
-    IMapper<NodeDetails.ForUpdate, CreateModel.NodeDetails.ForUpdate> nodeDetailsMapper,
-    IMapper<NameableDetails, CreateModel.NameableDetails.ForUpdate> nameableDetailsMapper,
-    IMapper<LocatableDetails.ForUpdate, CreateModel.LocatableDetails.ForUpdate> locatableMapper,
-    IMapper<CaseDetails, CreateModel.CaseDetails.CaseDetailsForUpdate> caseDetailsMapper
-    ) : IMapper<DisruptedPlacementCase.ToUpdate, CreateModel.DisruptedPlacementCase.ToUpdate>
+    IMapper<NodeDetails.ForUpdate, DomainModel.NodeDetails.ForUpdate> nodeDetailsMapper,
+    IMapper<NameableDetails, DomainModel.NameableDetails.ForUpdate> nameableDetailsMapper,
+    IMapper<LocatableDetails.ForUpdate, DomainModel.LocatableDetails.ForUpdate> locatableMapper,
+    IMapper<CaseDetails, DomainModel.CaseDetails.CaseDetailsForUpdate> caseDetailsMapper
+    ) : IMapper<DisruptedPlacementCase.ToUpdate, DomainModel.DisruptedPlacementCase.ToUpdate>
 {
-    public CreateModel.DisruptedPlacementCase.ToUpdate Map(DisruptedPlacementCase.ToUpdate viewModel)
+    public DomainModel.DisruptedPlacementCase.ToUpdate Map(DisruptedPlacementCase.ToUpdate viewModel)
     {
         var now = DateTime.Now;
-        return new CreateModel.DisruptedPlacementCase.ToUpdate {
+        return new DomainModel.DisruptedPlacementCase.ToUpdate {
             Identification = new Identification.Certain {
                 Id = viewModel.NodeIdentification.NodeId
             },

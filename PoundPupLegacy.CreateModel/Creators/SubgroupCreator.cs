@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿using PoundPupLegacy.DomainModel;
+
+namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class SubgroupCreatorFactory(
     IDatabaseInserterFactory<Subgroup> subgroupInserterFactory,
@@ -32,7 +34,7 @@ internal class SubgroupCreator(
     IDatabaseInserter<AccessRole> accessRoleInserter,
     IDatabaseInserter<AdministratorRole> administratorRoleInserter
 
-) : InsertingEntityCreator<Subgroup>(inserters) 
+) : InsertingEntityCreator<Subgroup>(inserters)
 {
     public override async Task ProcessAsync(Subgroup element)
     {

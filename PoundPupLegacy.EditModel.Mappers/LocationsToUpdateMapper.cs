@@ -1,15 +1,13 @@
-﻿using PoundPupLegacy.CreateModel;
+﻿namespace PoundPupLegacy.EditModel.Mappers;
 
-namespace PoundPupLegacy.EditModel.Mappers;
-
-internal class LocationsToUpdateMapper : IEnumerableMapper<Location.ToUpdate, CreateModel.Location.ToUpdate>
+internal class LocationsToUpdateMapper : IEnumerableMapper<Location.ToUpdate, DomainModel.Location.ToUpdate>
 {
-    public IEnumerable<CreateModel.Location.ToUpdate> Map(IEnumerable<Location.ToUpdate> source)
+    public IEnumerable<DomainModel.Location.ToUpdate> Map(IEnumerable<Location.ToUpdate> source)
     {
         foreach (var location in source) {
             if (location.HasBeenDeleted)
                 continue;
-            yield return new CreateModel.Location.ToUpdate {
+            yield return new DomainModel.Location.ToUpdate {
                 Identification = new Identification.Certain {
                     Id = location.Id,
                 },

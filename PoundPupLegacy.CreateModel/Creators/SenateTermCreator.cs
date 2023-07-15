@@ -1,4 +1,4 @@
-﻿namespace PoundPupLegacy.CreateModel.Creators;
+﻿namespace PoundPupLegacy.DomainModel.Creators;
 
 internal sealed class SenateTermCreatorFactory(
     IDatabaseInserterFactory<NodeToCreate> nodeInserterFactory,
@@ -12,7 +12,7 @@ internal sealed class SenateTermCreatorFactory(
 {
     public async Task<IEntityCreator<SenateTerm.ToCreateForExistingSenator>> CreateAsync(IDbConnection connection) =>
         new SenateTermCreator(
-            new() 
+            new()
             {
                 await nodeInserterFactory.CreateAsync(connection),
                 await searchableInserterFactory.CreateAsync(connection),
@@ -28,7 +28,7 @@ internal class SenateTermCreator(
     List<IDatabaseInserter<SenateTerm.ToCreateForExistingSenator>> inserters,
     NodeDetailsCreator nodeDetailsCreator,
     IEntityCreator<CongressionalTermPoliticalPartyAffiliation.ToCreateForExistingTerm> congressionalTermPoliticalPartyAffiliationCreator
-) : NodeCreator<SenateTerm.ToCreateForExistingSenator>(inserters, nodeDetailsCreator) 
+) : NodeCreator<SenateTerm.ToCreateForExistingSenator>(inserters, nodeDetailsCreator)
 {
     public override async Task ProcessAsync(SenateTerm.ToCreateForExistingSenator element, int id)
     {
