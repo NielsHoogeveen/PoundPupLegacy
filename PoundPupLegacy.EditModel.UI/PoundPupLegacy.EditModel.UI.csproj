@@ -20,9 +20,11 @@
   <ItemGroup>
     <ProjectReference Include="..\PoundPupLegacy.Admin.View\PoundPupLegacy.Admin.View.csproj" />
     <ProjectReference Include="..\PoundPupLegacy.Common.UI\PoundPupLegacy.Common.UI.csproj" />
-    <ProjectReference Include="..\PoundPupLegacy.CreateModel\PoundPupLegacy.CreateModel.csproj" />
-    <ProjectReference Include="..\PoundPupLegacy.EditModel\PoundPupLegacy.EditModel.csproj" />
+    <ProjectReference Include="..\PoundPupLegacy.EditModel.Mappers\PoundPupLegacy.EditModel.Mappers.csproj" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0-preview.6.23329.7" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.49" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Mappers\" />
   </ItemGroup>
 </Project>

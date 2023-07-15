@@ -37,6 +37,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.Admin.Edit",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.Admin.UI", "PoundPupLegacy.Admin.UI\PoundPupLegacy.Admin.UI.csproj", "{6B0977B8-8065-4E7E-B238-C33B3FB3D3E8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoundPupLegacy.EditModel.Mappers", "PoundPupLegacy.EditModel.Mappers\PoundPupLegacy.EditModel.Mappers.csproj", "{12DC8F7B-13E0-49A9-86B4-8ACD770DA8D0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -111,6 +113,10 @@ Global
 		{6B0977B8-8065-4E7E-B238-C33B3FB3D3E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B0977B8-8065-4E7E-B238-C33B3FB3D3E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B0977B8-8065-4E7E-B238-C33B3FB3D3E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12DC8F7B-13E0-49A9-86B4-8ACD770DA8D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12DC8F7B-13E0-49A9-86B4-8ACD770DA8D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12DC8F7B-13E0-49A9-86B4-8ACD770DA8D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12DC8F7B-13E0-49A9-86B4-8ACD770DA8D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

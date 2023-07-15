@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using PoundPupLegacy.CreateModel.Updaters;
-using PoundPupLegacy.EditModel.UI.Mappers;
+using PoundPupLegacy.EditModel.Mappers;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 

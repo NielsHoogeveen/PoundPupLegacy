@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PoundPupLegacy.EditModel.UI.Services;
 using PoundPupLegacy.EditModel.UI.Services.Implementation;
 using PoundPupLegacy.CreateModel.Deleters;
-using PoundPupLegacy.EditModel.UI.Mappers;
+using PoundPupLegacy.EditModel.Mappers;
 
 namespace PoundPupLegacy.EditModel.UI;
 
