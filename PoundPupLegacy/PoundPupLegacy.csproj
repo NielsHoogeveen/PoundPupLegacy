@@ -32,7 +32,6 @@
     <ProjectReference Include="..\PoundPupLegacy.Common.UI\PoundPupLegacy.Common.UI.csproj" />
     <ProjectReference Include="..\PoundPupLegacy.EditModel.UI\PoundPupLegacy.EditModel.UI.csproj" />
     <ProjectReference Include="..\PoundPupLegacy.EditModel\PoundPupLegacy.EditModel.csproj" />
-    <ProjectReference Include="..\PoundPupLegacy.CreateModel\PoundPupLegacy.DomainModel.csproj" />
     <ProjectReference Include="..\PoundPupLegacy.ViewModel.UI\PoundPupLegacy.ViewModel.UI.csproj" />
   </ItemGroup>
   <ItemGroup>
