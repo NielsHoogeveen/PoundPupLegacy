@@ -1,17 +1,85 @@
 ﻿namespace PoundPupLegacy.CreateModel.Updaters;
 
+using PoundPupLegacy.CreateModel.Creators;
 using Request = Person.ToUpdate;
 
 internal sealed class PersonChangerFactory(
     IDatabaseUpdaterFactory<Request> databaseUpdaterFactory,
+    IDatabaseUpdaterFactory<PersonOrganizationRelation.ToUpdate> personOrganizationRelationUpdaterFactory,
+    IEntityCreatorFactory<PersonOrganizationRelation.ToCreate.ForExistingParticipants> personOrganizationRelationCreatorFactory,
+    IDatabaseUpdaterFactory<InterPersonalRelation.ToUpdate> interPersonalRelationsUpdaterFactory,
+    IEntityCreatorFactory<InterPersonalRelation.ToCreate.ForExistingParticipants> interPersonalRelationsCreatorFactory,
+    IDatabaseUpdaterFactory<PartyPoliticalEntityRelation.ToUpdate> partyPoliticalEntityUpdaterFactory,
+    IEntityCreatorFactory<PartyPoliticalEntityRelation.ToCreate.ForExistingParty> partyPoliticalEntityCreatorFactory,
     NodeDetailsChangerFactory nodeDetailsChangerFactory) : IEntityChangerFactory<Request>
 {
     public async Task<IEntityChanger<Request>> CreateAsync(IDbConnection connection)
     {
-        return new NodeChanger<Request>(
+        return new PersonChanger(
             await databaseUpdaterFactory.CreateAsync(connection),
+            await personOrganizationRelationUpdaterFactory.CreateAsync(connection),
+            await personOrganizationRelationCreatorFactory.CreateAsync(connection),
+            await interPersonalRelationsUpdaterFactory.CreateAsync(connection),
+            await interPersonalRelationsCreatorFactory.CreateAsync(connection),
+            await partyPoliticalEntityUpdaterFactory.CreateAsync(connection),
+            await partyPoliticalEntityCreatorFactory.CreateAsync(connection),
             await nodeDetailsChangerFactory.CreateAsync(connection)
         );
+    }
+}
+public sealed class PersonChanger(
+    IDatabaseUpdater<Request> databaseUpdater,
+    IDatabaseUpdater<PersonOrganizationRelation.ToUpdate> personOrganizationRelationUpdater,
+    IEntityCreator<PersonOrganizationRelation.ToCreate.ForExistingParticipants> personOrganizationRelationCreator,
+    IDatabaseUpdater<InterPersonalRelation.ToUpdate> interPersonalRelationsUpdater,
+    IEntityCreator<InterPersonalRelation.ToCreate.ForExistingParticipants> interPersonalRelationsCreator,
+    IDatabaseUpdater<PartyPoliticalEntityRelation.ToUpdate> partyPoliticalEntityUpdater,
+    IEntityCreator<PartyPoliticalEntityRelation.ToCreate.ForExistingParty> partyPoliticalEntityCreator,
+    NodeDetailsChanger nodeDetailsChanger
+) : NodeChanger<Request>(databaseUpdater, nodeDetailsChanger)
+{
+    protected override async Task Process(Request request)
+    {
+        await base.Process(request);
+        foreach (var personOrganizationRelations in request.PersonDetails.PersonOrganizationRelationsToCreate) 
+        {
+            await personOrganizationRelationCreator.CreateAsync(personOrganizationRelations);
+        }
+        foreach (var personOrganizationRelations in request.PersonDetails.PersonOrganizationRelationsToUpdates) 
+        {
+            await personOrganizationRelationUpdater.UpdateAsync(personOrganizationRelations);
+        }
+        foreach(var interPersonalRelations in request.PersonDetails.InterPersonalRelationToUpdates) 
+        {
+            await interPersonalRelationsUpdater.UpdateAsync(interPersonalRelations);
+        }
+        foreach (var interPersonalRelations in request.PersonDetails.InterPersonalRelationsFromToCreate) 
+        {
+            await interPersonalRelationsCreator.CreateAsync(interPersonalRelations);
+        }
+        foreach (var interPersonalRelations in request.PersonDetails.InterPersonalRelationsToToCreate) 
+        {
+            await interPersonalRelationsCreator.CreateAsync(interPersonalRelations);
+        }
+        foreach(var partyPoliticalEntityRelation in request.PersonDetails.PartyPoliticalEntityRelationToUpdate) 
+        {
+            await partyPoliticalEntityUpdater.UpdateAsync(partyPoliticalEntityRelation);
+        }
+        foreach (var partyPoliticalEntityRelation in request.PersonDetails.PartyPoliticalEntityRelationsToCreate) 
+        {
+            await partyPoliticalEntityCreator.CreateAsync(partyPoliticalEntityRelation);
+        }
+    }
+
+    public override async ValueTask DisposeAsync()
+    {
+        await base.DisposeAsync();
+        await personOrganizationRelationUpdater.DisposeAsync();
+        await personOrganizationRelationCreator.DisposeAsync();
+        await interPersonalRelationsUpdater.DisposeAsync();
+        await interPersonalRelationsCreator.DisposeAsync();
+        await partyPoliticalEntityUpdater.DisposeAsync();
+        await partyPoliticalEntityCreator.DisposeAsync();
     }
 }
 
@@ -30,8 +98,6 @@ internal sealed class PersonUpdaterFactory : DatabaseUpdaterFactory<Request>
     private static readonly NullableStringDatabaseParameter Suffix = new() { Name = "suffix" };
     private static readonly NullableIntegerDatabaseParameter GovtrackId = new() { Name = "govtrack_id" };
     private static readonly NullableStringDatabaseParameter Bioguide = new() { Name = "bioguide" };
-
-
 
     public override string Sql => $"""
         update node 

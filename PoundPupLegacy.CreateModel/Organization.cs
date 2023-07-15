@@ -65,7 +65,7 @@ public abstract record OrganizationDetails
         public required List<PartyPoliticalEntityRelation.ToCreate.ForExistingParty> PartyPoliticalEntityRelationsToCreate { get; init; }
         public required List<PersonOrganizationRelation.ToCreate.ForExistingParticipants> PersonOrganizationRelationsToCreate { get; init; }
         public required List<PersonOrganizationRelation.ToUpdate> PersonOrganizationRelationsToUpdate { get; init; }
-        public required List<PartyPoliticalEntityRelation.ToUpdate> PartyPoliticalEntityRelationToUpdates { get; init; }
+        public required List<PartyPoliticalEntityRelation.ToUpdate> PartyPoliticalEntityRelationsToUpdates { get; init; }
         public override T Match<T>(Func<ForCreate, T> create, Func<ForUpdate, T> update)
         {
             return update(this);

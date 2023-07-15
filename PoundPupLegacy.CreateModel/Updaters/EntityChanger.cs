@@ -1,4 +1,5 @@
-﻿using PoundPupLegacy.CreateModel.Deleters;
+﻿using PoundPupLegacy.CreateModel.Creators;
+using PoundPupLegacy.CreateModel.Deleters;
 
 namespace PoundPupLegacy.CreateModel.Updaters;
 public interface IEntityUpdater<T>
@@ -54,7 +55,6 @@ public class NodeDetailsChanger(
             await tenantNodeDeleter.DeleteAsync(tenantNodeToRemove);
         }
     }
-
     public async ValueTask DisposeAsync()
     {
         await tenantNodeUpdater.DisposeAsync();
@@ -76,6 +76,53 @@ public interface IEntityChanger<T>: IAsyncDisposable
     Task UpdateAsync(T request);
 }
 
+public class CaseChanger<T>(
+    IDatabaseUpdater<T> databaseUpdater,
+    CaseDetailsChanger caseDetailsChanger,
+    NodeDetailsChanger nodeDetailsChanger,
+    IDatabaseUpdater<LocationUpdaterRequest> locationUpdater,
+    LocatableDetailsCreator locatableDetailsCreator
+) : LocatableChanger<T>(databaseUpdater, nodeDetailsChanger, locationUpdater, locatableDetailsCreator)
+where T : CaseToUpdate
+{
+    protected override async Task Process(T request)
+    {
+        await base.Process(request);
+        await caseDetailsChanger.Process(request);
+    }
+}
+public class LocatableChanger<T>(
+    IDatabaseUpdater<T> databaseUpdater,
+    NodeDetailsChanger nodeDetailsChanger,
+    IDatabaseUpdater<LocationUpdaterRequest> locationUpdater,
+    LocatableDetailsCreator locatableDetailsCreator
+) : NodeChanger<T>(databaseUpdater, nodeDetailsChanger)
+where T : LocatableToUpdate
+{
+    protected override async Task Process(T request)
+    {
+        await base.Process(request);
+        foreach (var location in request.LocatableDetails.LocationsToUpdate) {
+            await locationUpdater.UpdateAsync(new LocationUpdaterRequest {
+                Additional = location.Additional,
+                City = location.City,
+                CountryId = location.CountryId,
+                Id = location.Identification.Id,
+                Latitude = location.Latitude,
+                Longitude = location.Longitude,
+                PostalCode = location.PostalCode,
+                Street = location.Street,
+                SubdivisionId = location.SubdivisionId,
+            });
+        }
+    }
+    public override async ValueTask DisposeAsync()
+    {
+        await base.DisposeAsync();
+        await locationUpdater.DisposeAsync();
+        await locatableDetailsCreator.DisposeAsync();
+    }
+}
 public class NodeChanger<T>(
     IDatabaseUpdater<T> databaseUpdater,
     NodeDetailsChanger nodeDetailsChanger

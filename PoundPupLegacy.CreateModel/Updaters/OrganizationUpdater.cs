@@ -1,16 +1,86 @@
 ﻿namespace PoundPupLegacy.CreateModel.Updaters;
 
+using PoundPupLegacy.CreateModel.Creators;
 using Request = OrganizationToUpdate;
 internal sealed class OrganizationChangerFactory(
     IDatabaseUpdaterFactory<Request> databaseUpdaterFactory,
-    NodeDetailsChangerFactory nodeDetailsChangerFactory) : IEntityChangerFactory<Request>
+    IDatabaseUpdaterFactory<PersonOrganizationRelation.ToUpdate> personOrganizationRelationUpdaterFactory,
+    IEntityCreatorFactory<PersonOrganizationRelation.ToCreate.ForExistingParticipants> personOrganizationRelationCreatorFactory,
+    IDatabaseUpdaterFactory<InterOrganizationalRelation.ToUpdate> interOrganizationalRelationsUpdaterFactory,
+    IEntityCreatorFactory<InterOrganizationalRelation.ToCreate.ForExistingParticipants> interOrganizationalRelationsCreatorFactory,
+    IDatabaseUpdaterFactory<PartyPoliticalEntityRelation.ToUpdate> partyPoliticalEntityUpdaterFactory,
+    IEntityCreatorFactory<PartyPoliticalEntityRelation.ToCreate.ForExistingParty> partyPoliticalEntityCreatorFactory,
+    NodeDetailsChangerFactory nodeDetailsChangerFactory,
+    IDatabaseUpdaterFactory<LocationUpdaterRequest> locationUpdaterFactory,
+    LocatableDetailsCreatorFactory locatableDetailsCreatorFactory) : IEntityChangerFactory<Request>
 {
     public async Task<IEntityChanger<Request>> CreateAsync(IDbConnection connection)
     {
-        return new NodeChanger<Request>(
+        return new OrganizationChanger(
             await databaseUpdaterFactory.CreateAsync(connection),
-            await nodeDetailsChangerFactory.CreateAsync(connection)
+            await personOrganizationRelationUpdaterFactory.CreateAsync(connection),
+            await personOrganizationRelationCreatorFactory.CreateAsync(connection),
+            await interOrganizationalRelationsUpdaterFactory.CreateAsync(connection),
+            await interOrganizationalRelationsCreatorFactory.CreateAsync(connection),
+            await partyPoliticalEntityUpdaterFactory.CreateAsync(connection),
+            await partyPoliticalEntityCreatorFactory.CreateAsync(connection),
+            await nodeDetailsChangerFactory.CreateAsync(connection),
+            await locationUpdaterFactory.CreateAsync(connection),
+            await locatableDetailsCreatorFactory.CreateAsync(connection)
         );
+    }
+}
+public sealed class OrganizationChanger(
+    IDatabaseUpdater<Request> databaseUpdater,
+    IDatabaseUpdater<PersonOrganizationRelation.ToUpdate> personOrganizationRelationUpdater,
+    IEntityCreator<PersonOrganizationRelation.ToCreate.ForExistingParticipants> personOrganizationRelationCreator,
+    IDatabaseUpdater<InterOrganizationalRelation.ToUpdate> interOrganizationalRelationsUpdater,
+    IEntityCreator<InterOrganizationalRelation.ToCreate.ForExistingParticipants> interOrganizationalRelationsCreator,
+    IDatabaseUpdater<PartyPoliticalEntityRelation.ToUpdate> partyPoliticalEntityUpdater,
+    IEntityCreator<PartyPoliticalEntityRelation.ToCreate.ForExistingParty> partyPoliticalEntityCreator,
+    NodeDetailsChanger nodeDetailsChanger,
+    IDatabaseUpdater<LocationUpdaterRequest> locationUpdater,
+    LocatableDetailsCreator locatableDetailsCreator
+) : LocatableChanger<Request>(databaseUpdater, nodeDetailsChanger, locationUpdater, locatableDetailsCreator)
+{
+    protected override async Task Process(Request request)
+    {
+        await base.Process(request);
+        foreach (var personOrganizationRelations in request.OrganizationDetails.PersonOrganizationRelationsToCreate) {
+            await personOrganizationRelationCreator.CreateAsync(personOrganizationRelations);
+        }
+        foreach (var personOrganizationRelations in request.OrganizationDetails.PersonOrganizationRelationsToUpdate) {
+            await personOrganizationRelationUpdater.UpdateAsync(personOrganizationRelations);
+        }
+        foreach (var interOrganizationalRelations in request.OrganizationDetails.InterOrganizationalRelationsFromToUpdate) {
+            await interOrganizationalRelationsUpdater.UpdateAsync(interOrganizationalRelations);
+        }
+        foreach (var interOrganizationalRelations in request.OrganizationDetails.InterOrganizationalRelationsToToUpdate) {
+            await interOrganizationalRelationsUpdater.UpdateAsync(interOrganizationalRelations);
+        }
+        foreach (var interOrganizationalRelations in request.OrganizationDetails.InterOrganizationalRelationsFromToCreate) {
+            await interOrganizationalRelationsCreator.CreateAsync(interOrganizationalRelations);
+        }
+        foreach (var interOrganizationalRelations in request.OrganizationDetails.InterOrganizationalRelationsToToCreate) {
+            await interOrganizationalRelationsCreator.CreateAsync(interOrganizationalRelations);
+        }
+        foreach (var partyPoliticalEntityRelation in request.OrganizationDetails.PartyPoliticalEntityRelationsToUpdates) {
+            await partyPoliticalEntityUpdater.UpdateAsync(partyPoliticalEntityRelation);
+        }
+        foreach (var partyPoliticalEntityRelation in request.OrganizationDetails.PartyPoliticalEntityRelationsToCreate) {
+            await partyPoliticalEntityCreator.CreateAsync(partyPoliticalEntityRelation);
+        }
+    }
+
+    public override async ValueTask DisposeAsync()
+    {
+        await base.DisposeAsync();
+        await personOrganizationRelationUpdater.DisposeAsync();
+        await personOrganizationRelationCreator.DisposeAsync();
+        await interOrganizationalRelationsUpdater.DisposeAsync();
+        await interOrganizationalRelationsCreator.DisposeAsync();
+        await partyPoliticalEntityUpdater.DisposeAsync();
+        await partyPoliticalEntityCreator.DisposeAsync();
     }
 }
 

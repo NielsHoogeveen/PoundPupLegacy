@@ -1,15 +1,22 @@
 ﻿namespace PoundPupLegacy.CreateModel.Updaters;
 
+using PoundPupLegacy.CreateModel.Creators;
 using Request = ChildTraffickingCase.ToUpdate;
 internal sealed class ChildTraffickingCaseChangerFactory(
     IDatabaseUpdaterFactory<Request> databaseUpdaterFactory,
-    NodeDetailsChangerFactory nodeDetailsChangerFactory) : IEntityChangerFactory<Request>
+    CaseDetailsChangerFactory caseDetailsChangerFactory,
+    NodeDetailsChangerFactory nodeDetailsChangerFactory,
+    IDatabaseUpdaterFactory<LocationUpdaterRequest> locationUpdaterFactory,
+    LocatableDetailsCreatorFactory locatableDetailsCreatorFactory) : IEntityChangerFactory<Request>
 {
     public async Task<IEntityChanger<Request>> CreateAsync(IDbConnection connection)
     {
-        return new NodeChanger<Request>(
+        return new CaseChanger<Request>(
             await databaseUpdaterFactory.CreateAsync(connection),
-            await nodeDetailsChangerFactory.CreateAsync(connection)
+            await caseDetailsChangerFactory.CreateAsync(connection),
+            await nodeDetailsChangerFactory.CreateAsync(connection),
+            await locationUpdaterFactory.CreateAsync(connection),
+            await locatableDetailsCreatorFactory.CreateAsync(connection)
         );
     }
 }

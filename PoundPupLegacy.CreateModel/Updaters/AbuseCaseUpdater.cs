@@ -1,27 +1,28 @@
 ﻿namespace PoundPupLegacy.CreateModel.Updaters;
 
 using PoundPupLegacy.Common;
+using PoundPupLegacy.CreateModel.Creators;
 using System.Data;
 using System.Threading.Tasks;
 using Request = AbuseCase.ToUpdate;
 
 internal sealed class AbuseCaseChangerFactory(
     IDatabaseUpdaterFactory<Request> databaseUpdaterFactory,
-    NodeDetailsChangerFactory nodeDetailsChangerFactory) : IEntityChangerFactory<Request>
+    CaseDetailsChangerFactory caseDetailsChangerFactory,
+    NodeDetailsChangerFactory nodeDetailsChangerFactory,
+    IDatabaseUpdaterFactory<LocationUpdaterRequest> locationUpdaterFactory,
+    LocatableDetailsCreatorFactory locatableDetailsCreatorFactory) : IEntityChangerFactory<Request>
 {
     public async Task<IEntityChanger<Request>> CreateAsync(IDbConnection connection)
     {
-        return new AbuseCaseChanger(
+        return new CaseChanger<Request>(
             await databaseUpdaterFactory.CreateAsync(connection),
-            await nodeDetailsChangerFactory.CreateAsync(connection)
+            await caseDetailsChangerFactory.CreateAsync(connection),
+            await nodeDetailsChangerFactory.CreateAsync(connection),
+            await locationUpdaterFactory.CreateAsync(connection),
+            await locatableDetailsCreatorFactory.CreateAsync(connection)
         );
     }
-}
-internal sealed class AbuseCaseChanger(
-    IDatabaseUpdater<Request> databaseUpdater,
-    NodeDetailsChanger nodeDetailsChanger
-    ) : NodeChanger<Request>(databaseUpdater, nodeDetailsChanger)
-{
 }
 internal sealed class AbuseCaseUpdaterFactory : DatabaseUpdaterFactory<Request>
 {

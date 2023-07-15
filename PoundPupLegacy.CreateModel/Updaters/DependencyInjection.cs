@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using PoundPupLegacy.Common;
 
 namespace PoundPupLegacy.CreateModel.Updaters;
 
@@ -7,6 +8,7 @@ public static class DependencyInjection
     public static void AddCreateModelUpdaters(this IServiceCollection services)
     {
         services.AddTransient<NodeDetailsChangerFactory>();
+        services.AddTransient<CaseDetailsChangerFactory>();
         services.AddTransient<IEntityChangerFactory<AbuseCase.ToUpdate>, AbuseCaseChangerFactory>();
         services.AddTransient<IEntityChangerFactory<BlogPost.ToUpdate>, BlogPostChangerFactory>();
         services.AddTransient<IEntityChangerFactory<ChildTraffickingCase.ToUpdate>, ChildTraffickingCaseChangerFactory>();
@@ -23,6 +25,7 @@ public static class DependencyInjection
 
         services.AddTransient<IDatabaseUpdaterFactory<AbuseCase.ToUpdate>, AbuseCaseUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<BlogPost.ToUpdate>, BlogPostUpdaterFactory>();
+        services.AddTransient<IDatabaseUpdaterFactory<CaseParties.ToUpdate>, CasePartiesUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<ChildTraffickingCase.ToUpdate>, ChildTraffickingCaseUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<CoercedAdoptionCase.ToUpdate>, CoercedAdoptionCaseUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<DeportationCase.ToUpdate>, DeportationCaseUpdaterFactory>();
