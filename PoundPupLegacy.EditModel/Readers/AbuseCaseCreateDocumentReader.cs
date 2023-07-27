@@ -14,26 +14,41 @@ internal sealed class AbuseCaseCreateDocumentReaderFactory : NodeCreateDocumentR
             {SharedSql.TYPES_OF_ABUSE_DOCUMENT}
             select
                 jsonb_build_object(
-                    jsonb_build_object(
-                        'NodeDetailsForCreate',
-                        (select document from node_details_for_create_document)
-                    ),
-                    'VocabularyIdTagging',
-                    (select id from tagging_vocabulary),
+                    'NodeDetailsForCreate',
+                    (select document from node_details_for_create_document),
+                    'NameableDetails',
+                    (select document from nameable_details_document),
+                    'LocatableDetailsForCreate',
+                    (select document from locatable_details_document),
+                    'CaseDetails',
+                    (select document from case_details_document),
                     'CasePartyTypesCaseParties',
                     (select document from case_type_case_party_type_document),
-                    'FamilySizesToSelectFrom',
-                    (select document from family_sizes_document),
-                    'ChildPlacementTypesToSelectFrom',
-                    (select document from child_placement_types_document),
-                    'TypesOfAbuseToSelectFrom',
-                    (select document from types_of_abuse_document),
-                    'TypesOfAbuserToSelectFrom',
-                    (select document from types_of_abuser_document),
-                    'TypesOfAbuse',
-                    null,
-                    'TypesOfAbuser',
-                    null
+                    'AbuseCaseDetails',
+                    jsonb_build_object(
+                        'ChildPlacementTypeId',
+                        101250,
+                        'FamilySizeId',
+                        101461,
+                        'HomeschoolingInvolved',
+                        false,
+                        'FundamentalFaithInvolved',
+                        false,
+                        'DisabilitiesInvolved',
+                        false,
+                        'FamilySizesToSelectFrom',
+                        (select document from family_sizes_document),
+                        'ChildPlacementTypesToSelectFrom',
+                        (select document from child_placement_types_document),
+                        'TypesOfAbuseToSelectFrom',
+                        (select document from types_of_abuse_document),
+                        'TypesOfAbuserToSelectFrom',
+                        (select document from types_of_abuser_document),
+                        'TypesOfAbuse',
+                        null,
+                        'TypesOfAbuser',
+                        null
+                    )
                 ) document
                 from node_type nt
                 where nt.id = @node_type_id

@@ -32,26 +32,34 @@ internal static class SharedSql
         """;
     internal const string LOCATABLE_UPDATE_CTE = $"""
         {NODE_UPDATE_CTE},
-        {NAMEABLE_DETAILS_DOCUMENT},
+        {NAMEABLE_DETAILS_DOCUMENT_FOR_UPDATE},
         {SUBDIVISIONS_DOCUMENT},
-        {LOCATIONS_DOCUMENT},
-        {LOCATABLE_DETAILS_DOCUMENT}
+        {LOCATIONS_DOCUMENT_FOR_UPDATE},
+        {LOCATABLE_DETAILS_DOCUMENT_TO_UPDATE}
     """;
+    internal const string LOCATABLE_CREATE_CTE = $"""
+        {NODE_CREATE_CTE},
+        {NAMEABLE_DETAILS_DOCUMENT_FOR_CREATE},
+        {LOCATABLE_DETAILS_DOCUMENT_TO_CREATE}
+    """;
+
     internal const string CASE_UPDATE_CTE = $"""
         {LOCATABLE_UPDATE_CTE},
-        {CASE_CASE_PARTY_DOCUMENT},
-        {CASE_DETAILS_DOCUMENT}
+        {CASE_CASE_PARTY_DOCUMENT_FOR_UPDATE},
+        {CASE_DETAILS_DOCUMENT_FOR_UPDATE}
         """;
 
     internal const string CASE_CREATE_CTE = $"""
-        {NODE_CREATE_CTE},
-        {CASE_TYPE_CASE_PARTY_TYPE_DOCUMENT}
+        {LOCATABLE_CREATE_CTE},
+        {CASE_TYPE_CASE_PARTY_TYPE_DOCUMENT},
+        {CASE_CASE_PARTY_DOCUMENT_FOR_CREATE},
+        {CASE_DETAILS_DOCUMENT_FOR_CREATE}
         """;
 
     internal const string PARTY_UPDATE_CTE = $"""
         {LOCATABLE_UPDATE_CTE},
-        {CASE_CASE_PARTY_DOCUMENT},
-        {CASE_DETAILS_DOCUMENT}
+        {CASE_CASE_PARTY_DOCUMENT_FOR_UPDATE},
+        {CASE_DETAILS_DOCUMENT_FOR_UPDATE}
         """;
 
     internal const string PARTY_CREATE_CTE = $"""
@@ -708,7 +716,7 @@ internal static class SharedSql
         )
         """;
 
-    internal const string CASE_CASE_PARTY_DOCUMENT = """
+    internal const string CASE_CASE_PARTY_DOCUMENT_FOR_UPDATE = """
         case_case_party_document as(
             select
             jsonb_agg(
@@ -814,8 +822,37 @@ internal static class SharedSql
             where ctpt.case_type_id = n2.node_type_id
         )
         """;
-
-    internal const string CASE_DETAILS_DOCUMENT = """
+    internal const string CASE_CASE_PARTY_DOCUMENT_FOR_CREATE = """
+        case_case_party_document as(
+            select
+            jsonb_agg(
+        	    jsonb_build_object(
+                    'Id',
+                    null,
+                    'CaseId',
+                    null,
+        		    'CasePartyTypeId',
+        		    n.id,
+        		    'CasePartyTypeName',
+        		    n.title,
+        		    'PersonsText',
+        		    null,
+        		    'OrganizationsText',
+        		    null,
+        		    'Organizations',
+        		    null,
+        		    'Persons',
+        		    null
+        	    )
+            ) document
+            from case_type_case_party_type ctpt 
+            join case_party_type cpt on cpt.id = ctpt.case_party_type_id
+            join node n on n.id = cpt.id
+            join tenant_node tn on tn.tenant_id = @tenant_id and tn.url_id = @url_id
+            where ctpt.case_type_id = @node_type_id
+        )
+        """;
+    internal const string CASE_DETAILS_DOCUMENT_FOR_UPDATE = """
         case_details_document as(
             select
                 jsonb_build_object(
@@ -829,7 +866,19 @@ internal static class SharedSql
         )
         """;
 
-    internal const string LOCATIONS_DOCUMENT = """
+    internal const string CASE_DETAILS_DOCUMENT_FOR_CREATE = """
+        case_details_document as(
+            select
+                jsonb_build_object(
+                    'Date',
+                    null,
+                    'CasePartyTypesCaseParties',
+                    (select document from case_case_party_document)
+                ) document
+        )
+        """;
+
+    internal const string LOCATIONS_DOCUMENT_FOR_UPDATE = """
         locations_document as(
             select
                 jsonb_agg(jsonb_build_object(
@@ -890,7 +939,7 @@ internal static class SharedSql
         )
         """;
 
-    internal const string LOCATABLE_DETAILS_DOCUMENT = """
+    internal const string LOCATABLE_DETAILS_DOCUMENT_TO_UPDATE = """
         locatable_details_document as(
             select
                 jsonb_build_object(
@@ -901,6 +950,17 @@ internal static class SharedSql
             from locatable l
         )
         """;
+
+    internal const string LOCATABLE_DETAILS_DOCUMENT_TO_CREATE = """
+        locatable_details_document as(
+            select
+                jsonb_build_object(
+                    'LocationsToAdd',
+                    null
+                ) document
+        )
+        """;
+
     const string TAGS_DOCUMENT_CREATE = """
         tags_for_create_document as (
             select
@@ -1376,7 +1436,7 @@ internal static class SharedSql
         )
         """;
 
-    const string NAMEABLE_DETAILS_DOCUMENT = """
+    const string NAMEABLE_DETAILS_DOCUMENT_FOR_UPDATE = """
         nameable_details_document as(
             select
                 jsonb_build_object(
@@ -1387,6 +1447,17 @@ internal static class SharedSql
                 ) document,
                 id
             from nameable
+        )
+        """;
+    const string NAMEABLE_DETAILS_DOCUMENT_FOR_CREATE = """
+        nameable_details_document as(
+            select
+                jsonb_build_object(
+                    'Description', 
+                    '',
+            		'VocabularyIdTagging',
+                    (select id from tagging_vocabulary)
+                ) document
         )
         """;
 

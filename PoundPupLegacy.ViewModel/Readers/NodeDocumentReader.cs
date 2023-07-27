@@ -574,7 +574,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         		    join node n on n.id = ccp.case_id
         		    join case_party_type cpt on cpt.id= ccp.case_party_type_id
                     join term t on t.nameable_id = cpt.id
-                    join tenant_node tn3 on tn3.node_id = t.vocabulary_id and tn3.tenant_id = @tenant_id and tn3.url_id = 156
+                    join tenant_node tn3 on tn3.node_id = t.vocabulary_id and tn3.tenant_id = 1 and tn3.url_id = 156
                     join case_parties_organization o on o.case_parties_id = cp.id
         		    join tenant_node tn2 on tn2.node_id = o.organization_id
         		    join node_type nt on nt.id = n.node_type_id
@@ -661,7 +661,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         		    join node n on n.id = ccp.case_id
         		    join case_party_type cpt on cpt.id= ccp.case_party_type_id
                     join term t on t.nameable_id = cpt.id
-                    join tenant_node tn3 on tn3.node_id = t.vocabulary_id and tn3.tenant_id = @tenant_id and tn3.url_id = 156
+                    join tenant_node tn3 on tn3.node_id = t.vocabulary_id and tn3.tenant_id = 1 and tn3.url_id = 156
         		    join case_parties_person o on o.case_parties_id = cp.id
         		    join tenant_node tn2 on tn2.node_id = o.person_id
         		    join node_type nt on nt.id = n.node_type_id
@@ -932,7 +932,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 join case_parties cp on cp.id = ccp.case_parties_id
                 join case_party_type cpt on cpt.id = ccp.case_party_type_id
                 join term t on t.nameable_id = cpt.id
-                join tenant_node tn1 on tn1.node_id = t.vocabulary_id and tn1.tenant_id = @tenant_id and tn1.url_id = 156
+                join tenant_node tn1 on tn1.node_id = t.vocabulary_id and tn1.tenant_id = 1 and tn1.url_id = 156
                 join tenant_node tn on tn.node_id = n.id
                 where tn.tenant_id = @tenant_id and tn.url_id = @url_id
             ) x
