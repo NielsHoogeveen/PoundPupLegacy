@@ -25,7 +25,7 @@ internal sealed class DocumentUpdateDocumentReaderFactory : NodeUpdateDocumentRe
                 jsonb_build_object(
         	        'DocumentTypeId',
                     case 
-                        when d.document_type_id is null then 0
+                        when d.document_type_id is null then 101488
                         else d.document_type_id
                     end,
         	        'PublicationDateFrom',

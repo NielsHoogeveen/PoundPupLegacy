@@ -323,5 +323,9 @@ internal sealed class SiteDataService(
     {
         return _data.Tenants.First(x => x.Id == tenantId).CssFile;
     }
+    public string? GetIcoFile(int tenantId)
+    {
+        return $"{tenantId}.ico";
+    }
 
 }

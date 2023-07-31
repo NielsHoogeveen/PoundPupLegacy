@@ -66,12 +66,17 @@ internal sealed class AttachmentStoreService(
             return null;
         }
         if (int.TryParse(maxFileSizeString, out int maxFileSize)) {
-            var fileName = Guid.NewGuid().ToString();
-            var fullName = Path.Combine(attachmentsLocation, fileName);
-            logger.Log(LogLevel.Information, "starting to write file {0}", fullName);
-            await using FileStream fs = new(fullName, FileMode.Create);
-            await file.OpenReadStream(maxFileSize).CopyToAsync(fs);
-            return fileName;
+            try {
+                var fileName = Guid.NewGuid().ToString();
+                var fullName = Path.Combine(attachmentsLocation, fileName);
+                logger.Log(LogLevel.Information, "starting to write file {0}", fullName);
+                await using FileStream fs = new(fullName, FileMode.Create);
+                await file.OpenReadStream(maxFileSize).CopyToAsync(fs);
+                return fileName;
+            }catch(Exception ex) {
+                logger.LogError(ex, "Error while storing file");
+                return null;
+            }
         }
         else {
             logger.LogError("Max file size as defined in appsettings.json is not a number");

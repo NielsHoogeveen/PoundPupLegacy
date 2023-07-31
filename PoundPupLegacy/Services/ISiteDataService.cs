@@ -38,5 +38,7 @@ public interface ISiteDataService
 
     string? GetCssFile(int tenantId);
 
+    string? GetIcoFile(int tenantId);
+
     Task RefreshTenants();
 }

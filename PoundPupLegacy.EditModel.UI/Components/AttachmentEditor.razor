@@ -52,6 +52,7 @@
                         continue;
                     }
                     var path = await attachmentService.StoreFile(file);
+                    logger.Log(LogLevel.Information, "Adding file {0}", path);
                     if(path is null) {
                         ErrorMessage += "<div>An internal error occured uploading files</div>";
                         continue;
@@ -66,6 +67,7 @@
                             HasBeenStored = false,
                             NodeId = NodeId,
                         });
+
                 }
                 catch (Exception ex)
                 {

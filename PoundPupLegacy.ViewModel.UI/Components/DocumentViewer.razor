@@ -8,5 +8,24 @@
 
     private string Format(string str) => str.Replace(@"href=""http://poundpuplegacy.org", @"href=""");
 
-    private Uri? Uri => Model.SourceUrl is null ? null : new Uri(Model.SourceUrl);
+    private Uri? Uri => MakeUri(Model.SourceUrl);
+
+    private Uri? MakeUri(string? str)
+    {
+        if (str is null)
+            return null;
+        if (Uri.TryCreate(str, UriKind.Absolute, out var uri))
+        {
+            return uri;
+        }
+        else if(!str.Contains(":"))
+        {
+            if(Uri.TryCreate($"http://{str}", UriKind.Absolute, out var uri2))
+            {
+                return uri2;                    
+            }
+            return null;
+        }
+        return null;
+    }
 }

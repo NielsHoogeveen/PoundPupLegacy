@@ -27,10 +27,11 @@
         var uri = new UriBuilder(request.Scheme, request.Host.Host, request.Host.Port ?? -1, request.PathBase).Uri;
         var tenantId = SiteDataService.GetTenantId(uri);
         var cssFile = SiteDataService.GetCssFile(tenantId);
+        var icoFIle = SiteDataService.GetIcoFile(tenantId);
     }
     <link href="/css/@cssFile" rel="stylesheet" type="text/css" asp-append-version="true" />
     <link href="PoundPupLegacy.styles.css" rel="stylesheet" asp-append-version="true" />
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" asp-append-version="true" />
+    <link rel="shortcut icon" href="/@icoFIle" type="image/x-icon" asp-append-version="true" />
     @if (HttpContext.User.Identity is not null && HttpContext.User.Identity.IsAuthenticated) 
     {
         <component type="typeof(HeadOutlet)" render-mode="ServerPrerendered" />
