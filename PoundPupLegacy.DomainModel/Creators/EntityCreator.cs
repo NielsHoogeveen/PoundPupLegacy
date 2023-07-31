@@ -160,21 +160,27 @@ public class NameableCreator<T>(
 }
 public class NodeDetailsCreatorFactory(
     IDatabaseInserterFactory<ResolvedNodeTermToAdd> nodeTermInserterFactory,
-    IDatabaseInserterFactory<TenantNode.ToCreate.ForExistingNode> tenantNodeInserterFactory
+    IDatabaseInserterFactory<TenantNode.ToCreate.ForExistingNode> tenantNodeInserterFactory,
+    IEntityCreatorFactory<File> fileCreatorFactory,
+    IEntityCreatorFactory<NodeFile> nodeFileCreatorFactory
 )
 {
     public async Task<NodeDetailsCreator> CreateAsync(IDbConnection connection)
     {
         return new NodeDetailsCreator(
             await nodeTermInserterFactory.CreateAsync(connection),
-            await tenantNodeInserterFactory.CreateAsync(connection)
+            await tenantNodeInserterFactory.CreateAsync(connection),
+            await fileCreatorFactory.CreateAsync(connection),
+            await nodeFileCreatorFactory.CreateAsync(connection)
         );
     }
 }
 
 public class NodeDetailsCreator(
     IDatabaseInserter<ResolvedNodeTermToAdd> nodeTermInserter,
-    IDatabaseInserter<TenantNode.ToCreate.ForExistingNode> tenantNodeInserter
+    IDatabaseInserter<TenantNode.ToCreate.ForExistingNode> tenantNodeInserter,
+    IEntityCreator<File> fileCreator, 
+    IEntityCreator<NodeFile> nodeFileCreator
 ) : IAsyncDisposable
 {
     public async Task ProcessAsync(NodeToCreate element, int id)
@@ -188,12 +194,22 @@ public class NodeDetailsCreator(
         foreach (var tenantNode in element.NodeDetails.TenantNodes) {
             await tenantNodeInserter.InsertAsync(tenantNode.ResolveNodeId(id));
         }
+        foreach(var file in element.NodeDetails.FilesToAdd) {
+            await fileCreator.CreateAsync(file);
+            var fileId = file.Identification.Id;
+            await nodeFileCreator.CreateAsync(new NodeFile {
+                NodeId = element.Identification.Id!.Value,
+                FileId = fileId!.Value
+            });
+        }
     }
 
     public async ValueTask DisposeAsync()
     {
         await nodeTermInserter.DisposeAsync();
         await tenantNodeInserter.DisposeAsync();
+        await nodeFileCreator.DisposeAsync();
+        await fileCreator.DisposeAsync();
     }
 }
 

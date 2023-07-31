@@ -1,6 +1,4 @@
-﻿using PoundPupLegacy.DomainModel;
-
-namespace PoundPupLegacy.DomainModel.Deleters;
+﻿namespace PoundPupLegacy.DomainModel.Deleters;
 
 using Request = NodeTermToRemove;
 

@@ -166,7 +166,7 @@ internal sealed class AbuseCaseMigrator(
                 Identification = new Identification.Possible {
                     Id = null
                 },
-                NodeDetails = new NodeDetails.ForCreate{
+                NodeDetails = new NodeDetails.ForCreate {
                     PublisherId = reader.GetInt32("access_role_id"),
                     CreatedDateTime = reader.GetDateTime("created_date_time"),
                     ChangedDateTime = reader.GetDateTime("changed_date_time"),
@@ -175,6 +175,7 @@ internal sealed class AbuseCaseMigrator(
                     AuthoringStatusId = 1,
                     NodeTypeId = reader.GetInt32("node_type_id"),
                     TermIds = new List<int>(),
+                    FilesToAdd = new List<DomainModel.File>(),
                     TenantNodes = new List<TenantNode.ToCreate.ForNewNode>
                     {
                         new TenantNode.ToCreate.ForNewNode

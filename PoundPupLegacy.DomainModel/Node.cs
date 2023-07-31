@@ -21,6 +21,7 @@ public abstract record NodeDetails
     public required DateTime ChangedDateTime { get; init; }
     public required string Title { get; init; }
     public required int AuthoringStatusId { get; init; }
+    public required List<File> FilesToAdd { get; init; }
     public sealed record ForCreate : NodeDetails
     {
         public required int PublisherId { get; init; }
@@ -29,6 +30,7 @@ public abstract record NodeDetails
         public required int NodeTypeId { get; init; }
         public required List<TenantNode.ToCreate.ForNewNode> TenantNodes { get; init; }
         public required List<int> TermIds { get; init; }
+
     }
     public sealed record ForUpdate : NodeDetails
     {
@@ -37,5 +39,6 @@ public abstract record NodeDetails
         public required List<TenantNodeToDelete> TenantNodesToRemove { get; init; }
         public required List<ResolvedNodeTermToAdd> NodeTermsToAdd { get; init; }
         public required List<NodeTermToRemove> NodeTermsToRemove { get; init; }
+        public required List<int> FileIdsToRemove { get; init; }
     }
 }

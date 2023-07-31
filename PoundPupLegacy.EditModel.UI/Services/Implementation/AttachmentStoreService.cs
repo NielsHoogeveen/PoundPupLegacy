@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PoundPupLegacy.DomainModel;
-using PoundPupLegacy.DomainModel.Creators;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
@@ -29,7 +28,8 @@ internal sealed class AttachmentStoreService(
         if (int.TryParse(maxFileSizeString, out int maxFileSize)) {
             return await WithTransactedConnection(async (connection) => {
                 var fileName = Guid.NewGuid().ToString();
-                var fullName = attachmentsLocation + "\\" + fileName;
+                var fullName = Path.Combine(attachmentsLocation, fileName);
+                logger.Log(LogLevel.Information, "starting to write file {0}", fullName);
                 await using FileStream fs = new(fullName, FileMode.Create);
                 await file.CopyToAsync(fs);
                 var fm = new DomainModel.File {
@@ -44,6 +44,7 @@ internal sealed class AttachmentStoreService(
                 };
                 await using var fileCreator = await fileCreatorFactory.CreateAsync(connection);
                 await fileCreator.CreateAsync(new List<DomainModel.File> { fm }.ToAsyncEnumerable());
+                logger.Log(LogLevel.Information, "created file with id {0}", fm.Name);
                 return fm.Identification.Id;
             });
         }
@@ -66,7 +67,8 @@ internal sealed class AttachmentStoreService(
         }
         if (int.TryParse(maxFileSizeString, out int maxFileSize)) {
             var fileName = Guid.NewGuid().ToString();
-            var fullName = attachmentsLocation + "\\" + fileName;
+            var fullName = Path.Combine(attachmentsLocation, fileName);
+            logger.Log(LogLevel.Information, "starting to write file {0}", fullName);
             await using FileStream fs = new(fullName, FileMode.Create);
             await file.OpenReadStream(maxFileSize).CopyToAsync(fs);
             return fileName;

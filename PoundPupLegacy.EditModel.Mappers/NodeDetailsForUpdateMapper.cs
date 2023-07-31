@@ -23,7 +23,20 @@ internal class NodeDetailsForUpdateMapper(
             TenantNodesToUpdate = tenantNodeUpdateMapper.Map(source.TenantNodeDetailsForUpdate.TenantNodesToUpdate).ToList(),
             NodeTermsToAdd = nodeTermsToAddMapper.Map(source.TagsForUpdate).ToList(),
             NodeTermsToRemove = nodeTermsToDeleteMapper.Map(source.TagsForUpdate).ToList(),
-
+            FilesToAdd = source.Files.Where(x => !x.HasBeenStored).Select(x => new DomainModel.File {
+                Identification = new Identification.Possible { Id = null },
+                Name = x.Name,
+                Path = x.Path,
+                MimeType = x.MimeType,
+                Size = (int)x.Size,
+                TenantFiles = source
+                    .Tenants.Select(x => new TenantFile {
+                        FileId = null,
+                        TenantFileId = null,
+                        TenantId = x.Id
+                    }).ToList()
+            }).ToList(),
+            FileIdsToRemove = source.Files.Where(x => x.HasBeenDeleted).Select(x => x.Id!.Value).ToList(),
         };
     }
 }

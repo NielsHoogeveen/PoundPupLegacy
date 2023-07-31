@@ -5,33 +5,30 @@ using PoundPupLegacy.ViewModel.UI.Services;
 namespace PoundPupLegacy.Controllers;
 
 [Route("image")]
-public sealed class ImageController : Controller
+public sealed class ImageController(
+        ILogger<ImageController> logger,
+        IAttachmentStoreService storeAttachementService) : Controller
 {
-    private readonly IFetchAttachmentService _attachmentService;
-    private readonly IAttachmentStoreService _storeAttachementService;
-    public ImageController(
-        IFetchAttachmentService attachmentService,
-        IAttachmentStoreService storeAttachementService)
-    {
-        _attachmentService = attachmentService;
-        _storeAttachementService = storeAttachementService;
-    }
     [HttpPost("upload")]
     public async Task<IActionResult> Upload()
     {
         if (!HttpContext.Request.HasFormContentType) {
+            logger.LogInformation("Form has no content type in upload");
             return BadRequest();
         }
         if (HttpContext.Request.Form is null) {
+            logger.LogInformation("Form is empty in upload");
             return BadRequest();
         }
         var files = HttpContext.Request.Form.Files;
         if (files.Count != 1) {
+            logger.LogInformation("Form does not contain one file in upload");
             return BadRequest();
         }
         var file = files[0];
-        var res = await _storeAttachementService.StoreFile(file);
+        var res = await storeAttachementService.StoreFile(file);
         if (res is null) {
+            logger.LogInformation("Form does not contain one file in upload");
             return BadRequest();
         }
         return new ContentResult {

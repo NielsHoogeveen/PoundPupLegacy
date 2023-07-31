@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33209.295
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.Convert", "PoundPupLegacy.Convert\PoundPupLegacy.Convert.csproj", "{58E3BDD4-8834-4FB3-9567-A79C94E65595}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.ViewModel", "PoundPupLegacy.ViewModel\PoundPupLegacy.ViewModel.csproj", "{01985ABD-AE87-414F-B477-ABEE65306D10}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy", "PoundPupLegacy\PoundPupLegacy.csproj", "{9D20839E-3087-4B82-99D5-652491A95FA8}"
@@ -33,7 +31,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.Admin.Edit",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.Admin.UI", "PoundPupLegacy.Admin.UI\PoundPupLegacy.Admin.UI.csproj", "{6B0977B8-8065-4E7E-B238-C33B3FB3D3E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoundPupLegacy.EditModel.Mappers", "PoundPupLegacy.EditModel.Mappers\PoundPupLegacy.EditModel.Mappers.csproj", "{12DC8F7B-13E0-49A9-86B4-8ACD770DA8D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.EditModel.Mappers", "PoundPupLegacy.EditModel.Mappers\PoundPupLegacy.EditModel.Mappers.csproj", "{12DC8F7B-13E0-49A9-86B4-8ACD770DA8D0}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.DomainModel", "PoundPupLegacy.DomainModel\PoundPupLegacy.DomainModel.csproj", "{A0B6C1D2-60D9-43EA-AEF0-4EB54EC45396}"
 EndProject
@@ -45,10 +43,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{58E3BDD4-8834-4FB3-9567-A79C94E65595}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{58E3BDD4-8834-4FB3-9567-A79C94E65595}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{58E3BDD4-8834-4FB3-9567-A79C94E65595}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{58E3BDD4-8834-4FB3-9567-A79C94E65595}.Release|Any CPU.Build.0 = Release|Any CPU
 		{01985ABD-AE87-414F-B477-ABEE65306D10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{01985ABD-AE87-414F-B477-ABEE65306D10}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01985ABD-AE87-414F-B477-ABEE65306D10}.Release|Any CPU.ActiveCfg = Release|Any CPU

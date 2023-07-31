@@ -13,7 +13,10 @@ public class NodeDetailsChangerFactory(
     IDatabaseDeleterFactory<TenantNodeToDelete> tenantNodeDeleterFactory,
     IDatabaseInserterFactory<TenantNode.ToCreate.ForExistingNode> tenantNodeInserterFactory,
     IDatabaseInserterFactory<ResolvedNodeTermToAdd> nodeTermInserterFactory,
-    IDatabaseDeleterFactory<NodeTermToRemove> nodeTermDeleterFactory
+    IDatabaseDeleterFactory<NodeTermToRemove> nodeTermDeleterFactory,
+    IEntityCreatorFactory<File> fileCreatorFactory,
+    IEntityCreatorFactory<NodeFile> nodeFileCreatorFactory,
+    IDatabaseDeleterFactory<FileDeleterRequest> fileDeleterFactory
 )
 {
     public async Task<NodeDetailsChanger> CreateAsync(IDbConnection connection)
@@ -23,7 +26,10 @@ public class NodeDetailsChangerFactory(
             await tenantNodeDeleterFactory.CreateAsync(connection),
             await tenantNodeInserterFactory.CreateAsync(connection),
             await nodeTermInserterFactory.CreateAsync(connection),
-            await nodeTermDeleterFactory.CreateAsync(connection)
+            await nodeTermDeleterFactory.CreateAsync(connection),
+            await fileCreatorFactory.CreateAsync(connection),
+            await nodeFileCreatorFactory.CreateAsync(connection),
+            await fileDeleterFactory.CreateAsync(connection)
         );
     }
 }
@@ -33,7 +39,10 @@ public class NodeDetailsChanger(
     IDatabaseDeleter<TenantNodeToDelete> tenantNodeDeleter,
     IDatabaseInserter<TenantNode.ToCreate.ForExistingNode> tenantNodeInserter,
     IDatabaseInserter<ResolvedNodeTermToAdd> nodeTermInserter,
-    IDatabaseDeleter<NodeTermToRemove> nodeTermDeleter
+    IDatabaseDeleter<NodeTermToRemove> nodeTermDeleter,
+    IEntityCreator<File> fileCreator,
+    IEntityCreator<NodeFile> nodeFileCreator,
+    IDatabaseDeleter<FileDeleterRequest> fileDeleter
 ) : IAsyncDisposable
 {
 
@@ -54,6 +63,17 @@ public class NodeDetailsChanger(
         foreach (var tenantNodeToRemove in node.NodeDetails.TenantNodesToRemove) {
             await tenantNodeDeleter.DeleteAsync(tenantNodeToRemove);
         }
+        foreach (var file in node.NodeDetails.FilesToAdd) {
+            await fileCreator.CreateAsync(file);
+            var fileId = file.Identification.Id;
+            await nodeFileCreator.CreateAsync(new NodeFile {
+                NodeId = node.Identification.Id,
+                FileId = fileId!.Value
+            });
+        }
+        foreach(var file in node.NodeDetails.FileIdsToRemove) {
+            await fileDeleter.DeleteAsync(new FileDeleterRequest { FileId = file, NodeId = node.Identification.Id });
+        }
     }
     public async ValueTask DisposeAsync()
     {
@@ -62,6 +82,9 @@ public class NodeDetailsChanger(
         await tenantNodeDeleter.DisposeAsync();
         await nodeTermInserter.DisposeAsync();
         await nodeTermDeleter.DisposeAsync();
+        await fileCreator.DisposeAsync();
+        await nodeFileCreator.DisposeAsync();
+        await fileDeleter.DisposeAsync();
     }
 }
 

@@ -32,7 +32,7 @@ internal sealed class FetchAttachmentService(
             });
             if (file is null)
                 return new None();
-            var fullPath = attachementsLocation + "\\" + file.Path;
+            var fullPath = Path.Combine(attachementsLocation,file.Path);
             return new FileReturn { FileName = file.Name, MimeType = file.MimeType, Stream = System.IO.File.OpenRead(fullPath) };
         });
     }

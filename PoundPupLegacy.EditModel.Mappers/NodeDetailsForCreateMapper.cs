@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.EditModel.Mappers;
+﻿using PoundPupLegacy.DomainModel;
+
+namespace PoundPupLegacy.EditModel.Mappers;
 
 internal class NodeDetailsForCreateMapper(
     IEnumerableMapper<Tags.ToCreate, int> termIdsToAddMapper,
@@ -18,6 +20,20 @@ internal class NodeDetailsForCreateMapper(
             Title = source.Title,
             TermIds = termIdsToAddMapper.Map(source.TagsToCreate).ToList(),
             TenantNodes = tenantNodeMapper.Map(source.TenantNodeDetailsForCreate.TenantNodesToAdd).ToList(),
+            FilesToAdd = source.Files.Select(x => new DomainModel.File { 
+                Identification = new Identification.Possible { Id = null },
+                Name = x.Name,
+                Path = x.Path,
+                MimeType = x.MimeType,
+                Size = (int)x.Size,
+                TenantFiles = source
+                    .TenantNodeDetailsForCreate
+                    .TenantNodes.Select(x => new TenantFile { 
+                        FileId = null, 
+                        TenantFileId = null, 
+                        TenantId = x.TenantId
+                    }).ToList()
+            }).ToList()
         };
     }
 }
