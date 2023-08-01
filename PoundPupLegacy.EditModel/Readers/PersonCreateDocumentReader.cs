@@ -13,38 +13,23 @@ internal sealed class PersonCreateDocumentReaderFactory : NodeCreateDocumentRead
             {SharedSql.PERSON_POLITICAL_ENTITY_RELATION_TYPES_DOCUMENT}
             select
                 jsonb_build_object(
-                    'NodeId', 
-                    null,
-                    'NodeTypeName',
-                    nt.name,
-                    'UrlId', 
-                    null,
-                    'PublisherId',
-                    @user_id,
-                    'OwnerId',
-                    @tenant_id,
-                    'Title', 
-                    '',
-                    'Description', 
-                    '',
-            		'VocabularyIdTagging',
-                    (select id from tagging_vocabulary),
-                    'Tags', 
-                    null,
-                    'TenantNodes',
-                    null,
-                    'Tenants',
-                    (select document from tenants_document),
-                    'Files',
-                    null,
-                    'Tags',
-                    (select document from tags_for_create_document),
-                    'InterPersonalRelationTypes',
-                    (select document from inter_personal_relation_types_document),
-                    'PersonOrganizationRelationTypes',
-                    (select document from person_organization_relation_types_document),
-                    'PartyPoliticalEntityRelationTypes',
-                    (select document from person_political_entity_relation_types_document)
+                    'NodeDetailsForCreate',
+                    (select document from node_details_for_create_document),
+                    'NameableDetails',
+                    (select document from nameable_details_document),
+                    'LocatableDetailsForCreate',
+                    (select document from locatable_details_document),
+                    'PersonDetailsForCreate',
+                    jsonb_build_object(
+                        'InterPersonalRelationTypes',
+                        (select document from inter_personal_relation_types_document),
+                        'PersonOrganizationRelationTypes',
+                        (select document from person_organization_relation_types_document),
+                        'PersonPoliticalEntityRelationTypes',
+                        (select document from person_political_entity_relation_types_document),
+                        'Name',
+                        ''
+                   )
                 ) document
                 from node_type nt
                 where nt.id = @node_type_id

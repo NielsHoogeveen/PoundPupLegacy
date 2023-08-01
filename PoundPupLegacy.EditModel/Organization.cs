@@ -189,10 +189,18 @@ public abstract record OrganizationDetails
     public required string? EmailAddress { get; set; }
     public required FuzzyDate? Establishment { get; set; }
     public required FuzzyDate? Termination { get; set; }
-    public required List<OrganizationOrganizationType> OrganizationOrganizationTypes { get; init; }
+
+    private List<OrganizationOrganizationType> organizationOrganizationTypes = new List<OrganizationOrganizationType>();
+    public required List<OrganizationOrganizationType> OrganizationOrganizationTypes { 
+        get => organizationOrganizationTypes; 
+        init {
+            if (value is not null)
+                organizationOrganizationTypes = value;
+        } 
+    }
     public required List<OrganizationType> OrganizationTypes { get; init; } 
     public required List<InterOrganizationalRelationTypeListItem> InterOrganizationalRelationTypes { get; init; }
-    public required OrganizationListItem OrganizationItem { get; init; }
+    public abstract OrganizationItem OrganizationItem { get; }
     public abstract IEnumerable<PersonOrganizationRelation.ForOrganization.Complete> PersonOrganizationRelations { get; }
     public required List<PersonOrganizationRelationTypeListItem> PersonOrganizationRelationTypes { get; init; }
     public abstract IEnumerable<OrganizationPoliticalEntityRelation.Complete> OrganizationPoliticalEntityRelations { get; }
@@ -204,6 +212,10 @@ public abstract record OrganizationDetails
 
     public sealed record ForUpdate: OrganizationDetails
     {
+        public required OrganizationListItem OrganizationListItem { get; init; }
+
+        public override OrganizationItem OrganizationItem => OrganizationListItem;
+
         private List<OrganizationPoliticalEntityRelation.Complete.Resolved.ToUpdate> existingOrganizationPoliticalEntityRelations = new();
         public List<OrganizationPoliticalEntityRelation.Complete.Resolved.ToUpdate> OrganizationPoliticalEntityRelationsToUpdate {
             get => existingOrganizationPoliticalEntityRelations;
@@ -299,6 +311,8 @@ public abstract record OrganizationDetails
 
     public sealed record ForCreate: OrganizationDetails
     {
+        public required OrganizationName OrganizationName { get; init; }
+        public override OrganizationItem OrganizationItem => OrganizationName;
         public override IEnumerable<OrganizationPoliticalEntityRelation.Complete> OrganizationPoliticalEntityRelations => OrganizationPoliticalEntityRelationsToCreate;
         public override IEnumerable<InterOrganizationalRelation.From.Complete> InterOrganizationalRelationsFrom => InterOrganizationalRelationsFromToCreate;
         public override IEnumerable<InterOrganizationalRelation.To.Complete> InterOrganizationalRelationsTo => InterOrganizationalRelationsToToCreate;

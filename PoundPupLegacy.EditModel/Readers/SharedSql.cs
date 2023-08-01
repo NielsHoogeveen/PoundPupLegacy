@@ -63,7 +63,7 @@ internal static class SharedSql
         """;
 
     internal const string PARTY_CREATE_CTE = $"""
-        {NODE_CREATE_CTE}
+        {LOCATABLE_CREATE_CTE}
         """;
 
     internal const string INTER_ORGANIZATIONAL_RELATION_TYPES_DOCUMENT = """

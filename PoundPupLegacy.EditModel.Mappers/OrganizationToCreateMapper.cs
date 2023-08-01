@@ -26,7 +26,7 @@ internal class OrganizationToCreateMapper(
                 Established = source.OrganizationDetails.Establishment,
                 Terminated = source.OrganizationDetails.Termination,
                 WebsiteUrl = source.OrganizationDetails.WebSiteUrl,
-                OrganizationTypeIds = source.OrganizationDetails.OrganizationTypes.Select(x => x.Id).ToList(),
+                OrganizationTypeIds = source.OrganizationDetails.OrganizationOrganizationTypes.Select(x => x.OrganizationTypeId).ToList(),
                 PartyPoliticalEntityRelationsToCreate = partyPolitcalEntityCreateMapper.Map(source.OrganizationDetailsForCreate.OrganizationPoliticalEntityRelationsToCreate).ToList(),
                 PersonOrganizationRelationsToCreate = personOrganizationRelationCreateMapper.Map(source.OrganizationDetailsForCreate.PersonOrganizationRelationsToCreate).ToList(),
                 InterOrganizationalRelationsFrom = interOrganizationalRelationFromMapper.Map(source.OrganizationDetailsForCreate.InterOrganizationalRelationsFromToCreate).ToList(),

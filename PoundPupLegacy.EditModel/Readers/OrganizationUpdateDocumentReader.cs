@@ -38,7 +38,7 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
                         o.established,
                         'Termination',
                         o.terminated,
-                        'OrganizationItem',
+                        'OrganizationListItem',
                         jsonb_build_object(
                             'Id',
                             n.id,
