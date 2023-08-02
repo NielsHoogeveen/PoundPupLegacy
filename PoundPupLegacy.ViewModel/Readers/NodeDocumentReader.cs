@@ -1481,7 +1481,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     join node n on n.id = t.nameable_id
                     join node_type nt2 on nt2.id = n.node_type_id
                     left join nameable_type nmt on nmt.id = n.node_type_id
-                    JOIN tenant_node tn on tn.node_id = t.nameable_id
+                    JOIN tenant_node tn on tn.node_id = t.nameable_id and tn.tenant_id = @tenant_id
                     WHERE tn2.url_id = @url_id and tn2.tenant_id = @tenant_id
                 ) t
                 where t.status <> -1
