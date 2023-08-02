@@ -40,5 +40,6 @@ public interface ISiteDataService
 
     string? GetIcoFile(int tenantId);
 
+    string? GetTitle(int tenantId);
     Task RefreshTenants();
 }

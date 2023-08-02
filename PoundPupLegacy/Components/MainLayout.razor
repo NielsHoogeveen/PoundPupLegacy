@@ -5,8 +5,7 @@
 @inject NotFoundListener NotFoundListener
 @inject ISiteDataService SiteDataService
 @inject IUserService UserService
-
-<PageTitle>Pound Pup Legacy</PageTitle>
+<PageTitle>@Title</PageTitle>
 <CascadingValue Value="HamburgerMenuOpen" Name="HamburgerMenuOpen">
     <CascadingValue Value="UserId" Name="UserId">
         <CascadingValue Value="TenantId" Name="TenantId">
@@ -38,6 +37,8 @@
 
     private string? SubTitle { get; set; } 
 
+    private string? Title { get; set; }
+
     private string? FooterText { get; set; }
 
     protected override void OnInitialized() => NotFoundListener.OnNotFound += SetNotFound;
@@ -55,6 +56,7 @@
         Logo = SiteDataService.GetLogo(TenantId);
         SubTitle = SiteDataService.GetSubTitle(TenantId);
         FooterText = SiteDataService.GetFooterText(TenantId);
+        Title = SiteDataService.GetTitle(TenantId);
 
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         if (authState.User.Identity is not null) 

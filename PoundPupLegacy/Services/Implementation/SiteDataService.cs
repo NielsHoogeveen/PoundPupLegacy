@@ -5,6 +5,7 @@ using PoundPupLegacy.Readers;
 using PoundPupLegacy.ViewModel.Models;
 using System.Data;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace PoundPupLegacy.Services.Implementation;
 
@@ -326,6 +327,15 @@ internal sealed class SiteDataService(
     public string? GetIcoFile(int tenantId)
     {
         return $"{tenantId}.ico";
+    }
+    public string? GetTitle(int tenantId)
+    {
+        if (tenantId == 1)
+            return "Pound Pup Legacy";
+
+        if (tenantId == 6)
+            return "CPCT";
+        return "";
     }
 
 }
