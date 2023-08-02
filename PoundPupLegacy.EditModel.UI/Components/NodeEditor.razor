@@ -7,7 +7,7 @@
 <div class="editor-form">
     <h1>@Title</h1>
     <EditForm EditContext="@editContext" OnSubmit="@Submit">
-        <DataAnnotationsValidator />
+        <ObjectGraphDataAnnotationsValidator />
         @ChildContent
         <button type="submit">Submit</button>
     </EditForm>
@@ -57,6 +57,16 @@
     private async Task HandleErrors(ValidationResult<TUpdateModel, TCreateModel>.Error error)
     {
         await Task.CompletedTask;
+        if(editContext is not null && validationMessageStore is not null){
+            foreach (var e in error.Errors.Where(x => x.ErrorMessage != null)) {
+                
+                foreach(var member in e.MemberNames) {
+                    var fi = editContext.Field(member);
+                    validationMessageStore.Add(fi, e.ErrorMessage!);
+                }
+                
+            }
+        }
     }
 }
 

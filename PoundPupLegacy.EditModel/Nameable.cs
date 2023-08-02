@@ -7,6 +7,7 @@ public interface Nameable: Node
 
 public sealed record NameableDetails 
 {
+    public required string Name { get; set; }
     public required string Description { get; set; }
 
     private List<Term> terms = new();

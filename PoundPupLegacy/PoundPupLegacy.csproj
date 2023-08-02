@@ -24,7 +24,7 @@
     <PackageReference Include="Quartz.AspNetCore" Version="3.6.3" />
     <PackageReference Include="RequireNamedArguments" Version="0.0.2.1" />
     <PackageReference Include="System.Interactive.Async" Version="6.0.1" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.50" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.51" />
     <PackageReference Include="System.Text.Json" Version="8.0.0-preview.6.23329.7" />
   </ItemGroup>
   <ItemGroup>

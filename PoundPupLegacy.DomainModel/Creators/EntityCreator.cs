@@ -77,6 +77,7 @@ public class TermCreator(
     }
     public override async ValueTask DisposeAsync()
     {
+        await base.DisposeAsync();
         await termHierarchyInserter.DisposeAsync();
     }
 }

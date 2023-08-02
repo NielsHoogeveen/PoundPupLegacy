@@ -11,7 +11,7 @@ public abstract class EditorBase : ViewerBase
 
 public abstract class EditorDetailBase: EditorBase
 {
-    public abstract Task<List<ErrorDetail>> Validate();
+    public abstract Task<List<System.ComponentModel.DataAnnotations.ValidationResult>> Validate();
 
     public abstract void OnTitleChange(string title);
 }
@@ -28,11 +28,14 @@ public abstract class EntityEditorBase<TUpdateModel, TCreateModel, TResolveData>
 
     protected virtual void OnTitleChanged(string title)
     {
+        foreach(var editor in DetailsEditors) {
+            editor?.OnTitleChange(title);
+        }
     }
 
     protected async Task<ValidationResult<TUpdateModel, TCreateModel>> Validate()
     {
-        var errors = new List<ErrorDetail>();
+        var errors = new List<System.ComponentModel.DataAnnotations.ValidationResult>();
         foreach (var editor in DetailsEditors) {
             if (editor is null)
                 throw new NullReferenceException("editor should not be null");

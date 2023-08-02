@@ -16,7 +16,7 @@ public abstract record ValidationResult<TUpdateModel, TCreateModel>
 
     public sealed record Error : ValidationResult<TUpdateModel, TCreateModel>
     {
-        public required List<ErrorDetail> Errors { get; init; }
+        public required List<System.ComponentModel.DataAnnotations.ValidationResult> Errors { get; init; }
         public override T Match<T>(Func<Success, T> success, Func<Error, T> error)
         {
             return error(this);
@@ -24,9 +24,9 @@ public abstract record ValidationResult<TUpdateModel, TCreateModel>
     }
 }
 
-public sealed record ErrorDetail
-{
-    public required string Id { get; init; }
+//public sealed record ErrorDetail
+//{
+//    public required string Id { get; init; }
 
-    public required string Message { get; init; }
-}
+//    public required string Message { get; init; }
+//}

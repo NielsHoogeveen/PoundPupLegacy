@@ -77,9 +77,9 @@
 
     private PersonOrganizationRelation.ForPerson? _relationToEdit = null;
 
-    public override async Task<List<ErrorDetail>> Validate()
+    public override async Task<List<System.ComponentModel.DataAnnotations.ValidationResult>> Validate()
     {
-        return await Task.FromResult(new List<ErrorDetail>());
+        return await Task.FromResult(new List<System.ComponentModel.DataAnnotations.ValidationResult>());
     }
     public override void OnTitleChange(string title)
     {

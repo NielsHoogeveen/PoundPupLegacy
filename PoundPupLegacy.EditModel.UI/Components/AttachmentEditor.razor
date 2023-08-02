@@ -99,9 +99,9 @@
     {
         throw new NotImplementedException();
     }
-    public override Task<List<ErrorDetail>> Validate()
+    public override Task<List<System.ComponentModel.DataAnnotations.ValidationResult>> Validate()
     {
-        return Task.FromResult(new List<ErrorDetail>());
+        return Task.FromResult(new List<System.ComponentModel.DataAnnotations.ValidationResult>());
     }
 
 }

@@ -11,13 +11,13 @@
             OnTitleChanged="OnTitleChanged"
             @ref=nodeDetailsEditor>
             <Top>
-                <NameableEditor Model="Organization.NameableDetails" />
+                <NameableEditor Model="Organization.NameableDetails" @ref=nameableEditor/>
             </Top>
             <Middle>
-                <OrganizationDetailsEditor OrganizationDetails="Organization.OrganizationDetails" />
+                <OrganizationDetailsEditor OrganizationDetails="Organization.OrganizationDetails" @ref=organizationDetailsEditor/>
             </Middle>
             <Bottom>
-                <LocatableDetailsEditor LocatableDetails="Organization.LocatableDetails" />
+                <LocatableDetailsEditor LocatableDetails="Organization.LocatableDetails" @ref=locatableDetailsEditor/>
             </Bottom>
         </NodeDetailsEditor>
     </NodeEditor>
@@ -30,9 +30,16 @@
     protected override Resolver<Organization.ToUpdate, Organization.ToCreate, Unit> Model => Organization;
 
     private NodeDetailsEditor? nodeDetailsEditor;
+    private NameableEditor? nameableEditor;
+    private LocatableDetailsEditor? locatableDetailsEditor;
+    private OrganizationDetailsEditor? organizationDetailsEditor;
+
 
     protected override List<EditorDetailBase?> DetailsEditors => new() {
-        nodeDetailsEditor
+        nodeDetailsEditor,
+        nameableEditor,
+        locatableDetailsEditor,
+        organizationDetailsEditor
     };
     protected override Unit ResolveData => Unit.Instance;
 }

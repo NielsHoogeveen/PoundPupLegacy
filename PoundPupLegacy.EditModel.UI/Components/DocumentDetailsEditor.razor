@@ -27,9 +27,9 @@
     [EditorRequired]
     public DocumentDetails Model { get; set; } = default!;
 
-    public override async Task<List<ErrorDetail>> Validate()
+    public override async Task<List<System.ComponentModel.DataAnnotations.ValidationResult>> Validate()
     {
-        return await Task.FromResult(new List<ErrorDetail>());
+        return await Task.FromResult(new List<System.ComponentModel.DataAnnotations.ValidationResult>());
     }
 
     private void HandleChange(ChangeEventArgs e)

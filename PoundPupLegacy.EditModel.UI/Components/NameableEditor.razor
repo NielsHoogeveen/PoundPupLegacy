@@ -1,27 +1,29 @@
 ﻿@inherits EditorDetailBase
 @inject ITopicSearchService topicSearchService
+<ValidationMessage For="@(() => Model.Description)" />
 <label for="editor">Description</label>
-<CKEditor Id="editor" @bind-Value=@Model.Description />
+<CKEditor Id="Description" @bind-Value=@Model.Description />
 
 @code {
     [Parameter]
     [EditorRequired]
     public NameableDetails Model { get; set; } = default!;
 
-    public override async Task<List<ErrorDetail>> Validate()
+    public override async Task<List<System.ComponentModel.DataAnnotations.ValidationResult>> Validate()
     {
-        var errors = new List<ErrorDetail>();
+        var errors = new List<System.ComponentModel.DataAnnotations.ValidationResult>();
         if (Model is not null) {
-            errors.Add(new ErrorDetail
+            if (await topicSearchService.DoesTopicExist(Model.Name))
             {
-                Id = "title",
-                Message = "Title should be unique."
-            });
+                var component = new System.ComponentModel.DataAnnotations.ValidationResult("Title should be unique.", new [] { Model.Description });
+                errors.Add(component);
+            }
         }
         return await Task.FromResult(errors);
     }
 
     public override void OnTitleChange(string title)
     {
+        Model.Name = title;
     }
 }

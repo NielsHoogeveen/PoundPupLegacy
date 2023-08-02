@@ -8,20 +8,20 @@
     </div>
 }
 @code {
-    [Parameter]
-    [EditorRequired]
-    public SimpleTextNode Model { get; set; } = default!;
+        [Parameter]
+        [EditorRequired]
+        public SimpleTextNode Model { get; set; } = default!;
 
-    public override async Task<List<ErrorDetail>> Validate()
+    public override async Task<List<System.ComponentModel.DataAnnotations.ValidationResult>> Validate()
     {
         await Task.CompletedTask;
-        var errors = new List<ErrorDetail>();
+        var errors = new List<System.ComponentModel.DataAnnotations.ValidationResult>();
         if (Model is not null) {
             if (Model.SimpleTextNodeDetails.Text is null || Model.SimpleTextNodeDetails.Text == string.Empty) {
-                errors.Add(new ErrorDetail { Message = "Text is required", Id = "editor" });
+                errors.Add(new System.ComponentModel.DataAnnotations.ValidationResult("Text is required", new[] { Model.SimpleTextNodeDetails.Text }));
             }
         }
-        return new List<ErrorDetail>();
+        return errors;
     }
     public override void OnTitleChange(string title)
     {

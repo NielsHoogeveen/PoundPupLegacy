@@ -1442,11 +1442,14 @@ internal static class SharedSql
                 jsonb_build_object(
                     'Description', 
                     description,
+                    'Name',
+                    n.title, 
             		'VocabularyIdTagging',
                     (select id from tagging_vocabulary)
                 ) document,
-                id
-            from nameable
+                nm.id
+            from nameable nm
+            join node n on n.id = nm.id
         )
         """;
     const string NAMEABLE_DETAILS_DOCUMENT_FOR_CREATE = """
@@ -1454,6 +1457,8 @@ internal static class SharedSql
             select
                 jsonb_build_object(
                     'Description', 
+                    '',
+                    'Name',
                     '',
             		'VocabularyIdTagging',
                     (select id from tagging_vocabulary)
