@@ -1,0 +1,9 @@
+.list-entries{
+    display: grid;
+    grid-template-columns: 4fr 1fr 1fr 1fr;
+}
+
+.list-entries *{
+    padding: 0.5em;
+    border: 1px solid #ccc;
+}

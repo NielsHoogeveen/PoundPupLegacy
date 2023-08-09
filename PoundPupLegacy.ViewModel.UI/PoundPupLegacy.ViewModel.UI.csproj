@@ -25,5 +25,10 @@
     <ProjectReference Include="..\PoundPupLegacy.Common.UI\PoundPupLegacy.Common.UI.csproj" />
     <ProjectReference Include="..\PoundPupLegacy.ViewModel\PoundPupLegacy.ViewModel.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Update="Components\RecentPostsViewer.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+  </ItemGroup>
 
 </Project>

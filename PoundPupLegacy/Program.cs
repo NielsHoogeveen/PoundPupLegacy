@@ -3,6 +3,7 @@ using Microsoft.Extensions.FileProviders;
 using Npgsql;
 using PoundPupLegacy.Common;
 using PoundPupLegacy.Services;
+using PoundPupLegacy.ViewModel.Models;
 using Quartz;
 using Quartz.AspNetCore;
 using System.Data;
@@ -105,6 +106,8 @@ public sealed class Program
             ViewModel.Models.PollListEntryJsonContext.Default,
             ViewModel.Models.PollOptionJsonContext.Default,
             ViewModel.Models.PollsJsonContext.Default,
+            ViewModel.Models.RecentPostsJsonContext.Default,
+            ViewModel.Models.RecentPostListEntryJsonContext.Default,
             ViewModel.Models.SearchResultJsonContext.Default,
             ViewModel.Models.SearchResultListEntryJsonContext.Default,
             ViewModel.Models.SecondLevelRegionListEntryJsonContext.Default,

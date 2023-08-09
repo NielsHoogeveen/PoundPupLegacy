@@ -1,0 +1,33 @@
+﻿@if(Message is not null)
+{
+    <div class="alert alert-danger" role="alert">
+        bla
+    </div>
+}
+
+@code {
+    [CascadingParameter]
+    public EditContext? CurrentEditContext { get; set; } = default!;
+
+    [Parameter]
+    public string Id { get; set; } = default!;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+    }
+    protected override void OnParametersSet()
+    {
+        CurrentEditContext!.OnValidationStateChanged += (sender, eventArgs) => StateHasChanged();
+    }
+
+    private string? Message => GetMessage();
+
+    private string? GetMessage()
+    {
+        var messages = CurrentEditContext?.GetValidationMessages();
+        var fi = CurrentEditContext?.Field(Id);
+        return null;
+    }
+
+}

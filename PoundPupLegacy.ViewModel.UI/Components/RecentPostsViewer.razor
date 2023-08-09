@@ -1,0 +1,37 @@
+﻿@inject IFetchRecentPostsService FetchService
+@inherits PagedViewer<RecentPostListEntry>
+<BreadCrumElementViewer Model="BreadCrumElements" />
+<h1>Recent posts</h1>
+@if (ListEntries.Any()) {
+    <div class="list-entries">
+    @foreach (var listEntry in ListEntries) {
+        <div>
+            <LinkViewer Link="@listEntry"/>
+        </div>
+        <div>@listEntry.Publisher</div>
+        <div>@listEntry.DateTime</div>
+        <div>@listEntry.NodeType</div>
+    }
+    </div>
+    <Pager Model="PagedListSettings" SelectPage="SelectPage" />
+}
+else {
+    <p>No recent posts were found</p>
+
+}
+
+@code {
+
+    protected override int PageSize => 100;
+
+
+    protected override async Task<IPagedList<RecentPostListEntry>> GetListEntriesAsync()
+    {
+        var result = await FetchService.FetchRecentPosts(
+            pageSize: PagedListSettings.PageSize, 
+            pageNumber: PagedListSettings.PageNumber, 
+            tenantId: TenantId, 
+            userId: UserId);
+        return result;
+    }
+}
