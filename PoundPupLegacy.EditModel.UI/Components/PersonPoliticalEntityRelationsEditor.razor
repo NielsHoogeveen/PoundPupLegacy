@@ -79,6 +79,9 @@
     [EditorRequired]
     public string PartyTypeName { get; set; } = default!;
 
+    [Parameter]
+    [EditorRequired]
+    public List<TenantDetails> Tenants { get; set; } = default!;
 
     private PersonPoliticalEntityRelationEditorDialog? dialog;
 
@@ -128,8 +131,8 @@
     private void OnAdd()
     {
         _relationToEdit = Person.Match<PersonPoliticalEntityRelation>(
-            personListItem: pli => pli.GetPersonPoliticalEntityRelation(RelationTypes.First(), TenantId, UserId),
-            personName: pn => pn.GetPersonPoliticalEntityRelation(RelationTypes.First(), TenantId, UserId)
+            personListItem: pli => pli.GetPersonPoliticalEntityRelation(RelationTypes.First(), TenantId, UserId, Tenants),
+            personName: pn => pn.GetPersonPoliticalEntityRelation(RelationTypes.First(), TenantId, UserId, Tenants)
         );
         StateHasChanged();
     }

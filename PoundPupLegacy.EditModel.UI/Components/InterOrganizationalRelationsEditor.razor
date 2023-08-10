@@ -44,9 +44,16 @@
     [Parameter]
     [EditorRequired]
     public List<InterOrganizationalRelation.From.Complete> RelationsFrom { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<List<InterOrganizationalRelation.From.Complete>> RelationsFromChanged { get; set; }
+
     [Parameter]
     [EditorRequired]
     public List<InterOrganizationalRelation.To.Complete> RelationsTo { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<List<InterOrganizationalRelation.To.Complete>> RelationsToChanged { get; set; }
 
     [Parameter]
     [EditorRequired]
@@ -55,6 +62,10 @@
     [Parameter]
     [EditorRequired]
     public List<InterOrganizationalRelationTypeListItem> RelationTypes { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public List<TenantDetails> Tenants { get; set; } = default!;
 
     private RelationContext? relationContext = null;
 
@@ -66,6 +77,13 @@
     private InterOrganizationalRelationFromEditorDialog? fromDialog;
     private InterOrganizationalRelationToEditorDialog? toDialog;
 
+    public override async Task SetParametersAsync(ParameterView parameters)
+    {
+        if (RelationTypes is null)
+        {
+            await base.SetParametersAsync(parameters);
+        }
+    }
 
     public abstract record RelationContext
     {
@@ -249,8 +267,8 @@
     private void AddRelationFrom()
     {
         var relationToEdit = OrganizationItem.Match<InterOrganizationalRelation.From.Incomplete>(
-            organizationListItem: li => li.GetNewInterOrganizationalRelationFrom(RelationTypes.First<InterOrganizationalRelationTypeListItem>(), TenantId, UserId),
-            organizationName: nm => nm.GetNewInterOrganizationalRelationFrom(RelationTypes.First<InterOrganizationalRelationTypeListItem>(), TenantId, UserId)
+            organizationListItem: li => li.GetNewInterOrganizationalRelationFrom(RelationTypes.First<InterOrganizationalRelationTypeListItem>(), TenantId, UserId, Tenants),
+            organizationName: nm => nm.GetNewInterOrganizationalRelationFrom(RelationTypes.First<InterOrganizationalRelationTypeListItem>(), TenantId, UserId, Tenants)
         );
         relationContext = new RelationContext.RelationContextFrom.RelationContextFromNew {
             RelationToEdit = relationToEdit
@@ -260,8 +278,8 @@
     private void AddRelationTo()
     {
         var relationToEdit = OrganizationItem.Match<InterOrganizationalRelation.To.Incomplete>(
-            organizationListItem: li => li.GetNewInterOrganizationalRelationTo(RelationTypes.First<InterOrganizationalRelationTypeListItem>(), TenantId, UserId),
-            organizationName: nm => nm.GetNewInterOrganizationalRelationTo(RelationTypes.First<InterOrganizationalRelationTypeListItem>(), TenantId, UserId)
+            organizationListItem: li => li.GetNewInterOrganizationalRelationTo(RelationTypes.First<InterOrganizationalRelationTypeListItem>(), TenantId, UserId, Tenants),
+            organizationName: nm => nm.GetNewInterOrganizationalRelationTo(RelationTypes.First<InterOrganizationalRelationTypeListItem>(), TenantId, UserId, Tenants)
         );
 
         relationContext = new RelationContext.RelationContextTo.RelationContextToNew {

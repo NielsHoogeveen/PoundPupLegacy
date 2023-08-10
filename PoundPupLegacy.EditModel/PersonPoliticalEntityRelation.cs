@@ -2,23 +2,23 @@
 
 public static class PersonPoliticalEntityRelationExtensions
 {
-    public static PersonPoliticalEntityRelation GetPersonPoliticalEntityRelation(this PersonListItem personListItem, PersonPoliticalEntityRelationTypeListItem relationType, int ownerId, int publisherId)
+    public static PersonPoliticalEntityRelation GetPersonPoliticalEntityRelation(this PersonListItem personListItem, PersonPoliticalEntityRelationTypeListItem relationType, int ownerId, int publisherId, List<TenantDetails> tenants)
     {
         return new PersonPoliticalEntityRelation.Incomplete.ToCreateForExistingPerson {
             Person = personListItem,
             PartyPoliticalEntityRelationType = relationType,        
             RelationDetails = RelationDetails.EmptyInstance,
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(49, "person political entity relation", ownerId, publisherId),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(49, "person political entity relation", ownerId, publisherId, tenants),
             PoliticalEntity = null
         };
     }
-    public static PersonPoliticalEntityRelation GetPersonPoliticalEntityRelation(this PersonName personName, PersonPoliticalEntityRelationTypeListItem relationType, int ownerId, int publisherId)
+    public static PersonPoliticalEntityRelation GetPersonPoliticalEntityRelation(this PersonName personName, PersonPoliticalEntityRelationTypeListItem relationType, int ownerId, int publisherId, List<TenantDetails> tenants)
     {
         return new PersonPoliticalEntityRelation.Incomplete.ToCreateForNewPerson {
             Person = personName,
             PartyPoliticalEntityRelationType = relationType,        
             RelationDetails = RelationDetails.EmptyInstance,
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(49, "person political entity relation", ownerId, publisherId),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(49, "person political entity relation", ownerId, publisherId, tenants),
             PoliticalEntity = null
         };
     }

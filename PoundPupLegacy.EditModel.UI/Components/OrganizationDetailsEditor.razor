@@ -19,24 +19,35 @@
 </div>
 <OrganizationOrganizationTypesEditor OrganizationDetails="OrganizationDetails" />
 <InterOrganizationalRelationsEditor 
-    RelationsFrom="OrganizationDetails.InterOrganizationalRelationsFrom.ToList()"
-    RelationsTo="OrganizationDetails.InterOrganizationalRelationsTo.ToList()"
+    @bind-RelationsFrom="OrganizationDetails.InterOrganizationalRelationsFrom"
+    @bind-RelationsTo="OrganizationDetails.InterOrganizationalRelationsTo"
     RelationTypes="OrganizationDetails.InterOrganizationalRelationTypes" 
-    OrganizationItem="OrganizationDetails.OrganizationItem"/>
+    OrganizationItem="OrganizationDetails.OrganizationItem"
+    Tenants="Tenants"
+    @ref=InterOrganizationalRelationsEditor
+    />
 <OrganizationPoliticalEntityRelationsEditor 
     PartyTypeName="organization"
     Organization="OrganizationDetails.OrganizationItem"
-    Relations="OrganizationDetails.OrganizationPoliticalEntityRelations.ToList()"
-    RelationTypes="OrganizationDetails.OrganizationPoliticalEntityRelationTypes" />
+    Relations="OrganizationDetails.OrganizationPoliticalEntityRelations"
+    RelationTypes="OrganizationDetails.OrganizationPoliticalEntityRelationTypes"
+    Tenants="Tenants" />
 <PersonOrganizationRelationsEditorForOrganization 
     Organization="OrganizationDetails.OrganizationItem"
-    Relations="OrganizationDetails.PersonOrganizationRelations.ToList()"
-    RelationTypes="OrganizationDetails.PersonOrganizationRelationTypes" />
+    Relations="OrganizationDetails.PersonOrganizationRelations"
+    RelationTypes="OrganizationDetails.PersonOrganizationRelationTypes"
+    Tenants="Tenants" />
 
 @code {
     [Parameter]
     [EditorRequired]
     public OrganizationDetails OrganizationDetails { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public List<TenantDetails> Tenants { get; set; } = default!;
+
+    private InterOrganizationalRelationsEditor InterOrganizationalRelationsEditor { get; set;  } = default!;
 
     public override async Task<List<System.ComponentModel.DataAnnotations.ValidationResult>> Validate()
     {

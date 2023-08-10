@@ -74,11 +74,13 @@
     [EditorRequired]
     public OrganizationItem Organization { get; set; } = default!;
 
-
     [Parameter]
     [EditorRequired]
     public string PartyTypeName { get; set; } = default!;
 
+    [Parameter]
+    [EditorRequired]
+    public List<TenantDetails> Tenants { get; set; } = default!;
 
     private OrganizationPoliticalEntityRelationEditorDialog? dialog;
 
@@ -128,8 +130,8 @@
     private void OnAdd()
     {
         _relationToEdit = Organization.Match<OrganizationPoliticalEntityRelation>(
-            organizationListItem: oli => oli.GetNewPoliticalEntityRelationOrganization(RelationTypes.First(), TenantId, UserId),
-            organizationName: on => on.GetNewPoliticalEntityRelationOrganization(RelationTypes.First(), TenantId, UserId)
+            organizationListItem: oli => oli.GetNewPoliticalEntityRelationOrganization(RelationTypes.First(), TenantId, UserId, Tenants),
+            organizationName: on => on.GetNewPoliticalEntityRelationOrganization(RelationTypes.First(), TenantId, UserId, Tenants)
         );
         StateHasChanged();
     }

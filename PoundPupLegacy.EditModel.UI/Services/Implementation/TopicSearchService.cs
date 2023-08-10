@@ -25,11 +25,11 @@ internal sealed class TopicSearchService(
             return tags;
         });
     }
-    public async Task<bool> DoesTopicExist(string name)
+    public async Task<bool> DoesTopicExist(string name, int? id)
     {
         return await WithConnection(async connection => {
             var reader = await doesTopcExistReaderFactory.CreateAsync(connection);
-            return await reader.ReadAsync(new TopicExistsRequest { Name = name });
+            return await reader.ReadAsync(new TopicExistsRequest { Name = name, TopicId = id });
         });
     }
 }

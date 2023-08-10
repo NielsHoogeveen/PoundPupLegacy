@@ -7,6 +7,7 @@ public interface Nameable: Node
 
 public sealed record NameableDetails 
 {
+    public required int? TopicId { get; init; }
     public required string Name { get; set; }
     public required string Description { get; set; }
 

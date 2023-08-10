@@ -1440,6 +1440,8 @@ internal static class SharedSql
         nameable_details_document as(
             select
                 jsonb_build_object(
+                    'TopicId',
+                    t.id,
                     'Description', 
                     description,
                     'Name',
@@ -1449,6 +1451,7 @@ internal static class SharedSql
                 ) document,
                 nm.id
             from nameable nm
+            join term t on t.nameable_id = nm.id and t.vocabulary_id = (select id from tagging_vocabulary)
             join node n on n.id = nm.id
         )
         """;
@@ -1456,6 +1459,8 @@ internal static class SharedSql
         nameable_details_document as(
             select
                 jsonb_build_object(
+                    'TopicId',
+                    null,
                     'Description', 
                     '',
                     'Name',

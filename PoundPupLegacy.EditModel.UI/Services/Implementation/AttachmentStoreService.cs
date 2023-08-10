@@ -17,19 +17,19 @@ internal sealed class AttachmentStoreService(
     {
         var attachmentsLocation = configuration["AttachmentsLocation"];
         if (attachmentsLocation is null) {
-            logger.LogError("AttachmentsLocation is not defined in appsettings.json");
+            base.logger.LogError("AttachmentsLocation is not defined in appsettings.json");
             return null;
         }
         var maxFileSizeString = configuration["MaxFileSize"];
         if (maxFileSizeString is null) {
-            logger.LogError("Max file size is not defined in appsettings.json");
+            base.logger.LogError("Max file size is not defined in appsettings.json");
             return null;
         }
         if (int.TryParse(maxFileSizeString, out int maxFileSize)) {
             return await WithTransactedConnection(async (connection) => {
                 var fileName = Guid.NewGuid().ToString();
                 var fullName = Path.Combine(attachmentsLocation, fileName);
-                logger.Log(LogLevel.Information, "starting to write file {0}", fullName);
+                base.logger.Log(LogLevel.Information, "starting to write file {0}", fullName);
                 await using FileStream fs = new(fullName, FileMode.Create);
                 await file.CopyToAsync(fs);
                 var fm = new DomainModel.File {
@@ -44,12 +44,12 @@ internal sealed class AttachmentStoreService(
                 };
                 await using var fileCreator = await fileCreatorFactory.CreateAsync(connection);
                 await fileCreator.CreateAsync(new List<DomainModel.File> { fm }.ToAsyncEnumerable());
-                logger.Log(LogLevel.Information, "created file with id {0}", fm.Name);
+                base.logger.Log(LogLevel.Information, "created file with id {0}", fm.Name);
                 return fm.Identification.Id;
             });
         }
         else {
-            logger.LogError("Max file size as defined in appsettings.json is not a number");
+            base.logger.LogError("Max file size as defined in appsettings.json is not a number");
             return null;
         }
     }
@@ -57,29 +57,29 @@ internal sealed class AttachmentStoreService(
     {
         var attachmentsLocation = configuration["AttachmentsLocation"];
         if (attachmentsLocation is null) {
-            logger.LogError("AttachmentsLocation is not defined in appsettings.json");
+            base.logger.LogError("AttachmentsLocation is not defined in appsettings.json");
             return null;
         }
         var maxFileSizeString = configuration["MaxFileSize"];
         if (maxFileSizeString is null) {
-            logger.LogError("Max file size is not defined in appsettings.json");
+            base.logger.LogError("Max file size is not defined in appsettings.json");
             return null;
         }
         if (int.TryParse(maxFileSizeString, out int maxFileSize)) {
             try {
                 var fileName = Guid.NewGuid().ToString();
                 var fullName = Path.Combine(attachmentsLocation, fileName);
-                logger.Log(LogLevel.Information, "starting to write file {0}", fullName);
+                base.logger.Log(LogLevel.Information, "starting to write file {0}", fullName);
                 await using FileStream fs = new(fullName, FileMode.Create);
                 await file.OpenReadStream(maxFileSize).CopyToAsync(fs);
                 return fileName;
             }catch(Exception ex) {
-                logger.LogError(ex, "Error while storing file");
+                base.logger.LogError(ex, "Error while storing file");
                 return null;
             }
         }
         else {
-            logger.LogError("Max file size as defined in appsettings.json is not a number");
+            base.logger.LogError("Max file size as defined in appsettings.json is not a number");
             return null;
         }
     }

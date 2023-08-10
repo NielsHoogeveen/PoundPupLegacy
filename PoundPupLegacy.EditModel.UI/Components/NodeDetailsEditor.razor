@@ -7,7 +7,9 @@
 @Top
 <TagsEditor NodeTypesTags="Model.Tags.ToList()" />
 @Middle
-<TenantNodesEditor NodeDetails="@Model" />
+<TenantNodesEditor 
+    @bind-Model=Model.Tenants 
+    ForCreate="Model.GetType() == typeof(NodeDetails.ForCreate)" />
 <AttachmentEditor Files="Model.Files"/>
 @Bottom
 @code {
@@ -26,6 +28,8 @@
 
     [Parameter]
     public Action<string> OnTitleChanged { get; set; } = default!;
+
+    private List<TenantDetails> tenantDetails = new List<TenantDetails>();
 
     public void OnTitleChange(ChangeEventArgs args)
     {

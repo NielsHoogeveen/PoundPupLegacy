@@ -2,7 +2,7 @@
 <div class="organization-organization-types-editor">
     <h4>Organization types</h4>
     <div class="organization-organization-types">
-        @foreach(var organizationOrganizationType in OrganizationDetails.OrganizationOrganizationTypes) 
+        @foreach(var organizationOrganizationType in OrganizationDetails.OrganizationOrganizationTypes.Where(x => !x.HasBeenDeleted)) 
         {
             <div class="organization-organization-type">
                 <span>@organizationOrganizationType.Name</span>

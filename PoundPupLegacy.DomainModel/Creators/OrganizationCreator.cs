@@ -58,7 +58,7 @@ public class OrganizationCreator(
         if (element is UnitedStatesPoliticalParty.ToCreate pp) {
             await unitedStatesPoliticalPartyInserter.InsertAsync(pp);
         }
-        foreach (var organizationTypeId in element.OrganizationDetails.OrganizationTypeIds) {
+        foreach (var organizationTypeId in element.OrganizationDetails.OrganizationTypeIdsToCreate) {
             await organizationOrganizationTypeInserter.InsertAsync(new OrganizationOrganizationType {
                 OrganizationId = id,
                 OrganizationTypeId = organizationTypeId

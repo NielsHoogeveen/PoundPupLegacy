@@ -73,6 +73,10 @@
     [EditorRequired]
     public OrganizationItem Organization { get; set; } = default!;
 
+    [Parameter]
+    [EditorRequired]
+    public List<TenantDetails> Tenants { get; set; } = default!;
+
     private PersonOrganizationRelationEditorForOrganizationDialog? dialog;
 
     private PersonOrganizationRelation.ForOrganization? _relationToEdit = null;
@@ -121,8 +125,8 @@
     private void OnAdd()
     {
         _relationToEdit = Organization.Match<PersonOrganizationRelation.ForOrganization.ForOrganization>(
-            organizationListItem: oli => oli.GetPersonOrganizationRelationForOrganization(RelationTypes.First(), TenantId, UserId),
-            organizationName: on => on.GetPersonOrganizationRelationForOrganization(RelationTypes.First(), TenantId, UserId));
+            organizationListItem: oli => oli.GetPersonOrganizationRelationForOrganization(RelationTypes.First(), TenantId, UserId, Tenants),
+            organizationName: on => on.GetPersonOrganizationRelationForOrganization(RelationTypes.First(), TenantId, UserId, Tenants));
         StateHasChanged();
     }
 

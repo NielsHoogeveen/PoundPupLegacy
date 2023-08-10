@@ -56,6 +56,10 @@
     [EditorRequired]
     public List<InterPersonalRelationTypeListItem> RelationTypes { get; set; } = default!;
 
+    [Parameter]
+    [EditorRequired]
+    public List<TenantDetails> Tenants { get; set; } = default!;
+
     private RelationContext? relationContext = null;
 
     private InterPersonalRelationsListEditor<InterPersonalRelation.From.Complete>? interPersonalRelationsFromEditor;
@@ -248,8 +252,8 @@
     private void AddRelationFrom()
     {
         var relationToEdit = PersonItem.Match<InterPersonalRelation.From.Incomplete>(
-            personListItem: li => li.GetNewInterPersonalRelationFrom(RelationTypes.First<InterPersonalRelationTypeListItem>(), TenantId, UserId),
-            personName: nm => nm.GetNewInterPersonalRelationFrom(RelationTypes.First<InterPersonalRelationTypeListItem>(), TenantId, UserId)
+            personListItem: li => li.GetNewInterPersonalRelationFrom(RelationTypes.First<InterPersonalRelationTypeListItem>(), TenantId, UserId, Tenants),
+            personName: nm => nm.GetNewInterPersonalRelationFrom(RelationTypes.First<InterPersonalRelationTypeListItem>(), TenantId, UserId, Tenants)
         );
         relationContext = new RelationContext.RelationContextFrom.RelationContextFromNew {
                 RelationToEdit = relationToEdit
@@ -259,8 +263,8 @@
     private void AddRelationTo()
     {
         var relationToEdit = PersonItem.Match<InterPersonalRelation.To.Incomplete>(
-            personListItem: li => li.GetNewInterPersonalRelationTo(RelationTypes.First<InterPersonalRelationTypeListItem>(), TenantId, UserId),
-            personName: nm => nm.GetNewInterPersonalRelationTo(RelationTypes.First<InterPersonalRelationTypeListItem>(), TenantId, UserId)
+            personListItem: li => li.GetNewInterPersonalRelationTo(RelationTypes.First<InterPersonalRelationTypeListItem>(), TenantId, UserId, Tenants),
+            personName: nm => nm.GetNewInterPersonalRelationTo(RelationTypes.First<InterPersonalRelationTypeListItem>(), TenantId, UserId, Tenants)
         );
 
         relationContext = new RelationContext.RelationContextTo.RelationContextToNew {

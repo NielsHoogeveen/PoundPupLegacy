@@ -9,23 +9,23 @@
 
 public static class OrganizationPoliticalEntityRelationExtension
 {
-    public static OrganizationPoliticalEntityRelation.Incomplete.ToCreateForExistingOrganization GetNewPoliticalEntityRelationOrganization(this OrganizationListItem organizationListItem, OrganizationPoliticalEntityRelationTypeListItem relationType, int ownerId, int publishedId)
+    public static OrganizationPoliticalEntityRelation.Incomplete.ToCreateForExistingOrganization GetNewPoliticalEntityRelationOrganization(this OrganizationListItem organizationListItem, OrganizationPoliticalEntityRelationTypeListItem relationType, int ownerId, int publishedId, List<TenantDetails> tenants)
     {
         return new OrganizationPoliticalEntityRelation.Incomplete.ToCreateForExistingOrganization {
             Organization = organizationListItem,
             PartyPoliticalEntityRelationType = relationType,
             PoliticalEntity = null,
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(49, "organization political entity relation", ownerId, publishedId),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(49, "organization political entity relation", ownerId, publishedId, tenants),
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }
-    public static OrganizationPoliticalEntityRelation.Incomplete.ToCreateForNewOrganization GetNewPoliticalEntityRelationOrganization(this OrganizationName organizationName, OrganizationPoliticalEntityRelationTypeListItem relationType, int ownerId, int publishedId)
+    public static OrganizationPoliticalEntityRelation.Incomplete.ToCreateForNewOrganization GetNewPoliticalEntityRelationOrganization(this OrganizationName organizationName, OrganizationPoliticalEntityRelationTypeListItem relationType, int ownerId, int publishedId, List<TenantDetails> tenants)
     {
         return new OrganizationPoliticalEntityRelation.Incomplete.ToCreateForNewOrganization {
             Organization = organizationName,
             PartyPoliticalEntityRelationType = relationType,
             PoliticalEntity = null,
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(49, "organization political entity relation", ownerId, publishedId),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(49, "organization political entity relation", ownerId, publishedId, tenants),
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }

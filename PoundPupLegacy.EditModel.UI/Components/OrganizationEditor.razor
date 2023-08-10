@@ -14,7 +14,10 @@
                 <NameableEditor Model="Organization.NameableDetails" @ref=nameableEditor/>
             </Top>
             <Middle>
-                <OrganizationDetailsEditor OrganizationDetails="Organization.OrganizationDetails" @ref=organizationDetailsEditor/>
+                <OrganizationDetailsEditor 
+                    OrganizationDetails="Organization.OrganizationDetails" 
+                    Tenants="Organization.NodeDetails.Tenants"
+                    @ref=organizationDetailsEditor/>
             </Middle>
             <Bottom>
                 <LocatableDetailsEditor LocatableDetails="Organization.LocatableDetails" @ref=locatableDetailsEditor/>

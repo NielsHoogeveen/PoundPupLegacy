@@ -1,44 +1,44 @@
 ﻿namespace PoundPupLegacy.EditModel;
 public static class InterOrganizationalRelationExtentions
 {
-    public static InterOrganizationalRelation.From.Incomplete.ForExistingOrganization GetNewInterOrganizationalRelationFrom(this OrganizationListItem organizationListItem, InterOrganizationalRelationTypeListItem interOrganizationalRelationType, int ownerId, int publisherId)
+    public static InterOrganizationalRelation.From.Incomplete.ForExistingOrganization GetNewInterOrganizationalRelationFrom(this OrganizationListItem organizationListItem, InterOrganizationalRelationTypeListItem interOrganizationalRelationType, int ownerId, int publisherId, List<TenantDetails> tenants)
     {
         return new InterOrganizationalRelation.From.Incomplete.ForExistingOrganization {
             OrganizationFrom = organizationListItem,
             OrganizationTo = null,
             InterOrganizationalRelationDetails = InterOrganizationalRelationDetails.EmptyInstance(interOrganizationalRelationType),
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(47, "inter organizational relation", ownerId, publisherId),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(47, "inter organizational relation", ownerId, publisherId, tenants),
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }
-    public static InterOrganizationalRelation.From.Incomplete.ForNewOrganization GetNewInterOrganizationalRelationFrom(this OrganizationName organizationName, InterOrganizationalRelationTypeListItem interOrganizationalRelationType, int ownerId, int publisherId)
+    public static InterOrganizationalRelation.From.Incomplete.ForNewOrganization GetNewInterOrganizationalRelationFrom(this OrganizationName organizationName, InterOrganizationalRelationTypeListItem interOrganizationalRelationType, int ownerId, int publisherId, List<TenantDetails> tenants)
     {
         return new InterOrganizationalRelation.From.Incomplete.ForNewOrganization {
             OrganizationFrom = organizationName,
             OrganizationTo = null,
             InterOrganizationalRelationDetails = InterOrganizationalRelationDetails.EmptyInstance(interOrganizationalRelationType),
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(47, "inter organizational relation", ownerId, publisherId),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(47, "inter organizational relation", ownerId, publisherId, tenants),
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }
-    public static InterOrganizationalRelation.To.Incomplete.ForExistingOrganization GetNewInterOrganizationalRelationTo(this OrganizationListItem organizationListItem, InterOrganizationalRelationTypeListItem interOrganizationalRelationType, int ownerId, int publisherId)
+    public static InterOrganizationalRelation.To.Incomplete.ForExistingOrganization GetNewInterOrganizationalRelationTo(this OrganizationListItem organizationListItem, InterOrganizationalRelationTypeListItem interOrganizationalRelationType, int ownerId, int publisherId, List<TenantDetails> tenants)
     {
         return new InterOrganizationalRelation.To.Incomplete.ForExistingOrganization {
             OrganizationFrom = null,
             OrganizationTo = organizationListItem,
             InterOrganizationalRelationDetails = InterOrganizationalRelationDetails.EmptyInstance(interOrganizationalRelationType),
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(47, "inter organizational relation", ownerId, publisherId),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(47, "inter organizational relation", ownerId, publisherId, tenants),
             RelationDetails = RelationDetails.EmptyInstance,
         };
 
     }
-    public static InterOrganizationalRelation.To.Incomplete.ForNewOrganization GetNewInterOrganizationalRelationTo(this OrganizationName organizationName, InterOrganizationalRelationTypeListItem interOrganizationalRelationType, int ownerId, int publisherId)
+    public static InterOrganizationalRelation.To.Incomplete.ForNewOrganization GetNewInterOrganizationalRelationTo(this OrganizationName organizationName, InterOrganizationalRelationTypeListItem interOrganizationalRelationType, int ownerId, int publisherId, List<TenantDetails> tenants)
     {
         return new InterOrganizationalRelation.To.Incomplete.ForNewOrganization {
             OrganizationFrom = null,
             OrganizationTo = organizationName,
             InterOrganizationalRelationDetails = InterOrganizationalRelationDetails.EmptyInstance(interOrganizationalRelationType),
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(47, "inter organizational relation", ownerId, publisherId),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(47, "inter organizational relation", ownerId, publisherId, tenants),
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }

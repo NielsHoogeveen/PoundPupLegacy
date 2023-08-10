@@ -2,6 +2,9 @@
 
 using PoundPupLegacy.DomainModel;
 using PoundPupLegacy.DomainModel.Creators;
+using PoundPupLegacy.DomainModel.Deleters;
+using System.Net.Http.Headers;
+using System.Xml.Linq;
 using Request = OrganizationToUpdate;
 internal sealed class OrganizationChangerFactory(
     IDatabaseUpdaterFactory<Request> databaseUpdaterFactory,
@@ -13,6 +16,8 @@ internal sealed class OrganizationChangerFactory(
     IEntityCreatorFactory<PartyPoliticalEntityRelation.ToCreate.ForExistingParty> partyPoliticalEntityCreatorFactory,
     NodeDetailsChangerFactory nodeDetailsChangerFactory,
     IDatabaseUpdaterFactory<LocationUpdaterRequest> locationUpdaterFactory,
+    IDatabaseInserterFactory<OrganizationOrganizationType> organizationOrganizationTypeInserterFactory,
+    IDatabaseDeleterFactory<OrganizationOrganizationTypeDeleterRequest> organizationOrganizationTypeDeleterFactory,
     LocatableDetailsCreatorFactory locatableDetailsCreatorFactory) : IEntityChangerFactory<Request>
 {
     public async Task<IEntityChanger<Request>> CreateAsync(IDbConnection connection)
@@ -27,6 +32,8 @@ internal sealed class OrganizationChangerFactory(
             await partyPoliticalEntityCreatorFactory.CreateAsync(connection),
             await nodeDetailsChangerFactory.CreateAsync(connection),
             await locationUpdaterFactory.CreateAsync(connection),
+            await organizationOrganizationTypeInserterFactory.CreateAsync(connection),
+            await organizationOrganizationTypeDeleterFactory.CreateAsync(connection),
             await locatableDetailsCreatorFactory.CreateAsync(connection)
         );
     }
@@ -41,6 +48,8 @@ public sealed class OrganizationChanger(
     IEntityCreator<PartyPoliticalEntityRelation.ToCreate.ForExistingParty> partyPoliticalEntityCreator,
     NodeDetailsChanger nodeDetailsChanger,
     IDatabaseUpdater<LocationUpdaterRequest> locationUpdater,
+    IDatabaseInserter<OrganizationOrganizationType> organizationOrganizationTypeInserter,
+    IDatabaseDeleter<OrganizationOrganizationTypeDeleterRequest> organizationOrganizationTypeDeleter,
     LocatableDetailsCreator locatableDetailsCreator
 ) : LocatableChanger<Request>(databaseUpdater, nodeDetailsChanger, locationUpdater, locatableDetailsCreator)
 {
@@ -71,6 +80,18 @@ public sealed class OrganizationChanger(
         foreach (var partyPoliticalEntityRelation in request.OrganizationDetails.PartyPoliticalEntityRelationsToCreate) {
             await partyPoliticalEntityCreator.CreateAsync(partyPoliticalEntityRelation);
         }
+        foreach (var organizationTypeId in request.OrganizationDetails.OrganizationTypeIdsToCreate) {
+            await organizationOrganizationTypeInserter.InsertAsync(new OrganizationOrganizationType {
+                OrganizationId = request.Identification.Id,
+                OrganizationTypeId = organizationTypeId
+            });
+        }
+        foreach (var organizationTypeId in request.OrganizationDetails.OrganizationTypeIdsToRemove) {
+            await organizationOrganizationTypeDeleter.DeleteAsync(new OrganizationOrganizationTypeDeleterRequest {
+                OrganizationId = request.Identification.Id,
+                OrganizationTypeId = organizationTypeId
+            });
+        }
     }
 
     public override async ValueTask DisposeAsync()
@@ -82,6 +103,8 @@ public sealed class OrganizationChanger(
         await interOrganizationalRelationsCreator.DisposeAsync();
         await partyPoliticalEntityUpdater.DisposeAsync();
         await partyPoliticalEntityCreator.DisposeAsync();
+        await organizationOrganizationTypeInserter.DisposeAsync();
+        await organizationOrganizationTypeDeleter.DisposeAsync();
     }
 }
 

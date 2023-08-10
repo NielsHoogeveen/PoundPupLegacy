@@ -1,4 +1,5 @@
 ﻿using PoundPupLegacy.DomainModel;
+using static PoundPupLegacy.EditModel.OrganizationItem;
 
 namespace PoundPupLegacy.EditModel.Mappers;
 
@@ -18,6 +19,50 @@ internal class OrganizationToUpdateMapper(
 {
     public OrganizationToUpdate Map(Organization.ToUpdate source)
     {
+        source.OrganizationDetailsForUpdate.InterOrganizationalRelationsFromToCreate = source.OrganizationDetailsForUpdate.InterOrganizationalRelationsFrom.Where(x => !x.RelationDetails.HasBeenDeleted).Select(x => new InterOrganizationalRelation.From.Complete.Resolved.ToCreate {
+            InterOrganizationalRelationDetails = x.InterOrganizationalRelationDetails,
+            NodeDetailsForCreate = new NodeDetails.ForCreate {
+                Title = x.NodeDetails.Title,
+                Files = x.NodeDetails.Files,
+                NodeTypeId = x.NodeDetails.NodeTypeId,
+                NodeTypeName = x.NodeDetails.NodeTypeName,
+                OwnerId = x.NodeDetails.OwnerId,
+                PublisherId = x.NodeDetails.PublisherId,
+                TenantNodeDetailsForCreate = new TenantNodeDetails.ForCreate {
+                    TenantNodesToAdd = x.NodeDetails.TenantNodeDetails.TenantNodes.Select(y =>
+                        new TenantNode.ToCreateForNewNode {
+                            HasBeenStored = false,
+                            UrlPath = null,
+                            PublicationStatusId = y.PublicationStatusId,
+                            CanBeUnchecked = y.CanBeUnchecked,
+                            TenantId = y.TenantId,
+                        }
+                    ).ToList(),
+                },
+            },
+            OrganizationFrom = (x.OrganizationItemFrom as OrganizationListItem)!,
+            OrganizationTo = x.OrganizationItemTo!,
+            RelationDetails = x.RelationDetails
+        }).ToList();
+        source.OrganizationDetailsForUpdate.InterOrganizationalRelationsToToCreate = source.OrganizationDetailsForUpdate.InterOrganizationalRelationsFrom.Where(x => x.RelationDetails.HasBeenDeleted).Where(x => !x.RelationDetails.HasBeenDeleted).Select(x => new InterOrganizationalRelation.To.Complete.Resolved.ToCreate {
+            InterOrganizationalRelationDetails = x.InterOrganizationalRelationDetails,
+            NodeDetailsForCreate = new NodeDetails.ForCreate {
+                Title = x.NodeDetails.Title,
+                Files = x.NodeDetails.Files,
+                NodeTypeId = x.NodeDetails.NodeTypeId,
+                NodeTypeName = x.NodeDetails.NodeTypeName,
+                OwnerId = x.NodeDetails.OwnerId,
+                PublisherId = x.NodeDetails.PublisherId,
+                TenantNodeDetailsForCreate = new TenantNodeDetails.ForCreate {
+                    TenantNodesToAdd = new List<TenantNode.ToCreateForNewNode>(),
+                },
+            },
+            OrganizationFrom = (x.OrganizationItemFrom as OrganizationListItem)!,
+            OrganizationTo = x.OrganizationItemTo!,
+
+            RelationDetails = x.RelationDetails
+        }).ToList();
+
         return new BasicOrganization.ToUpdate {
             Identification = new Identification.Certain {
                 Id = source.NodeIdentification.NodeId,
@@ -34,7 +79,8 @@ internal class OrganizationToUpdateMapper(
                 InterOrganizationalRelationsToToUpdate = interOrganizationalRelationToToUpdateMapper.Map(source.OrganizationDetailsForUpdate.InterOrganizationalRelationsToToUpdate).ToList(),
                 InterOrganizationalRelationsFromToCreate = interOrganizationalRelationFromToCreateForExistingOrganizationMapper.Map(source.OrganizationDetailsForUpdate.InterOrganizationalRelationsFromToCreate).ToList(),
                 InterOrganizationalRelationsToToCreate = interOrganizationalRelationToToCreateForExistingOrganizationMapper.Map(source.OrganizationDetailsForUpdate.InterOrganizationalRelationsToToCreate).ToList(),
-                OrganizationTypeIds = source.OrganizationDetails.OrganizationTypes.Select(x => x.Id).ToList(),
+                OrganizationTypeIdsToCreate = source.OrganizationDetails.OrganizationOrganizationTypes.Where(x => !x.HasBeenStored).Select(x => x.OrganizationTypeId).ToList(),
+                OrganizationTypeIdsToRemove = source.OrganizationDetails.OrganizationOrganizationTypes.Where(x => x.HasBeenDeleted).Select(x => x.OrganizationTypeId).ToList(),
                 PartyPoliticalEntityRelationsToCreate = partyPolitcalEntityCreateMapper.Map(source.OrganizationDetailsForUpdate.OrganizationPoliticalEntityRelationsToCreate).ToList(),
                 PartyPoliticalEntityRelationsToUpdates = partyPoliticalEntityRelationUpdateMapper.Map(source.OrganizationDetailsForUpdate.OrganizationPoliticalEntityRelationsToUpdate).ToList(),
                 PersonOrganizationRelationsToCreate = personOrganizationRelationCreateMapper.Map(source.OrganizationDetailsForUpdate.PersonOrganizationRelationsToCreate).ToList(),

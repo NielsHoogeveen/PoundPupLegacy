@@ -21,7 +21,7 @@ public interface CompletedNewPersonOrganizationRelation : ResolvedPersonOrganiza
 
 public static class PersonOrganizationRelationExtensions
 {
-    public static PersonOrganizationRelation.ForOrganization GetPersonOrganizationRelationForOrganization(this OrganizationListItem organizationListItem, PersonOrganizationRelationTypeListItem relationType, int ownerId, int publisherId)
+    public static PersonOrganizationRelation.ForOrganization GetPersonOrganizationRelationForOrganization(this OrganizationListItem organizationListItem, PersonOrganizationRelationTypeListItem relationType, int ownerId, int publisherId, List<TenantDetails> tenants)
     {
         return new PersonOrganizationRelation.ForOrganization.Incomplete.ToCreateForExistingOrganization {
             Person = null,
@@ -29,37 +29,37 @@ public static class PersonOrganizationRelationExtensions
             PersonOrganizationRelationType = relationType,
             GeographicalEntity = null,
             RelationDetails = RelationDetails.EmptyInstance,
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(48, "person organization relation", ownerId, publisherId)
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(48, "person organization relation", ownerId, publisherId, tenants)
         };
     }
-    public static PersonOrganizationRelation.ForOrganization GetPersonOrganizationRelationForOrganization(this OrganizationName organizationName, PersonOrganizationRelationTypeListItem relationType, int ownerId, int publisherId)
+    public static PersonOrganizationRelation.ForOrganization GetPersonOrganizationRelationForOrganization(this OrganizationName organizationName, PersonOrganizationRelationTypeListItem relationType, int ownerId, int publisherId, List<TenantDetails> tenants)
     {
         return new PersonOrganizationRelation.ForOrganization.Incomplete.ToCreateForNewOrganization {
             Person = null,
             Organization = organizationName,
             PersonOrganizationRelationType = relationType,
             RelationDetails = RelationDetails.EmptyInstance,
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(48, "person organization relation", ownerId, publisherId)
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(48, "person organization relation", ownerId, publisherId, tenants)
         };
     }
-    public static PersonOrganizationRelation.ForPerson GetPersonOrganizationRelationForPerson(this PersonListItem personListItem, PersonOrganizationRelationTypeListItem relationType, int ownerId, int publisherId)
+    public static PersonOrganizationRelation.ForPerson GetPersonOrganizationRelationForPerson(this PersonListItem personListItem, PersonOrganizationRelationTypeListItem relationType, int ownerId, int publisherId, List<TenantDetails> tenants)
     {
         return new PersonOrganizationRelation.ForPerson.Incomplete.ToCreateForExistingPerson {
             Person = personListItem,
             Organization = null,
             PersonOrganizationRelationType = relationType,
             RelationDetails = RelationDetails.EmptyInstance,
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(48,"person organization relation", ownerId, publisherId)
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(48,"person organization relation", ownerId, publisherId, tenants)
         };
     }
-    public static PersonOrganizationRelation.ForPerson GetPersonOrganizationRelationForPerson(this PersonName personName, PersonOrganizationRelationTypeListItem relationType, int ownerId, int publisherId)
+    public static PersonOrganizationRelation.ForPerson GetPersonOrganizationRelationForPerson(this PersonName personName, PersonOrganizationRelationTypeListItem relationType, int ownerId, int publisherId, List<TenantDetails> tenants)
     {
         return new PersonOrganizationRelation.ForPerson.Incomplete.ToCreateForNewPerson {
             Person = personName,
             Organization = null,
             PersonOrganizationRelationType = relationType,
             RelationDetails = RelationDetails.EmptyInstance,
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(48, "person organization relation", ownerId, publisherId)
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(48, "person organization relation", ownerId, publisherId, tenants)
         };
     }
 }

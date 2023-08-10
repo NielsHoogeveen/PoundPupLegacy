@@ -1,44 +1,44 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
 public static class InterPersonalRelationExtentions{
-    public static InterPersonalRelation.From.Incomplete.ToCreateForExistingPerson GetNewInterPersonalRelationFrom(this PersonListItem personListItem, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId)
+    public static InterPersonalRelation.From.Incomplete.ToCreateForExistingPerson GetNewInterPersonalRelationFrom(this PersonListItem personListItem, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId, List<TenantDetails> tenants)
     {
         return new InterPersonalRelation.From.Incomplete.ToCreateForExistingPerson {
             PersonFrom = personListItem,
             PersonTo = null,
             InterPersonalRelationType = interPersonalRelationType,
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(46, "inter personal relation", ownerId, publisherId),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(46, "inter personal relation", ownerId, publisherId, tenants),
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }
-    public static InterPersonalRelation.To.Incomplete.ToCreateForExistingPerson GetNewInterPersonalRelationTo(this PersonListItem personListItem, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId)
+    public static InterPersonalRelation.To.Incomplete.ToCreateForExistingPerson GetNewInterPersonalRelationTo(this PersonListItem personListItem, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId, List<TenantDetails> tenants)
     {
         return new InterPersonalRelation.To.Incomplete.ToCreateForExistingPerson {
             PersonFrom = null,
             PersonTo = personListItem,
             InterPersonalRelationType = interPersonalRelationType,
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(46, "inter personal relation", ownerId, publisherId),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(46, "inter personal relation", ownerId, publisherId, tenants),
             RelationDetails = RelationDetails.EmptyInstance,
         };
 
     }
-    public static InterPersonalRelation.From.Incomplete.ToCreateForNewPerson GetNewInterPersonalRelationFrom(this PersonName personName, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId)
+    public static InterPersonalRelation.From.Incomplete.ToCreateForNewPerson GetNewInterPersonalRelationFrom(this PersonName personName, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId, List<TenantDetails> tenants)
     {
         return new InterPersonalRelation.From.Incomplete.ToCreateForNewPerson {
             PersonFrom = personName,
             PersonTo = null,
             InterPersonalRelationType = interPersonalRelationType,
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(46, "inter personal relation", ownerId, publisherId),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(46, "inter personal relation", ownerId, publisherId, tenants),
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }
-    public static InterPersonalRelation.To.Incomplete.ToCreateForNewPerson GetNewInterPersonalRelationTo(this PersonName personName, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId)
+    public static InterPersonalRelation.To.Incomplete.ToCreateForNewPerson GetNewInterPersonalRelationTo(this PersonName personName, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId, List<TenantDetails> tenants)
     {
         return new InterPersonalRelation.To.Incomplete.ToCreateForNewPerson {
             PersonFrom = null,
             PersonTo = personName,
             InterPersonalRelationType = interPersonalRelationType,
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(46, "inter personal relation", ownerId, publisherId),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(46, "inter personal relation", ownerId, publisherId, tenants),
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }

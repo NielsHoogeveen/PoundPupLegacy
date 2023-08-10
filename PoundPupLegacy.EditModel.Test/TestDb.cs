@@ -37,7 +37,7 @@ public class TestDb
         var serviceProvider = serviceCollection.BuildServiceProvider();
         var topicExistReaderFactory = serviceProvider.GetRequiredService<IDoesRecordExistDatabaseReaderFactory<TopicExistsRequest>>();
         var reader = await topicExistReaderFactory.CreateAsync(connection);
-        Assert.Equal(exists, await reader.ReadAsync(new TopicExistsRequest { Name = name }));
+        Assert.Equal(exists, await reader.ReadAsync(new TopicExistsRequest { Name = name, TopicId = null }));
         await connection.CloseAsync();
 
     }

@@ -18,7 +18,7 @@ public abstract record OrganizationDetails
     public required string? EmailAddress { get; init; }
     public required FuzzyDate? Established { get; init; }
     public required FuzzyDate? Terminated { get; init; }
-    public required List<int> OrganizationTypeIds { get; init; }
+    public required List<int> OrganizationTypeIdsToCreate { get; init; }
     public abstract IEnumerable<InterOrganizationalRelation> InterOrganizationalRelations { get; }
     public abstract IEnumerable<PartyPoliticalEntityRelation> PartyPoliticalEntityRelations { get; }
     public abstract IEnumerable<PersonOrganizationRelation> PersonOrganizationRelations { get; }
@@ -66,6 +66,7 @@ public abstract record OrganizationDetails
         public required List<PersonOrganizationRelation.ToCreate.ForExistingParticipants> PersonOrganizationRelationsToCreate { get; init; }
         public required List<PersonOrganizationRelation.ToUpdate> PersonOrganizationRelationsToUpdate { get; init; }
         public required List<PartyPoliticalEntityRelation.ToUpdate> PartyPoliticalEntityRelationsToUpdates { get; init; }
+        public List<int> OrganizationTypeIdsToRemove { get; set; } = new List<int>();
         public override T Match<T>(Func<ForCreate, T> create, Func<ForUpdate, T> update)
         {
             return update(this);

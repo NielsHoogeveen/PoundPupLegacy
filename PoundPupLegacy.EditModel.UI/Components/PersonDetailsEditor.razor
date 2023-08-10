@@ -3,21 +3,28 @@
     RelationsFrom="PersonDetails.InterPersonalRelationsFrom.ToList()" 
     RelationsTo="PersonDetails.InterPersonalRelationsTo.ToList()" 
     RelationTypes="PersonDetails.InterPersonalRelationTypes" 
+    Tenants="Tenants"
     PersonItem="Person"/>
 <PersonPoliticalEntityRelationsEditor 
     PartyTypeName="person"
     Person="Person"
     Relations="PersonDetails.PersonPoliticalEntityRelations.ToList()"
+    Tenants="Tenants"
     RelationTypes="PersonDetails.PersonPoliticalEntityRelationTypes" />
 <PersonOrganizationRelationsEditorForPerson 
     Person="Person"
     Relations="PersonDetails.PersonOrganizationRelations.ToList()"
+    Tenants="Tenants"
     RelationTypes="PersonDetails.PersonOrganizationRelationTypes" />
 
 @code {
     [Parameter]
     [EditorRequired]
     public PersonDetails PersonDetails { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public List<TenantDetails> Tenants { get; set; } = default!;
 
     public override async Task<List<System.ComponentModel.DataAnnotations.ValidationResult>> Validate()
     {

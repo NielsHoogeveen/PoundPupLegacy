@@ -44,14 +44,14 @@ public sealed record NodeIdentification
 public abstract record NodeDetails 
 {
     
-    public static ForCreate EmptyInstance(int nodeTypeId, string nodeTypeName, int ownerId, int publisherId) => new ForCreate {
+    public static ForCreate EmptyInstance(int nodeTypeId, string nodeTypeName, int ownerId, int publisherId, List<TenantDetails> tenants) => new ForCreate {
         Files = new List<File>(),
         NodeTypeId = nodeTypeId,
         NodeTypeName = nodeTypeName,
         OwnerId = ownerId,
         PublisherId = publisherId,
         TagsToCreate = new List<Tags.ToCreate>(),
-        Tenants = new List<TenantDetails>(),
+        Tenants = tenants,
         Title = "",
         TenantNodeDetailsForCreate = new TenantNodeDetails.ForCreate {
             TenantNodesToAdd = new List<TenantNode.ToCreateForNewNode>(),
@@ -68,7 +68,7 @@ public abstract record NodeDetails
     private List<TenantDetails> tenants = new();
     public List<TenantDetails> Tenants {
         get => tenants;
-        init {
+        set {
             if (value is not null) {
                 tenants = value;
             }

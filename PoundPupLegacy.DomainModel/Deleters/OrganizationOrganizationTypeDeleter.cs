@@ -4,14 +4,14 @@ using Request = OrganizationOrganizationTypeDeleterRequest;
 
 public sealed record OrganizationOrganizationTypeDeleterRequest : IRequest
 {
-    public required int LocationId { get; init; }
-    public required int LocatableId { get; init; }
+    public required int OrganizationId { get; init; }
+    public required int OrganizationTypeId { get; init; }
 }
 
 internal sealed class OrganizationOrganizationTypeDeleterFactory : DatabaseDeleterFactory<Request>
 {
     private static NonNullableIntegerDatabaseParameter Organization = new() { Name = "organization_id" };
-    private static NonNullableIntegerDatabaseParameter organizationTypeId = new() { Name = "organization_type_id" };
+    private static NonNullableIntegerDatabaseParameter OrganizationTypeId = new() { Name = "organization_type_id" };
 
     public override string Sql => SQL;
 
@@ -22,8 +22,8 @@ internal sealed class OrganizationOrganizationTypeDeleterFactory : DatabaseDelet
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(Organization, request.LocationId),
-            ParameterValue.Create(organizationTypeId, request.LocatableId),
+            ParameterValue.Create(Organization, request.OrganizationId),
+            ParameterValue.Create(OrganizationTypeId, request.OrganizationTypeId),
         };
     }
 }

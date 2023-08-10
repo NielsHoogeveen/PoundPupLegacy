@@ -13,7 +13,7 @@
     {
         var errors = new List<System.ComponentModel.DataAnnotations.ValidationResult>();
         if (Model is not null) {
-            if (await topicSearchService.DoesTopicExist(Model.Name))
+            if (await topicSearchService.DoesTopicExist(Model.Name, Model.TopicId))
             {
                 var component = new System.ComponentModel.DataAnnotations.ValidationResult("Title should be unique.", new [] { Model.Description });
                 errors.Add(component);

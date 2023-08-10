@@ -1,11 +1,10 @@
 ﻿@inherits EditorBase
 @inject NavigationManager navigationManager;
 
-@if (NodeDetails is not null)
-{
+@if (Model is not null) {
     <div class="tenant-node-editor" >
         <h4>Publications</h4>
-        @if(NodeDetails.Tenants.Any()){
+        @if (Model.Any()) {
             <div class="tenant-nodes">
                 <div class="grid-header"></div>
                 <div class="grid-header">
@@ -20,7 +19,7 @@
                 <div class="grid-header">
                     Subgroup
                 </div>
-                @foreach(var tenant in NodeDetails.Tenants) {
+                @foreach (var tenant in Model) {
                     @if(tenant.TenantNode is not null && !tenant.TenantNode.HasBeenDeleted)
                     {
                         if (tenant.TenantNode.CanBeUnchecked)
@@ -88,26 +87,28 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public NodeDetails NodeDetails { get; set; } = default!;
+    public List<TenantDetails> Model { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<List<TenantDetails>> ModelChanged { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public bool ForCreate { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
         await Task.CompletedTask;
-        if (NodeDetails is not null)
-        {
-            switch (NodeDetails) {
-                case NodeDetails.ForCreate n:
-                    Check(TenantId);
-                    break;
-            }
+        if(ForCreate){
+            Check(TenantId);
         }
     }
 
     private void Uncheck(int tenantId)
     {
-        if(NodeDetails is not null)
+        if(Model is not null)
         {
-            var tenant = NodeDetails.Tenants.First(x => x.Id == tenantId);
+            var tenant = Model.First(x => x.Id == tenantId);
             if(tenant.TenantNode is null) {
                 throw new NullReferenceException("Tenant Node should not be null");
             }
@@ -117,15 +118,11 @@
                     break;
                 case TenantNode.ToCreateForExistingNode newTenantNodeForExistingNode:
                     tenant.TenantNode = null;
-                    if (NodeDetails is NodeDetails.ForUpdate nodeDetailsForUpdate) {
-                        nodeDetailsForUpdate.TenantNodeDetailsForUpdate.TenantNodesToAdd.Remove(newTenantNodeForExistingNode);
-                    }
+                    Model.Remove(tenant);
                     break;
                 case TenantNode.ToCreateForNewNode newTenantNodeForNewNode:
                     tenant.TenantNode = null;
-                    if (NodeDetails is NodeDetails.ForCreate nodeDetailsForCreate) {
-                        nodeDetailsForCreate.TenantNodeDetailsForCreate.TenantNodesToAdd.Remove(newTenantNodeForNewNode);
-                    }
+                    Model.Remove(tenant);
                     break;
 
             }
@@ -136,8 +133,8 @@
     }
     private void Check(int tenantId)
     {
-        if (NodeDetails is not null) {
-            var tenant = NodeDetails.Tenants.First(x => x.Id == tenantId);
+        if (Model is not null) {
+            var tenant = Model.First(x => x.Id == tenantId);
             switch (tenant.TenantNode) {
                 case TenantNode.ToUpdate existingTenantNode:
                     tenant.TenantNode.HasBeenDeleted = false;
@@ -155,9 +152,6 @@
                         HasBeenStored = false
                     };
                     tenant.TenantNode = tenantNode;
-                    if(NodeDetails is NodeDetails.ForUpdate nodeDetailsForUpdate) {
-                        nodeDetailsForUpdate.TenantNodeDetailsForUpdate.TenantNodesToAdd.Add(tenantNode);
-                    }
                     break;
                 default:
                     var newTenantNode = new TenantNode.ToCreateForNewNode {
@@ -170,10 +164,6 @@
                         HasBeenStored = false
                     };
                     tenant.TenantNode = newTenantNode;
-                    if (NodeDetails is NodeDetails.ForCreate nodeDetailsForCreate) {
-                        nodeDetailsForCreate.TenantNodeDetailsForCreate.TenantNodesToAdd.Add(newTenantNode);
-                    }
-
                     break;
             }
             StateHasChanged();
@@ -182,9 +172,8 @@
     }
     private void SetSubgroup(int tenantId, int? subgroupId)
     {
-        if (NodeDetails is not null)
-        {
-            var tenant = NodeDetails.Tenants.First(x => x.Id == tenantId);
+        if (Model is not null) {
+            var tenant = Model.First(x => x.Id == tenantId);
             if(tenant.TenantNode is not null) {
                 tenant.TenantNode.SubgroupId = subgroupId;
                 if (subgroupId.HasValue) {
@@ -201,8 +190,8 @@
     }
     private void SetPublicationStatus(int tenantId, int publicationStatusId)
     {
-        if (NodeDetails is not null) {
-            var tenant = NodeDetails.Tenants.First(x => x.Id == tenantId);
+        if (Model is not null) {
+            var tenant = Model.First(x => x.Id == tenantId);
             if (tenant.TenantNode is not null) {
                 tenant.TenantNode.PublicationStatusId = publicationStatusId;
             }
