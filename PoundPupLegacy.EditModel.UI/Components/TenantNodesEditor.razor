@@ -135,35 +135,56 @@
     {
         if (Model is not null) {
             var tenant = Model.First(x => x.Id == tenantId);
-            switch (tenant.TenantNode) {
+            switch (tenant.TenantNode)
+            {
                 case TenantNode.ToUpdate existingTenantNode:
                     tenant.TenantNode.HasBeenDeleted = false;
                     break;
                 case TenantNode.ToCreateForExistingNode newTenantNodeForExistingNode:
-                    var tenantNode = new TenantNode.ToCreateForExistingNode {
-                        TenantId = tenantId,
-                        HasBeenDeleted = false,
-                        PublicationStatusId = tenant.PublicationStatusIdDefault,
-                        NodeId = newTenantNodeForExistingNode.NodeId,
-                        UrlId = newTenantNodeForExistingNode.NodeId,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        CanBeUnchecked = true,
-                        HasBeenStored = false
-                    };
+                    var tenantNode = new TenantNode.ToCreateForExistingNode
+                        {
+                            TenantId = tenantId,
+                            HasBeenDeleted = false,
+                            PublicationStatusId = tenant.PublicationStatusIdDefault,
+                            NodeId = newTenantNodeForExistingNode.NodeId,
+                            UrlId = newTenantNodeForExistingNode.NodeId,
+                            UrlPath = null,
+                            SubgroupId = null,
+                            CanBeUnchecked = true,
+                            HasBeenStored = false
+                        };
                     tenant.TenantNode = tenantNode;
                     break;
                 default:
-                    var newTenantNode = new TenantNode.ToCreateForNewNode {
-                        TenantId = tenantId,
-                        HasBeenDeleted = false,
-                        PublicationStatusId = tenant.PublicationStatusIdDefault,
-                        UrlPath = null,
-                        SubgroupId = null,
-                        CanBeUnchecked = tenantId != TenantId,
-                        HasBeenStored = false
-                    };
-                    tenant.TenantNode = newTenantNode;
+                    if (ForCreate) { 
+                        var newTenantNode = new TenantNode.ToCreateForNewNode
+                            {
+                                TenantId = tenantId,
+                                HasBeenDeleted = false,
+                                PublicationStatusId = tenant.PublicationStatusIdDefault,
+                                UrlPath = null,
+                                SubgroupId = null,
+                                CanBeUnchecked = tenantId != TenantId,
+                                HasBeenStored = false
+                            };
+                        tenant.TenantNode = newTenantNode;
+                    }
+                    else {
+                        var nodeId = NodeId!.Value;
+                        var newTenantNode = new TenantNode.ToCreateForExistingNode {
+                                TenantId = tenantId,
+                                HasBeenDeleted = false,
+                                PublicationStatusId = tenant.PublicationStatusIdDefault,
+                                UrlId = nodeId,
+                                NodeId = nodeId,
+                                UrlPath = null,
+                                SubgroupId = null,
+                                CanBeUnchecked = tenantId != TenantId,
+                                HasBeenStored = false
+                            };
+                        tenant.TenantNode = newTenantNode;
+                    }
+
                     break;
             }
             StateHasChanged();

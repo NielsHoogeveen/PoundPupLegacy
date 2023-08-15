@@ -51,11 +51,15 @@ public abstract record NodeDetails
         OwnerId = ownerId,
         PublisherId = publisherId,
         TagsToCreate = new List<Tags.ToCreate>(),
-        Tenants = tenants,
+        Tenants = tenants.Select(x => new TenantDetails { 
+            AllowAccess = x.AllowAccess, 
+            DomainName = x.DomainName, 
+            Id = x.Id, 
+            PublicationStatusIdDefault = x.PublicationStatusIdDefault, 
+            Subgroups = x.Subgroups, 
+            TenantNode = null
+        }).ToList(),
         Title = "",
-        TenantNodeDetailsForCreate = new TenantNodeDetails.ForCreate {
-            TenantNodesToAdd = new List<TenantNode.ToCreateForNewNode>(),
-        }
     };
     public required string NodeTypeName { get; set; }
     public required int NodeTypeId { get; init; }
@@ -64,6 +68,7 @@ public abstract record NodeDetails
     public required string Title { get; set; }
 
     public abstract IEnumerable<Tags> Tags { get; }
+    public abstract TenantNodeDetails TenantNodeDetails { get; }
 
     private List<TenantDetails> tenants = new();
     public List<TenantDetails> Tenants {
@@ -83,7 +88,6 @@ public abstract record NodeDetails
             }
         }
     }
-    public abstract TenantNodeDetails TenantNodeDetails { get; }
     public sealed record ForCreate: NodeDetails
     {
         private List<Tags.ToCreate> tags = new();
@@ -97,9 +101,7 @@ public abstract record NodeDetails
                 }
             }
         }
-        public override TenantNodeDetails TenantNodeDetails => TenantNodeDetailsForCreate;
-        public required TenantNodeDetails.ForCreate TenantNodeDetailsForCreate { get; init; }
-
+        public override TenantNodeDetails TenantNodeDetails => new TenantNodeDetails.ForCreate { };
     }
     public sealed record ForUpdate : NodeDetails
     {

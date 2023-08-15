@@ -28,17 +28,7 @@ internal class OrganizationToUpdateMapper(
                 NodeTypeName = x.NodeDetails.NodeTypeName,
                 OwnerId = x.NodeDetails.OwnerId,
                 PublisherId = x.NodeDetails.PublisherId,
-                TenantNodeDetailsForCreate = new TenantNodeDetails.ForCreate {
-                    TenantNodesToAdd = x.NodeDetails.TenantNodeDetails.TenantNodes.Select(y =>
-                        new TenantNode.ToCreateForNewNode {
-                            HasBeenStored = false,
-                            UrlPath = null,
-                            PublicationStatusId = y.PublicationStatusId,
-                            CanBeUnchecked = y.CanBeUnchecked,
-                            TenantId = y.TenantId,
-                        }
-                    ).ToList(),
-                },
+                Tenants = x.NodeDetails.Tenants,
             },
             OrganizationFrom = (x.OrganizationItemFrom as OrganizationListItem)!,
             OrganizationTo = x.OrganizationItemTo!,
@@ -53,14 +43,12 @@ internal class OrganizationToUpdateMapper(
                 NodeTypeName = x.NodeDetails.NodeTypeName,
                 OwnerId = x.NodeDetails.OwnerId,
                 PublisherId = x.NodeDetails.PublisherId,
-                TenantNodeDetailsForCreate = new TenantNodeDetails.ForCreate {
-                    TenantNodesToAdd = new List<TenantNode.ToCreateForNewNode>(),
-                },
+                Tenants = x.NodeDetails.Tenants,
             },
             OrganizationFrom = (x.OrganizationItemFrom as OrganizationListItem)!,
             OrganizationTo = x.OrganizationItemTo!,
+            RelationDetails = x.RelationDetails,
 
-            RelationDetails = x.RelationDetails
         }).ToList();
 
         return new BasicOrganization.ToUpdate {

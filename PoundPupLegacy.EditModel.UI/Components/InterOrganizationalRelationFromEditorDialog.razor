@@ -47,16 +47,18 @@
             Label="Geographical entity" />
         <LabeledSearchItemEditor T="DocumentListItem"
             IsMandatory="false"
-        @bind-Value="RelationContext.RelationToEdit.RelationDetails.ProofDocument"
+            @bind-Value="RelationContext.RelationToEdit.RelationDetails.ProofDocument"
             EnableEdit="true"
             Label="Proof document" />
         <div class="form-group">
             <label for="money-involved">Money involved</label>
-            <InputNumber id="money-involved" @bind-Value="RelationContext.RelationToEdit.InterOrganizationalRelationDetails.MoneyInvolved" />
+            <InputNumber id="money-involved" 
+            @bind-Value="RelationContext.RelationToEdit.InterOrganizationalRelationDetails.MoneyInvolved" />
         </div>
         <div class="form-group">
             <label for="number-of-children-involved">Number of children involved</label>
-            <InputNumber id="number-of-children-involved" @bind-Value="RelationContext.RelationToEdit.InterOrganizationalRelationDetails.NumberOfChildrenInvolved" />
+            <InputNumber id="number-of-children-involved" 
+            @bind-Value="RelationContext.RelationToEdit.InterOrganizationalRelationDetails.NumberOfChildrenInvolved" />
         </div>
         <div class="form-group">
             <label>Description</label>

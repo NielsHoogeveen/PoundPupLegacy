@@ -14,13 +14,16 @@ internal class NodeDetailsForUpdateMapper(
     public DomainModel.NodeDetails.ForUpdate Map(NodeDetails.ForUpdate source)
     {
         var now = DateTime.Now;
+        var tenantNodesToAdd = source.Tenants.Select(x => x.TenantNode).Where(x => x is not null && !x.HasBeenStored && !x.HasBeenDeleted).OfType<TenantNode.ToCreateForExistingNode>();
+        var tenantNodesToRemove = source.Tenants.Select(x => x.TenantNode).Where(x => x is not null && x.HasBeenDeleted && x.HasBeenStored).OfType<TenantNode.ToUpdate>();
+        var tenantNodesToUpdate = source.Tenants.Select(x => x.TenantNode).Where(x => x is not null && !x.HasBeenDeleted && x.HasBeenStored).OfType<TenantNode.ToUpdate>();
         return new DomainModel.NodeDetails.ForUpdate {
             AuthoringStatusId = 1,
             ChangedDateTime = now,
             Title = source.Title,
-            TenantNodesToAdd = tenantNodeToCreateMapper.Map(source.TenantNodeDetailsForUpdate.TenantNodesToAdd).ToList(),
-            TenantNodesToRemove = tenantNodeDeleteMapper.Map(source.TenantNodeDetailsForUpdate.TenantNodesToUpdate).ToList(),
-            TenantNodesToUpdate = tenantNodeUpdateMapper.Map(source.TenantNodeDetailsForUpdate.TenantNodesToUpdate).ToList(),
+            TenantNodesToAdd = tenantNodeToCreateMapper.Map(tenantNodesToAdd).ToList(),
+            TenantNodesToRemove = tenantNodeDeleteMapper.Map(tenantNodesToRemove).ToList(),
+            TenantNodesToUpdate = tenantNodeUpdateMapper.Map(tenantNodesToUpdate).ToList(),
             NodeTermsToAdd = nodeTermsToAddMapper.Map(source.TagsForUpdate).ToList(),
             NodeTermsToRemove = nodeTermsToDeleteMapper.Map(source.TagsForUpdate).ToList(),
             FilesToAdd = source.Files.Where(x => !x.HasBeenStored).Select(x => new DomainModel.File {

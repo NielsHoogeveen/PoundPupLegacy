@@ -18,7 +18,7 @@
             tenantId:TenantId);
 
         foreach (var tenant in Model!.NodeDetails.Tenants) {
-            var tenantNode = Model!.NodeDetails.TenantNodeDetails.TenantNodes.FirstOrDefault(x => x.TenantId == tenant.Id);
+            var tenantNode = Model!.NodeDetails.TenantNodeDetails.TenantNodes.FirstOrDefault(x => x is not null && x.TenantId == tenant.Id);
             tenant.TenantNode = tenantNode;
         }
     }

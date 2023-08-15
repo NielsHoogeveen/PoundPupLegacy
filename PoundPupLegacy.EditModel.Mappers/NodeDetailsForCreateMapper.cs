@@ -10,6 +10,7 @@ internal class NodeDetailsForCreateMapper(
     public DomainModel.NodeDetails.ForCreate Map(NodeDetails.ForCreate source)
     {
         var now = DateTime.Now;
+        var tenantNodesToAdd = source.Tenants.Select(x => x.TenantNode).Where(x => x is not null && !x.HasBeenStored && !x.HasBeenDeleted).OfType<TenantNode.ToCreateForNewNode>().ToList();
         return new DomainModel.NodeDetails.ForCreate {
             AuthoringStatusId = 1,
             ChangedDateTime = now,
@@ -19,19 +20,17 @@ internal class NodeDetailsForCreateMapper(
             PublisherId = source.PublisherId,
             Title = source.Title,
             TermIds = termIdsToAddMapper.Map(source.TagsToCreate).ToList(),
-            TenantNodes = tenantNodeMapper.Map(source.TenantNodeDetailsForCreate.TenantNodesToAdd).ToList(),
+            TenantNodes = tenantNodeMapper.Map(tenantNodesToAdd).ToList(),
             FilesToAdd = source.Files.Select(x => new DomainModel.File { 
                 Identification = new Identification.Possible { Id = null },
                 Name = x.Name,
                 Path = x.Path,
                 MimeType = x.MimeType,
                 Size = (int)x.Size,
-                TenantFiles = source
-                    .TenantNodeDetailsForCreate
-                    .TenantNodes.Select(x => new TenantFile { 
+                TenantFiles = source.Tenants.Select(x => new TenantFile { 
                         FileId = null, 
                         TenantFileId = null, 
-                        TenantId = x.TenantId
+                        TenantId = x.Id
                     }).ToList()
             }).ToList()
         };
