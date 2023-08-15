@@ -238,7 +238,7 @@ public abstract record OrganizationDetails
         private List<InterOrganizationalRelation.From.Complete.Resolved.ToUpdate> existingInterOrganizationalRelationsFrom = new();
         public List<InterOrganizationalRelation.From.Complete.Resolved.ToUpdate> InterOrganizationalRelationsFromToUpdate {
             get => existingInterOrganizationalRelationsFrom;
-            init {
+            set {
                 if (value is not null) {
                     existingInterOrganizationalRelationsFrom = value;
                 }

@@ -28,6 +28,8 @@ internal sealed class DocumentUpdateDocumentReaderFactory : NodeUpdateDocumentRe
                         when d.document_type_id is null then 101488
                         else d.document_type_id
                     end,
+                    'SourceUrl',
+                    d.source_url,
         	        'PublicationDateFrom',
         	        lower(published),
         	        'PublicationDateTo',
