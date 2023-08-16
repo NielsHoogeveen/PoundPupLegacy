@@ -114,6 +114,7 @@
         if(args.Value is not null && args.Value is string str) {
             if(int.TryParse(str, out var typeId)) {
                 RelationType = RelationTypes.First(x => x.Id == typeId);
+                RelationContext.RelationToEdit.InterOrganizationalRelationDetails.InterOrganizationalRelationType = RelationType;
                 StateHasChanged();
             }
         }

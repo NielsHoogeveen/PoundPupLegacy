@@ -3,5 +3,23 @@
     <PersonEditor Person="Model" />
 }
 @code {
-
+    protected override void OnParametersSet()
+    {
+        foreach (var tenant in Model!.PersonDetails.InterPersonalRelationsFrom.SelectMany(y => y.NodeDetails.Tenants)) {
+            var tenantNode = Model!.NodeDetails.TenantNodeDetails.TenantNodes.FirstOrDefault(x => x is not null && x.TenantId == tenant.Id);
+            tenant.TenantNode = tenantNode;
+        }
+        foreach (var tenant in Model!.PersonDetails.InterPersonalRelationsTo.SelectMany(y => y.NodeDetails.Tenants)) {
+            var tenantNode = Model!.NodeDetails.TenantNodeDetails.TenantNodes.FirstOrDefault(x => x is not null && x.TenantId == tenant.Id);
+            tenant.TenantNode = tenantNode;
+        }
+        foreach (var tenant in Model!.PersonDetails.PersonPoliticalEntityRelations.SelectMany(y => y.NodeDetails.Tenants)) {
+            var tenantNode = Model!.NodeDetails.TenantNodeDetails.TenantNodes.FirstOrDefault(x => x is not null && x.TenantId == tenant.Id);
+            tenant.TenantNode = tenantNode;
+        }
+        foreach (var tenant in Model!.PersonDetails.PersonOrganizationRelations.SelectMany(y => y.NodeDetails.Tenants)) {
+            var tenantNode = Model!.NodeDetails.TenantNodeDetails.TenantNodes.FirstOrDefault(x => x is not null && x.TenantId == tenant.Id);
+            tenant.TenantNode = tenantNode;
+        }
+    }
 }

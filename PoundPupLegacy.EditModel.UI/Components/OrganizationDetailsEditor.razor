@@ -34,9 +34,10 @@
     Tenants="Tenants" />
 <PersonOrganizationRelationsEditorForOrganization 
     Organization="OrganizationDetails.OrganizationItem"
-    Relations="OrganizationDetails.PersonOrganizationRelations"
+    @bind-Relations="OrganizationDetails.PersonOrganizationRelations"
     RelationTypes="OrganizationDetails.PersonOrganizationRelationTypes"
-    Tenants="Tenants" />
+    Tenants="Tenants"
+    @ref=PersonOrganizationRelationsEditor />
 
 @code {
     [Parameter]
@@ -48,9 +49,11 @@
     public List<TenantDetails> Tenants { get; set; } = default!;
 
     private InterOrganizationalRelationsEditor InterOrganizationalRelationsEditor { get; set;  } = default!;
+    private PersonOrganizationRelationsEditorForOrganization PersonOrganizationRelationsEditor { get; set; } = default!;
 
     public override async Task<List<System.ComponentModel.DataAnnotations.ValidationResult>> Validate()
     {
+        PersonOrganizationRelationsEditor?.Validate();
         return await Task.FromResult(new List<System.ComponentModel.DataAnnotations.ValidationResult>());
     }
 

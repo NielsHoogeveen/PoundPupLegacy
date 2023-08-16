@@ -27,10 +27,10 @@ internal class OrganizationToCreateMapper(
                 Terminated = source.OrganizationDetails.Termination,
                 WebsiteUrl = source.OrganizationDetails.WebSiteUrl,
                 OrganizationTypeIdsToCreate = source.OrganizationDetails.OrganizationOrganizationTypes.Select(x => x.OrganizationTypeId).ToList(),
-                PartyPoliticalEntityRelationsToCreate = partyPolitcalEntityCreateMapper.Map(source.OrganizationDetailsForCreate.OrganizationPoliticalEntityRelationsToCreate).ToList(),
-                PersonOrganizationRelationsToCreate = personOrganizationRelationCreateMapper.Map(source.OrganizationDetailsForCreate.PersonOrganizationRelationsToCreate).ToList(),
-                InterOrganizationalRelationsFrom = interOrganizationalRelationFromMapper.Map(source.OrganizationDetailsForCreate.InterOrganizationalRelationsFromToCreate).ToList(),
-                InterOrganizationalRelationsTo = interOrganizationalRelationToMapper.Map(source.OrganizationDetailsForCreate.InterOrganizationalRelationsToToCreate).ToList(),
+                PartyPoliticalEntityRelationsToCreate = partyPolitcalEntityCreateMapper.Map(source.OrganizationDetailsForCreate.OrganizationPoliticalEntityRelations.OfType<OrganizationPoliticalEntityRelation.Complete.ToCreateForNewOrganization>()).ToList(),
+                PersonOrganizationRelationsToCreate = personOrganizationRelationCreateMapper.Map(source.OrganizationDetailsForCreate.PersonOrganizationRelations.OfType<PersonOrganizationRelation.ForOrganization.Complete.ToCreateForNewOrganization>()).ToList(),
+                InterOrganizationalRelationsFrom = interOrganizationalRelationFromMapper.Map(source.OrganizationDetailsForCreate.InterOrganizationalRelationsFrom.OfType<InterOrganizationalRelation.From.Complete.ToCreateForNewOrganization>()).ToList(),
+                InterOrganizationalRelationsTo = interOrganizationalRelationToMapper.Map(source.OrganizationDetailsForCreate.InterOrganizationalRelationsTo.OfType<InterOrganizationalRelation.To.Complete.ToCreateForNewOrganization>()).ToList(),
             },
         };
     }

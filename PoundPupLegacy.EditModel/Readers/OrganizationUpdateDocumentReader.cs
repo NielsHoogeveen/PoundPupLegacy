@@ -88,29 +88,7 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
                             url_id
                         ),
                         'NodeDetailsForUpdate',
-                        jsonb_build_object(
-                           'NodeTypeName',
-                            node_type_name,
-                            'NodeTypeId',
-                            node_type_id,
-                            'PublisherId', 
-                            publisher_id,
-                            'OwnerId', 
-                            owner_id,
-                            'Title', 
-                            title,
-            		        'TagsForUpdate', 
-                            null,
-                            'TenantNodeDetailsForUpdate',
-                            json_build_object(
-                                'TenantNodesToUpdate',
-                                null
-                            ),
-                            'Tenants',
-                            null,
-                            'Files',
-                            null
-                        ),
+                        (select document from node_details_for_update_document where id = node_id),
                         'OrganizationFrom',
                         jsonb_build_object(
                             'Id',
@@ -321,29 +299,7 @@ internal sealed class OrganizationUpdateDocumentReaderFactory : NodeUpdateDocume
                             url_id
                         ),
                         'NodeDetailsForUpdate',
-                        jsonb_build_object(
-                           'NodeTypeName',
-                            node_type_name,
-                            'NodeTypeId',
-                            node_type_id,
-                            'PublisherId', 
-                            publisher_id,
-                            'OwnerId', 
-                            owner_id,
-                            'Title', 
-                            title,
-            		        'TagsForUpdate', 
-                            null,
-                            'TenantNodeDetailsForUpdate',
-                            json_build_object(
-                                'TenantNodesToUpdate',
-                                null
-                            ),
-                            'Tenants',
-                            null,
-                            'Files',
-                            null
-                        ),
+                        (select document from node_details_for_update_document where id = node_id),
                         'OrganizationFrom',
                         jsonb_build_object(
                             'Id',

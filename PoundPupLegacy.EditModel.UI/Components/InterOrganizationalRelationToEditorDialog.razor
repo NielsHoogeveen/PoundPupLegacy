@@ -71,6 +71,10 @@
             <label>End date</label>
             <InputDate @bind-Value="RelationContext.RelationToEdit.RelationDetails.DateTo" />
         </div>
+        <TenantNodesEditor 
+            @bind-Model="RelationContext.RelationToEdit.NodeDetails.Tenants"
+            ForCreate="RelationContext.RelationToEdit.NodeDetails.GetType() == typeof(NodeDetails.ForCreate)" 
+        />
     </div>
 }
 @code {
@@ -111,6 +115,7 @@
         if(args.Value is not null && args.Value is string str) {
             if(int.TryParse(str, out var typeId)) {
                 RelationType = RelationTypes.First(x => x.Id == typeId);
+                RelationContext.RelationToEdit.InterOrganizationalRelationDetails.InterOrganizationalRelationType = RelationType;
                 StateHasChanged();
             }
         }

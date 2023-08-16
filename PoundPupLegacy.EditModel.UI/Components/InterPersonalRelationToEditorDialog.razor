@@ -56,6 +56,9 @@
         <label>End date</label>
         <InputDate @bind-Value="RelationContext.RelationToEdit.RelationDetails.DateTo" />
     </div>
+    <TenantNodesEditor 
+        @bind-Model="RelationContext.RelationToEdit.NodeDetails.Tenants"
+        ForCreate="RelationContext.RelationToEdit.NodeDetails.GetType() == typeof(NodeDetails.ForCreate)" />
 }
 @code {
 

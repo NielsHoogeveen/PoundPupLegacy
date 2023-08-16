@@ -1,7 +1,7 @@
 ﻿@inherits EditorDetailBase
 <div class="form-group">
     <label for="title">Title</label>
-    <InputText @bind-Value="Model.Title" id="title" class="title-editor" type="text" @oninput="OnTitleChange" />
+    <InputText @bind-Value="Model.Title" id="title" class="title-editor" type="text" @oninput="OnTitleChange" maxlength="255" />
     <ValidationMessage For="@(() => Model.Title)" />
 </div>
 @Top
@@ -44,6 +44,11 @@
 
     public override async Task<List<System.ComponentModel.DataAnnotations.ValidationResult>> Validate()
     {
-        return await Task.FromResult(new List<System.ComponentModel.DataAnnotations.ValidationResult>());
+        var errors = new List<System.ComponentModel.DataAnnotations.ValidationResult>();
+        if(Model.Title.Length > 255) {
+            var component = new System.ComponentModel.DataAnnotations.ValidationResult("Title should not contain more than 255 characters", new[] { Model.Title });
+            errors.Add(component);
+        }
+        return await Task.FromResult(errors);
     }
 }

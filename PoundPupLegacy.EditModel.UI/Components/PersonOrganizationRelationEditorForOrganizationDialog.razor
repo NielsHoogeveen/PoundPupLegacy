@@ -60,6 +60,9 @@
             <label>End date</label>
             <InputDate @bind-Value="Relation.RelationDetails.DateTo" />
         </div>
+        <TenantNodesEditor @bind-Model="Relation.NodeDetails.Tenants"
+                           ForCreate="Relation.NodeDetails.GetType() == typeof(NodeDetails.ForCreate)" />
+
     </EditForm>
 }
 @code {
@@ -67,7 +70,6 @@
     [Parameter]
     [EditorRequired]
     public PersonOrganizationRelation.ForOrganization Relation { get; set; } = default!;
-
 
     [Parameter]
     [EditorRequired]

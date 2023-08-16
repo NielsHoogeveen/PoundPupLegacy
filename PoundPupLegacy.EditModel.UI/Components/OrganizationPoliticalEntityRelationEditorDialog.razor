@@ -31,11 +31,12 @@
             </div>
         </div>
         @if (Relation.PoliticalEntityItem is PoliticalEntityListItem politicalEntityListItem) {
-            <LabeledSearchItemEditor T="PoliticalEntityListItem"
-            IsMandatory="true"
-            @bind-Value="politicalEntityListItem"
-            EnableEdit="true"
-            Label="Political entity" />
+            <LabeledSearchItemEditor 
+                T="PoliticalEntityListItem"
+                IsMandatory="true"
+                @bind-Value="politicalEntityListItem"
+                EnableEdit="true"
+                Label="Political entity" />
         }
 
         <LabeledSearchItemEditor T="DocumentListItem"
@@ -55,6 +56,9 @@
             <label>End date</label>
             <InputDate @bind-Value="Relation.RelationDetails.DateTo" />
         </div>
+        <TenantNodesEditor @bind-Model="Relation.NodeDetails.Tenants"
+                           ForCreate="Relation.NodeDetails.GetType() == typeof(NodeDetails.ForCreate)" />
+
     </EditForm>
 }
 @code {

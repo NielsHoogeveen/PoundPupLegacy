@@ -62,8 +62,10 @@
 </div>
 @code {
     [Parameter]
-    [EditorRequired]
     public List<PersonOrganizationRelation.ForOrganization.Complete> Relations { get; set; } = default!;
+    
+    [Parameter]
+    public EventCallback<List<PersonOrganizationRelation.ForOrganization.Complete>> RelationsChanged { get; set; }
 
     [Parameter]
     [EditorRequired]
@@ -80,6 +82,13 @@
     private PersonOrganizationRelationEditorForOrganizationDialog? dialog;
 
     private PersonOrganizationRelation.ForOrganization? _relationToEdit = null;
+
+    public override async Task SetParametersAsync(ParameterView parameters)
+    {
+        if (RelationTypes is null) {
+            await base.SetParametersAsync(parameters);
+        }
+    }
 
     public override async Task<List<System.ComponentModel.DataAnnotations.ValidationResult>> Validate()
     {
