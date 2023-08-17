@@ -1,7 +1,7 @@
 ﻿@inherits EditorDetailBase
 <div class="form-group">
     <label for="title">Title</label>
-    <InputText @bind-Value="Model.Title" id="title" class="title-editor" type="text" @oninput="OnTitleChange" maxlength="255" />
+    <InputText @bind-Value="Model.Title" id="title" class="title-editor" type="text" @oninput="OnTitleChange" maxlength="255"/>
     <ValidationMessage For="@(() => Model.Title)" />
 </div>
 @Top
@@ -47,6 +47,10 @@
         var errors = new List<System.ComponentModel.DataAnnotations.ValidationResult>();
         if(Model.Title.Length > 255) {
             var component = new System.ComponentModel.DataAnnotations.ValidationResult("Title should not contain more than 255 characters", new[] { Model.Title });
+            errors.Add(component);
+        }
+        if (Model.Title.Length < 1) {
+            var component = new System.ComponentModel.DataAnnotations.ValidationResult("Title is required", new[] { Model.Title });
             errors.Add(component);
         }
         return await Task.FromResult(errors);

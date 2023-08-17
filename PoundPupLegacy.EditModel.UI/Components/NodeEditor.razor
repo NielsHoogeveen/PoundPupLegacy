@@ -8,6 +8,7 @@
     <h1>@Title</h1>
     <EditForm EditContext="@editContext" OnSubmit="@Submit">
         <ObjectGraphDataAnnotationsValidator />
+        <ValidationSummary Model="@Model" />
         @ChildContent
         <button type="submit">Submit</button>
     </EditForm>
