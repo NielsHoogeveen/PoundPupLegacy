@@ -39,17 +39,14 @@
                 }
                 @if (entry.Countries is not null)
                 {
-                    <li>
-                        <ul>
-
-                            @foreach (var country in entry.Countries)
-                            {
-                                <li>
-                                    <a href="@country.Path">@country.Title</a>
-                                </li>
-                            }
-                        </ul>
-                    </li>
+                    <ul>
+                        @foreach (var country in entry.Countries)
+                        {
+                            <li>
+                                <a href="@country.Path">@country.Title</a>
+                            </li>
+                        }
+                    </ul>
                 }
             </ul>
         }

@@ -60,7 +60,7 @@ internal sealed class CountriesDocumentReaderFactory : SingleItemDatabaseReaderF
                         							    )
                                                     ) document
                         						FROM (select * from node n3
-                        						join tenant_node tn3 on tn3.node_id = n3.id and tn3.tenant_id = 1
+                        						join tenant_node tn3 on tn3.node_id = n3.id and tn3.tenant_id = @tenant_id
                         						JOIN top_level_country tlc2 on tlc2.global_region_id = n2.id and tlc2.id = n3.id
                                                 ORDER BY n3.title
             								) n3
@@ -75,7 +75,7 @@ internal sealed class CountriesDocumentReaderFactory : SingleItemDatabaseReaderF
             					n2.title
             					from 
             				node n2
-                        	join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = 1
+                        	join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = @tenant_id
                         	JOIN second_level_global_region r2 on r2.first_level_global_region_id = n.id and r2.id = n2.id
                             ORDER BY n2.title
             					) n2
@@ -103,7 +103,7 @@ internal sealed class CountriesDocumentReaderFactory : SingleItemDatabaseReaderF
             					tn2.url_id,
             					tn2.url_path
             					from node n2
-            					join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = 1
+            					join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = @tenant_id
             					JOIN top_level_country tlc on tlc.global_region_id = n.id and tlc.id = n2.id
             					ORDER BY n2.title
             				) n2
@@ -119,7 +119,7 @@ internal sealed class CountriesDocumentReaderFactory : SingleItemDatabaseReaderF
             	tn.url_path
             from node n
             join first_level_global_region r on r.id = n.id
-            join tenant_node tn on tn.node_id = n.id and tn.tenant_id = 1
+            join tenant_node tn on tn.node_id = n.id and tn.tenant_id = @tenant_id
             ORDER BY n.title
         ) n
         """;
