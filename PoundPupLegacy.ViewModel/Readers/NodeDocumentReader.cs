@@ -1663,14 +1663,48 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         n2.title,
         	            lower(d.published) sort_date,
                         lower(d.published) publication_date_from,
-                        upper(d.published) publication_date_to  
+                        upper(d.published) publication_date_to,
+                        case
+                        when tn.publication_status_id = 0 then (
+                            select
+                                case 
+                                    when count(*) > 0 then 0
+                                    else -1
+                                end status
+                            from user_group_user_role_user ugu
+                            join user_group ug on ug.id = ugu.user_group_id
+                            WHERE ugu.user_group_id = 
+                            case
+                                when tn.subgroup_id is null then tn.tenant_id 
+                                else tn.subgroup_id 
+                            end 
+                            AND ugu.user_role_id = ug.administrator_role_id
+                            AND ugu.user_id = 0
+                        )
+                        when tn.publication_status_id = 1 then 1
+                        when tn.publication_status_id = 2 then (
+                            select
+                                case 
+                                    when count(*) > 0 then 1
+                                    else -1
+                                end status
+                            from user_group_user_role_user ugu
+                            WHERE ugu.user_group_id = 
+                                case
+                                    when tn.subgroup_id is null then tn.tenant_id 
+                                    else tn.subgroup_id 
+                                end
+                                AND ugu.user_id = 0
+                            )
+                    end status	
                     from node_term nt
                     join term t on t.id = nt.term_id
-                    join tenant_node tn on tn.url_id = @url_id and tn.tenant_id = @tenant_id and tn.node_id = t.nameable_id
-                    join tenant_node tn2 on tn2.node_id = nt.node_id and tn2.tenant_id = @tenant_id
-                    join node n2 on n2.Id = tn2.node_id
+                    join tenant_node tn2 on tn2.url_id = @url_id and tn2.tenant_id = @tenant_id and tn2.node_id = t.nameable_id
+                    join tenant_node tn on tn.node_id = nt.node_id and tn.tenant_id = @tenant_id
+                    join node n2 on n2.Id = tn.node_id
                     join "document" d on d.id = n2.id
                 ) x
+                where status <> -1
             ) docs
         )
         """;
