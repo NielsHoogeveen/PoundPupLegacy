@@ -33,14 +33,14 @@ internal sealed class UserTenantActionReaderFactory : EnumerableDatabaseReaderFa
         join tenant t on t.id = ugur.user_group_id
         union
         select
-        	distinct
-        	0,
-        	t.id tenant_id,
-        	ba.path
+           	distinct
+           	0,
+           	t.id tenant_id,
+           	ba.path
         from basic_action ba
         join access_role_privilege arp on arp.action_id = ba.id
-        join user_group_user_role_user ugur on ugur.user_role_id = arp.access_role_id
-        join tenant t on t.id = ugur.user_group_id
+        join user_role ur on ur.id = arp.access_role_id
+        join tenant t on t.id = ur.user_group_id
         where arp.access_role_id = t.access_role_id_not_logged_in
         union
         select
