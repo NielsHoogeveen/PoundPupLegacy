@@ -128,6 +128,9 @@ internal sealed class SiteDataService(
         if(domainName == "184.107.108.149" && uri.Port == 81) {
             return 6;
         }
+        if (domainName == "184.107.108.149" && uri.Port == 82) {
+            return 8;
+        }
         if (domainName == "localhost") {
             var localHostTenantString = configuration["LocalHostTenant"];
             if (localHostTenantString is null) {
@@ -335,6 +338,8 @@ internal sealed class SiteDataService(
 
         if (tenantId == 6)
             return "CPCT";
+        if (tenantId == 8)
+            return "ACT";
         return "";
     }
 

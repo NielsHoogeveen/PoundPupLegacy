@@ -1657,8 +1657,8 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 from(
                     select
                         case 
-        	                when tn2.url_path is null then '/node/' || tn2.url_id
-        	                else '/' || tn2.url_path
+        	                when tn.url_path is null then '/node/' || tn.url_id
+        	                else '/' || tn.url_path
                         end path,
                         n2.title,
         	            lower(d.published) sort_date,
@@ -1679,7 +1679,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                                 else tn.subgroup_id 
                             end 
                             AND ugu.user_role_id = ug.administrator_role_id
-                            AND ugu.user_id = 0
+                            AND ugu.user_id = @user_id
                         )
                         when tn.publication_status_id = 1 then 1
                         when tn.publication_status_id = 2 then (
@@ -1694,7 +1694,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                                     when tn.subgroup_id is null then tn.tenant_id 
                                     else tn.subgroup_id 
                                 end
-                                AND ugu.user_id = 0
+                                AND ugu.user_id = @user_id
                             )
                     end status	
                     from node_term nt
