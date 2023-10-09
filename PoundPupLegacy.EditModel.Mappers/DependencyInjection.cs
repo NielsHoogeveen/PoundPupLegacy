@@ -27,6 +27,9 @@ public static class DependencyInjection
         services.AddTransient<IMapper<DeportationCase.ToUpdate, DomainModel.DeportationCase.ToUpdate>, DeportationCaseToUpdateMapper>();
         services.AddTransient<IMapper<DeportationCase.ToCreate, DomainModel.DeportationCase.ToCreate>, DeportationCaseToCreateMapper>();
 
+        services.AddTransient<IMapper<Discussion.ToUpdate, DomainModel.Discussion.ToUpdate>, DiscussionToUpdateMapper>();
+        services.AddTransient<IMapper<Discussion.ToCreate, DomainModel.Discussion.ToCreate>, DiscussionToCreateMapper>();
+
         services.AddTransient<IMapper<DisruptedPlacementCase.ToUpdate, DomainModel.DisruptedPlacementCase.ToUpdate>, DisruptedPlacementCaseToUpdateMapper>();
         services.AddTransient<IMapper<DisruptedPlacementCase.ToCreate, DomainModel.DisruptedPlacementCase.ToCreate>, DisruptedPlacementCaseToCreateMapper>();
 

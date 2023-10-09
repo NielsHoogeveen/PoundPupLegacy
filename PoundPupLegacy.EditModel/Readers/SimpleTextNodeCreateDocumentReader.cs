@@ -8,27 +8,13 @@ where TResponse : class, SimpleTextNode, NewNode
             {SharedSql.NODE_CREATE_CTE}
             select
                 jsonb_build_object(
-                    'NodeId', 
-                    null,
-                    'NodeTypeName',
-                    nt.name,
-                    'UrlId', 
-                    null,
-                    'PublisherId',
-                    @user_id,
-                    'OwnerId',
-                    @tenant_id,
-                    'Title', 
-                    '',
-                    'Text', 
-                    '',
-            		'Tags', null,
-                    'TenantNodes',
-                    null,
-                    'Tenants',
-                    (select document from tenants_document),
-                    'Files',
-                    null
+                    'NodeDetailsForCreate',
+                    (select document from node_details_for_create_document),
+                    'SimpleTextNodeDetails',
+                    json_build_object(
+                        'Text',
+                        ''
+                    )
                 ) document
                 from node_type nt
                 where nt.id = @node_type_id

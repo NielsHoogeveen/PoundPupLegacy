@@ -14,7 +14,7 @@ internal class WrongfulMedicationCaseToCreateMapper(
             Identification = new Identification.Possible { Id = null },
             NodeDetails = nodeDetailsMapper.Map(viewModel.NodeDetailsForCreate),
             NameableDetails = nameableMapper.Map(viewModel.NameableDetails),
-            LocatableDetails = locatableMapper.Map(viewModel.LocatableDetailsToCreate),
+            LocatableDetails = locatableMapper.Map(viewModel.LocatableDetailsForCreate),
             CaseDetails = caseDetailMapper.Map(viewModel.CaseDetails),
         };
     }

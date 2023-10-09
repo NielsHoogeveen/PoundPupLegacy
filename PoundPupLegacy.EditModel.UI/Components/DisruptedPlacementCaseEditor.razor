@@ -11,13 +11,13 @@
             OnTitleChanged="OnTitleChanged"
             @ref=nodeDetailsEditor>
             <Top>
-                <NameableEditor Model="DisruptedPlacementCase.NameableDetails" />
+                <NameableEditor Model="DisruptedPlacementCase.NameableDetails" @ref=nameableEditor/>
             </Top>
             <Middle>
-                <CaseDetailsEditor CaseDetails="DisruptedPlacementCase.CaseDetails" />
+                <CaseDetailsEditor CaseDetails="DisruptedPlacementCase.CaseDetails" @ref=caseDetailsEditor/>
             </Middle>
             <Bottom>
-                <LocatableDetailsEditor LocatableDetails="DisruptedPlacementCase.LocatableDetails" />
+                <LocatableDetailsEditor LocatableDetails="DisruptedPlacementCase.LocatableDetails" @ref=locatableDetailsEditor/>
             </Bottom>
         </NodeDetailsEditor>
     </NodeEditor>
@@ -30,9 +30,15 @@
     protected override Resolver<DisruptedPlacementCase.ToUpdate, DisruptedPlacementCase.ToCreate, Unit> Model => DisruptedPlacementCase;
 
     private NodeDetailsEditor? nodeDetailsEditor;
+    private NameableEditor? nameableEditor;
+    private LocatableDetailsEditor? locatableDetailsEditor;
+    private CaseDetailsEditor? caseDetailsEditor;
 
     protected override List<EditorDetailBase?> DetailsEditors => new() {
-        nodeDetailsEditor
+        nodeDetailsEditor,
+        nameableEditor,
+        locatableDetailsEditor,
+        caseDetailsEditor
     };
     protected override Unit ResolveData => Unit.Instance;
 }

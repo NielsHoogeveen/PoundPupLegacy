@@ -10,34 +10,21 @@ internal sealed class DeportationCaseCreateDocumentReaderFactory : NodeCreateDoc
             {SharedSql.CASE_CREATE_CTE}
             select
                 jsonb_build_object(
-                    'NodeId', 
-                    null,
-                    'NodeTypeName',
-                    nt.name,
-                    'UrlId', 
-                    null,
-                    'PublisherId',
-                    @user_id,
-                    'OwnerId',
-                    @tenant_id,
-                    'Title', 
-                    '',
-                    'Text', 
-                    '',
-            		'VocabularyIdTagging',
-                    (select id from tagging_vocabulary),
-                    'Tags', 
-                    null,
-                    'TenantNodes',
-                    null,
-                    'Tenants',
-                    (select document from tenants_document),
-                    'Files',
-                    null,
-                    'Tags',
-                    (select document from tags_for_create_document),
-                    'CasePartyTypesCaseParties',
-                    (select document from case_type_case_party_type_document)
+                    'NodeDetailsForCreate',
+                    (select document from node_details_for_create_document),
+                    'NameableDetails',
+                    (select document from nameable_details_document),
+                    'LocatableDetailsForCreate',
+                    (select document from locatable_details_document),
+                    'CaseDetails',
+                    (select document from case_details_document),
+                    'DeportationCaseDetails',
+                    jsonb_build_object(
+                        'SubdivisionFrom',
+                        null,
+                        'CountryTo',
+                        null
+                    )
                 ) document
                 from node_type nt
                 where nt.id = @node_type_id

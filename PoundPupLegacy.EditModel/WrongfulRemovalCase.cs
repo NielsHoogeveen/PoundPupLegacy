@@ -59,8 +59,8 @@ public abstract record WrongfulRemovalCase : Case, ResolvedNode, Node<WrongfulRe
     {
         public override NodeDetails NodeDetails => NodeDetailsForCreate;
         public required NodeDetails.ForCreate NodeDetailsForCreate { get; init; }
-        public override LocatableDetails LocatableDetails => LocatableDetailsToCreate;
-        public required LocatableDetails.ForCreate LocatableDetailsToCreate { get; init; }
+        public override LocatableDetails LocatableDetails => LocatableDetailsForCreate;
+        public required LocatableDetails.ForCreate LocatableDetailsForCreate { get; init; }
         public override T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem)
         {
             return newItem(this);
