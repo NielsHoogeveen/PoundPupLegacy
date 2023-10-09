@@ -1,11 +1,8 @@
 ﻿@using PoundPupLegacy.EditModel
 @if(Model.Any()){
-    <div class="case-party-types-case-parties">
-    <h4>Persons and organizations involved in the case</h4>
     @foreach(var elem in Model) {
         <CaseCasePartyEditor Model="elem" />
     }
-    </div>
 }
 
 @code {

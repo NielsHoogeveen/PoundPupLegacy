@@ -1,6 +1,13 @@
 ﻿@using PoundPupLegacy.EditModel
 @inherits EditorDetailBase
-<div>
+<div class="case-details">
+    <h4>Case details</h4>
+    <div class="field-group">
+        <label>Date</label>
+        <div>
+            <FuzzyDateEditor @bind-Value="CaseDetails.Date" />
+        </div>
+    </div>
     <CaseCasePartiesEditor Model="CaseDetails.CasePartyTypesCaseParties" />
 </div>
 @code {

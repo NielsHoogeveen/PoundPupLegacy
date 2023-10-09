@@ -13,11 +13,11 @@ public abstract record CaseBase: LocatableBase, Case
             }
         }
     }
-    public FuzzyDate? FuzzyDate { get; set; }
+    public FuzzyDate? Date { get; set; }
 
 }
 public interface Case : Nameable, Documentable, Locatable
 {
     CaseParties[] CaseParties { get; }
-    FuzzyDate? FuzzyDate { get; }
+    FuzzyDate? Date { get; }
 }

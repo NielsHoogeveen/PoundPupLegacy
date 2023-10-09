@@ -1,4 +1,4 @@
-.case-party-types-case-parties {
+.case-details {
     background-color: var(--editor-element-background);
     margin-top: 1em;
     border-top: solid thin #ccc;
@@ -11,5 +11,19 @@ h4 {
     background-color: var(--editor-header-background);
     padding: 0.25em 0 0.25em 0.25em;
     margin: 0 0 1em 0;
+}
+.field-group {
+    display: grid;
+    grid-template-columns: 8em auto;
+    padding-top: 0.5em;
+    padding-left: 0.25em;
+}
+
+label {
+    font-weight: bold;
+}
+
+label::after {
+    content: ":";
 }
 
