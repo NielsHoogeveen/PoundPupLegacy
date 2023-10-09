@@ -1,0 +1,57 @@
+﻿@using PoundPupLegacy.EditModel
+@inherits EditorDetailBase
+<div class="child-trafficking-case-details">
+    <h4>Child trafficking case details</h4>
+    <div class="field-group">
+        <label>Number of children involved</label>
+        <InputNumber @bind-Value="ChildTraffickingCaseDetails.NumberOfChildrenInvolved"/>
+    </div>
+    <div class="field-group">
+        <label>Country</label>
+        <div class="selector">
+            <SearchItemEditor T="CountryListItem"
+                                ValueChanged="OnSelectCountry"
+                                IsMandatory="true"
+                                Value="CountryListItem"
+                                EnableEdit="true" />
+
+        </div>
+    </div>
+</div>
+@code {
+    [Parameter]
+    [EditorRequired]
+    public ChildTraffickingCaseDetails ChildTraffickingCaseDetails { get; set; } = default!;
+
+    public CountryListItem? CountryListItem { get; set; }
+    private string _empty = "";
+
+    protected override void OnInitialized()
+    {
+        CountryListItem = ChildTraffickingCaseDetails.CountryFrom;        
+    }
+    public override void OnTitleChange(string title)
+    {
+    }
+
+    public override async Task<List<System.ComponentModel.DataAnnotations.ValidationResult>> Validate()
+    {
+        var errors = new List<System.ComponentModel.DataAnnotations.ValidationResult>();
+        if (CountryListItem is null) {
+            var component = new System.ComponentModel.DataAnnotations.ValidationResult("The country of the case should be set", new[] { _empty});
+            errors.Add(component);
+        }
+        return await Task.FromResult(errors);
+
+    }
+    private void OnSelectCountry(CountryListItem country)
+    {
+        CountryListItem = country;
+        if(ChildTraffickingCaseDetails is ChildTraffickingCaseDetails.UnresolvedChildTraffickingCaseDetails c1) {
+            c1.CountryFromNew = country;   
+        }
+        if (ChildTraffickingCaseDetails is ChildTraffickingCaseDetails.ResolvedChildTraffickingCaseDetails c2) {
+            c2.CountryFromExisting = country;
+        }
+    }
+}

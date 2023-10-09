@@ -1,0 +1,29 @@
+.abuse-case-details {
+    background-color: var(--editor-element-background);
+    margin-top: 1em;
+    border-top: solid thin #ccc;
+    border: solid 2px var(--editor-header-background);
+    border-radius: 5px;
+    box-shadow: var(--input-shadow);
+    padding-bottom: 1em;
+}
+
+h4 {
+    background-color: var(--editor-header-background);
+    padding: 0.25em 0 0.25em 0.25em;
+    margin: 0 0 1em 0;
+}
+.field-group {
+    display: grid;
+    grid-template-columns: 16em auto;
+    padding-top: 0.5em;
+    padding-left:0.5em;
+}
+
+label {
+    font-weight: bold;
+}
+
+label::after {
+    content: ":";
+}

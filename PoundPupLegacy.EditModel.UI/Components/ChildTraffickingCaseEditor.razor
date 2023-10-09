@@ -10,14 +10,14 @@
         OnTitleChanged="OnTitleChanged"
         @ref=nodeDetailsEditor>
         <Top>
-            <NameableEditor Model="ChildTraffickingCase.NameableDetails" />
+            <NameableEditor Model="ChildTraffickingCase.NameableDetails" @ref=nameableEditor/>
         </Top>
         <Middle>
-            <CaseDetailsEditor CaseDetails="ChildTraffickingCase.CaseDetails" />
+            <CaseDetailsEditor CaseDetails="ChildTraffickingCase.CaseDetails" @ref=caseDetailsEditor/>
+            <ChildTraffickingCaseDetailsEditor  ChildTraffickingCaseDetails="ChildTraffickingCase.ChildTraffickingCaseDetails" @ref=childTraffickingCaseDetailsEditor />
         </Middle>
-
         <Bottom>
-            <LocatableDetailsEditor LocatableDetails="ChildTraffickingCase.LocatableDetails" />
+            <LocatableDetailsEditor LocatableDetails="ChildTraffickingCase.LocatableDetails" @ref=locatableDetailsEditor/>
         </Bottom>
     </NodeDetailsEditor>
 </NodeEditor>
@@ -30,9 +30,19 @@
     protected override Resolver<ChildTraffickingCase.ToUpdate, ChildTraffickingCase.ToCreate, CountryListItem> Model => ChildTraffickingCase;
 
     private NodeDetailsEditor? nodeDetailsEditor;
+    private NameableEditor? nameableEditor;
+    private LocatableDetailsEditor? locatableDetailsEditor;
+    private CaseDetailsEditor? caseDetailsEditor;
+    private ChildTraffickingCaseDetailsEditor? childTraffickingCaseDetailsEditor;
+
 
     protected override List<EditorDetailBase?> DetailsEditors => new() {
-        nodeDetailsEditor
+        nodeDetailsEditor,
+        nameableEditor,
+        locatableDetailsEditor,
+        caseDetailsEditor,
+        childTraffickingCaseDetailsEditor
     };
-    protected override CountryListItem ResolveData => null;
+    protected override CountryListItem ResolveData => childTraffickingCaseDetailsEditor!.CountryListItem!;
+
 }

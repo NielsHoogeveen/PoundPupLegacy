@@ -168,7 +168,7 @@ internal static class SharedSql
             join node n on n.id = t.id
         )
         """;
-    internal const string TYPES_OF_ABUSE_DOCUMENT = """
+    internal const string TYPES_OF_ABUSE_FOR_CREATE_DOCUMENT = """
         types_of_abuse_document as(
             select
                 jsonb_agg(
@@ -184,8 +184,72 @@ internal static class SharedSql
             join node n on n.id = t.id
         )
         """;
+    internal const string TYPES_OF_ABUSE_FOR_UPDATE_DOCUMENT = """
+        types_of_abuse_document as(
+            select
+                jsonb_agg(
+                    json_build_object(
+                        'Id',
+                        t.id,
+                        'Name',
+                        n.title,
+                        'HasBeenDeleted',
+                        false,
+                        'HasBeenSelected',
+                        case
+                            when s.type_of_abuse_id is null then false
+                            else true
+                        end
+                    )
+                    order by n.title
+                ) document
+            from type_of_abuse t
+            join node n on n.id = t.id
+            left join (
+                select
+                    actoa.type_of_abuse_id
+                from abuse_case_type_of_abuse actoa
+                join node toa on toa.id = actoa.type_of_abuse_id
+                join tenant_node tn on tn.node_id = actoa.abuse_case_id
+                where tn.tenant_id = @tenant_id and tn.url_id = @url_id
+            ) s on s.type_of_abuse_id = t.id
+        )
+        """;
 
-    internal const string TYPES_OF_ABUSER_DOCUMENT = """
+
+    internal const string TYPES_OF_ABUSER_FOR_UPDATE_DOCUMENT = """
+        types_of_abuser_document as(
+            select
+                jsonb_agg(
+                    json_build_object(
+                        'Id',
+                        t.id,
+                        'Name',
+                        n.title,
+                        'HasBeenDeleted',
+                        false,
+                        'HasBeenSelected',
+                        case
+                            when s.type_of_abuser_id is null then false
+                            else true
+                        end
+                    )
+                    order by n.title
+                ) document
+            from type_of_abuser t
+            join node n on n.id = t.id
+            left join (
+                select
+                    actoa.type_of_abuser_id
+                from abuse_case_type_of_abuser actoa
+                join node toa on toa.id = actoa.type_of_abuser_id
+                join tenant_node tn on tn.node_id = actoa.abuse_case_id
+                where tn.tenant_id = @tenant_id and tn.url_id = @url_id
+            ) s on s.type_of_abuser_id = t.id
+        )
+        """;
+
+    internal const string TYPES_OF_ABUSER_FOR_CREATE_DOCUMENT = """
         types_of_abuser_document as(
             select
                 jsonb_agg(
@@ -693,6 +757,8 @@ internal static class SharedSql
             select
             jsonb_agg(
                 jsonb_build_object(
+                    'Id',
+                    null,
                     'CaseId',
                     null,
                     'CasePartyTypeId',
@@ -873,7 +939,8 @@ internal static class SharedSql
                     'Date',
                     null,
                     'CasePartyTypesCaseParties',
-                    (select document from case_case_party_document)
+                    (select document from case_type_case_party_type_document)
+                    --(select document from case_case_party_document)
                 ) document
         )
         """;

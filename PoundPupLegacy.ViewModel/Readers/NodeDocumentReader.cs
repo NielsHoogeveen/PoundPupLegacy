@@ -1578,7 +1578,41 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         case 
         	                when tn2.url_path is null then '/node/' || tn2.url_id
         	                else '/' || tn2.url_path
-                        end "path"
+                        end "path",
+                        case
+                            when tn2.publication_status_id = 0 then (
+                                select
+                                    case 
+                                        when count(*) > 0 then 0
+                                        else -1
+                                    end status
+                                from user_group_user_role_user ugu
+                                join user_group ug on ug.id = ugu.user_group_id
+                                WHERE ugu.user_group_id = 
+                                case
+                                    when tn2.subgroup_id is null then tn2.tenant_id 
+                                    else tn2.subgroup_id 
+                                end 
+                                AND ugu.user_role_id = ug.administrator_role_id
+                                AND ugu.user_id = @user_id
+                            )
+                            when tn2.publication_status_id = 1 then 1
+                            when tn2.publication_status_id = 2 then (
+                                select
+                                    case 
+                                        when count(*) > 0 then 1
+                                        else -1
+                                    end status
+                                from user_group_user_role_user ugu
+                                WHERE ugu.user_group_id = 
+                                    case
+                                        when tn2.subgroup_id is null then tn2.tenant_id 
+                                        else tn2.subgroup_id 
+                                    end
+                                    AND ugu.user_id = @user_id
+                                )
+                        end status	
+        
                     from node n
                     join tenant_node tn2 on tn2.node_id = n.id and tn2.tenant_id = @tenant_id
                     join organization o on o.id = n.id
@@ -1589,6 +1623,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     join "location" l on l.id = ll.location_id
                     join tenant_node tn on tn.url_id = @url_id and tn.node_id = l.country_id and tn.tenant_id = @tenant_id
         	        ) x
+                    where x.status <> -1
                 group by x.organization_type
             ) x
         )
@@ -1919,11 +1954,11 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         		        tn2.url_path,
         		        tn2.url_id
         	        from country c
-        	        join tenant_node tn on tn.node_id = c.id and tn.tenant_id = 1 and tn.url_id = @url_id
+        	        join tenant_node tn on tn.node_id = c.id and tn.tenant_id = @tenant_id and tn.url_id = @url_id
         	        join tenant t on t.id = tn.tenant_id
         	        join subdivision s on s.country_id = c.id
         	        join node n on n.id = s.subdivision_type_id
-        	        join tenant_node tn2 on tn2.node_id = s.id and tn.tenant_id = t.id
+        	        join tenant_node tn2 on tn2.node_id = s.id and tn2.tenant_id = t.id
                     join system_group sg on sg.id = 0
         	        join term tp on tp.nameable_id = c.id and tp.vocabulary_id = sg.vocabulary_id_tagging
         	        join term tc on tc.nameable_id = s.id and tc.vocabulary_id = sg.vocabulary_id_tagging

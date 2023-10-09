@@ -6,8 +6,8 @@ internal class AbuseCaseDetailsMapper : IMapper<AbuseCaseDetails, DomainModel.Ab
     {
         return new DomainModel.AbuseCaseDetails {
             ChildPlacementTypeId = source.ChildPlacementTypeId,
-            TypeOfAbuseIds = source.TypesOfAbuse.Select(x => x.Id).ToList(),
-            TypeOfAbuserIds = source.TypesOfAbuser.Select(x => x.Id).ToList(),
+            TypeOfAbuseIds = source.TypesOfAbuse.Where(x => x.HasBeenSelected).Select(x => x.Id).ToList(),
+            TypeOfAbuserIds = source.TypesOfAbuser.Where(x => x.HasBeenSelected).Select(x => x.Id).ToList(),
             DisabilitiesInvolved = source.DisabilitiesInvolved,
             FamilySizeId = source.FamilySizeId,
             FundamentalFaithInvolved = source.FundamentalFaithInvolved,

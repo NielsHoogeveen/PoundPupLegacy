@@ -1,0 +1,91 @@
+﻿@inherits Microsoft.AspNetCore.Components.Forms.InputBase<bool?>
+@using System.Text.RegularExpressions
+@using System.Diagnostics.CodeAnalysis
+<div>
+    <label for="yes"> Yes</label>
+    @if(YesValue){
+        <input id="yes" type="checkbox" checked="checked" @onchange="OnYes"/>
+    }
+    else{
+        <input id="yes" type="checkbox" @onchange="OnYes"/>
+    }
+    <label for="no">No</label>
+    @if(NoValue){
+        <input id="no" type="checkbox" checked="checked" @onchange="OnNo" />
+    }
+    else{
+        <input id="no" type="checkbox" @onchange="OnNo" />
+    }
+</div>
+@code {
+
+    private bool YesValue { get; set; }
+
+    private bool NoValue { get; set; }
+
+    protected override bool TryParseValueFromString(string? value, [MaybeNullWhen(false)] out bool? result, [NotNullWhen(false)] out string validationErrorMessage)
+    {
+        if(value is null) {
+            result = null;
+            validationErrorMessage = "";
+            return true;
+        }
+        if (bool.TryParse(value, out var b)) {
+            result = b;
+            validationErrorMessage = "";
+            return true;
+        }
+        else {
+            result = null;
+            validationErrorMessage = $"{value} is not a properly formatted bool";
+            return false;
+        }
+    }
+
+
+    protected override void OnInitialized()
+    {
+        if(CurrentValue.HasValue){
+            YesValue = CurrentValue.Value;
+            NoValue = !CurrentValue.Value;
+        }
+    }
+    private void OnYes(ChangeEventArgs args)
+    {
+        if (CurrentValue.HasValue && CurrentValue.Value) {
+            YesValue = false;
+            NoValue = false;
+        }
+        else {
+            YesValue = true;
+            NoValue = false;
+        }
+        ChangeValue();
+    }
+    private void OnNo(ChangeEventArgs args)
+    {
+        if (CurrentValue.HasValue && !CurrentValue.Value) {
+            YesValue = false;
+            NoValue = false;
+        }
+        else {
+            YesValue = false;
+            NoValue = true;
+        }
+        ChangeValue();
+    }
+    private void ChangeValue()
+    {
+        if (YesValue) {
+            CurrentValue = true;
+        }
+        else if (NoValue) {
+            CurrentValue = false;
+        }
+        else {
+            CurrentValue = null;
+        }
+        StateHasChanged();
+    }
+}
+

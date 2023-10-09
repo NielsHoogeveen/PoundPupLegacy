@@ -53,7 +53,7 @@ public abstract record ChildTraffickingCase : Case, ResolvedNode, Node<ChildTraf
         public required LocatableDetails.ForUpdate LocatableDetailsForUpdate { get; init; }
         public required NodeIdentification NodeIdentification { get; init; }
         public override ChildTraffickingCaseDetails ChildTraffickingCaseDetails => ResolvedChildTraffickingCaseDetails;
-        public required ChildTraffickingCaseDetails.UnresolvedChildTraffickingCaseDetails ResolvedChildTraffickingCaseDetails { get; init; }
+        public required ChildTraffickingCaseDetails.ResolvedChildTraffickingCaseDetails ResolvedChildTraffickingCaseDetails { get; init; }
         public override T Match<T>(
             Func<ToUpdate, T> existingItem,
             Func<ToCreate, T> newItem
@@ -77,7 +77,7 @@ public abstract record ChildTraffickingCase : Case, ResolvedNode, Node<ChildTraf
         public required LocatableDetails.ForCreate LocatableDetailsForCreate { get; init; }
 
         public override ChildTraffickingCaseDetails ChildTraffickingCaseDetails => ResolvedChildTraffickingCaseDetails;
-        public required ChildTraffickingCaseDetails.UnresolvedChildTraffickingCaseDetails ResolvedChildTraffickingCaseDetails { get; init; }
+        public required ChildTraffickingCaseDetails.ResolvedChildTraffickingCaseDetails ResolvedChildTraffickingCaseDetails { get; init; }
         public override T Match<T>(
             Func<ToUpdate, T> existingItem,
             Func<ToCreate, T> newItem
@@ -125,8 +125,8 @@ public abstract record UnresolvedChildTraffickingCase : Case, Node<UnresolvedChi
         {
             return new ChildTraffickingCase.ToUpdate {
                 CaseDetails = CaseDetails,
-                ResolvedChildTraffickingCaseDetails = new ChildTraffickingCaseDetails.UnresolvedChildTraffickingCaseDetails {
-                    CountryFrom = countryFrom,
+                ResolvedChildTraffickingCaseDetails = new ChildTraffickingCaseDetails.ResolvedChildTraffickingCaseDetails {
+                    CountryFromExisting = countryFrom,
                     NumberOfChildrenInvolved = ChildTraffickingCaseDetails.NumberOfChildrenInvolved
                 },
                 NameableDetails = NameableDetails,
@@ -135,7 +135,7 @@ public abstract record UnresolvedChildTraffickingCase : Case, Node<UnresolvedChi
                 NodeIdentification = NodeIdentification
             };
         }
-        public required ChildTraffickingCaseDetails.UnresolvedChildTraffickingCaseDetails ResolvedChildTraffickingCaseDetails { get; init; }
+        public required ChildTraffickingCaseDetails.ResolvedChildTraffickingCaseDetails ResolvedChildTraffickingCaseDetails { get; init; }
         public override T Match<T>(
             Func<ToUpdate, T> existingItem,
             Func<ToCreate, T> newItem
@@ -159,13 +159,13 @@ public abstract record UnresolvedChildTraffickingCase : Case, Node<UnresolvedChi
         public required LocatableDetails.ForCreate LocatableDetailsForCreate { get; init; }
 
         public override ChildTraffickingCaseDetails ChildTraffickingCaseDetails => NewChildTraffickingCaseDetails;
-        public required ChildTraffickingCaseDetails.NewChildTraffickingCaseDetails NewChildTraffickingCaseDetails { get; init; }
+        public required ChildTraffickingCaseDetails.UnresolvedChildTraffickingCaseDetails NewChildTraffickingCaseDetails { get; init; }
         public override Node<ChildTraffickingCase.ToUpdate, ChildTraffickingCase.ToCreate> Resolve(CountryListItem countryFrom)
         {
             return new ChildTraffickingCase.ToCreate {
                 CaseDetails = CaseDetails,
-                ResolvedChildTraffickingCaseDetails = new ChildTraffickingCaseDetails.UnresolvedChildTraffickingCaseDetails {
-                    CountryFrom = countryFrom,
+                ResolvedChildTraffickingCaseDetails = new ChildTraffickingCaseDetails.ResolvedChildTraffickingCaseDetails {
+                    CountryFromExisting = countryFrom,
                     NumberOfChildrenInvolved = ChildTraffickingCaseDetails.NumberOfChildrenInvolved
                 },
                 NameableDetails = NameableDetails,
@@ -194,12 +194,16 @@ public abstract record ChildTraffickingCaseDetails
 {
     private ChildTraffickingCaseDetails() { }
     public required int? NumberOfChildrenInvolved { get; set; }
-    public sealed record NewChildTraffickingCaseDetails: ChildTraffickingCaseDetails
+
+    public abstract CountryListItem? CountryFrom { get; }
+    public sealed record UnresolvedChildTraffickingCaseDetails: ChildTraffickingCaseDetails
     {
-        public required CountryListItem? CountryFrom { get; set; }
+        public override CountryListItem? CountryFrom => CountryFromNew;
+        public required CountryListItem? CountryFromNew { get; set; }
     }
-    public sealed record UnresolvedChildTraffickingCaseDetails : ChildTraffickingCaseDetails
+    public sealed record ResolvedChildTraffickingCaseDetails : ChildTraffickingCaseDetails
     {
-        public required CountryListItem CountryFrom { get; set; }
+        public override CountryListItem? CountryFrom => CountryFromExisting;
+        public required CountryListItem CountryFromExisting { get; set; }
     }
 }

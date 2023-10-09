@@ -22,12 +22,12 @@ internal sealed class ChildTraffickingCaseUpdateDocumentReaderFactory : NodeUpda
                     (select document from case_details_document where id = n.id),
                     'ResolvedChildTraffickingCaseDetails',
                     jsonb_build_object(
-                        'CountryFrom',
+                        'CountryFromExisting',
                         jsonb_build_object(
                             'Id',
-                            n.id,
+                            n3.id,
                             'Name',
-                            n.title
+                            n3.title
                         ),
                         'NumberOfChildrenInvolved',
                         ctc.number_of_children_involved
@@ -37,6 +37,7 @@ internal sealed class ChildTraffickingCaseUpdateDocumentReaderFactory : NodeUpda
             join nameable nm on nm.id = n.id
             join "case" c on c.id = n.id
             join child_trafficking_case ctc on ctc.id = c.id
+            join node n3 on n3.id = ctc.country_id_from
             join tenant_node tn on tn.node_id = n.id
             join node n2 on n2.id = ctc.country_id_from
             where tn.tenant_id = @tenant_id and tn.url_id = @url_id

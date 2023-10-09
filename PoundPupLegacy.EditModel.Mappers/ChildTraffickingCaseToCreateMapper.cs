@@ -18,7 +18,7 @@ internal class ChildTraffickingCaseToCreateMapper(
             CaseDetails = caseDetailMapper.Map(viewModel.CaseDetails),
             ChildTraffickingCaseDetails = new DomainModel.ChildTraffickingCaseDetails {
                 NumberOfChildrenInvolved = viewModel.ResolvedChildTraffickingCaseDetails.NumberOfChildrenInvolved,
-                CountryIdFrom = viewModel.ResolvedChildTraffickingCaseDetails.CountryFrom.Id,
+                CountryIdFrom = viewModel.ResolvedChildTraffickingCaseDetails.CountryFromExisting.Id,
             }
         };
     }

@@ -1,0 +1,33 @@
+﻿@using System.Text.RegularExpressions
+@using System.Diagnostics.CodeAnalysis
+@typeparam TValue where TValue: ListEditElement
+@if (Value is not null && Value.Any()) {
+    <div class="multi-selector">
+        @foreach (var item in Value) 
+        {
+            var classNameIndicator = item.HasBeenSelected ? "selected" : "";
+            var classNameItem = $"item {classNameIndicator}";
+            <div class="@classNameItem" @onclick="() => OnSelect(item)">@item.Name</div>
+            <div class="@classNameIndicator"></div>
+        }
+    </div>    
+}
+
+
+@code {
+    [Parameter]
+    public TValue[]? Value { get; set; }
+
+    private void OnSelect(TValue element)
+    {
+        if (element.HasBeenSelected) {
+            element.HasBeenSelected = false;
+            element.HasBeenDeleted = true;
+        }
+        else {
+            element.HasBeenSelected = true;
+            element.HasBeenDeleted = false;
+        }
+    }
+}
+

@@ -1,0 +1,78 @@
+﻿@using PoundPupLegacy.EditModel
+@inherits EditorDetailBase
+<div class="abuse-case-details">
+    <h4>Abuse case details</h4>
+    <div class="field-group">
+        <label>Is homeschooling involved?</label>
+        <OptionalBoolEditor @bind-Value="AbuseCaseDetails.HomeschoolingInvolved" />
+    </div>
+    <div class="field-group">
+        <label>Is fundamental faith involved?</label>
+        <OptionalBoolEditor @bind-Value="AbuseCaseDetails.FundamentalFaithInvolved" />
+    </div>
+    <div class="field-group">
+        <label>Are disabilities involved?</label>
+        <OptionalBoolEditor @bind-Value="AbuseCaseDetails.DisabilitiesInvolved" />
+    </div>
+    <div class="field-group">
+        <label>Types of abuse</label>
+        <MultiSelectEditor Value="AbuseCaseDetails.TypesOfAbuse" />
+    </div>
+    <div class="field-group">
+        <label>Types of abuser</label>
+        <MultiSelectEditor Value="AbuseCaseDetails.TypesOfAbuser" />
+    </div>
+    <div class="field-group">
+        <label>Family size</label>
+        <select @onchange="OnSelectFamilySize">
+        <option value=""></option>
+        @foreach(var option in AbuseCaseDetails.FamilySizesToSelectFrom) {
+            if(option.Id == AbuseCaseDetails.FamilySizeId) {
+                <option selected value="@option.Id">@option.Name</option>
+            }
+            else {
+                <option value="@option.Id">@option.Name</option>
+            }
+        }
+        </select>
+    </div>
+    <div class="field-group">
+        <label>Placement type</label>
+        <select @onchange="OnSelectChildplacementType">
+        @foreach (var option in AbuseCaseDetails.ChildPlacementTypesToSelectFrom) {
+            if (option.Id == AbuseCaseDetails.ChildPlacementTypeId) {
+                <option selected value="@option.Id">@option.Name</option>
+            }
+            else {
+                <option value="@option.Id">@option.Name</option>
+            }
+        }
+        </select>
+    </div>
+</div>
+@code {
+    [Parameter]
+    [EditorRequired]
+    public AbuseCaseDetails AbuseCaseDetails { get; set; } = default!;
+
+    public override void OnTitleChange(string title)
+    {
+    }
+
+    public override async Task<List<System.ComponentModel.DataAnnotations.ValidationResult>> Validate()
+    {
+        return await Task.FromResult(new List<System.ComponentModel.DataAnnotations.ValidationResult>());
+    }
+    void OnSelectChildplacementType(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value!.ToString(), out int childPlacementTypeId)) {
+            AbuseCaseDetails.ChildPlacementTypeId = childPlacementTypeId;
+        }
+    }
+    void OnSelectFamilySize(ChangeEventArgs e)
+    {
+        if (int.TryParse(e.Value!.ToString(), out int familySizeId)) {
+            AbuseCaseDetails.FamilySizeId = familySizeId;
+        }
+    }
+}

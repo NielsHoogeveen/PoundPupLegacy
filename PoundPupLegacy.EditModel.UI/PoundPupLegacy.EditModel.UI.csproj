@@ -6,6 +6,7 @@
     <WarningsAsErrors>RZ2012</WarningsAsErrors>
     <Nullable>enable</Nullable>
     <LangVersion>preview</LangVersion>
+    <ScopedCssEnabled>true</ScopedCssEnabled>
   </PropertyGroup>
 
   <ItemGroup>

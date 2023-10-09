@@ -82,7 +82,7 @@ tr:nth-of-type(2n+1) {
     vertical-align: central;
 }
 
-input[type=text], input[type=password], select {
+input[type=text], input[type=password], input[type=number], select {
     border-radius: 3px;
     border: 0;
     outline: solid 2px var(--input-outline-color);

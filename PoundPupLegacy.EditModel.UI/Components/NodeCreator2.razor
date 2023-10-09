@@ -1,0 +1,14 @@
+﻿@typeparam TEditModel where TEditModel : class, Node
+@inherits ViewerBase
+
+@code {
+
+    protected TEditModel? Model = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        StateHasChanged();
+    }
+
+    public string Title => $"Create {Model?.NodeDetails.NodeTypeName}";
+}

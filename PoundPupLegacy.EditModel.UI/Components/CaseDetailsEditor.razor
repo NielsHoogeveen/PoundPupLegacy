@@ -1,4 +1,5 @@
 ﻿@using PoundPupLegacy.EditModel
+@inherits EditorDetailBase
 <div>
     <CaseCasePartiesEditor Model="CaseDetails.CasePartyTypesCaseParties" />
 </div>
@@ -6,4 +7,14 @@
     [Parameter]
     [EditorRequired]
     public CaseDetails CaseDetails { get; set; } = default!;
+
+    public override void OnTitleChange(string title)
+    {
+    }
+
+    public override async Task<List<System.ComponentModel.DataAnnotations.ValidationResult>> Validate()
+    {
+        return await Task.FromResult(new List<System.ComponentModel.DataAnnotations.ValidationResult>());
+    }
+
 }

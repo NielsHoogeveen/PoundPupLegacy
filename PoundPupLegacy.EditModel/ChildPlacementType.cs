@@ -3,9 +3,6 @@
 [JsonSerializable(typeof(ChildPlacementType))]
 public partial class ChildPlacementTypeJsonContext : JsonSerializerContext { }
 
-public sealed record ChildPlacementType
+public sealed record ChildPlacementType: ListEditElement
 {
-    public int Id { get; init; }
-
-    public required string Name { get; init; }
 }

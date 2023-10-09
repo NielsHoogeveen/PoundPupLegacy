@@ -10,16 +10,21 @@ internal sealed class ChildTraffickingCaseCreateDocumentReaderFactory : NodeCrea
             {SharedSql.CASE_CREATE_CTE}
             select
                 jsonb_build_object(
+                    'NodeDetailsForCreate',
+                    (select document from node_details_for_create_document),
+                    'NameableDetails',
+                    (select document from nameable_details_document),
+                    'LocatableDetailsForCreate',
+                    (select document from locatable_details_document),
+                    'CaseDetails',
+                    (select document from case_details_document),
+                    'NewChildTraffickingCaseDetails',
                     jsonb_build_object(
-                        'NodeDetailsForCreate',
-                        (select document from node_details_for_create_document)
-                    ),
-                    'Text', 
-                    '',
-                    'VocabularyIdTagging',
-                    (select id from tagging_vocabulary),
-                    'CasePartyTypesCaseParties',
-                    (select document from case_type_case_party_type_document)
+                        'NumberOfChildrenInvolved',
+                        null,
+                        'CountryFromNew',
+                        null
+                    )
                 ) document
                 from node_type nt
                 where nt.id = @node_type_id

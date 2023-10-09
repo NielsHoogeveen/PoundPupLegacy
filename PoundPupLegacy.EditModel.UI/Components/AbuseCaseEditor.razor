@@ -11,15 +11,20 @@
             Model="AbuseCase.NodeDetails"
             OnTitleChanged="OnTitleChanged"
             @ref=nodeDetailsEditor>
+            
             <Top>
-                <NameableEditor Model="AbuseCase.NameableDetails" />
+                <NameableEditor Model="AbuseCase.NameableDetails" @ref=nameableEditor/>
             </Top>
+            
             <Middle>
-                <CaseDetailsEditor CaseDetails="AbuseCase.CaseDetails" />
+                <CaseDetailsEditor CaseDetails="AbuseCase.CaseDetails" @ref=caseDetailsEditor/>
+                <AbuseCaseDetailsEditor AbuseCaseDetails="AbuseCase.AbuseCaseDetails" @ref=abuseCaseDetailsEditor/>
             </Middle>
+        
             <Bottom>
-                <LocatableDetailsEditor LocatableDetails="AbuseCase.LocatableDetails" />
+                <LocatableDetailsEditor LocatableDetails="AbuseCase.LocatableDetails" @ref=locatableDetailsEditor/>
             </Bottom>
+        
         </NodeDetailsEditor>
         
     </NodeEditor>
@@ -32,9 +37,18 @@
     protected override Resolver<AbuseCase.ToUpdate, AbuseCase.ToCreate, Unit> Model => AbuseCase;
 
     private NodeDetailsEditor? nodeDetailsEditor;
+    private NameableEditor? nameableEditor;
+    private LocatableDetailsEditor? locatableDetailsEditor;
+    private CaseDetailsEditor? caseDetailsEditor;
+    private AbuseCaseDetailsEditor? abuseCaseDetailsEditor;
+
 
     protected override List<EditorDetailBase?> DetailsEditors => new() {
-        nodeDetailsEditor
+        nodeDetailsEditor,
+        nameableEditor,
+        locatableDetailsEditor,
+        caseDetailsEditor,
+        abuseCaseDetailsEditor
     };
     protected override Unit ResolveData => Unit.Instance;
 }

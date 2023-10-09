@@ -10,8 +10,8 @@ internal sealed class AbuseCaseCreateDocumentReaderFactory : NodeCreateDocumentR
             {SharedSql.CASE_CREATE_CTE},
             {SharedSql.FAMILY_SIZES_DOCUMENT},
             {SharedSql.CHILD_PLACEMENT_TYPES_DOCUMENT},
-            {SharedSql.TYPES_OF_ABUSER_DOCUMENT},
-            {SharedSql.TYPES_OF_ABUSE_DOCUMENT}
+            {SharedSql.TYPES_OF_ABUSER_FOR_CREATE_DOCUMENT},
+            {SharedSql.TYPES_OF_ABUSE_FOR_CREATE_DOCUMENT}
             select
                 jsonb_build_object(
                     'NodeDetailsForCreate',
@@ -22,32 +22,26 @@ internal sealed class AbuseCaseCreateDocumentReaderFactory : NodeCreateDocumentR
                     (select document from locatable_details_document),
                     'CaseDetails',
                     (select document from case_details_document),
-                    'CasePartyTypesCaseParties',
-                    (select document from case_type_case_party_type_document),
                     'AbuseCaseDetails',
                     jsonb_build_object(
                         'ChildPlacementTypeId',
                         101250,
                         'FamilySizeId',
-                        101461,
+                        null,
                         'HomeschoolingInvolved',
-                        false,
+                        null,
                         'FundamentalFaithInvolved',
-                        false,
+                        null,
                         'DisabilitiesInvolved',
-                        false,
+                        null,
                         'FamilySizesToSelectFrom',
                         (select document from family_sizes_document),
                         'ChildPlacementTypesToSelectFrom',
                         (select document from child_placement_types_document),
-                        'TypesOfAbuseToSelectFrom',
-                        (select document from types_of_abuse_document),
-                        'TypesOfAbuserToSelectFrom',
-                        (select document from types_of_abuser_document),
                         'TypesOfAbuse',
-                        null,
+                        (select document from types_of_abuse_document),
                         'TypesOfAbuser',
-                        null
+                        (select document from types_of_abuser_document)
                     )
                 ) document
                 from node_type nt

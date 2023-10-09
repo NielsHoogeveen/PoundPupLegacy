@@ -10,10 +10,8 @@ internal sealed class AbuseCaseUpdateDocumentReaderFactory : NodeUpdateDocumentR
             {SharedSql.CASE_UPDATE_CTE},
             {SharedSql.FAMILY_SIZES_DOCUMENT},
             {SharedSql.CHILD_PLACEMENT_TYPES_DOCUMENT},
-            {SharedSql.TYPES_OF_ABUSER_DOCUMENT},
-            {SharedSql.TYPES_OF_ABUSE_DOCUMENT},
-            {TYPE_OF_ABUSE_DOCUMENT},
-            {TYPE_OF_ABUSER_DOCUMENT}
+            {SharedSql.TYPES_OF_ABUSER_FOR_UPDATE_DOCUMENT},
+            {SharedSql.TYPES_OF_ABUSE_FOR_UPDATE_DOCUMENT}
             select
                 jsonb_build_object(
                     'NodeIdentification',
@@ -42,14 +40,10 @@ internal sealed class AbuseCaseUpdateDocumentReaderFactory : NodeUpdateDocumentR
                         (select document from family_sizes_document),
                         'ChildPlacementTypesToSelectFrom',
                         (select document from child_placement_types_document),
-                        'TypesOfAbuseToSelectFrom',
+                        'TypesOfAbuse',
                         (select document from types_of_abuse_document),
-                        'TypesOfAbuserToSelectFrom',
-                        (select document from types_of_abuser_document),
-                        'TypseOfAbuse',
-                        (select document from type_of_abuse_document),
                         'TypesOfAbuser',
-                        (select document from type_of_abuser_document)
+                        (select document from types_of_abuser_document)
                     )
                 ) document
             from node n

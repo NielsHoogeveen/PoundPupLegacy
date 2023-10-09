@@ -1,0 +1,9 @@
+﻿label {
+    font-weight: bold;
+    display: inline;
+    width: 4em;
+}
+input{
+    display: inline;
+    width: 2em;
+}

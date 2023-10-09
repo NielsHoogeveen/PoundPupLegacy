@@ -31,6 +31,9 @@
     --table-header-bg-color: #f6dab4;
     --table-row-bg-color: #faf6f0;
     --table-row-bg-color-even: #f1ebe2;
+    --select-item-bg-color: #f1ebe2;
+    --selected-item-bg-color: #f0e5d3;
+    --selected-indicator-color: #ccb28a;
 }
 
 

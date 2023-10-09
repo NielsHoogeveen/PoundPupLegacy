@@ -79,19 +79,8 @@ public sealed record AbuseCaseDetails
     public bool? HomeschoolingInvolved { get; set; }
     public bool? FundamentalFaithInvolved { get; set; }
     public bool? DisabilitiesInvolved { get; set; }
-
-    private List<TypeOfAbuse> typesOfAbuse = new List<TypeOfAbuse>();
-    public List<TypeOfAbuse> TypesOfAbuse {
-        get => typesOfAbuse;
-        set => typesOfAbuse = value ?? new List<TypeOfAbuse>();
-    }
-    private List<TypeOfAbuser> typesOfAbuser = new List<TypeOfAbuser>();
-    public List<TypeOfAbuser> TypesOfAbuser {
-        get => typesOfAbuser;
-        set => typesOfAbuser = value ?? new List<TypeOfAbuser>();
-    }
     public required ChildPlacementType[] ChildPlacementTypesToSelectFrom { get; init; }
     public required FamilySize[] FamilySizesToSelectFrom { get; init; }
-    public required TypeOfAbuse[] TypesOfAbuseToSelectFrom { get; init; }
-    public required TypeOfAbuser[] TypesOfAbuserToSelectFrom { get; init; }
+    public required TypeOfAbuse[] TypesOfAbuse{ get; init; }
+    public required TypeOfAbuser[] TypesOfAbuser{ get; init; }
 }

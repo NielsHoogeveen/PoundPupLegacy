@@ -141,6 +141,7 @@ public static class DependencyInjection
         services.AddTransient<ISaveService<IEnumerable<File>>, FilesSaveService>();
         services.AddTransient<ITextService, TextService>();
         services.AddTransient<ISearchService<DocumentListItem>, DocumentSearchService>();
+        services.AddTransient<ISearchService<CountryListItem>, CountrySearchService>();
         services.AddTransient<ISearchService<GeographicalEntityListItem>, GeographicalEntitySearchService>();
         services.AddTransient<ISearchService<OrganizationListItem>, OrganizationSearchService>();
         services.AddTransient<ISearchService<PersonListItem>, PersonSearchService>();

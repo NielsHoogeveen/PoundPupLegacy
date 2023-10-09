@@ -3,11 +3,7 @@
 [JsonSerializable(typeof(TypeOfAbuse))]
 public partial class TypeOfAbuseJsonContext : JsonSerializerContext { }
 
-public sealed record TypeOfAbuse
+public sealed record TypeOfAbuse: ListEditElement
 {
-    public int Id { get; init; }
-
-    public required string Name { get; init; }
-    public bool HasBeenDeleted { get; set; } = false;
 
 }

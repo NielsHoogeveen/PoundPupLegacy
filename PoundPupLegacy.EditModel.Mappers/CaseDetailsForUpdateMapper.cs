@@ -8,7 +8,7 @@ internal class CaseDetailsForUpdateMapper : IMapper<CaseDetails, DomainModel.Cas
     {
         return new DomainModel.CaseDetails.CaseDetailsForUpdate {
             Date = source.Date,
-            CasePartiesToAdd = source.CasePartyTypesCaseParties.Where(x => !x.Id.HasValue).Select(x => new CaseCaseParties.ToCreate.ForExistingCase {
+            CasePartiesToAdd = source.CasePartyTypesCaseParties.Where(x => !x.Id.HasValue && (x.Persons.Any() || x.Organizations.Any() || !string.IsNullOrEmpty(x.OrganizationsText) || !string.IsNullOrEmpty(x.PersonsText))).Select(x => new CaseCaseParties.ToCreate.ForExistingCase {
                 CaseId = x.CaseId!.Value,
                 CasePartyTypeId = x.CasePartyTypeId,
                 CaseParties = new CaseParties.ToCreate {
@@ -19,7 +19,7 @@ internal class CaseDetailsForUpdateMapper : IMapper<CaseDetails, DomainModel.Cas
                     PersonIds = x.Persons.Where(x => !x.HasBeenStored).Select(x => x.Person.Id).ToList()
                 }
             }).ToList(),
-            CasePartiesToUpdate = source.CasePartyTypesCaseParties.Where(x => x.Id.HasValue).Select(x => new CaseCaseParties.ToUpdate {
+            CasePartiesToUpdate = source.CasePartyTypesCaseParties.Where(x => x.Id.HasValue && (x.Persons.Any() || x.Organizations.Any() || !string.IsNullOrEmpty(x.OrganizationsText) || !string.IsNullOrEmpty(x.PersonsText))).Select(x => new CaseCaseParties.ToUpdate {
                 CaseId = x.CaseId!.Value,
                 CasePartyTypeId = x.CasePartyTypeId,
                 CaseParties = new CaseParties.ToUpdate {
