@@ -32,7 +32,7 @@ public sealed class ImageController(
             return BadRequest();
         }
         return new ContentResult {
-            Content = @$"{{""url"": ""https://{HttpContext.Request.Host}/attachment/{res}""}}",
+            Content = @$"{{""url"": ""http://{HttpContext.Request.Host}/attachment/{res}""}}",
             ContentType = "text/json"
         };
     }
