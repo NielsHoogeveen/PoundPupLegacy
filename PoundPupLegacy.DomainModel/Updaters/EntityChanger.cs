@@ -104,8 +104,9 @@ public class CaseChanger<T>(
     CaseDetailsChanger caseDetailsChanger,
     NodeDetailsChanger nodeDetailsChanger,
     IDatabaseUpdater<LocationUpdaterRequest> locationUpdater,
-    LocatableDetailsCreator locatableDetailsCreator
-) : LocatableChanger<T>(databaseUpdater, nodeDetailsChanger, locationUpdater, locatableDetailsCreator)
+    IDatabaseInserter<Location.ToCreate> locationInserter,
+    IDatabaseInserter<LocationLocatable> locationLocatableInserter
+) : LocatableChanger<T>(databaseUpdater, nodeDetailsChanger, locationUpdater, locationInserter, locationLocatableInserter)
 where T : CaseToUpdate
 {
     protected override async Task Process(T request)
@@ -118,7 +119,8 @@ public class LocatableChanger<T>(
     IDatabaseUpdater<T> databaseUpdater,
     NodeDetailsChanger nodeDetailsChanger,
     IDatabaseUpdater<LocationUpdaterRequest> locationUpdater,
-    LocatableDetailsCreator locatableDetailsCreator
+    IDatabaseInserter<Location.ToCreate> locationInserter,
+    IDatabaseInserter<LocationLocatable> locationLocatableInserter
 ) : NodeChanger<T>(databaseUpdater, nodeDetailsChanger)
 where T : LocatableToUpdate
 {
@@ -138,12 +140,20 @@ where T : LocatableToUpdate
                 SubdivisionId = location.SubdivisionId,
             });
         }
+        foreach (var location in request.LocatableDetails.LocationsToAdd) {
+            await locationInserter.InsertAsync(location);
+            await locationLocatableInserter.InsertAsync(new LocationLocatable {
+                LocatableId = request.Identification.Id,
+                LocationId = location.Identification.Id!.Value,
+            });
+        }
     }
     public override async ValueTask DisposeAsync()
     {
         await base.DisposeAsync();
         await locationUpdater.DisposeAsync();
-        await locatableDetailsCreator.DisposeAsync();
+        await locationInserter.DisposeAsync();
+        await locationLocatableInserter.DisposeAsync();
     }
 }
 public class NodeChanger<T>(

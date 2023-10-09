@@ -1,9 +1,6 @@
-﻿using PoundPupLegacy.DomainModel;
-
-namespace PoundPupLegacy.DomainModel.Updaters;
+﻿namespace PoundPupLegacy.DomainModel.Updaters;
 
 using PoundPupLegacy.Common;
-using PoundPupLegacy.DomainModel.Creators;
 using System.Data;
 using System.Threading.Tasks;
 using Request = AbuseCase.ToUpdate;
@@ -13,7 +10,9 @@ internal sealed class AbuseCaseChangerFactory(
     CaseDetailsChangerFactory caseDetailsChangerFactory,
     NodeDetailsChangerFactory nodeDetailsChangerFactory,
     IDatabaseUpdaterFactory<LocationUpdaterRequest> locationUpdaterFactory,
-    LocatableDetailsCreatorFactory locatableDetailsCreatorFactory) : IEntityChangerFactory<Request>
+    IDatabaseInserterFactory<Location.ToCreate> locationInserterFactory,
+    IDatabaseInserterFactory<LocationLocatable> locationLocatableInserterFactory
+) : IEntityChangerFactory<Request>
 {
     public async Task<IEntityChanger<Request>> CreateAsync(IDbConnection connection)
     {
@@ -22,7 +21,8 @@ internal sealed class AbuseCaseChangerFactory(
             await caseDetailsChangerFactory.CreateAsync(connection),
             await nodeDetailsChangerFactory.CreateAsync(connection),
             await locationUpdaterFactory.CreateAsync(connection),
-            await locatableDetailsCreatorFactory.CreateAsync(connection)
+            await locationInserterFactory.CreateAsync(connection),
+            await locationLocatableInserterFactory.CreateAsync(connection)
         );
     }
 }

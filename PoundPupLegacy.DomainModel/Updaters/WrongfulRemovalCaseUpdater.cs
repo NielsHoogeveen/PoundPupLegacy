@@ -9,7 +9,9 @@ internal sealed class WrongfulRemovalCaseChangerFactory(
     CaseDetailsChangerFactory caseDetailsChangerFactory,
     NodeDetailsChangerFactory nodeDetailsChangerFactory,
     IDatabaseUpdaterFactory<LocationUpdaterRequest> locationUpdaterFactory,
-    LocatableDetailsCreatorFactory locatableDetailsCreatorFactory) : IEntityChangerFactory<Request>
+    IDatabaseInserterFactory<Location.ToCreate> locationInserterFactory,
+    IDatabaseInserterFactory<LocationLocatable> locationLocatableInserterFactory
+) : IEntityChangerFactory<Request>
 {
     public async Task<IEntityChanger<Request>> CreateAsync(IDbConnection connection)
     {
@@ -18,7 +20,8 @@ internal sealed class WrongfulRemovalCaseChangerFactory(
             await caseDetailsChangerFactory.CreateAsync(connection),
             await nodeDetailsChangerFactory.CreateAsync(connection),
             await locationUpdaterFactory.CreateAsync(connection),
-            await locatableDetailsCreatorFactory.CreateAsync(connection)
+            await locationInserterFactory.CreateAsync(connection),
+            await locationLocatableInserterFactory.CreateAsync(connection)
         );
     }
 }

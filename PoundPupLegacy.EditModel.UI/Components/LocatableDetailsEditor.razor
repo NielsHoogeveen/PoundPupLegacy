@@ -1,18 +1,19 @@
 ﻿@inherits EditorDetailBase
 @inject IDefaultCountryService DefaultCountryService
 
-@if (LocatableDetails.Locations.Any()) {
-    @if (locationToEdit is not null)
-    {
-        <ModalDialog Title="Add location" Id="location-dialog" OnOk="OnOkLocationDialog" OnCancel="OnCancelLocationDialog">
-            <DialogContent>
-                <LocationEditorDialog Location="locationToEdit" />
-            </DialogContent>
-        </ModalDialog>
-    }
+@if (locationToEdit is not null) {
+    <ModalDialog Title="Add location" Id="location-dialog" OnOk="OnOkLocationDialog" OnCancel="OnCancelLocationDialog">
+        <DialogContent>
+            <LocationEditorDialog Location="locationToEdit" />
+        </DialogContent>
+    </ModalDialog>
+}
 
     <div class="editor-section">
         <h4>Locations</h4>
+
+
+@if (LocatableDetails.Locations.Any()) {
         <div class="locations">
             <div class="header">Street</div>
             <div class="header"></div>
@@ -33,9 +34,9 @@
                 }
             }
         </div>
-        <button type="button" @onclick="AddLocation">Add location</button>
-    </div>
 }
+    <button type="button" @onclick="AddLocation">Add location</button>
+</div>
 
 @code {
 
@@ -52,7 +53,7 @@
     private void AddLocation()
     {
         (var countryId, var countryName) = DefaultCountryService.GetDefaultCountry(TenantId);
-        locationToEdit = new Location.ToUpdate {
+        locationToEdit = new Location.ToCreate {
             Street = null,
             Addition = null,
             PostalCode = null,  

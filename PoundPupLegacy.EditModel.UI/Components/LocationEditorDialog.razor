@@ -164,6 +164,7 @@
             validatedLocation = null;
             Location.CountryId = countryId;
             Location.CountryName = countries.First(x => x.Id == countryId).Name;
+            subdivisions.Clear();
             await foreach (var subdivision in LocationService.SubdivisionsOfCountry(Location.CountryId)) {
                 subdivisions.Add(subdivision);
             };

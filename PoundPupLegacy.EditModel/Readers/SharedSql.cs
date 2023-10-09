@@ -949,8 +949,7 @@ internal static class SharedSql
         locations_document as(
             select
                 jsonb_agg(jsonb_build_object(
-        			'LocationId', "location_id",
-                    'LocatableId', locatable_id,
+        			'Id', "location_id",
         			'Street', street,
         			'Additional', additional,
         			'City', city,

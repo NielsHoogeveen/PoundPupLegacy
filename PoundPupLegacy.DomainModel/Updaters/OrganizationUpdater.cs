@@ -3,8 +3,6 @@
 using PoundPupLegacy.DomainModel;
 using PoundPupLegacy.DomainModel.Creators;
 using PoundPupLegacy.DomainModel.Deleters;
-using System.Net.Http.Headers;
-using System.Xml.Linq;
 using Request = OrganizationToUpdate;
 internal sealed class OrganizationChangerFactory(
     IDatabaseUpdaterFactory<Request> databaseUpdaterFactory,
@@ -18,7 +16,9 @@ internal sealed class OrganizationChangerFactory(
     IDatabaseUpdaterFactory<LocationUpdaterRequest> locationUpdaterFactory,
     IDatabaseInserterFactory<OrganizationOrganizationType> organizationOrganizationTypeInserterFactory,
     IDatabaseDeleterFactory<OrganizationOrganizationTypeDeleterRequest> organizationOrganizationTypeDeleterFactory,
-    LocatableDetailsCreatorFactory locatableDetailsCreatorFactory) : IEntityChangerFactory<Request>
+    IDatabaseInserterFactory<Location.ToCreate> locationInserterFactory,
+    IDatabaseInserterFactory<LocationLocatable> locationLocatableInserterFactory
+    ) : IEntityChangerFactory<Request>
 {
     public async Task<IEntityChanger<Request>> CreateAsync(IDbConnection connection)
     {
@@ -34,7 +34,8 @@ internal sealed class OrganizationChangerFactory(
             await locationUpdaterFactory.CreateAsync(connection),
             await organizationOrganizationTypeInserterFactory.CreateAsync(connection),
             await organizationOrganizationTypeDeleterFactory.CreateAsync(connection),
-            await locatableDetailsCreatorFactory.CreateAsync(connection)
+            await locationInserterFactory.CreateAsync(connection),
+            await locationLocatableInserterFactory.CreateAsync(connection)
         );
     }
 }
@@ -50,8 +51,9 @@ public sealed class OrganizationChanger(
     IDatabaseUpdater<LocationUpdaterRequest> locationUpdater,
     IDatabaseInserter<OrganizationOrganizationType> organizationOrganizationTypeInserter,
     IDatabaseDeleter<OrganizationOrganizationTypeDeleterRequest> organizationOrganizationTypeDeleter,
-    LocatableDetailsCreator locatableDetailsCreator
-) : LocatableChanger<Request>(databaseUpdater, nodeDetailsChanger, locationUpdater, locatableDetailsCreator)
+    IDatabaseInserter<Location.ToCreate> locationInserter,
+    IDatabaseInserter<LocationLocatable> locationLocatableInserter
+) : LocatableChanger<Request>(databaseUpdater, nodeDetailsChanger, locationUpdater, locationInserter, locationLocatableInserter)
 {
     protected override async Task Process(Request request)
     {

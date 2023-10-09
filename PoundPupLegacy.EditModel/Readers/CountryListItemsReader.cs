@@ -20,7 +20,7 @@ internal sealed class CountryListItemsReaderFactory : EnumerableDatabaseReaderFa
             join term t on t.nameable_id = c.id
             join tenant_node tn on tn.node_id = t.vocabulary_id
             where tn.tenant_id = 1 and tn.url_id = 4126
-            
+            order by t.name
         """;
 
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
