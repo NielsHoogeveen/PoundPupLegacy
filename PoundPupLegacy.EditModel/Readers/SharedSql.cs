@@ -1042,6 +1042,7 @@ internal static class SharedSql
         		    'Entries',
         		    null
         	    )
+                order by tag_label_name
             ) "document"
             from(
         	    select
@@ -1071,6 +1072,7 @@ internal static class SharedSql
         		    'EntriesToUpdate',
         		    tags
         	    )
+                order by tag_label_name
             ) "document"
             from(
         	    select

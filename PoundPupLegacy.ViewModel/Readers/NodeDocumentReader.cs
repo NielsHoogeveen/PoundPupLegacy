@@ -3682,7 +3682,8 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     'CommentListItems', (SELECT document FROM  comments_document),
                     'SubTopics', (SELECT document from subtopics_document),
                     'SuperTopics', (SELECT document from supertopics_document),
-                    'Files', (SELECT document FROM files_document)
+                    'Files', (SELECT document FROM files_document),
+                    'Documents', (SELECT document FROM documents_document)
                 ) document
             FROM (
                 SELECT

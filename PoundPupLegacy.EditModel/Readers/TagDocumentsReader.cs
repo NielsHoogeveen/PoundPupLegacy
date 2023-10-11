@@ -52,6 +52,7 @@ internal sealed class TagDocumentsReaderFactory : EnumerableDatabaseReaderFactor
             and n.node_type_id = any(@node_type_ids)
             LIMIT 50
         ) x
+        order by x.name
         """;
 
 
@@ -60,7 +61,7 @@ internal sealed class TagDocumentsReaderFactory : EnumerableDatabaseReaderFactor
         return new ParameterValue[] {
             ParameterValue.Create(TenantIdParameter, request.TenantId),
             ParameterValue.Create(SearchStringParameter, request.SearchString),
-            ParameterValue.Create(SearchOptionParameter, (request.SearchString, SearchOption.StartsWith)),
+            ParameterValue.Create(SearchOptionParameter, (request.SearchString, SearchOption.Contains)),
             ParameterValue.Create(NodeTypeIds, request.NodeTypeIds)
         };
     }
