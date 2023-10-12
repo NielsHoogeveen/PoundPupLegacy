@@ -105,6 +105,8 @@ public abstract record NodeDetails
     }
     public sealed record ForUpdate : NodeDetails
     {
+        public required int Id { get; init; }
+
         private List<Tags.ToUpdate> tags = new();
         public override IEnumerable<Tags> Tags => TagsForUpdate;
         public List<Tags.ToUpdate> TagsForUpdate {

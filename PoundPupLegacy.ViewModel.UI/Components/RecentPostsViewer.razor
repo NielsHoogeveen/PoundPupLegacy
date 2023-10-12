@@ -4,14 +4,20 @@
 <h1>Recent posts</h1>
 @if (ListEntries.Any()) {
     <div class="list-entries">
-    @foreach (var listEntry in ListEntries) {
-        <div>
-            <LinkViewer Link="@listEntry"/>
-        </div>
-        <div>@listEntry.Publisher</div>
-        <div>@listEntry.DateTime</div>
-        <div>@listEntry.NodeType</div>
-    }
+        <div class="header">Title</div>
+        <div class="header">Publisher</div>
+        <div class="header">Created</div>
+        <div class="header">Last Updated</div>
+        <div class="header">Type</div>
+        @foreach (var listEntry in ListEntries) {
+            <div>
+                <LinkViewer Link="@listEntry"/>
+            </div>
+            <div>@listEntry.Publisher</div>
+            <div>@listEntry.CreatedDateTime</div>
+            <div>@listEntry.LastChangedDateTime</div>
+            <div>@listEntry.NodeType</div>
+        }
     </div>
     <Pager Model="PagedListSettings" SelectPage="SelectPage" />
 }

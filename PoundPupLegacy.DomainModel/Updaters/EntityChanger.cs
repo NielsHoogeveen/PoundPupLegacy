@@ -9,6 +9,7 @@ public interface IEntityUpdater<T>
 }
 
 public class NodeDetailsChangerFactory(
+    IDatabaseUpdaterFactory<NodeDetails.ForUpdate> nodeDetailsUpdaterFactory,
     IDatabaseUpdaterFactory<TenantNode.ToUpdate> tenantNodeUpdaterFactory,
     IDatabaseDeleterFactory<TenantNodeToDelete> tenantNodeDeleterFactory,
     IDatabaseInserterFactory<TenantNode.ToCreate.ForExistingNode> tenantNodeInserterFactory,
@@ -22,6 +23,7 @@ public class NodeDetailsChangerFactory(
     public async Task<NodeDetailsChanger> CreateAsync(IDbConnection connection)
     {
         return new NodeDetailsChanger(
+            await nodeDetailsUpdaterFactory.CreateAsync(connection),
             await tenantNodeUpdaterFactory.CreateAsync(connection),
             await tenantNodeDeleterFactory.CreateAsync(connection),
             await tenantNodeInserterFactory.CreateAsync(connection),
@@ -35,6 +37,7 @@ public class NodeDetailsChangerFactory(
 }
 
 public class NodeDetailsChanger(
+    IDatabaseUpdater<NodeDetails.ForUpdate> nodeDetailsUpdater,
     IDatabaseUpdater<TenantNode.ToUpdate> tenantNodeUpdater,
     IDatabaseDeleter<TenantNodeToDelete> tenantNodeDeleter,
     IDatabaseInserter<TenantNode.ToCreate.ForExistingNode> tenantNodeInserter,
@@ -48,6 +51,7 @@ public class NodeDetailsChanger(
 
     public async Task Process(NodeToUpdate node)
     {
+        await nodeDetailsUpdater.UpdateAsync(node.NodeDetails);
         foreach (var newNodeTerms in node.NodeDetails.NodeTermsToAdd) {
             await nodeTermInserter.InsertAsync(newNodeTerms);
         }
@@ -77,6 +81,7 @@ public class NodeDetailsChanger(
     }
     public async ValueTask DisposeAsync()
     {
+        await nodeDetailsUpdater.DisposeAsync();
         await tenantNodeUpdater.DisposeAsync();
         await tenantNodeInserter.DisposeAsync();
         await tenantNodeDeleter.DisposeAsync();
@@ -105,8 +110,9 @@ public class CaseChanger<T>(
     NodeDetailsChanger nodeDetailsChanger,
     IDatabaseUpdater<LocationUpdaterRequest> locationUpdater,
     IDatabaseInserter<Location.ToCreate> locationInserter,
-    IDatabaseInserter<LocationLocatable> locationLocatableInserter
-) : LocatableChanger<T>(databaseUpdater, nodeDetailsChanger, locationUpdater, locationInserter, locationLocatableInserter)
+    IDatabaseInserter<LocationLocatable> locationLocatableInserter,
+    IDatabaseUpdater<Term.ToUpdate> termUpdater
+) : LocatableChanger<T>(databaseUpdater, nodeDetailsChanger, locationUpdater, locationInserter, locationLocatableInserter, termUpdater)
 where T : CaseToUpdate
 {
     protected override async Task Process(T request)
@@ -120,8 +126,9 @@ public class LocatableChanger<T>(
     NodeDetailsChanger nodeDetailsChanger,
     IDatabaseUpdater<LocationUpdaterRequest> locationUpdater,
     IDatabaseInserter<Location.ToCreate> locationInserter,
-    IDatabaseInserter<LocationLocatable> locationLocatableInserter
-) : NodeChanger<T>(databaseUpdater, nodeDetailsChanger)
+    IDatabaseInserter<LocationLocatable> locationLocatableInserter,
+    IDatabaseUpdater<Term.ToUpdate> termUpdater
+) : NameableChanger<T>(databaseUpdater, nodeDetailsChanger, termUpdater)
 where T : LocatableToUpdate
 {
     protected override async Task Process(T request)
@@ -156,6 +163,25 @@ where T : LocatableToUpdate
         await locationLocatableInserter.DisposeAsync();
     }
 }
+public class NameableChanger<T>(
+    IDatabaseUpdater<T> databaseUpdater,
+    NodeDetailsChanger nodeDetailsChanger,
+    IDatabaseUpdater<Term.ToUpdate> termUpdater
+) : NodeChanger<T>(databaseUpdater, nodeDetailsChanger)
+where T : LocatableToUpdate
+{
+    protected override async Task Process(T request)
+    {
+        await base.Process(request);
+        await termUpdater.UpdateAsync(request.NameableDetails.TermToUpdate);
+    }
+    public override async ValueTask DisposeAsync()
+    {
+        await base.DisposeAsync();
+        await termUpdater.DisposeAsync();
+    }
+}
+
 public class NodeChanger<T>(
     IDatabaseUpdater<T> databaseUpdater,
     NodeDetailsChanger nodeDetailsChanger
@@ -164,6 +190,7 @@ public class NodeChanger<T>(
 {
     protected override async Task Process(T request)
     {
+        request.NodeDetails.ChangedDateTime = DateTime.Now;
         await base.Process(request);
         await databaseUpdater.UpdateAsync(request);
         await nodeDetailsChanger.Process(request);
@@ -175,7 +202,6 @@ public class NodeChanger<T>(
         await nodeDetailsChanger.DisposeAsync();
     }
 }
-
 public class EntityChanger<T>(
 ) : IAsyncDisposable, IEntityChanger<T>
     where T : NodeToUpdate

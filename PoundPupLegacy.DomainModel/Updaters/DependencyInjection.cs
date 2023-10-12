@@ -34,6 +34,7 @@ public static class DependencyInjection
         services.AddTransient<IDatabaseUpdaterFactory<FathersRightsViolationCase.ToUpdate>, FathersRightsViolationCaseUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<Document.ToUpdate>, DocumentUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<LocationUpdaterRequest>, LocationUpdaterFactory>();
+        services.AddTransient<IDatabaseUpdaterFactory<NodeDetails.ForUpdate>, NodeDetailsUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<InterOrganizationalRelation.ToUpdate>, InterOrganizationalRelationUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<InterPersonalRelation.ToUpdate>, InterPersonalRelationUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<NodeUnpublishRequest>, NodeUnpublishFactory>();
@@ -42,6 +43,7 @@ public static class DependencyInjection
         services.AddTransient<IDatabaseUpdaterFactory<PersonOrganizationRelation.ToUpdate>, PersonOrganizationRelationUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<Person.ToUpdate>, PersonUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<TenantNode.ToUpdate>, TenantNodeUpdaterFactory>();
+        services.AddTransient<IDatabaseUpdaterFactory<Term.ToUpdate>, TermUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<WrongfulMedicationCase.ToUpdate>, WrongfulMedicationCaseUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<WrongfulRemovalCase.ToUpdate>, WrongfulRemovalCaseUpdaterFactory>();
     }

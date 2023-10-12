@@ -6,6 +6,15 @@ internal class NameableDetailsForUpdateMapper : IMapper<NameableDetails, DomainM
     {
         return new DomainModel.NameableDetails.ForUpdate {
             TermsToAdd = new List<DomainModel.Term.ToCreateForExistingNameable>(),
+            TermToUpdate = new DomainModel.Term.ToUpdate { 
+                Identification = new Identification.Certain {
+                    Id = source.TopicId!.Value,
+                },
+                Name = source.Name,
+                NameableId = source.TopicId!.Value,
+                ParentTermIds = new List<int>(),
+                VocabularyId = source.VocabularyIdTagging,
+            },
             Description = source.Description,
             FileIdTileImage = null
         };

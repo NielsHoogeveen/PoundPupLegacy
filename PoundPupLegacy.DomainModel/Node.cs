@@ -15,10 +15,10 @@ public interface Node : Identifiable
 {
 }
 
-public abstract record NodeDetails
+public abstract record NodeDetails : IRequest
 {
     private NodeDetails() { }
-    public required DateTime ChangedDateTime { get; init; }
+    public required DateTime ChangedDateTime { get; set; }
     public required string Title { get; init; }
     public required int AuthoringStatusId { get; init; }
     public required List<File> FilesToAdd { get; init; }
@@ -34,6 +34,7 @@ public abstract record NodeDetails
     }
     public sealed record ForUpdate : NodeDetails
     {
+        public required int Id { get; init; }
         public required List<TenantNode.ToCreate.ForExistingNode> TenantNodesToAdd { get; init; }
         public required List<TenantNode.ToUpdate> TenantNodesToUpdate { get; init; }
         public required List<TenantNodeToDelete> TenantNodesToRemove { get; init; }

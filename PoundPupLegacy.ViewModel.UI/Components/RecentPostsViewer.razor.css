@@ -1,9 +1,13 @@
 .list-entries{
     display: grid;
-    grid-template-columns: 4fr 1fr 1fr 1fr;
+    grid-template-columns: 6fr 2fr 2fr 2fr 2fr;
 }
 
 .list-entries *{
     padding: 0.5em;
     border: 1px solid #ccc;
+}
+.header{
+    background-color: grey;
+    color: white;
 }

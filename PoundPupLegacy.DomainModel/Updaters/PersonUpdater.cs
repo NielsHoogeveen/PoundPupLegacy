@@ -12,7 +12,8 @@ internal sealed class PersonChangerFactory(
     IEntityCreatorFactory<InterPersonalRelation.ToCreate.ForExistingParticipants> interPersonalRelationsCreatorFactory,
     IDatabaseUpdaterFactory<PartyPoliticalEntityRelation.ToUpdate> partyPoliticalEntityUpdaterFactory,
     IEntityCreatorFactory<PartyPoliticalEntityRelation.ToCreate.ForExistingParty> partyPoliticalEntityCreatorFactory,
-    NodeDetailsChangerFactory nodeDetailsChangerFactory) : IEntityChangerFactory<Request>
+    NodeDetailsChangerFactory nodeDetailsChangerFactory,
+    IDatabaseUpdaterFactory<Term.ToUpdate> termUpdaterFactory) : IEntityChangerFactory<Request>
 {
     public async Task<IEntityChanger<Request>> CreateAsync(IDbConnection connection)
     {
@@ -24,7 +25,8 @@ internal sealed class PersonChangerFactory(
             await interPersonalRelationsCreatorFactory.CreateAsync(connection),
             await partyPoliticalEntityUpdaterFactory.CreateAsync(connection),
             await partyPoliticalEntityCreatorFactory.CreateAsync(connection),
-            await nodeDetailsChangerFactory.CreateAsync(connection)
+            await nodeDetailsChangerFactory.CreateAsync(connection),
+            await termUpdaterFactory.CreateAsync(connection)
         );
     }
 }
@@ -36,8 +38,9 @@ public sealed class PersonChanger(
     IEntityCreator<InterPersonalRelation.ToCreate.ForExistingParticipants> interPersonalRelationsCreator,
     IDatabaseUpdater<PartyPoliticalEntityRelation.ToUpdate> partyPoliticalEntityUpdater,
     IEntityCreator<PartyPoliticalEntityRelation.ToCreate.ForExistingParty> partyPoliticalEntityCreator,
-    NodeDetailsChanger nodeDetailsChanger
-) : NodeChanger<Request>(databaseUpdater, nodeDetailsChanger)
+    NodeDetailsChanger nodeDetailsChanger,
+    IDatabaseUpdater<Term.ToUpdate> termUpdater
+) : NameableChanger<Request>(databaseUpdater, nodeDetailsChanger, termUpdater)
 {
     protected override async Task Process(Request request)
     {

@@ -17,7 +17,8 @@ internal sealed class OrganizationChangerFactory(
     IDatabaseInserterFactory<OrganizationOrganizationType> organizationOrganizationTypeInserterFactory,
     IDatabaseDeleterFactory<OrganizationOrganizationTypeDeleterRequest> organizationOrganizationTypeDeleterFactory,
     IDatabaseInserterFactory<Location.ToCreate> locationInserterFactory,
-    IDatabaseInserterFactory<LocationLocatable> locationLocatableInserterFactory
+    IDatabaseInserterFactory<LocationLocatable> locationLocatableInserterFactory,
+    IDatabaseUpdaterFactory<Term.ToUpdate> termUpdaterFactory
     ) : IEntityChangerFactory<Request>
 {
     public async Task<IEntityChanger<Request>> CreateAsync(IDbConnection connection)
@@ -35,7 +36,8 @@ internal sealed class OrganizationChangerFactory(
             await organizationOrganizationTypeInserterFactory.CreateAsync(connection),
             await organizationOrganizationTypeDeleterFactory.CreateAsync(connection),
             await locationInserterFactory.CreateAsync(connection),
-            await locationLocatableInserterFactory.CreateAsync(connection)
+            await locationLocatableInserterFactory.CreateAsync(connection),
+            await termUpdaterFactory.CreateAsync(connection)
         );
     }
 }
@@ -52,8 +54,9 @@ public sealed class OrganizationChanger(
     IDatabaseInserter<OrganizationOrganizationType> organizationOrganizationTypeInserter,
     IDatabaseDeleter<OrganizationOrganizationTypeDeleterRequest> organizationOrganizationTypeDeleter,
     IDatabaseInserter<Location.ToCreate> locationInserter,
-    IDatabaseInserter<LocationLocatable> locationLocatableInserter
-) : LocatableChanger<Request>(databaseUpdater, nodeDetailsChanger, locationUpdater, locationInserter, locationLocatableInserter)
+    IDatabaseInserter<LocationLocatable> locationLocatableInserter,
+    IDatabaseUpdater<Term.ToUpdate> termUpdater
+) : LocatableChanger<Request>(databaseUpdater, nodeDetailsChanger, locationUpdater, locationInserter, locationLocatableInserter, termUpdater)
 {
     protected override async Task Process(Request request)
     {

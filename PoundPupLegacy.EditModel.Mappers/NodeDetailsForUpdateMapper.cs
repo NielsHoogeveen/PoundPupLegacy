@@ -18,6 +18,7 @@ internal class NodeDetailsForUpdateMapper(
         var tenantNodesToRemove = source.Tenants.Select(x => x.TenantNode).Where(x => x is not null && x.HasBeenDeleted && x.HasBeenStored).OfType<TenantNode.ToUpdate>();
         var tenantNodesToUpdate = source.Tenants.Select(x => x.TenantNode).Where(x => x is not null && !x.HasBeenDeleted && x.HasBeenStored).OfType<TenantNode.ToUpdate>();
         return new DomainModel.NodeDetails.ForUpdate {
+            Id = source.Id,
             AuthoringStatusId = 1,
             ChangedDateTime = now,
             Title = source.Title,

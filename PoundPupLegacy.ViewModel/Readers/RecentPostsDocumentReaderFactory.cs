@@ -39,7 +39,9 @@ internal sealed class RecentPostsDocumentReaderFactory : SingleItemDatabaseReade
                         publisher_name,
                         'NodeType', 
                         node_type,
-                        'DateTime', 
+                        'CreatedDateTime', 
+                        created_date_time,
+                        'LastChangedDateTime', 
                         changed_date_time
                     )
                 ) 
@@ -53,6 +55,7 @@ internal sealed class RecentPostsDocumentReaderFactory : SingleItemDatabaseReade
                 path,
                 publisher_name,
                 node_type,
+                created_date_time,
                 changed_date_time,
                 count(*) over() number_of_entries
                 from(
@@ -63,6 +66,7 @@ internal sealed class RecentPostsDocumentReaderFactory : SingleItemDatabaseReade
         		        when tn.url_path is null then '/node/' || tn.url_id
         		        else '/' || tn.url_path
         	        end path,
+                    n.created_date_time,
         	        n.changed_date_time,
         	        nt.name node_type,
         	        case

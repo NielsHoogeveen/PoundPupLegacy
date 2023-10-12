@@ -11,7 +11,7 @@ public interface NameableToCreate : Nameable, SearchableToCreate
 public interface Nameable : Searchable
 {
 }
-public abstract record NameableDetails
+public abstract record NameableDetails: IRequest
 {
     private NameableDetails() { }
     public required string Description { get; init; }
@@ -22,6 +22,7 @@ public abstract record NameableDetails
     }
     public sealed record ForUpdate : NameableDetails
     {
+        public required Term.ToUpdate TermToUpdate { get; init; }
         public required List<Term.ToCreateForExistingNameable> TermsToAdd { get; init; }
     }
 }

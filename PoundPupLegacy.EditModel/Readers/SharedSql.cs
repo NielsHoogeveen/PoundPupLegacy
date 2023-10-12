@@ -1476,6 +1476,8 @@ internal static class SharedSql
         node_details_for_update_document as (
             select 
                 jsonb_build_object(
+                    'Id',
+                    n.id,
                    'NodeTypeName',
                     nt.name,
                     'NodeTypeId',

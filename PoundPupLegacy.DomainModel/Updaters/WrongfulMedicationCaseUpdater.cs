@@ -8,7 +8,8 @@ internal sealed class WrongfulMedicationCaseChangerFactory(
     NodeDetailsChangerFactory nodeDetailsChangerFactory,
     IDatabaseUpdaterFactory<LocationUpdaterRequest> locationUpdaterFactory,
     IDatabaseInserterFactory<Location.ToCreate> locationInserterFactory,
-    IDatabaseInserterFactory<LocationLocatable> locationLocatableInserterFactory
+    IDatabaseInserterFactory<LocationLocatable> locationLocatableInserterFactory,
+    IDatabaseUpdaterFactory<Term.ToUpdate> termUpdaterFactory
 ) : IEntityChangerFactory<Request>
 {
     public async Task<IEntityChanger<Request>> CreateAsync(IDbConnection connection)
@@ -19,7 +20,8 @@ internal sealed class WrongfulMedicationCaseChangerFactory(
             await nodeDetailsChangerFactory.CreateAsync(connection),
             await locationUpdaterFactory.CreateAsync(connection),
             await locationInserterFactory.CreateAsync(connection),
-            await locationLocatableInserterFactory.CreateAsync(connection)
+            await locationLocatableInserterFactory.CreateAsync(connection),
+            await termUpdaterFactory.CreateAsync(connection)
         );
     }
 }
