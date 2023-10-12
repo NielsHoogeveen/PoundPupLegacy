@@ -280,6 +280,8 @@ internal static class SharedSql
                         ),
                         'NodeDetailsForUpdate',
                         jsonb_build_object(
+                           'Id',
+                           node_id,
                            'NodeTypeName',
                             node_type_name,
                             'NodeTypeId',
@@ -487,6 +489,8 @@ internal static class SharedSql
                         ),
                         'NodeDetailsForUpdate',
                         jsonb_build_object(
+                           'Id',
+                           node_id,
                            'NodeTypeName',
                             node_type_name,
                             'NodeTypeId',

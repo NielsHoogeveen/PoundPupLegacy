@@ -69,7 +69,9 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                         ),
                         'NodeDetailsForUpdate',
                         jsonb_build_object(
-                           'NodeTypeName',
+                            'Id',
+                            node_id,
+                            'NodeTypeName',
                             node_type_name,
                             'NodeTypeId',
                             node_type_id,
@@ -275,6 +277,8 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                         ),
                         'NodeDetailsForUpdate',
                         jsonb_build_object(
+                            'Id',
+                            node_id,
                            'NodeTypeName',
                             node_type_name,
                             'NodeTypeId',

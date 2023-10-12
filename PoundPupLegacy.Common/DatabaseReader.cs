@@ -244,6 +244,11 @@ namespace PoundPupLegacy.Common
             if (!reader.HasRows)
                 return null;
             await reader.ReadAsync();
+
+            if (typeof(TResponse).Name == "ToUpdate") {
+                var s = reader.GetString(0);
+                Console.WriteLine(s);
+            }
             return _readerFunction(reader);
         }
     }
