@@ -8,6 +8,7 @@ internal class InterOrganizationalToCreateForExistingRelationFromMapper(
     {
         foreach (var relation in source) {
             var now = DateTime.Now;
+            relation.NodeDetails.Title = $"{relation.OrganizationFromName} {relation.InterOrganizationalRelationDetails.InterOrganizationalRelationType.Name.ToLower()} {relation.OrganizationToName}";
             yield return new DomainModel.InterOrganizationalRelation.ToCreate.ForExistingParticipants {
                 Identification = new Identification.Possible {
                     Id = null,

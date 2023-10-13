@@ -37,10 +37,10 @@
                     @relation.OrganizationName
                 </div>
                 <div class="@classString">
-                    @relation.RelationDetails.DateFrom
+                    @relation.RelationDetails.DateFrom?.ToString("yyyy MMM dd")
                 </div>
                 <div class="@classString">
-                    @relation.RelationDetails.DateTo
+                    @relation.RelationDetails.DateTo?.ToString("yyyy MMM dd")
                 </div>
                 <div class="@classString">
                     @if (!relation.RelationDetails.HasBeenDeleted) {
@@ -62,8 +62,10 @@
 </div>
 @code {
     [Parameter]
-    [EditorRequired]
     public List<PersonOrganizationRelation.ForPerson.Complete> Relations { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<List<PersonOrganizationRelation.ForPerson.Complete>> RelationsChanged { get; set; }
 
     [Parameter]
     [EditorRequired]
@@ -76,6 +78,14 @@
     [Parameter]
     [EditorRequired]
     public List<TenantDetails> Tenants { get; set; } = default!;
+
+    public override async Task SetParametersAsync(ParameterView parameters)
+    {
+        if (RelationTypes is null) {
+            await base.SetParametersAsync(parameters);
+        }
+    }
+
 
     private PersonOrganizationRelationEditorForPersonDialog? dialog;
 
@@ -112,6 +122,9 @@
             var relation = dialog.GetValidRelation();
             if (relation is null)
                 return;
+            if(_relationToEdit is PersonOrganizationRelation.ForPerson.Complete rc) {
+                Relations.Remove(rc);
+            }
             Relations.Add(relation);
         }
         _relationToEdit = null;

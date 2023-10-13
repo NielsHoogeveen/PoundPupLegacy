@@ -9,6 +9,7 @@ internal class InterPersonalRelationsToToUpdateMapper(
         foreach (var relation in source) {
             if (relation.RelationDetails.HasBeenDeleted)
                 continue;
+            relation.NodeDetails.Title = $"{relation.PersonToName} {relation.InterPersonalRelationType.Name.ToLower()} {relation.PersonFromName}";
             yield return new DomainModel.InterPersonalRelation.ToUpdate {
                 Identification = new Identification.Certain {
                     Id = relation.NodeIdentification.NodeId

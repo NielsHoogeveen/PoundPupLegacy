@@ -8,7 +8,7 @@
 }
 .relations {
     display: grid;
-    grid-template-columns: 3fr 3fr 2fr 1fr 1fr 4em 5em;
+    grid-template-columns: 5fr 5fr 4fr 2fr 2fr 4em 5em;
 }
 h4
 {

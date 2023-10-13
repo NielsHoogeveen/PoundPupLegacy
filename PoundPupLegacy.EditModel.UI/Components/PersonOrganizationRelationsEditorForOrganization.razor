@@ -37,10 +37,10 @@
                     @relation.OrganizationName
                 </div>
                 <div class="@classString">
-                    @relation.RelationDetails.DateFrom
+                    @relation.RelationDetails.DateFrom?.ToString("yyyy MMM dd")
                 </div>
                 <div class="@classString">
-                    @relation.RelationDetails.DateTo
+                    @relation.RelationDetails.DateTo?.ToString("yyyy MMM dd")
                 </div>
                 <div class="@classString">
                     @if (!relation.RelationDetails.HasBeenDeleted) {
@@ -121,7 +121,13 @@
             var relation = dialog.GetValidRelation();
             if (relation is null)
                 return;
-            Relations.Add(relation);
+            if(_relationToEdit is PersonOrganizationRelation.ForOrganization.Complete re)
+            {
+                Relations.Remove(re);
+                Relations.Add(relation);
+            }else{
+                Relations.Add(relation);
+            }
         }
         _relationToEdit = null;
         StateHasChanged();

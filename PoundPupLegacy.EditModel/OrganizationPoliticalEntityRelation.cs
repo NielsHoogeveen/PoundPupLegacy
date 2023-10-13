@@ -53,7 +53,7 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
     public required OrganizationPoliticalEntityRelationTypeListItem PartyPoliticalEntityRelationType { get; set; }
 
     public abstract OrganizationItem? OrganizationItem { get; }
-    public abstract PoliticalEntityListItem? PoliticalEntityItem { get; }
+    public abstract PoliticalEntityListItem? PoliticalEntityItem { get; set; }
 
     public abstract record Incomplete : OrganizationPoliticalEntityRelation
     {
@@ -85,7 +85,14 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
             public required OrganizationName Organization { get; set; }
             public required PoliticalEntityListItem? PoliticalEntity { get; set; }
             public override OrganizationItem? OrganizationItem => Organization;
-            public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
+            public override PoliticalEntityListItem? PoliticalEntityItem {
+                get => PoliticalEntity;
+                set {
+                    if ( value != null ) {
+                        PoliticalEntity = value;
+                    }
+                }
+            }
             public override Complete GetCompletedRelation(PoliticalEntityListItem politicalEntity)
             {
                 return new Complete.ToCreateForNewOrganization {
@@ -113,7 +120,14 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
             public required OrganizationListItem Organization { get; set; }
             public required PoliticalEntityListItem? PoliticalEntity { get; set; }
             public override OrganizationItem? OrganizationItem => Organization;
-            public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
+            public override PoliticalEntityListItem? PoliticalEntityItem {
+                get => PoliticalEntity;
+                set {
+                    if (value != null) {
+                        PoliticalEntity = value;
+                    }
+                }
+            }
             public override Complete GetCompletedRelation(PoliticalEntityListItem politicalEntity)
             {
                 return new Complete.Resolved.ToCreateForExistingOrganization {
@@ -164,7 +178,14 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
                 public override string OrganizationName => Party.Name; 
                 public override string PoliticalEntityName => PoliticalEntity.Name;
                 public override OrganizationItem? OrganizationItem => Party;
-                public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
+                public override PoliticalEntityListItem? PoliticalEntityItem {
+                    get => PoliticalEntity;
+                    set {
+                        if (value != null) {
+                            PoliticalEntity = value;
+                        }
+                    }
+                }
             }
             public sealed record ToCreateForExistingOrganization : Resolved, NewNode
             {
@@ -188,7 +209,14 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
                 public override string OrganizationName => Organization.Name;
                 public override string PoliticalEntityName => PoliticalEntity.Name;
                 public override OrganizationItem? OrganizationItem => Organization;
-                public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
+                public override PoliticalEntityListItem? PoliticalEntityItem {
+                    get => PoliticalEntity;
+                    set {
+                        if (value != null) {
+                            PoliticalEntity = value;
+                        }
+                    }
+                }
             }
         }
         public sealed record ToCreateForNewOrganization : Complete, NewNode
@@ -211,7 +239,14 @@ public abstract record OrganizationPoliticalEntityRelation : Relation
             public override string OrganizationName => Organization.Name;
             public override string PoliticalEntityName => PoliticalEntity.Name;
             public override OrganizationItem? OrganizationItem => Organization;
-            public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
+            public override PoliticalEntityListItem? PoliticalEntityItem {
+                get => PoliticalEntity;
+                set {
+                    if (value != null) {
+                        PoliticalEntity = value;
+                    }
+                }
+            }
 
         }
     }

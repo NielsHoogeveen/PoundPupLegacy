@@ -1,4 +1,6 @@
-﻿@inherits EditorDetailBase
+﻿
+@inherits EditorDetailBase
+
 <div class="organization-fields">
     <div class="form-group">
         <label>Website</label>
@@ -21,17 +23,17 @@
 <InterOrganizationalRelationsEditor 
     @bind-RelationsFrom="OrganizationDetails.InterOrganizationalRelationsFrom"
     @bind-RelationsTo="OrganizationDetails.InterOrganizationalRelationsTo"
-    RelationTypes="OrganizationDetails.InterOrganizationalRelationTypes" 
+    RelationTypes="OrganizationDetails.InterOrganizationalRelationTypes"
     OrganizationItem="OrganizationDetails.OrganizationItem"
     Tenants="Tenants"
-    @ref=InterOrganizationalRelationsEditor
-    />
+    @ref=InterOrganizationalRelationsEditor />
 <OrganizationPoliticalEntityRelationsEditor 
     PartyTypeName="organization"
     Organization="OrganizationDetails.OrganizationItem"
-    Relations="OrganizationDetails.OrganizationPoliticalEntityRelations"
+    @bind-Relations="OrganizationDetails.OrganizationPoliticalEntityRelations"
     RelationTypes="OrganizationDetails.OrganizationPoliticalEntityRelationTypes"
-    Tenants="Tenants" />
+    Tenants="Tenants"
+    @ref=OrganizationPoliticalEntityRelationsEditor />
 <PersonOrganizationRelationsEditorForOrganization 
     Organization="OrganizationDetails.OrganizationItem"
     @bind-Relations="OrganizationDetails.PersonOrganizationRelations"
@@ -50,10 +52,12 @@
 
     private InterOrganizationalRelationsEditor InterOrganizationalRelationsEditor { get; set;  } = default!;
     private PersonOrganizationRelationsEditorForOrganization PersonOrganizationRelationsEditor { get; set; } = default!;
+    private OrganizationPoliticalEntityRelationsEditor OrganizationPoliticalEntityRelationsEditor { get; set; } = default!;
 
     public override async Task<List<System.ComponentModel.DataAnnotations.ValidationResult>> Validate()
     {
         PersonOrganizationRelationsEditor?.Validate();
+        OrganizationPoliticalEntityRelationsEditor?.Validate();
         return await Task.FromResult(new List<System.ComponentModel.DataAnnotations.ValidationResult>());
     }
 
@@ -73,6 +77,9 @@
         };
         foreach (var relation in OrganizationDetails.PersonOrganizationRelations.OfType<PersonOrganizationRelation.ForOrganization.Complete.Resolved.ToCreate>()) {
             relation.Organization.Name = title;
+        };
+        foreach (var relation in OrganizationDetails.OrganizationPoliticalEntityRelations.OfType<OrganizationPoliticalEntityRelation.Complete>()) {
+            relation.OrganizationItem!.Name = title;
         };
         StateHasChanged();
     }

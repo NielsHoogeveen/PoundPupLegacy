@@ -8,6 +8,7 @@ internal class InterPersonalToCreateForNewRelationToMapper(
     {
         foreach (var relation in source) {
             var now = DateTime.Now;
+            relation.NodeDetails.Title = $"{relation.PersonToName} {relation.InterPersonalRelationType.Name.ToLower()} {relation.PersonFromName}";
             yield return new DomainModel.InterPersonalRelation.ToCreate.ForNewPersonTo {
                 Identification = new Identification.Possible {
                     Id = null,

@@ -38,6 +38,7 @@ public static class PersonOrganizationRelationExtensions
             Person = null,
             Organization = organizationName,
             PersonOrganizationRelationType = relationType,
+            GeographicalEntity = null,
             RelationDetails = RelationDetails.EmptyInstance,
             NodeDetailsForCreate = NodeDetails.EmptyInstance(48, "person organization relation", ownerId, publisherId, tenants)
         };
@@ -48,6 +49,7 @@ public static class PersonOrganizationRelationExtensions
             Person = personListItem,
             Organization = null,
             PersonOrganizationRelationType = relationType,
+            GeographicalEntity = null,
             RelationDetails = RelationDetails.EmptyInstance,
             NodeDetailsForCreate = NodeDetails.EmptyInstance(48,"person organization relation", ownerId, publisherId, tenants)
         };
@@ -58,6 +60,7 @@ public static class PersonOrganizationRelationExtensions
             Person = personName,
             Organization = null,
             PersonOrganizationRelationType = relationType,
+            GeographicalEntity = null,
             RelationDetails = RelationDetails.EmptyInstance,
             NodeDetailsForCreate = NodeDetails.EmptyInstance(48, "person organization relation", ownerId, publisherId, tenants)
         };
@@ -70,8 +73,7 @@ public abstract record PersonOrganizationRelation : Relation
     public required RelationDetails RelationDetails { get; init; }
     public abstract NodeDetails NodeDetails { get; }
     public required PersonOrganizationRelationTypeListItem PersonOrganizationRelationType { get; set; }
-    public GeographicalEntityListItem? GeographicalEntity { get; set; }
-
+    public required GeographicalEntityListItem? GeographicalEntity { get; set; }
     public abstract record ForOrganization : PersonOrganizationRelation
     {
         private ForOrganization() { }

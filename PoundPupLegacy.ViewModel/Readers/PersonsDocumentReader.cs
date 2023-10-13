@@ -97,6 +97,7 @@ internal sealed class PersonsDocumentReaderFactory : SingleItemDatabaseReaderFac
                 join node n on n.id = p.id
                 where tn.tenant_id = @tenant_id
                 and n.title ilike @pattern
+                order by n.title
             ) x 
             where status = 1
             limit @limit offset @offset

@@ -1088,7 +1088,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         			    join organization o2 on o2.id = n2.id
         			    join tenant_node tn1 on tn1.node_id = o1.id and tn1.tenant_id = @tenant_id and tn1.url_id = @url_id
         			    join tenant_node tn2 on tn2.node_id = o2.id and tn2.tenant_id = @tenant_id
-        			    join tenant_node tn3 on tn3.node_id = rt.id and tn2.tenant_id = @tenant_id
+        			    join tenant_node tn3 on tn3.node_id = rt.id and tn3.tenant_id = @tenant_id
         			    left join (
         				    select 
         				    tn.url_id,
@@ -1129,7 +1129,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         			    join organization o2 on o2.id = n2.id
         			    join tenant_node tn1 on tn1.node_id = o1.id and tn1.tenant_id = @tenant_id
         			    join tenant_node tn2 on tn2.node_id = o2.id and tn2.tenant_id = @tenant_id and tn2.url_id = @url_id
-        			    join tenant_node tn3 on tn3.node_id = rt.id and tn2.tenant_id = @tenant_id
+        			    join tenant_node tn3 on tn3.node_id = rt.id and tn3.tenant_id = @tenant_id
         			    left join (
         				    select 
         				    tn.url_id,
@@ -1170,7 +1170,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         			    join organization o2 on o2.id = n2.id
         			    join tenant_node tn1 on tn1.node_id = o1.id and tn1.tenant_id = @tenant_id and tn1.url_id = @url_id
         			    join tenant_node tn2 on tn2.node_id = o2.id and tn2.tenant_id = @tenant_id 
-        			    join tenant_node tn3 on tn3.node_id = rt.id and tn2.tenant_id = @tenant_id
+        			    join tenant_node tn3 on tn3.node_id = rt.id and tn3.tenant_id = @tenant_id
         			    left join (
         				    select 
         				    tn.url_id,
@@ -1211,7 +1211,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         			    join organization o2 on o2.id = n2.id
         			    join tenant_node tn1 on tn1.node_id = o1.id and tn1.tenant_id = @tenant_id 
         			    join tenant_node tn2 on tn2.node_id = o2.id and tn2.tenant_id = @tenant_id and tn2.url_id = @url_id
-        			    join tenant_node tn3 on tn3.node_id = rt.id and tn2.tenant_id = @tenant_id
+        			    join tenant_node tn3 on tn3.node_id = rt.id and tn3.tenant_id = @tenant_id
         			    left join (
         				    select 
         				    tn.url_id,
@@ -1231,8 +1231,8 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         inter_personal_relation_document as(
             select
                 jsonb_agg(jsonb_build_object(
-        	        'PersonFrom', person_from,
-        	        'PersonTo', person_to,
+        	        'PersonFrom', person_to,
+        	        'PersonTo', person_from,
         	        'InterPersonalRelationType', inter_personal_relation_type,
         	        'DateFrom', lower(date_range),
                     'DateTo', upper(date_range),
@@ -1297,7 +1297,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         			    join person o2 on o2.id = n2.id
         			    join tenant_node tn1 on tn1.node_id = o1.id and tn1.tenant_id = @tenant_id and tn1.url_id = @url_id
         			    join tenant_node tn2 on tn2.node_id = o2.id and tn2.tenant_id = @tenant_id
-        			    join tenant_node tn3 on tn3.node_id = rt.id and tn2.tenant_id = @tenant_id
+        			    join tenant_node tn3 on tn3.node_id = rt.id and tn3.tenant_id = @tenant_id
         			    where rt.is_symmetric
         			    union 
         			    select
@@ -1323,7 +1323,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         			    join person o2 on o2.id = n2.id
         			    join tenant_node tn1 on tn1.node_id = o1.id and tn1.tenant_id = @tenant_id
         			    join tenant_node tn2 on tn2.node_id = o2.id and tn2.tenant_id = @tenant_id and tn2.url_id = @url_id
-        			    join tenant_node tn3 on tn3.node_id = rt.id and tn2.tenant_id = @tenant_id
+        			    join tenant_node tn3 on tn3.node_id = rt.id and tn3.tenant_id = @tenant_id
         			    where rt.is_symmetric
         			    union 
         			    select
@@ -1349,7 +1349,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         			    join person o2 on o2.id = n2.id
         			    join tenant_node tn1 on tn1.node_id = o1.id and tn1.tenant_id = @tenant_id and tn1.url_id = @url_id
         			    join tenant_node tn2 on tn2.node_id = o2.id and tn2.tenant_id = @tenant_id 
-        			    join tenant_node tn3 on tn3.node_id = rt.id and tn2.tenant_id = @tenant_id
+        			    join tenant_node tn3 on tn3.node_id = rt.id and tn3.tenant_id = @tenant_id
         			    where not rt.is_symmetric
         			    union 
         			    select
@@ -1375,7 +1375,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         			    join person o2 on o2.id = n2.id
         			    join tenant_node tn1 on tn1.node_id = o1.id and tn1.tenant_id = @tenant_id 
         			    join tenant_node tn2 on tn2.node_id = o2.id and tn2.tenant_id = @tenant_id and tn2.url_id = @url_id
-        			    join tenant_node tn3 on tn3.node_id = rt.id and tn2.tenant_id = @tenant_id
+        			    join tenant_node tn3 on tn3.node_id = rt.id and tn3.tenant_id = @tenant_id
         			    where not rt.is_symmetric
         		    ) x
         	    ) x

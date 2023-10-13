@@ -1,21 +1,24 @@
 ﻿@inherits EditorDetailBase
 <InterPersonalRelationsEditor 
-    RelationsFrom="PersonDetails.InterPersonalRelationsFrom.ToList()" 
-    RelationsTo="PersonDetails.InterPersonalRelationsTo.ToList()" 
+    @bind-RelationsFrom="PersonDetails.InterPersonalRelationsFrom" 
+    @bind-RelationsTo="PersonDetails.InterPersonalRelationsTo" 
     RelationTypes="PersonDetails.InterPersonalRelationTypes" 
     Tenants="Tenants"
-    PersonItem="Person"/>
+    PersonItem="Person"
+    @ref=_interPersonalRelationsEditor/>
 <PersonPoliticalEntityRelationsEditor 
     PartyTypeName="person"
     Person="Person"
-    Relations="PersonDetails.PersonPoliticalEntityRelations.ToList()"
+    @bind-Relations="PersonDetails.PersonPoliticalEntityRelations"
     Tenants="Tenants"
-    RelationTypes="PersonDetails.PersonPoliticalEntityRelationTypes" />
+    RelationTypes="PersonDetails.PersonPoliticalEntityRelationTypes" 
+    @ref=_personPoliticalEntityRelationsEditor/>
 <PersonOrganizationRelationsEditorForPerson 
     Person="Person"
-    Relations="PersonDetails.PersonOrganizationRelations.ToList()"
+    @bind-Relations="PersonDetails.PersonOrganizationRelations"
     Tenants="Tenants"
-    RelationTypes="PersonDetails.PersonOrganizationRelationTypes" />
+    RelationTypes="PersonDetails.PersonOrganizationRelationTypes" 
+    @ref=_personOrganizationRelationsEditor/>
 
 @code {
     [Parameter]
@@ -26,6 +29,10 @@
     [EditorRequired]
     public List<TenantDetails> Tenants { get; set; } = default!;
 
+    private InterPersonalRelationsEditor? _interPersonalRelationsEditor = null;
+    private PersonOrganizationRelationsEditorForPerson? _personOrganizationRelationsEditor = null;
+    private PersonPoliticalEntityRelationsEditor? _personPoliticalEntityRelationsEditor = null;
+    
     public override async Task<List<System.ComponentModel.DataAnnotations.ValidationResult>> Validate()
     {
         return await Task.FromResult(new List<System.ComponentModel.DataAnnotations.ValidationResult>());

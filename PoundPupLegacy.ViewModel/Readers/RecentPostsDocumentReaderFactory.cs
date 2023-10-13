@@ -107,6 +107,7 @@ internal sealed class RecentPostsDocumentReaderFactory : SingleItemDatabaseReade
         	        join publisher p on p.id = n.publisher_id
         	        join node_type nt on nt.id = n.node_type_id
                     where tn.tenant_id = @tenant_id
+                    and n.node_type_id not in (45,46,47,48,49)
         	        order by n.changed_date_time desc
                 ) x
                 where status <> -1

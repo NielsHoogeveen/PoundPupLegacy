@@ -78,7 +78,8 @@ public abstract record PersonDetails
         public required List<InterPersonalRelation.ToCreate.ForExistingParticipants> InterPersonalRelationsToToCreate { get; init; }
         public required List<PartyPoliticalEntityRelation.ToCreate.ForExistingParty> PartyPoliticalEntityRelationsToCreate { get; init; }
         public required List<PersonOrganizationRelation.ToCreate.ForExistingParticipants> PersonOrganizationRelationsToCreate { get; init; }
-        public required List<InterPersonalRelation.ToUpdate> InterPersonalRelationToUpdates { get; init; }
+        public required List<InterPersonalRelation.ToUpdate> InterPersonalRelationFromToUpdate { get; init; }
+        public required List<InterPersonalRelation.ToUpdate> InterPersonalRelationToToUpdate { get; init; }
         public required List<PartyPoliticalEntityRelation.ToUpdate> PartyPoliticalEntityRelationToUpdate { get; init; }
         public required List<PersonOrganizationRelation.ToUpdate> PersonOrganizationRelationsToUpdates { get; init; }
         public required List<ProfessionalRoleToCreateForNewPerson> ProfessionalRolesToCreate { get; init; }

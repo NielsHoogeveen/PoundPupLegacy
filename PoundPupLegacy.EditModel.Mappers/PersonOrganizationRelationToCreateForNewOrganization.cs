@@ -7,6 +7,7 @@ internal class PersonOrganizationRelationToCreateForNewOrganization(
     public IEnumerable<DomainModel.PersonOrganizationRelation.ToCreate.ForNewOrganization> Map(IEnumerable<PersonOrganizationRelation.ForOrganization.Complete.ToCreateForNewOrganization> source)
     {
         foreach (var element in source) {
+            element.NodeDetails.Title = $"{element.PersonName} {element.PersonOrganizationRelationType.Name.ToLower()} {element.OrganizationName}";
             yield return new DomainModel.PersonOrganizationRelation.ToCreate.ForNewOrganization {
                 Identification = new Identification.Possible {
                     Id = null,

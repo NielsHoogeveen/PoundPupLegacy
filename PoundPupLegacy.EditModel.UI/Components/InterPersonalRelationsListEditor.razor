@@ -29,10 +29,10 @@
                     @relation.PersonToName
                 </div>
                 <div class="@classString">
-                    @relation.RelationDetails.DateFrom
+                    @relation.RelationDetails.DateFrom?.ToString("yyyy MMM dd")
                 </div>
                 <div class="@classString">
-                    @relation.RelationDetails.DateTo
+                    @relation.RelationDetails.DateTo?.ToString("yyyy MMM dd")
                 </div>
                 <div class="@classString">
                     @if (!relation.RelationDetails.HasBeenDeleted)

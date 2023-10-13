@@ -8,6 +8,7 @@ IMapper<NodeDetails.ForCreate, DomainModel.NodeDetails.ForCreate> nodeDetailMapp
     {
         foreach (var relation in source) {
             var now = DateTime.Now;
+            relation.NodeDetails.Title = $"{relation.PersonToName} {relation.InterPersonalRelationType.Name.ToLower()} {relation.PersonFromName}";
             yield return new DomainModel.InterPersonalRelation.ToCreate.ForExistingParticipants {
                 Identification = new Identification.Possible {
                     Id = null,

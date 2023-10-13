@@ -38,10 +38,10 @@
                     @relation.PoliticalEntityName
                 </div>
                 <div class="@classString">
-                    @relation.RelationDetails.DateFrom
+                    @relation.RelationDetails.DateFrom?.ToString("yyyy MMM dd")
                 </div>
                 <div class="@classString">
-                    @relation.RelationDetails.DateTo
+                    @relation.RelationDetails.DateTo?.ToString("yyyy MMM dd")
                 </div>
                 <div class="@classString">
                     @if (!relation.RelationDetails.HasBeenDeleted) {
@@ -63,8 +63,10 @@
 </div>
 @code {
     [Parameter]
-    [EditorRequired]
     public List<OrganizationPoliticalEntityRelation.Complete> Relations { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<List<OrganizationPoliticalEntityRelation.Complete>> RelationsChanged { get; set; }
 
     [Parameter]
     [EditorRequired]
@@ -85,6 +87,13 @@
     private OrganizationPoliticalEntityRelationEditorDialog? dialog;
 
     private OrganizationPoliticalEntityRelation? _relationToEdit = null;
+
+    public override async Task SetParametersAsync(ParameterView parameters)
+    {
+        if (RelationTypes is null) {
+            await base.SetParametersAsync(parameters);
+        }
+    }
 
     public override async Task<List<System.ComponentModel.DataAnnotations.ValidationResult>> Validate()
     {
@@ -117,7 +126,13 @@
             var relation = dialog.GetValidRelation();
             if (relation is null)
                 return;
-            Relations.Add(relation);
+            if (_relationToEdit is OrganizationPoliticalEntityRelation.Complete re)
+            {
+                Relations.Remove(re);
+                Relations.Add(relation);
+            }else{
+                Relations.Add(relation);
+            }
         }
         _relationToEdit = null;
         StateHasChanged();

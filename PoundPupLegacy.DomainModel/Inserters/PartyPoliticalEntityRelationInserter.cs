@@ -9,6 +9,7 @@ internal sealed class PartyPoliticalEntityRelationInserterFactory : Identifiable
     private static readonly NullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
     private static readonly NonNullableIntegerDatabaseParameter PartyPoliticalEntityRelationTypeId = new() { Name = "party_political_entity_relation_type_id" };
     private static readonly NullableIntegerDatabaseParameter DocumentIdProof = new() { Name = "document_id_proof" };
+    private static readonly NullableStringDatabaseParameter Description = new() { Name = "description" };
 
     public override string TableName => "party_political_entity_relation";
 
@@ -20,6 +21,7 @@ internal sealed class PartyPoliticalEntityRelationInserterFactory : Identifiable
             ParameterValue.Create(PartyPoliticalEntityRelationTypeId, request.PartyPoliticalEntityRelationDetails.PartyPoliticalEntityRelationTypeId),
             ParameterValue.Create(DateRange, request.PartyPoliticalEntityRelationDetails.DateRange),
             ParameterValue.Create(DocumentIdProof,request.PartyPoliticalEntityRelationDetails.DocumentIdProof),
+            ParameterValue.Create(Description,request.PartyPoliticalEntityRelationDetails.Description),
         };
     }
 }

@@ -42,11 +42,16 @@
 
 @code {
     [Parameter]
-    [EditorRequired]
     public List<InterPersonalRelation.From.Complete> RelationsFrom { get; set; } = default!;
+
     [Parameter]
-    [EditorRequired]
+    public EventCallback<List<InterPersonalRelation.From.Complete>> RelationsFromChanged { get; set; } = default!;
+
+    [Parameter]
     public List<InterPersonalRelation.To.Complete> RelationsTo { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback<List<InterPersonalRelation.To.Complete>> RelationsToChanged { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
@@ -59,6 +64,13 @@
     [Parameter]
     [EditorRequired]
     public List<TenantDetails> Tenants { get; set; } = default!;
+
+    public override async Task SetParametersAsync(ParameterView parameters)
+    {
+        if (RelationTypes is null) {
+            await base.SetParametersAsync(parameters);
+        }
+    }
 
     private RelationContext? relationContext = null;
 

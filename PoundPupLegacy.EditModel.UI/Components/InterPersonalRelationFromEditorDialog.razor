@@ -19,7 +19,7 @@
             <label for="relation-type">Relation type</label>
             <select id="relation-type" @onchange="OnChangeRelationType">
                 @foreach (var relationType in RelationTypes.OrderBy(x => x.Name)) {
-                    @if (relationType.Id == RelationType.Id) {
+                    @if (relationType.Id == RelationContext.RelationToEdit.InterPersonalRelationType.Id) {
                         <option selected value="@relationType.Id">@relationType.Name</option>
                     }
                     else {
@@ -28,7 +28,7 @@
                 }
             </select>
         </div>
-        @if (!RelationType.IsSymmetric) {
+        @if (!RelationContext.RelationToEdit.InterPersonalRelationType.IsSymmetric) {
             <button type="button" @onclick="() => Swap(RelationContext)">Swap To/From</button>
         }
 
@@ -78,7 +78,6 @@
     [EditorRequired]
     public Action<InterPersonalRelationsEditor.RelationContext> Swap { get; set; } = default!;
 
-    private InterPersonalRelationTypeListItem RelationType { get; set; } = default!;
     private EditContext? editContext;
     private ValidationMessageStore? validationMessageStore;
 
@@ -87,14 +86,13 @@
     {
         editContext = new EditContext(RelationContext.RelationToEdit);
         validationMessageStore = new ValidationMessageStore(editContext);
-        RelationType = RelationTypes.First(x => x.Id == RelationContext.RelationToEdit.InterPersonalRelationType.Id);
     }
 
     private void OnChangeRelationType(ChangeEventArgs args)
     {
         if (args.Value is not null && args.Value is string str) {
             if (int.TryParse(str, out var typeId)) {
-                RelationType = RelationTypes.First(x => x.Id == typeId);
+                RelationContext.RelationToEdit.InterPersonalRelationType = RelationTypes.First(x => x.Id == typeId);
                 StateHasChanged();
             }
         }

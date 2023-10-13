@@ -203,7 +203,7 @@ public abstract record OrganizationDetails
     public abstract OrganizationItem OrganizationItem { get; }
     public abstract List<PersonOrganizationRelation.ForOrganization.Complete> PersonOrganizationRelations { get; set; }
     public required List<PersonOrganizationRelationTypeListItem> PersonOrganizationRelationTypes { get; init; }
-    public abstract List<OrganizationPoliticalEntityRelation.Complete> OrganizationPoliticalEntityRelations { get; }
+    public abstract List<OrganizationPoliticalEntityRelation.Complete> OrganizationPoliticalEntityRelations { get; set; }
     public required List<OrganizationPoliticalEntityRelationTypeListItem> OrganizationPoliticalEntityRelationTypes { get; init; }
 
     public abstract List<InterOrganizationalRelation.From.Complete> InterOrganizationalRelationsFrom { get; set; }
@@ -225,7 +225,22 @@ public abstract record OrganizationDetails
                 }
             }
         }
-        public override List<OrganizationPoliticalEntityRelation.Complete> OrganizationPoliticalEntityRelations => GetOrganizationPoliticalEntityRelations().ToList();
+
+        private List<OrganizationPoliticalEntityRelation.Complete>? _organizationPoliticalEntityRelations = null;
+        public override List<OrganizationPoliticalEntityRelation.Complete> OrganizationPoliticalEntityRelations { 
+            get {
+                if (_organizationPoliticalEntityRelations is null) {
+                    _organizationPoliticalEntityRelations = GetOrganizationPoliticalEntityRelations().ToList();
+                }
+                return _organizationPoliticalEntityRelations;
+            }
+            set {
+                if(value is not null) {
+                       _organizationPoliticalEntityRelations = value;
+                }
+            }
+            
+        }
         private IEnumerable<OrganizationPoliticalEntityRelation.Complete> GetOrganizationPoliticalEntityRelations()
         {
             foreach (var elem in OrganizationPoliticalEntityRelationsToUpdate) {
@@ -320,10 +335,10 @@ public abstract record OrganizationDetails
             }
         }
 
-        private List<PersonOrganizationRelation.ForOrganization.Complete> _personOrganizationRelations = new();
+        private List<PersonOrganizationRelation.ForOrganization.Complete>? _personOrganizationRelations = null;
         public override List<PersonOrganizationRelation.ForOrganization.Complete> PersonOrganizationRelations {
             get {
-                if (!_personOrganizationRelations.Any()) {
+                if (_personOrganizationRelations is null) {
                     _personOrganizationRelations = GetPersonOrganizationRelations().ToList();
                 }
                 return _personOrganizationRelations;
@@ -354,7 +369,22 @@ public abstract record OrganizationDetails
     {
         public required OrganizationName OrganizationName { get; init; }
         public override OrganizationItem OrganizationItem => OrganizationName;
-        public override List<OrganizationPoliticalEntityRelation.Complete> OrganizationPoliticalEntityRelations => GetOrganizationPoliticalEntityRelations().ToList();
+
+        private List<OrganizationPoliticalEntityRelation.Complete>? _organizationPoliticalEntityRelations = null;
+        public override List<OrganizationPoliticalEntityRelation.Complete> OrganizationPoliticalEntityRelations {
+            get {
+                if (_organizationPoliticalEntityRelations is null) {
+                    _organizationPoliticalEntityRelations = GetOrganizationPoliticalEntityRelations().ToList();
+                }
+                return _organizationPoliticalEntityRelations;
+            }
+            set {
+                if (value is not null) {
+                    _organizationPoliticalEntityRelations = value;
+                }
+            }
+        }
+
         private List<InterOrganizationalRelation.From.Complete>? interOrganizationalRelationsFrom = null;
         public override List<InterOrganizationalRelation.From.Complete> InterOrganizationalRelationsFrom {
             get {
@@ -383,10 +413,10 @@ public abstract record OrganizationDetails
                 }
             }
         }
-        private List<PersonOrganizationRelation.ForOrganization.Complete> _personOrganizationRelations = new();
+        private List<PersonOrganizationRelation.ForOrganization.Complete>? _personOrganizationRelations = null;
         public override List<PersonOrganizationRelation.ForOrganization.Complete> PersonOrganizationRelations {
             get {
-                if (!_personOrganizationRelations.Any()) {
+                if (_personOrganizationRelations is null) {
                     _personOrganizationRelations = GetPersonOrganizationRelationsToCreate().ToList();
                 }
                 return _personOrganizationRelations;

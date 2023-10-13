@@ -28,7 +28,7 @@ public sealed record RelationDetails
     public DateTimeRange? DateRange {
         get {
             if (!_dateRangeIsSet) {
-                if (DateFrom is not null && DateTo is not null) {
+                if (DateFrom is not null || DateTo is not null) {
                     _dateRange = new DateTimeRange(DateFrom, DateTo);
                 }
                 else {

@@ -39,7 +39,7 @@ public abstract record PersonPoliticalEntityRelation : Relation
      );
 
     public abstract PersonItem? PersonItem { get; }
-    public abstract PoliticalEntityListItem? PoliticalEntityItem { get; }
+    public abstract PoliticalEntityListItem? PoliticalEntityItem { get; set; }
     public abstract record Incomplete : PersonPoliticalEntityRelation
     {
         private Incomplete() { }
@@ -58,7 +58,14 @@ public abstract record PersonPoliticalEntityRelation : Relation
             public required PersonName Person { get; set; }
             public required PoliticalEntityListItem? PoliticalEntity { get; set; }
             public override PersonItem? PersonItem => Person;
-            public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
+            public override PoliticalEntityListItem? PoliticalEntityItem {
+                get => PoliticalEntity;
+                set {
+                    if (value != null) {
+                        PoliticalEntity = value;
+                    }
+                }
+            }
             public override Complete GetCompletedRelation(PoliticalEntityListItem politicalEntity)
             {
                 return new Complete.ToCreateForNewPerson {
@@ -75,7 +82,14 @@ public abstract record PersonPoliticalEntityRelation : Relation
             public required PersonListItem Person { get; set; }
             public required PoliticalEntityListItem? PoliticalEntity { get; set; }
             public override PersonItem? PersonItem => Person;
-            public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
+            public override PoliticalEntityListItem? PoliticalEntityItem {
+                get => PoliticalEntity;
+                set {
+                    if (value != null) {
+                        PoliticalEntity = value;
+                    }
+                }
+            }
             public override Complete GetCompletedRelation(PoliticalEntityListItem politicalEntity)
             {
                 return new Complete.Resolved.ToCreateForExistingPerson {
@@ -117,7 +131,14 @@ public abstract record PersonPoliticalEntityRelation : Relation
                 public override string PersonName => Party.Name;
                 public override string PoliticalEntityName => PoliticalEntity.Name;
                 public override PersonItem? PersonItem => Party;
-                public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
+                public override PoliticalEntityListItem? PoliticalEntityItem {
+                    get => PoliticalEntity;
+                    set {
+                        if (value != null) {
+                            PoliticalEntity = value;
+                        }
+                    }
+                }
             }
             public sealed record ToCreateForExistingPerson : Resolved, NewNode
             {
@@ -128,7 +149,14 @@ public abstract record PersonPoliticalEntityRelation : Relation
                 public override string PersonName => Person.Name;
                 public override string PoliticalEntityName => PoliticalEntity.Name;
                 public override PersonItem? PersonItem => Person;
-                public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
+                public override PoliticalEntityListItem? PoliticalEntityItem {
+                    get => PoliticalEntity;
+                    set {
+                        if (value != null) {
+                            PoliticalEntity = value;
+                        }
+                    }
+                }
             }
         }
         public sealed record ToCreateForNewPerson : Complete, NewNode
@@ -140,7 +168,14 @@ public abstract record PersonPoliticalEntityRelation : Relation
             public override string PersonName => Person.Name;
             public override string PoliticalEntityName => PoliticalEntity.Name;
             public override PersonItem? PersonItem => Person;
-            public override PoliticalEntityListItem? PoliticalEntityItem => PoliticalEntity;
+            public override PoliticalEntityListItem? PoliticalEntityItem {
+                get => PoliticalEntity;
+                set {
+                    if (value != null) {
+                        PoliticalEntity = value;
+                    }
+                }
+            }
         }
     }
 }

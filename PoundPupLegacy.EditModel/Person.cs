@@ -162,15 +162,15 @@ public abstract record Person: Locatable, ResolvedNode, Node<Person.ToUpdate, Pe
 public abstract record PersonDetails
 {
     public required string Name { get; init; }
-    public abstract IEnumerable<PersonPoliticalEntityRelation.Complete> PersonPoliticalEntityRelations { get; }
+    public abstract List<PersonPoliticalEntityRelation.Complete> PersonPoliticalEntityRelations { get; set; }
     public required List<PersonPoliticalEntityRelationTypeListItem> PersonPoliticalEntityRelationTypes { get; init; }
-    public abstract IEnumerable<InterPersonalRelation.From.Complete> InterPersonalRelationsFrom { get; }
-    public abstract IEnumerable<InterPersonalRelation.To.Complete> InterPersonalRelationsTo { get; }
+    public abstract List<InterPersonalRelation.From.Complete> InterPersonalRelationsFrom { get; set; }
+    public abstract List<InterPersonalRelation.To.Complete> InterPersonalRelationsTo { get; set; }
     public required List<InterPersonalRelationTypeListItem> InterPersonalRelationTypes { get; init; }
-    public abstract IEnumerable<PersonOrganizationRelation.ForPerson.Complete> PersonOrganizationRelations { get; }
+    public abstract List<PersonOrganizationRelation.ForPerson.Complete> PersonOrganizationRelations { get; set; }
     public required List<PersonOrganizationRelationTypeListItem> PersonOrganizationRelationTypes { get; init; }
 
-    public sealed record ForUpdate: PersonDetails
+    public sealed record ForUpdate : PersonDetails
     {
         private List<PersonPoliticalEntityRelation.Complete.Resolved.ToUpdate> existingPersonPoliticalEntityRelations = new();
         public List<PersonPoliticalEntityRelation.Complete.Resolved.ToUpdate> PartyPoliticalEntityRelationsToUpdate {
@@ -181,7 +181,20 @@ public abstract record PersonDetails
                 }
             }
         }
-        public override IEnumerable<PersonPoliticalEntityRelation.Complete> PersonPoliticalEntityRelations => GetPersonPoliticalEntityRelations();
+        private List<PersonPoliticalEntityRelation.Complete>? _personPoliticalEntityRelations = null;
+        public override List<PersonPoliticalEntityRelation.Complete> PersonPoliticalEntityRelations {
+            get {
+                if (_personPoliticalEntityRelations is null) {
+                    _personPoliticalEntityRelations = GetPersonPoliticalEntityRelations().ToList();
+                }
+                return _personPoliticalEntityRelations;
+            }
+            set {
+                if (value is not null) {
+                    _personPoliticalEntityRelations = value;
+                }
+            }
+        }
         private IEnumerable<PersonPoliticalEntityRelation.Complete> GetPersonPoliticalEntityRelations()
         {
             foreach (var elem in PartyPoliticalEntityRelationsToUpdate) {
@@ -218,7 +231,21 @@ public abstract record PersonDetails
                 }
             }
         }
-        public override IEnumerable<InterPersonalRelation.From.Complete> InterPersonalRelationsFrom => GetInterPersonalRelationsFrom();
+        private List<InterPersonalRelation.From.Complete>? _interPersonalRelationsFrom = null;
+        public override List<InterPersonalRelation.From.Complete> InterPersonalRelationsFrom {
+            get {
+                if (_interPersonalRelationsFrom is null) {
+                    _interPersonalRelationsFrom = GetInterPersonalRelationsFrom().ToList();
+                }
+                return _interPersonalRelationsFrom;
+            }
+            set {
+                if (value is not null) {
+                    _interPersonalRelationsFrom = value;
+
+                }
+            }
+        }
         private IEnumerable<InterPersonalRelation.From.Complete> GetInterPersonalRelationsFrom()
         {
             foreach (var elem in InterPersonalRelationsFromToUpdate) {
@@ -228,7 +255,20 @@ public abstract record PersonDetails
                 yield return elem;
             }
         }
-        public override IEnumerable<InterPersonalRelation.To.Complete> InterPersonalRelationsTo => GetInterPersonalRelationsTo();
+        private List<InterPersonalRelation.To.Complete>? _interPersonalRelationsTo = null;
+        public override List<InterPersonalRelation.To.Complete> InterPersonalRelationsTo {
+            get {
+                if (_interPersonalRelationsTo is null) {
+                    _interPersonalRelationsTo = GetInterPersonalRelationsTo().ToList();
+                }
+                return _interPersonalRelationsTo;
+            }
+            set {
+                if (value is not null) {
+                    _interPersonalRelationsTo = value;
+                }
+            }
+        }
         private IEnumerable<InterPersonalRelation.To.Complete> GetInterPersonalRelationsTo()
         {
             foreach (var elem in InterPersonalRelationsToToUpdate) {
@@ -238,7 +278,20 @@ public abstract record PersonDetails
                 yield return elem;
             }
         }
-        public override IEnumerable<PersonOrganizationRelation.ForPerson.Complete> PersonOrganizationRelations => GetPersonOrganizationRelations();
+        private List<PersonOrganizationRelation.ForPerson.Complete>? _personOrganizationRelations = null;
+        public override List<PersonOrganizationRelation.ForPerson.Complete> PersonOrganizationRelations {
+            get {
+                if (_personOrganizationRelations is null) {
+                    _personOrganizationRelations = GetPersonOrganizationRelations().ToList();
+                }
+                return _personOrganizationRelations;
+            }
+            set {
+                if (value is not null) {
+                    _personOrganizationRelations = value;
+                }
+            }
+        }
         private IEnumerable<PersonOrganizationRelation.ForPerson.Complete> GetPersonOrganizationRelations()
         {
             foreach (var elem in PersonOrganizationRelationsToUpdate) {
@@ -252,7 +305,21 @@ public abstract record PersonDetails
         public List<InterPersonalRelation.From.Complete.Resolved.ToCreate> InterPersonalRelationsFromToCreate { get; set; } = new();
         public List<InterPersonalRelation.To.Complete.Resolved.ToCreate> InterPersonalRelationsToToCreate { get; set; } = new();
         public List<PersonOrganizationRelation.ForPerson.Complete.Resolved.ToCreate> PersonOrganizationRelationsToCreate { get; } = new();
-        public IEnumerable<InterPersonalRelation> InterPersonalRelations => GetInterPersonalRelations();
+        private List<InterPersonalRelation>? _interPersonalRelations = null;
+        public List<InterPersonalRelation> InterPersonalRelations {
+            get {
+                if(_interPersonalRelations is null) {
+                    _interPersonalRelations = GetInterPersonalRelations().ToList();
+                }
+                return _interPersonalRelations;
+            }
+            set {
+                if(value is not null) {
+                    _interPersonalRelations = value;
+                }
+            }
+            
+        }
         private IEnumerable<InterPersonalRelation> GetInterPersonalRelations()
         {
             foreach (var elem in InterPersonalRelationsFrom) {
@@ -267,14 +334,10 @@ public abstract record PersonDetails
 
     public sealed record ForCreate: PersonDetails
     {
-        public override IEnumerable<PersonPoliticalEntityRelation.Complete> PersonPoliticalEntityRelations => PersonPoliticalEntityRelationsToCreate;
-        public override IEnumerable<PersonOrganizationRelation.ForPerson.Complete> PersonOrganizationRelations => PersonOrganizationRelationsToCreate;
-        public override IEnumerable<InterPersonalRelation.From.Complete> InterPersonalRelationsFrom => InterPersonalRelationsFromToCreate;
-        public override IEnumerable<InterPersonalRelation.To.Complete> InterPersonalRelationsTo => InterPersonalRelationsToToCreate;
-        public List<PersonPoliticalEntityRelation.Complete.ToCreateForNewPerson> PersonPoliticalEntityRelationsToCreate { get; } = new();
-        public List<InterPersonalRelation.From.Complete.ToCreateForNewPerson> InterPersonalRelationsFromToCreate { get; set; } = new();
-        public List<InterPersonalRelation.To.Complete.ToCreateForNewPerson> InterPersonalRelationsToToCreate { get; set; } = new();
-        public List<PersonOrganizationRelation.ForPerson.Complete.Resolved.ToCreateForNewPerson> PersonOrganizationRelationsToCreate { get; } = new();
+        public override List<PersonPoliticalEntityRelation.Complete> PersonPoliticalEntityRelations { get; set; } = new();
+        public override List<PersonOrganizationRelation.ForPerson.Complete> PersonOrganizationRelations { get; set; } = new();
+        public override List<InterPersonalRelation.From.Complete> InterPersonalRelationsFrom { get; set; } = new();
+        public override List<InterPersonalRelation.To.Complete> InterPersonalRelationsTo { get; set; } = new();
 
     }
 

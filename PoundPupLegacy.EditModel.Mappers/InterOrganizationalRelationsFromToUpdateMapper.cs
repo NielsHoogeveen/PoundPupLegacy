@@ -9,6 +9,7 @@ internal class InterOrganizationalRelationsFromToUpdateMapper(
         foreach (var relation in source) {
             if (relation.RelationDetails.HasBeenDeleted)
                 continue;
+            relation.NodeDetails.Title = $"{relation.OrganizationFromName} {relation.InterOrganizationalRelationDetails.InterOrganizationalRelationType.Name.ToLower()} {relation.OrganizationToName}";
             yield return new DomainModel.InterOrganizationalRelation.ToUpdate {
                 Identification = new Identification.Certain {
                     Id = relation.NodeIdentification.NodeId,

@@ -51,7 +51,10 @@ public sealed class PersonChanger(
         foreach (var personOrganizationRelations in request.PersonDetails.PersonOrganizationRelationsToUpdates) {
             await personOrganizationRelationUpdater.UpdateAsync(personOrganizationRelations);
         }
-        foreach (var interPersonalRelations in request.PersonDetails.InterPersonalRelationToUpdates) {
+        foreach (var interPersonalRelations in request.PersonDetails.InterPersonalRelationFromToUpdate) {
+            await interPersonalRelationsUpdater.UpdateAsync(interPersonalRelations);
+        }
+        foreach (var interPersonalRelations in request.PersonDetails.InterPersonalRelationToToUpdate) {
             await interPersonalRelationsUpdater.UpdateAsync(interPersonalRelations);
         }
         foreach (var interPersonalRelations in request.PersonDetails.InterPersonalRelationsFromToCreate) {

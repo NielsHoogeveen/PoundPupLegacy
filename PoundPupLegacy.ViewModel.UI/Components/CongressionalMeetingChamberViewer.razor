@@ -43,8 +43,8 @@
                                 <tr>
                                     <td>@term.MemberType</td>
                                     <td><a href="@term.State.Path">@term.State.Title</a></td>
-                                        <td>@term.DateFrom?.ToString("yyyy MMMM dd")</td>
-                                        <td>@term.DateTo?.ToString("yyyy MMMM dd")</td>
+                                        <td>@term.DateFrom?.ToString("yyyy MMM dd")</td>
+                                        <td>@term.DateTo?.ToString("yyyy MMM dd")</td>
                                 </tr>
                             }
                             </table>
@@ -57,8 +57,8 @@
                                 @foreach (var party in member.Parties.OrderBy(x => x.DateFrom)) {
                                     <tr>
                                         <td><a href="@party.Path">@party.Title</a></td>
-                                        <td>@party.DateFrom?.ToString("yyyy MMMM dd")</td>
-                                        <td>@party.DateTo?.ToString("yyyy MMMM dd")</td>
+                                        <td>@party.DateFrom?.ToString("yyyy MMM dd")</td>
+                                        <td>@party.DateTo?.ToString("yyyy MMM dd")</td>
                                     </tr>
                                 }
                             </table>

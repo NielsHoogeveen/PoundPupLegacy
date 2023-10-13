@@ -534,6 +534,16 @@ internal static class SharedSql
                             'Name',
                             person_organization_relation_type_name
                         ),
+                	    'GeographicalEntity',
+                        case 
+                            when geographical_entity_id is null then  null
+                            else jsonb_build_object(
+                                'Id',
+                                geographical_entity_id,
+                                'Name',
+                                geographical_entity_name
+                            )
+                        end,
                         'RelationDetails',
                         jsonb_build_object(
                 	        'ProofDocument',
@@ -544,16 +554,6 @@ internal static class SharedSql
                                     document_id_proof,
                                     'Name',
                                     document_title_proof
-                                )
-                            end,
-                	        'GeographicalEntity',
-                            case 
-                                when geographical_entity_id is null then  null
-                                else jsonb_build_object(
-                                    'Id',
-                                    geographical_entity_id,
-                                    'Name',
-                                    geographical_entity_name
                                 )
                             end,
                 	        'DateFrom',

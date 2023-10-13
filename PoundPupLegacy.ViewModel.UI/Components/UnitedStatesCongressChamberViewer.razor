@@ -7,7 +7,7 @@
     <div class="meetings">
         @foreach (var meeting in Model.Meetings.OrderByDescending(x => x.DateFrom)) {
             <a href="@meeting.Path">@meeting.Title</a>
-            <div>@meeting.DateFrom.ToString("yyyy MMMM dd") - @meeting.DateTo.ToString("yyyy MMMM dd")</div>
+            <div>@meeting.DateFrom.ToString("yyyy MMM dd") - @meeting.DateTo.ToString("yyyy MMM dd")</div>
         }
     </div>
 </div>

@@ -9,6 +9,7 @@ internal class PersonPoliticalEntityRelationToUpdate(
     public IEnumerable<PartyPoliticalEntityRelation.ToUpdate> Map(IEnumerable<PersonPoliticalEntityRelation.Complete.Resolved.ToUpdate> source)
     {
         foreach (var element in source) {
+            element.NodeDetails.Title = $"{element.PersonName} {element.PartyPoliticalEntityRelationType.Name.ToLower()} {element.PoliticalEntityName}";
             yield return new PartyPoliticalEntityRelation.ToUpdate {
                 Identification = new Identification.Certain {
                     Id = element.NodeIdentification.NodeId,
@@ -22,6 +23,7 @@ internal class PersonPoliticalEntityRelationToUpdate(
                     DocumentIdProof = element.RelationDetails.ProofDocument?.Id,
                     PartyPoliticalEntityRelationTypeId = element.PartyPoliticalEntityRelationType.Id,
                     PoliticalEntityId = element.PoliticalEntity.Id,
+                    Description = element.RelationDetails.Description,
                 }
             };
         }

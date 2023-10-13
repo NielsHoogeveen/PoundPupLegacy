@@ -9,6 +9,7 @@ internal class PersonPoliticalEntityRelationToCreateForNewPerson(
     public IEnumerable<PartyPoliticalEntityRelation.ToCreate.ForNewParty> Map(IEnumerable<PersonPoliticalEntityRelation.Complete.ToCreateForNewPerson> source)
     {
         foreach (var element in source) {
+            element.NodeDetails.Title = $"{element.PersonName} {element.PartyPoliticalEntityRelationType.Name.ToLower()} {element.PoliticalEntityName}";
             yield return new PartyPoliticalEntityRelation.ToCreate.ForNewParty {
                 Identification = new Identification.Possible {
                     Id = null,
@@ -20,7 +21,8 @@ internal class PersonPoliticalEntityRelationToCreateForNewPerson(
                         : element.RelationDetails.DateRange,
                     DocumentIdProof = element.RelationDetails.ProofDocument?.Id,
                     PartyPoliticalEntityRelationTypeId = element.PartyPoliticalEntityRelationType.Id,
-                    PoliticalEntityId = element.PoliticalEntity.Id
+                    PoliticalEntityId = element.PoliticalEntity.Id,
+                    Description = element.RelationDetails.Description,
                 }
             };
         }

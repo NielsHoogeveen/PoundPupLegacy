@@ -12,6 +12,7 @@ internal sealed class PartyPoliticalEntityRelationUpdaterFactory : DatabaseUpdat
     private static readonly NullableDateRangeDatabaseParameter DateRange = new() { Name = "date_range" };
     private static readonly NonNullableIntegerDatabaseParameter PartyPoliticalEntityRelationTypeId = new() { Name = "party_political_entity_relation_type_id" };
     private static readonly NullableIntegerDatabaseParameter DocumentIdProof = new() { Name = "document_id_proof" };
+    private static readonly NullableStringDatabaseParameter Description = new() { Name = "description" };
 
     public override string Sql => $"""
         update node 
@@ -24,7 +25,8 @@ internal sealed class PartyPoliticalEntityRelationUpdaterFactory : DatabaseUpdat
             party_id=@party_id,
             date_range=@date_range,
             party_political_entity_relation_type_id=@party_political_entity_relation_type_id,
-            document_id_proof=@document_id_proof
+            document_id_proof=@document_id_proof,
+            description = @description
         where id = @node_id;
         """;
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
@@ -37,6 +39,7 @@ internal sealed class PartyPoliticalEntityRelationUpdaterFactory : DatabaseUpdat
             ParameterValue.Create(PartyPoliticalEntityRelationTypeId, request.PartyPoliticalEntityRelationDetails.PartyPoliticalEntityRelationTypeId),
             ParameterValue.Create(DateRange, request.PartyPoliticalEntityRelationDetails.DateRange),
             ParameterValue.Create(DocumentIdProof,request.PartyPoliticalEntityRelationDetails.DocumentIdProof),
+            ParameterValue.Create(Description,request.PartyPoliticalEntityRelationDetails.Description),
         };
     }
 }
