@@ -58,9 +58,6 @@ public abstract class DatabaseValidatorBase
         var parameterValues = method.Invoke(accessor, new object[] { request }) as IEnumerable<ParameterValue>;
         Assert.NotNull(parameterValues);
         var usedDatabaseParameters = parameterValues.Select(x => x.DatabaseParameter);
-        if (!usedDatabaseParameters.All(x => databaseParameters.Contains(x))) {
-            Console.WriteLine(""); ;
-        }
         Assert.True(usedDatabaseParameters.All(x => databaseParameters.Contains(x)));
         Assert.True(databaseParameters.All(x => usedDatabaseParameters.Contains(x)));
         Assert.Equal(usedDatabaseParameters.Count(), databaseParameters.Count());
