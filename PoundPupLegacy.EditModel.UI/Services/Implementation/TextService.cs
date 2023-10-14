@@ -23,7 +23,7 @@ internal sealed class TextService : ITextService
             text = FormatText(text);
         }
         else {
-            text = text.Replace("/r", "").Replace("/n", "");
+            text = text.Replace("\r", "").Replace("\n", "");
         }
         var doc = new HtmlDocument();
         doc.LoadHtml(text);

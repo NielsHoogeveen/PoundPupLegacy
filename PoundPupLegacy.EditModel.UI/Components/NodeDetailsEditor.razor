@@ -7,6 +7,14 @@
 @Top
 <TagsEditor NodeTypesTags="Model.Tags.ToList()" />
 @Middle
+<div>
+    @if(Model is NodeDetails.ForUpdate fo){
+        <div class="field-group">
+            <label>Publisher</label>
+            <div>@fo.PublisherName</div>
+        </div>
+    }
+</div>
 <TenantNodesEditor 
     @bind-Model=Model.Tenants 
     ForCreate="Model.GetType() == typeof(NodeDetails.ForCreate)" />

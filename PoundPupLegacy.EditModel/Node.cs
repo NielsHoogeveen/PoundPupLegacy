@@ -107,6 +107,8 @@ public abstract record NodeDetails
     {
         public required int Id { get; init; }
 
+        public required string PublisherName { get; set; }
+
         private List<Tags.ToUpdate> tags = new();
         public override IEnumerable<Tags> Tags => TagsForUpdate;
         public List<Tags.ToUpdate> TagsForUpdate {

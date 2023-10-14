@@ -1455,6 +1455,8 @@ internal static class SharedSql
                     nt.id,
                     'PublisherId', 
                     @user_id,
+                    'PublisherName',
+                    p.name,
                     'OwnerId', 
                     @tenant_id,
                     'Title', 
@@ -1472,6 +1474,7 @@ internal static class SharedSql
                     )
                 ) document
             from node_type nt 
+            join publisher p on p.id = @user_id
             where nt.id = @node_type_id
         )
         """;
@@ -1488,6 +1491,8 @@ internal static class SharedSql
                     nt.id,
                     'PublisherId', 
                     n.publisher_id,
+                    'PublisherName',
+                    p.name,
                     'OwnerId', 
                     n.owner_id,
                     'Title', 
@@ -1506,6 +1511,7 @@ internal static class SharedSql
                 ) document,
                 n.id
             from node n
+            join publisher p on p.id = n.publisher_id
             join node_type nt on nt.id = n.node_type_id
         )
         """;
