@@ -1681,6 +1681,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         'PublicationDateTo', publication_date_to,
                         'SortOrder', sort_order
                     )
+                    order by sort_order desc nulls last
                 ) document
             from(
                 select
@@ -1688,7 +1689,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     title,
                     publication_date_from,
                     publication_date_to,
-                    row_number() over(order by sort_date desc) sort_order
+                    row_number() over(order by sort_date desc nulls last) sort_order
                 from(
                     select
                         case 
