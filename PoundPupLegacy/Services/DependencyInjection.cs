@@ -27,5 +27,6 @@ public static class DependencyInjection
         services.AddSingleton<INodeAccessService, NodeAccessService>();
         services.AddTransient<ITenantRefreshService, TenantRefreshService>();
         services.AddTransient<IDefaultCountryService, DefaultCountryService>();
+        services.AddTransient<ISiteMapService, SiteMapService>();
     }
 }

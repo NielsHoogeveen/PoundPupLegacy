@@ -2,30 +2,58 @@
 @using PoundPupLegacy.Admin.UI.Services
 @inherits ViewerBase
 @inject ITenantRetrieveService tenantRetrieveService
-<div class="admin">
+
 @if(Tenant is not null) {
-    <label>Domain name</label>
-    <div>@Tenant.DomainName</div>
-    <label>Default country</label>
-    <div>@Tenant.CountryNameDefault</div>
-    <label>Css file</label>
-    <div>@Tenant.CssFile</div>
-    <label>Footer text</label>
-    <div>@((MarkupString)Tenant.FooterText)</div>
-    <label>Frontpage text</label>
-    <div>@((MarkupString)Tenant.FrontPageText)</div>
-    <label>Subtitle</label>
-    <div>@Tenant.Subtitle</div>
-    <label>Logo</label>
-    <div>@Tenant.Logo</div>
+    <div class="editor-form">
+    <h1>Site administration</h1>
+    <EditForm EditContext="@editContext" OnSubmit="@Submit">
+
+        <div class="form-group">
+            <label for="domain-name">Domain name</label>
+            <InputText @bind-Value="Tenant.DomainName" id="domain-name" type="text" maxlength="255" />
+        </div>
+        <div class="form-group">
+            <label for="css-file">CSS file</label>
+            <InputText @bind-Value="Tenant.CssFile" id="css-file" type="text" maxlength="255" />
+        </div>
+        <div class="form-group">
+            <label for="subtitle">Subtitle</label>
+            <InputText @bind-Value="Tenant.Subtitle" id="subtitle" type="text" maxlength="255" />
+        </div>
+        <div class="form-group">
+            <label for="logo">Logo</label>
+            <InputText @bind-Value="Tenant.Logo" id="logo" type="text" maxlength="255" />
+        </div>
+        <div class="form-group">
+            <label for="footer-editor">Text</label>
+            <CKEditor Id="footer-editor" @bind-Value="@Tenant.FooterText" />
+        </div>
+        <div class="form-group">
+            <label for="header-editor">Text</label>
+            <CKEditor Id="header-editor" @bind-Value="@Tenant.FrontPageText" />
+        </div>
+
     <UserRoleEditor UserRoles="Tenant.UserRoles" />
+        </EditForm>
+    </div>
 }
-</div>
+
 @code {
     private Tenant? Tenant { get; set; } 
+
+    private EditContext? editContext;
+    private ValidationMessageStore? validationMessageStore;
+
 
     protected override async Task OnInitializedAsync()
     {
         Tenant = await tenantRetrieveService.GetTenant(TenantId);
+        editContext = new EditContext(Tenant!);
+        validationMessageStore = new ValidationMessageStore(editContext);
+
+    }
+    public async Task Submit()
+    {
+        await Task.CompletedTask;
     }
 }

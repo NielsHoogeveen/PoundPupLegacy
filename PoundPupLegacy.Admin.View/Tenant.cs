@@ -7,21 +7,21 @@ public class Tenant
 {
     public int Id { get; init; }
 
-    public required string DomainName { get; init; }
+    public required string DomainName { get; set; }
 
     public required int CountryIdDefault { get; init; }
 
     public required string CountryNameDefault { get; init; }
 
-    public required string? FrontPageText { get; init; }
+    public required string? FrontPageText { get; set; }
 
-    public required string? Logo { get; init; }
+    public required string? Logo { get; set; }
 
-    public required string? Subtitle { get; init; }
+    public required string? Subtitle { get; set; }
 
-    public required string? FooterText { get; init; }
+    public required string? FooterText { get; set; }
 
-    public required string? CssFile { get; init; }
+    public required string? CssFile { get; set; }
 
     private List<UserRole> _userRoles = new List<UserRole>();
     public required List<UserRole> UserRoles {

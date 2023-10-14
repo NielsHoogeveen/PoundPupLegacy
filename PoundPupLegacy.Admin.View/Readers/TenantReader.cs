@@ -211,7 +211,11 @@ internal sealed class TenantReaderFactory : SingleItemDatabaseReaderFactory<Requ
         			'Name',
         			tnmi.name,
         			'Title',
-        			n.title
+        			n.title,
+                    'ActionId',
+                    1,
+                    'Path',
+                    ''
         		)
         	)
         	from tenant_node tn
@@ -223,7 +227,7 @@ internal sealed class TenantReaderFactory : SingleItemDatabaseReaderFactory<Requ
         join node c on c.id = t.country_id_default
         join user_group ug on ug.id = t.id
         join user_role ur on ur.user_group_id = ug.id
-        where t.id = 6
+        where t.id = @tenant_id
         ) t
         group by
         t.tenant_id,

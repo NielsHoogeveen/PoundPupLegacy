@@ -1,4 +1,7 @@
 .user-roles {
     background: var(--editor-element-background);
     border: solid thin var(--editor-header-background);
+    overflow-y: scroll;
+    height: 10em;
+    width: 20em;
 }
