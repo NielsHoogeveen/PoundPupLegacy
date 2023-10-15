@@ -3,7 +3,6 @@ using Microsoft.Extensions.FileProviders;
 using Npgsql;
 using PoundPupLegacy.Common;
 using PoundPupLegacy.Services;
-using PoundPupLegacy.ViewModel.Models;
 using Quartz;
 using Quartz.AspNetCore;
 using System.Data;
@@ -91,6 +90,7 @@ public sealed class Program
             ViewModel.Models.OrganizationPersonRelationJsonContext.Default,
             ViewModel.Models.OrganizationSearchJsonContext.Default,
             ViewModel.Models.OrganizationsJsonContext.Default,
+            ViewModel.Models.OrganizationTypeJsonContext.Default,
             ViewModel.Models.OrganizationTypeWithOrganizationsJsonContext.Default,
             ViewModel.Models.PagedSearchListSettingsJsonContext.Default,
             ViewModel.Models.PagedTermedListSettingsJsonContext.Default,
@@ -153,10 +153,11 @@ public sealed class Program
             EditModel.FileJsonContext.Default,
             EditModel.GeographicalEntityListItemJsonContext.Default,
             EditModel.LocationJsonContext.Default,
+            EditModel.OrganizationTypeJsonContext.Default,
             EditModel.OrganizationToUpdateJsonContext.Default,
             EditModel.OrganizationToCreateJsonContext.Default,
             EditModel.OrganizationListItemJsonContext.Default,
-            EditModel.OrganizationTypeJsonContext.Default,
+            EditModel.OrganizationTypeListItemJsonContext.Default,
             EditModel.PersonListItemJsonContext.Default,
             EditModel.OrganizationPoliticalEntityRelationTypeListItemJsonContext.Default,
             EditModel.PersonPoliticalEntityRelationTypeListItemJsonContext.Default,

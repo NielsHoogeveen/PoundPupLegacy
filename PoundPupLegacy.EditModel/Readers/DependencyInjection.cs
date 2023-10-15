@@ -16,6 +16,7 @@ public static class DependencyInjection
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Document.ToCreate>, DocumentCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, FathersRightsViolationCase.ToCreate>, FathersRightsViolationCaseCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Organization.ToCreate>, OrganizationCreateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, OrganizationType.ToCreate>, OrganizationTypeCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Person.ToCreate>, PersonCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, WrongfulMedicationCase.ToCreate>, WrongfulMedicationCaseCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, WrongfulRemovalCase.ToCreate>, WrongfulRemovalCaseCreateDocumentReaderFactory>();
@@ -30,6 +31,7 @@ public static class DependencyInjection
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Document.ToUpdate>, DocumentUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, FathersRightsViolationCase.ToUpdate>, FathersRightsViolationCaseUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Organization.ToUpdate>, OrganizationUpdateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, OrganizationType.ToUpdate>, OrganizationTypeUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Person.ToUpdate>, PersonUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, WrongfulMedicationCase.ToUpdate>, WrongfulMedicationCaseUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, WrongfulRemovalCase.ToUpdate>, WrongfulRemovalCaseUpdateDocumentReaderFactory>();

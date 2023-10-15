@@ -31,6 +31,7 @@ public static class DependencyInjection
         services.AddViewModelRetrieveService<WrongfulMedicationCase, WrongfulMedicationCase.ToUpdate, WrongfulMedicationCase.ToCreate>();
         services.AddViewModelRetrieveService<WrongfulRemovalCase, WrongfulRemovalCase.ToUpdate, WrongfulRemovalCase.ToCreate>();
         services.AddViewModelRetrieveService<Organization, Organization.ToUpdate, Organization.ToCreate>();
+        services.AddViewModelRetrieveService<OrganizationType, OrganizationType.ToUpdate, OrganizationType.ToCreate>();
         services.AddViewModelRetrieveService<Person, Person.ToUpdate, Person.ToCreate>();
 
         services.AddEntitySaveService<
@@ -112,6 +113,14 @@ public static class DependencyInjection
             DomainModel.Organization,
             OrganizationToUpdate,
             OrganizationToCreate>();
+
+        services.AddEntitySaveService<
+            OrganizationType,
+            OrganizationType.ToUpdate,
+            OrganizationType.ToCreate,
+            DomainModel.OrganizationType,
+            DomainModel.OrganizationType.ToUpdate,
+            DomainModel.OrganizationType.ToCreate>();
 
         services.AddEntitySaveService<
             Person,

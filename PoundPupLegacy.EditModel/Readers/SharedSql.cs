@@ -30,16 +30,24 @@ internal static class SharedSql
     internal const string SIMPLE_TEXT_NODE_CREATE_CTE = $"""
         {NODE_CREATE_CTE}
         """;
-    internal const string LOCATABLE_UPDATE_CTE = $"""
+    internal const string NAMEABLE_UPDATE_CTE = $"""
         {NODE_UPDATE_CTE},
-        {NAMEABLE_DETAILS_DOCUMENT_FOR_UPDATE},
+        {NAMEABLE_DETAILS_DOCUMENT_FOR_UPDATE}
+    """;
+
+    internal const string LOCATABLE_UPDATE_CTE = $"""
+        {NAMEABLE_UPDATE_CTE},
         {SUBDIVISIONS_DOCUMENT},
         {LOCATIONS_DOCUMENT_FOR_UPDATE},
         {LOCATABLE_DETAILS_DOCUMENT_TO_UPDATE}
     """;
-    internal const string LOCATABLE_CREATE_CTE = $"""
+    internal const string NAMEABLE_CREATE_CTE = $"""
         {NODE_CREATE_CTE},
-        {NAMEABLE_DETAILS_DOCUMENT_FOR_CREATE},
+        {NAMEABLE_DETAILS_DOCUMENT_FOR_CREATE}
+    """;
+
+    internal const string LOCATABLE_CREATE_CTE = $"""
+        {NAMEABLE_CREATE_CTE},
         {LOCATABLE_DETAILS_DOCUMENT_TO_CREATE}
     """;
 
@@ -288,6 +296,8 @@ internal static class SharedSql
                             node_type_id,
                             'PublisherId', 
                             publisher_id,
+                            'PublisherName',
+                            publisher_name,
                             'OwnerId', 
                             owner_id,
                             'Title', 
@@ -351,6 +361,7 @@ internal static class SharedSql
                     node_id,
                     title,
                     publisher_id,
+                    publisher_name,
                     owner_id,
                     node_type_name,
                     node_type_id,
@@ -376,6 +387,7 @@ internal static class SharedSql
                         r.id node_id,
                         n.title title,
                         n.publisher_id,
+                        p.name publisher_name,
                         n.owner_id,
                         nt.name node_type_name,
                         nt.id node_type_id,
@@ -459,6 +471,7 @@ internal static class SharedSql
                         end status_relation	
                     from party_political_entity_relation r
                     join node n on n.id = r.id
+                    join publisher p on p.id = n.publisher_id
                     join node_type nt on nt.id = n.node_type_id
                     join node n1 on n1.id = r.party_id
                     join node n2 on n2.id = r.political_entity_id
@@ -497,6 +510,8 @@ internal static class SharedSql
                             node_type_id,
                             'PublisherId', 
                             publisher_id,
+                            'PublisherName', 
+                            publisher_name,
                             'OwnerId', 
                             owner_id,
                             'Title', 
@@ -570,6 +585,7 @@ internal static class SharedSql
                     node_id,
                     title,
                     publisher_id,
+                    publisher_name,
                     owner_id,
                     node_type_name,
                     node_type_id,
@@ -597,6 +613,7 @@ internal static class SharedSql
                         r.id node_id,
                         n.title title,
                         n.publisher_id,
+                        p.name publisher_name,
                         n.owner_id,
                         nt.name node_type_name,
                         nt.id node_type_id,
@@ -682,6 +699,7 @@ internal static class SharedSql
                         end status_relation	
                     from person_organization_relation r
                     join node n on n.id = r.id
+                    join publisher p on p.id = n.publisher_id
                     join node_type nt on nt.id = n.node_type_id
                     join node n1 on n1.id = r.person_id
                     join node n2 on n2.id = r.organization_id
@@ -1056,6 +1074,7 @@ internal static class SharedSql
         	    nt.tag_label_name
         	    from nameable_type nt
         	    join node_type nt3 on nt3.id = nt.id
+                where nt.tag_label_name is not null
         	    group by nt.tag_label_name
             ) x        
         )
@@ -1108,6 +1127,7 @@ internal static class SharedSql
         	    ) tags 
         	    from nameable_type nt
         	    join node_type nt3 on nt3.id = nt.id
+                where nt.tag_label_name is not null
         	    group by nt.tag_label_name
             ) x        
         )
@@ -1526,13 +1546,14 @@ internal static class SharedSql
                     description,
                     'Name',
                     n.title, 
-            		'VocabularyIdTagging',
-                    (select id from tagging_vocabulary)
+            		'VocabularyId',
+                    nt.vocabulary_id
                 ) document,
                 nm.id
             from nameable nm
-            join term t on t.nameable_id = nm.id and t.vocabulary_id = (select id from tagging_vocabulary)
             join node n on n.id = nm.id
+            join nameable_type nt on nt.id = n.node_type_id
+            join term t on t.nameable_id = nm.id and t.vocabulary_id = nt.vocabulary_id
         )
         """;
     const string NAMEABLE_DETAILS_DOCUMENT_FOR_CREATE = """
@@ -1545,9 +1566,11 @@ internal static class SharedSql
                     '',
                     'Name',
                     '',
-            		'VocabularyIdTagging',
-                    (select id from tagging_vocabulary)
+            		'VocabularyId',
+                    nt.vocabulary_id
                 ) document
+                from nameable_type nt
+                where nt.id = @node_type_id
         )
         """;
 

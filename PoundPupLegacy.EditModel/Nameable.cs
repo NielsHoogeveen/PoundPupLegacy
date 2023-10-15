@@ -21,6 +21,6 @@ public sealed record NameableDetails
             }
         }
     }
-    public required int VocabularyIdTagging { get; init; }
+    public required int VocabularyId { get; set; }
 }
 

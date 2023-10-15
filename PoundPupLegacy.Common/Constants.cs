@@ -123,9 +123,6 @@ public static class Constants
     public const int DEMOCRATIC_PARTY = 38421;
     public const int REPUBLICAN_PARTY = 38419;
 
-    public const int DOCUMENT_TYPES = 42416;
-    public const int ORGANIZATION_TYPE = 12622;
-
     public const string VOCABULARY_CHILD_PLACEMENT_TYPE = "Child Placement Type";
     public const string VOCABULARY_TYPE_OF_ABUSE = "Type of Abuse";
     public const string VOCABULARY_TYPE_OF_ABUSER = "Type of Abuser";
@@ -147,6 +144,9 @@ public static class Constants
     public const string VOCABULARY_UNITED_STATES_POLITICAL_PARTY_AFFILITION_TYPE = "United States political party affiliation";
     public const string VOCABULARY_CASE_PARTY_TYPE = "Case party type";
 
+    
+    public const int ORGANIZATION_TYPE = 1;
+    public const int DOCUMENT_TYPE = 9;
     public const int DOCUMENT = 10;
     public const int ORGANIZATION = 23;
     public const int PERSON = 24;

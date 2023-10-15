@@ -168,7 +168,7 @@ public class NameableChanger<T>(
     NodeDetailsChanger nodeDetailsChanger,
     IDatabaseUpdater<Term.ToUpdate> termUpdater
 ) : NodeChanger<T>(databaseUpdater, nodeDetailsChanger)
-where T : LocatableToUpdate
+where T : NameableToUpdate
 {
     protected override async Task Process(T request)
     {

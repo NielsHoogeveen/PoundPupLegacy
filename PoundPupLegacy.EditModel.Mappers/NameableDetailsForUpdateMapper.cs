@@ -13,7 +13,7 @@ internal class NameableDetailsForUpdateMapper : IMapper<NameableDetails, DomainM
                 Name = source.Name,
                 NameableId = source.TopicId!.Value,
                 ParentTermIds = new List<int>(),
-                VocabularyId = source.VocabularyIdTagging,
+                VocabularyId = source.VocabularyId,
             },
             Description = source.Description,
             FileIdTileImage = null

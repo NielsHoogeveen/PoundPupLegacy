@@ -30,9 +30,9 @@
     [EditorRequired]
     public OrganizationDetails OrganizationDetails { get; set; } = default!;
 
-    private OrganizationType? SelectedOrganizationType;
+    private OrganizationTypeListItem? SelectedOrganizationType;
 
-    private List<OrganizationType> OrganizationTypes => OrganizationDetails.OrganizationTypes.Where(x => !OrganizationDetails.OrganizationOrganizationTypes.Select(x => x.OrganizationTypeId).Contains(x.Id)).ToList();
+    private List<OrganizationTypeListItem> OrganizationTypes => OrganizationDetails.OrganizationTypes.Where(x => !OrganizationDetails.OrganizationOrganizationTypes.Select(x => x.OrganizationTypeId).Contains(x.Id)).ToList();
 
     protected override void OnInitialized()
     {

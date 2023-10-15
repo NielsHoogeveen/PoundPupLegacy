@@ -1480,7 +1480,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     JOIN term t on t.id = nt.term_id
                     join node n on n.id = t.nameable_id
                     join node_type nt2 on nt2.id = n.node_type_id
-                    left join nameable_type nmt on nmt.id = n.node_type_id
+                    left join nameable_type nmt on nmt.id = n.node_type_id and nmt.tag_label_name is not null
                     JOIN tenant_node tn on tn.node_id = t.nameable_id and tn.tenant_id = @tenant_id
                     WHERE tn2.url_id = @url_id and tn2.tenant_id = @tenant_id
                 ) t
@@ -1546,7 +1546,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 JOIN term t on t.id = nt.term_id
                 join node n on n.id = t.nameable_id
                 join node_type nt2 on nt2.id = n.node_type_id
-                left join nameable_type nmt on nmt.id = n.node_type_id
+                left join nameable_type nmt on nmt.id = n.node_type_id and nmt.tag_label_name is not null
                 JOIN tenant_node tn2 on tn2.node_id = t.nameable_id and tn2.tenant_id = @tenant_id and tn2.publication_status_id = 1
                 WHERE tn.url_id = @url_id and tn.tenant_id = @tenant_id and tn.publication_status_id = 1
             ) t
@@ -4317,7 +4317,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
     {
         var node_type_id = reader.GetInt32(0);
         return node_type_id switch {
-            1 => reader.GetFieldValue<BasicNameable>(1),
+            1 => reader.GetFieldValue<OrganizationType>(1),
             2 => reader.GetFieldValue<BasicNameable>(1),
             3 => reader.GetFieldValue<BasicNameable>(1),
             4 => reader.GetFieldValue<BasicNameable>(1),

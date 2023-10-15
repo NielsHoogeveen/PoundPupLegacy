@@ -82,7 +82,7 @@ internal sealed class CasesDocumentReaderFactory : SingleItemDatabaseReaderFacto
                                 from node_term nt
                                 join term t on t.id = nt.term_id
                                 join node n on n.id = t.nameable_id
-                                left join nameable_type nty on nty.id = n.node_type_id
+                                left join nameable_type nty on nty.id = n.node_type_id and nty.tag_label_name is not null
                                 join tenant_node tn on tn.node_id = n.id and tn.tenant_id = @tenant_id
                                 where nt.node_id = an.id
 

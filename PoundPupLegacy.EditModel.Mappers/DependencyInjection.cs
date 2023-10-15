@@ -74,6 +74,9 @@ public static class DependencyInjection
         services.AddTransient<IMapper<Organization.ToUpdate, OrganizationToUpdate>, OrganizationToUpdateMapper>();
         services.AddTransient<IMapper<Organization.ToCreate, OrganizationToCreate>, OrganizationToCreateMapper>();
 
+        services.AddTransient<IMapper<OrganizationType.ToUpdate, DomainModel.OrganizationType.ToUpdate>, OrganizationTypeToUpdateMapper>();
+        services.AddTransient<IMapper<OrganizationType.ToCreate, DomainModel.OrganizationType.ToCreate>, OrganizationTypeToCreateMapper>();
+
         services.AddTransient<IEnumerableMapper<OrganizationPoliticalEntityRelation.Complete.Resolved.ToUpdate, PartyPoliticalEntityRelation.ToUpdate>, OrganizationPoliticalEntityRelationToUpdate>();
         services.AddTransient<IEnumerableMapper<OrganizationPoliticalEntityRelation.Complete.Resolved.ToCreateForExistingOrganization, PartyPoliticalEntityRelation.ToCreate.ForExistingParty>, OrganizationPoliticalEntityRelationToCreateForExistingOrganization>();
         services.AddTransient<IEnumerableMapper<OrganizationPoliticalEntityRelation.Complete.ToCreateForNewOrganization, PartyPoliticalEntityRelation.ToCreate.ForNewParty>, OrganizationPoliticalEntityRelationToCreateForNewOrganization>();

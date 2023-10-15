@@ -171,7 +171,7 @@ internal sealed class DeportationCasesDocumentReaderFactory : SingleItemDatabase
         				        join node_term nt on nt.node_id = n.id 
         				        join term t on t.id = nt.term_id
                                 join node n2 on n2.id = t.nameable_id
-                                left join nameable_type nt2 on nt2.id = n2.node_type_id
+                                left join nameable_type nt2 on nt2.id = n2.node_type_id and nt2.tag_label_name is not null
                                 join tenant_node tn2 on tn2.node_id = t.nameable_id and tn2.tenant_id = @tenant_id
         				        where (@terms is null or n.id in (
                                     select

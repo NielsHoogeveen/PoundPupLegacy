@@ -198,7 +198,7 @@ public abstract record OrganizationDetails
                 organizationOrganizationTypes = value;
         } 
     }
-    public required List<OrganizationType> OrganizationTypes { get; init; } 
+    public required List<OrganizationTypeListItem> OrganizationTypes { get; init; } 
     public required List<InterOrganizationalRelationTypeListItem> InterOrganizationalRelationTypes { get; init; }
     public abstract OrganizationItem OrganizationItem { get; }
     public abstract List<PersonOrganizationRelation.ForOrganization.Complete> PersonOrganizationRelations { get; set; }

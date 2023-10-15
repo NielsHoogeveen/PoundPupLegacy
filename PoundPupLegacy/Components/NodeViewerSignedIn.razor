@@ -75,8 +75,11 @@
                 @if (Model is ViewModel.Models.Organization) {
                     <OrganizationUpdater UrlId="Model.UrlId" />
                 }
+                @if (Model is ViewModel.Models.OrganizationType) {
+                    <OrganizationTypeUpdater UrlId="Model.UrlId" />
+                }
                 @if (Model is ViewModel.Models.Person) {
-                    <PersonUpdater UrlId="Model.UrlId" />
+                <PersonUpdater UrlId="Model.UrlId" />
                 }
                 @if (Model is ViewModel.Models.WrongfulMedicationCase) {
                 <WrongfulMedicationCaseUpdater UrlId="Model.UrlId" />

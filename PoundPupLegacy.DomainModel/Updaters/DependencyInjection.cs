@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using PoundPupLegacy.Common;
 
 namespace PoundPupLegacy.DomainModel.Updaters;
 
@@ -19,6 +18,7 @@ public static class DependencyInjection
         services.AddTransient<IEntityChangerFactory<FathersRightsViolationCase.ToUpdate>, FathersRightsViolationCaseChangerFactory>();
         services.AddTransient<IEntityChangerFactory<Document.ToUpdate>, DocumentChangerFactory>();
         services.AddTransient<IEntityChangerFactory<OrganizationToUpdate>, OrganizationChangerFactory>();
+        services.AddTransient<IEntityChangerFactory<OrganizationType.ToUpdate>, OrganizationTypeChangerFactory>();
         services.AddTransient<IEntityChangerFactory<Person.ToUpdate>, PersonChangerFactory>();
         services.AddTransient<IEntityChangerFactory<WrongfulMedicationCase.ToUpdate>, WrongfulMedicationCaseChangerFactory>();
         services.AddTransient<IEntityChangerFactory<WrongfulRemovalCase.ToUpdate>, WrongfulRemovalCaseChangerFactory>();
@@ -39,6 +39,7 @@ public static class DependencyInjection
         services.AddTransient<IDatabaseUpdaterFactory<InterPersonalRelation.ToUpdate>, InterPersonalRelationUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<NodeUnpublishRequest>, NodeUnpublishFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<OrganizationToUpdate>, OrganizationUpdaterFactory>();
+        services.AddTransient<IDatabaseUpdaterFactory<OrganizationType.ToUpdate>, OrganizationTypeUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<PartyPoliticalEntityRelation.ToUpdate>, PartyPoliticalEntityRelationUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<PersonOrganizationRelation.ToUpdate>, PersonOrganizationRelationUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<Person.ToUpdate>, PersonUpdaterFactory>();

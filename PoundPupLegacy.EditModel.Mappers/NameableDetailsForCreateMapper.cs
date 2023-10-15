@@ -12,7 +12,7 @@ internal class NameableDetailsForCreateMapper : IMapper<NameableDetails, DomainM
                     Identification = new Identification.Possible{ Id = null},
                     Name = source.Name,
                     ParentTermIds = new List<int>(),
-                    VocabularyId = source.VocabularyIdTagging
+                    VocabularyId = source.VocabularyId
                 }
             },
         };
