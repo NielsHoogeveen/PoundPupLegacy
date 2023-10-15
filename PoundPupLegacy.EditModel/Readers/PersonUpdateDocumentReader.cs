@@ -77,6 +77,8 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                             node_type_id,
                             'PublisherId', 
                             publisher_id,
+                            'PublisherName', 
+                            publisher_name,
                             'OwnerId', 
                             owner_id,
                             'Title', 
@@ -140,6 +142,7 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                     node_id,
                     title,
                     publisher_id,
+                    publisher_name,
                     owner_id,
                     node_type_name,
                     node_type_id,
@@ -165,6 +168,7 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                         r.id node_id,
                         n.title title,
                         n.publisher_id,
+                        p.name publisher_name,
                         n.owner_id,
                         nt.name node_type_name,
                         nt.id node_type_id,
@@ -248,6 +252,7 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                         end status_relation	
                     from inter_personal_relation r
                     join node n on n.id = r.id
+                    join publisher p on p.id = n.publisher_id
                     join node_type nt on nt.id = n.node_type_id
                     join node n1 on n1.id = r.person_id_from
                     join node n2 on n2.id = r.person_id_to
@@ -285,6 +290,8 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                             node_type_id,
                             'PublisherId', 
                             publisher_id,
+                            'PublisherName',
+                            publisher_name,
                             'OwnerId', 
                             owner_id,
                             'Title', 
@@ -348,6 +355,7 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                     node_id,
                     title,
                     publisher_id,
+                    publisher_name,
                     owner_id,
                     node_type_name,
                     node_type_id,
@@ -373,6 +381,7 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                         r.id node_id,
                         n.title title,
                         n.publisher_id,
+                        p.name publisher_name,
                         n.owner_id,
                         nt.name node_type_name,
                         nt.id node_type_id,
@@ -456,6 +465,7 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                         end status_relation	
                     from inter_personal_relation r
                     join node n on n.id = r.id
+                    join publisher p on p.id = n.publisher_id
                     join node_type nt on nt.id = n.node_type_id
                     join node n1 on n1.id = r.person_id_from
                     join node n2 on n2.id = r.person_id_to
