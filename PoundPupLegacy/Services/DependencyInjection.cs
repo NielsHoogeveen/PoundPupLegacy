@@ -20,6 +20,7 @@ public static class DependencyInjection
         services.AddDomainModelAccessors();
         services.AddAdminServices();
 
+        services.AddTransient<ICreateOptionsService, CreateOptionsService>();
         services.AddTransient<IAuthenticationService, AuthenticationService>();
         services.AddTransient<IUserService, UserService>();
         services.AddSingleton<ISiteDataService, SiteDataService>();

@@ -1,0 +1,27 @@
+﻿@using PoundPupLegacy.Models
+@using PoundPupLegacy.Services
+@inject ICreateOptionsService CreateOptionsService
+@inherits Viewer
+<div class="breadcrum">
+    <span class="breadcrum-element">
+        <a href="/home">Home</a>
+    </span>
+</div>
+<h1>Create content</h1>
+@if(_model is not null) {
+    <div class="create-options">
+    @foreach(var elem in _model) {
+        <div><a href="@elem.Path">@elem.Name</a></div>
+        <div>@elem.Description</div>
+    }
+    </div>
+
+}
+@code {
+    private List<CreateOptions>? _model;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _model = await CreateOptionsService.GetCreateOptions(TenantId, UserId);
+    }
+}
