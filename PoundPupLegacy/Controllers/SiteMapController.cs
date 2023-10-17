@@ -17,7 +17,7 @@ namespace PoundPupLegacy.Controllers
                 ContentType = "application/xml"
             };
         }
-        [Route("sitemap/{index}")]
+        [Route("sitemap{index}.xml")]
         public async Task<IActionResult> Index(int index)
         {
             var request = HttpContext.Request;
