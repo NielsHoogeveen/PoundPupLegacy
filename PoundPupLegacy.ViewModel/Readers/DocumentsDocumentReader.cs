@@ -100,6 +100,7 @@ internal sealed class DocumentsDocumentReaderFactory : SingleItemDatabaseReaderF
         				    nt.node_id,
         				    n.title,
                             n.changed_date_time,
+                            lower(d.published) publication_date,
         				    stn.teaser,
         				    case
         					    when tn.url_path is null then '/node/' || tn.url_id
@@ -151,6 +152,7 @@ internal sealed class DocumentsDocumentReaderFactory : SingleItemDatabaseReaderF
         				    end weight
         				    from node n
                             join simple_text_node stn on stn.id = n.id
+                            join document d on d.id = n.id
         				    join tenant_node tn on tn.node_id = n.id and tn.tenant_id = @tenant_id
         				    join node_term nt on nt.node_id = n.id 
         				    join term t on t.id = nt.term_id
@@ -182,8 +184,9 @@ internal sealed class DocumentsDocumentReaderFactory : SingleItemDatabaseReaderF
         				    teaser,
         				    has_been_published,
                             number_of_elements,
-                            changed_date_time
-        			    ORDER BY changed_date_time desc
+                            changed_date_time,
+                            publication_date
+        			    ORDER BY publication_date desc nulls last
                         LIMIT @length OFFSET @start_index
         		    ) x
                     GROUP BY number_of_elements
