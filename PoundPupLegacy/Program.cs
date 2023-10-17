@@ -16,6 +16,7 @@ public sealed class Program
     {
         IJsonTypeInfoResolver[] resolvers = new IJsonTypeInfoResolver[] {
             Models.CreateOptionsJsonContext.Default,
+            Models.ListOptionsJsonContext.Default,
             Models.MenuItemJsonContext.Default,
             Models.NamedActionJsonContext.Default,
             Models.NodeAccessJsonContext.Default,

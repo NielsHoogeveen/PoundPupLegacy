@@ -13,21 +13,22 @@ public static class DependencyInjection
 {
     public static void AddApplicationServices(this IServiceCollection services)
     {
+        services.AddAdminServices();
         services.AddEditModelReaders();
-        services.AddSystemReaders();
-        services.AddViewModels();
         services.AddEditModels();
         services.AddDomainModelAccessors();
-        services.AddAdminServices();
-
-        services.AddTransient<ICreateOptionsService, CreateOptionsService>();
+        services.AddSystemReaders();
+        services.AddViewModels();
+        
         services.AddTransient<IAuthenticationService, AuthenticationService>();
-        services.AddTransient<IUserService, UserService>();
-        services.AddSingleton<ISiteDataService, SiteDataService>();
+        services.AddTransient<ICreateOptionsService, CreateOptionsService>();
+        services.AddTransient<IDefaultCountryService, DefaultCountryService>();
+        services.AddTransient<IListOptionsService, ListOptionsService>();
         services.AddSingleton<INodeAccessReadService, NodeAccessReadService>();
         services.AddSingleton<INodeAccessService, NodeAccessService>();
         services.AddTransient<ITenantRefreshService, TenantRefreshService>();
-        services.AddTransient<IDefaultCountryService, DefaultCountryService>();
+        services.AddSingleton<ISiteDataService, SiteDataService>();
         services.AddTransient<ISiteMapService, SiteMapService>();
+        services.AddTransient<IUserService, UserService>();
     }
 }

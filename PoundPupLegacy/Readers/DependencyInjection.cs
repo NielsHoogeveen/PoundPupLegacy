@@ -9,6 +9,7 @@ public static class DependencyInjection
     public static void AddSystemReaders(this IServiceCollection services)
     {
         services.AddTransient<ISingleItemDatabaseReaderFactory<CreateOptionsReaderRequest, List<CreateOptions>>, CreateOptionsReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<ListOptionsReaderRequest, List<ListOptions>>, ListOptionsReaderFactory>();
         services.AddTransient<IEnumerableDatabaseReaderFactory<MenuItemsReaderRequest, UserTenantMenuItems>, MenuItemsReaderFactory>();
         services.AddTransient<IEnumerableDatabaseReaderFactory<NodeAccessReaderRequest, NodeAccess>, NodeAccessReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<PasswordValidationReaderRequest, PasswordValidationReaderResponse>, PasswordValidationReaderFactory>();

@@ -1,0 +1,30 @@
+﻿.create-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+.create-options  div{
+    padding:0.25em;
+    border-bottom: 1px solid var(--editor-border-color);
+}
+.breadcrum {
+    background: var(--breadcrum-bg-color);
+    color: var(--breadcrum-color);
+    margin: 0;
+    padding-left: 0.60em;
+    padding-bottom: 0.25em;
+    padding-top: 0.25em;
+    border-bottom: solid 1px var(--nav-border-color);
+}
+
+    .breadcrum a {
+        color: var(--breadcrum-color);
+        text-decoration: none;
+    }
+
+.breadcrum-element::after {
+    content: ' > ';
+}
+
+.breadcrum-element:last-of-type::after {
+    content: '';
+}
