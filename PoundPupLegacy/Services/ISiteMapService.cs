@@ -2,5 +2,6 @@
 
 public interface ISiteMapService
 {
-    public Task WriteSiteMap(int tenantId, StreamWriter writer);
+    public Task<string> GetSiteMapIndex(int tenantId);
+    public Task<string> GetSiteMap(int tenantId, int index);
 }

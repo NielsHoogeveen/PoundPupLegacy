@@ -14,6 +14,7 @@ public static class DependencyInjection
         services.AddTransient<ISingleItemDatabaseReaderFactory<PasswordValidationReaderRequest, PasswordValidationReaderResponse>, PasswordValidationReaderFactory>();
         services.AddTransient<IEnumerableDatabaseReaderFactory<NamedActionsReaderRequest, NamedAction>, NamedActionsReaderFactory>();
         services.AddTransient<IEnumerableDatabaseReaderFactory<SiteMapReaderRequest, SiteMapElement>, SiteMapReaderFactory>();
+        services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<SiteMapCountReaderRequest, SiteMapCount>, SiteMapCountReaderFactory>();
         services.AddTransient<IEnumerableDatabaseReaderFactory<TenantNodesReaderRequest, TenantNode>, TenantNodesReaderFactory>();
         services.AddTransient<IEnumerableDatabaseReaderFactory<TenantsReaderRequest, Tenant>, TenantsReaderFactory>();
         services.AddTransient<IEnumerableDatabaseReaderFactory<UserTenantActionReaderRequest, UserTenantAction>, UserTenantActionReaderFactory>();

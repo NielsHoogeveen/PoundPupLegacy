@@ -9,11 +9,13 @@ using Request = SiteMapReaderRequest;
 internal sealed record SiteMapReaderRequest : IRequest
 {
     public required int TenantId { get; init; }
+    public required int Index { get; init; }
 }
 
 internal sealed class SiteMapReaderFactory : EnumerableDatabaseReaderFactory<Request, SiteMapElement>
 {
     private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
+    private static readonly NonNullableIntegerDatabaseParameter IndexParameter = new() { Name = "index" };
 
     private static readonly StringValueReader Path = new() { Name = "path" };
     private static readonly NullableDateTimeValueReader LastChanged = new() { Name = "last_changed" };
@@ -45,15 +47,15 @@ internal sealed class SiteMapReaderFactory : EnumerableDatabaseReaderFactory<Req
         join node n on n.id = tn.node_id
         where t.id = 1
         and tn.publication_status_id = @tenant_id
-
-        	
+        order by path
+        limit 5000 offset @index * 5000
         """;
 
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
             ParameterValue.Create(TenantIdParameter, request.TenantId),
-        };
+            ParameterValue.Create(IndexParameter, request.Index),};
     }
 
     protected override SiteMapElement Read(NpgsqlDataReader reader)
