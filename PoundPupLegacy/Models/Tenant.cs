@@ -28,6 +28,8 @@ public sealed record Tenant
 
     public required string? CssFile { get; init; }
 
+    public required string? GoogleAnalyticsMeasurementId { get; init; }
+
     public required Dictionary<string, int> UrlToId { get; init; }
 
     public required Dictionary<int, string> IdToUrl { get; init; }

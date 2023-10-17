@@ -24,6 +24,7 @@ internal sealed class TenantsReaderFactory : EnumerableDatabaseReaderFactory<Req
     private static readonly NullableStringValueReader CssFile = new() { Name = "css_file" };
     private static readonly NullableStringValueReader SubTitle = new() { Name = "sub_title" };
     private static readonly NullableStringValueReader FooterText = new() { Name = "footer_text" };
+    private static readonly NullableStringValueReader GoogleAnalyticsMeasurementId = new() { Name = "google_analytics_measurement_id" };
 
     public override string Sql => SQL;
 
@@ -39,7 +40,8 @@ internal sealed class TenantsReaderFactory : EnumerableDatabaseReaderFactory<Req
         t.logo,
         t.sub_title,
         t.footer_text,
-        t.css_file
+        t.css_file,
+        t.google_analytics_measurement_id
         from tenant t
         join user_group ug on ug.id = t.id
         join node n on n.id = t.country_id_default
@@ -66,6 +68,7 @@ internal sealed class TenantsReaderFactory : EnumerableDatabaseReaderFactory<Req
             CssFile = CssFile.GetValue(reader),
             Subtitle = SubTitle.GetValue(reader),
             FooterText = FooterText.GetValue(reader),
+            GoogleAnalyticsMeasurementId = GoogleAnalyticsMeasurementId.GetValue(reader),
         };
     }
 }

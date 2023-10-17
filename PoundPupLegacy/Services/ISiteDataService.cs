@@ -43,5 +43,6 @@ public interface ISiteDataService
     string? GetTitle(int tenantId);
     string? GetDomainName(int tenantId);
     string? GetName(int tenantId);
+    string? GetGoogleAnalyticsMearurementId(int tenantId);
     Task RefreshTenants();
 }

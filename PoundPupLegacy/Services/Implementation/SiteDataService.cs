@@ -351,5 +351,8 @@ internal sealed class SiteDataService(
     {
         return _data.Tenants.First(x => x.Id == tenantId).Name;
     }
-
+    public string? GetGoogleAnalyticsMearurementId(int tenantId)
+    {
+        return _data.Tenants.First(x => x.Id == tenantId).GoogleAnalyticsMeasurementId;
+    }
 }
