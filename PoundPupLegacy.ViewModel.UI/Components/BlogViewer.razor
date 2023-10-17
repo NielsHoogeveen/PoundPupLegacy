@@ -1,19 +1,24 @@
 ﻿@inherits PagedViewer<BlogPostTeaser>
 @inject IFetchBlogService FetchBlogService;
-<div class="blog-list">
-    <BreadCrumElementViewer Model="BreadCrumElements" />
-    <TeaserListViewer ListEntries="ListEntries" PagedListSettings="PagedListSettings" SelectPage="SelectPage">
-        <h1>
-            @Name
-        </h1>
-    </TeaserListViewer>
-</div>
+<HeadContentSetter Title=@Title SiteName=@SiteName Description=@Description />
+<BreadCrumElementViewer Model="BreadCrumElements" />
+<TeaserListViewer ListEntries="ListEntries" PagedListSettings="PagedListSettings" SelectPage="SelectPage">
+    <h1>
+        @Name
+    </h1>
+</TeaserListViewer>
+
 @code{
     [Parameter]
     [EditorRequired]
     public int Id { get; set; }
 
     private int? PreviousId { get; set; } = null;
+
+    protected override string Title => $"{SiteName} | {Name}";
+
+    protected override string Description => $"{Name}";
+
 
     protected override async Task OnParametersSetAsync()
     {

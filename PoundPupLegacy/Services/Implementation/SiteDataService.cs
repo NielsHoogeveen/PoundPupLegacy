@@ -347,4 +347,9 @@ internal sealed class SiteDataService(
     {
         return _data.Tenants.First(x => x.Id == tenantId).DomainName;
     }
+    public string? GetName(int tenantId)
+    {
+        return _data.Tenants.First(x => x.Id == tenantId).Name;
+    }
+
 }

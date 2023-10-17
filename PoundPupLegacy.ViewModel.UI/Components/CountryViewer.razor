@@ -1,4 +1,6 @@
-﻿<ImageViewer Model="@Model.FlagImage" Class="country-flag" />
+﻿@inherits SpecificNodeType
+<HeadContentSetter Title=@Model.Title SiteName=@SiteName Description=@Description />
+<ImageViewer Model="@Model.FlagImage" Class="country-flag" />
     
 @if (Model is TopLevelCountry topLevelCountry)
 {
@@ -19,5 +21,7 @@
     [Parameter]
     [EditorRequired]
     public Country Model { get; set; } = default!;
+
+    protected override string? Description => $"Detailed information about the country {Model.Title}";
 }
 

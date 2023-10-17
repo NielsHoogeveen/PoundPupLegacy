@@ -1,5 +1,6 @@
 ﻿@inject IFetchRecentPostsService FetchService
 @inherits PagedViewer<RecentPostListEntry>
+<HeadContentSetter Title=@Title SiteName=@SiteName Description=@Description />
 <BreadCrumElementViewer Model="BreadCrumElements" />
 <h1>Recent posts</h1>
 @if (ListEntries.Any()) {
@@ -30,6 +31,9 @@ else {
 
     protected override int PageSize => 100;
 
+    protected override string Title => $"{SiteName} | Recent Posts";
+
+    protected override string Description => "List of the most recent entries added to this site";
 
     protected override async Task<IPagedList<RecentPostListEntry>> GetListEntriesAsync()
     {

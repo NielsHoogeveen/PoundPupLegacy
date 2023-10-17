@@ -1,4 +1,6 @@
-﻿<LabeledNullableLinkViewer Value="Model.DocumentType" Label="Document type"/>
+﻿@inherits SpecificNodeType
+<HeadContentSetter Title=@Model.Title SiteName=@SiteName Description=@Description />
+<LabeledNullableLinkViewer Value="Model.DocumentType" Label="Document type"/>
 <LabeledNullableUriViewer Value="Uri" Label="Source" />
 <LabeledNullableFuzzyDateViewer Value="Model.Published" Label="Publication date" />
 @code{
@@ -9,6 +11,16 @@
     private string Format(string str) => str.Replace(@"href=""http://poundpuplegacy.org", @"href=""");
 
     private Uri? Uri => MakeUri(Model.SourceUrl);
+
+    private List<string> Keywords => Model.Tags.Select(x => x.Title).ToList();
+
+    private string topicsDecription => Keywords.Any()
+        ? Keywords.Count > 1
+            ? $"about {string.Join(',', Keywords.Take(Keywords.Count - 1)).Replace(",", ", ")} and {Keywords.TakeLast(1).ToList()[0]}"
+            : $"about {Keywords[0]}"
+        : "";
+
+    protected override string? Description => $"{Model.DocumentType?.Title} {topicsDecription}";
 
     private Uri? MakeUri(string? str)
     {

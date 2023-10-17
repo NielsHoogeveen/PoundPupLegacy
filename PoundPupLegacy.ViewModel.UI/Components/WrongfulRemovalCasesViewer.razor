@@ -1,11 +1,16 @@
 ﻿@inject IFetchWrongfulRemovalCasesService FetchCasesService
 @inherits PagedTermedViewer<CaseListEntry, WrongfulRemovalCaseList>
+<HeadContentSetter Title=@Title SiteName=@SiteName Description=@Description />
 <BreadCrumElementViewer Model="BreadCrumElements" />
 <TagSelector TermNames="TermNames" OnSelectTerm="SelectTerm" />
 <TeaserListViewer ListEntries="ListEntries" PagedListSettings="PagedListSettings" SelectPage="SelectPage" />
 
 @code {
     protected override int PageSize => 10;
+
+    protected override string Title => $"{SiteName} | Wrongful Removal Cases";
+
+    protected override string Description => "A list of the most recent wrongful removal cases";
 
     protected override async Task<TermedList<WrongfulRemovalCaseList, CaseListEntry>> GetTermedList()
     {

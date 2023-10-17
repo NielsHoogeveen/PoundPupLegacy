@@ -1,12 +1,16 @@
 ﻿@inherits PagedViewer<PollListEntry>
 @inject IFetchPollsService FetchPollsService
-
+<HeadContentSetter Title=@Title SiteName=@SiteName Description=@Description />
 <BreadCrumElementViewer Model="BreadCrumElements" />
 <TeaserListViewer ListEntries="ListEntries" PagedListSettings="PagedListSettings" SelectPage="SelectPage"/>
 
 @code {
 
     protected override int PageSize => 25;
+
+    protected override string Title => $"{SiteName} | Polls";
+
+    protected override string Description => "List of all polls held on this site";
 
     protected override async Task<IPagedList<PollListEntry>> GetListEntriesAsync()
     {

@@ -1,14 +1,12 @@
 ﻿@if (ListEntries.Any()) {
-    <ArticleViewer>
+    <div class="teaser-list">
         @ChildContent
-        <div class="teaser-list">
-            @foreach (var entry in ListEntries) 
-            {
-                <TeaserListEntryViewer ListEntry="entry" />
-            }
-        </div>
-        <Pager Model="@PagedListSettings" SelectPage="SelectPage" />
-    </ArticleViewer>
+        @foreach (var entry in ListEntries) 
+        {
+            <TeaserListEntryViewer ListEntry="entry" />
+        }
+    </div>
+    <Pager Model="@PagedListSettings" SelectPage="SelectPage" />
 }
 
 @code {

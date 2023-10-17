@@ -2,7 +2,7 @@
 
 namespace PoundPupLegacy.ViewModel.UI.Components;
 
-public abstract class PagedViewerBase<TPagedListSettings, TListEntry> : ViewerBase
+public abstract class PagedViewerBase<TPagedListSettings, TListEntry> : PageViewerBase
     where TPagedListSettings : PagedListSettings
     where TListEntry : ListEntry
 {

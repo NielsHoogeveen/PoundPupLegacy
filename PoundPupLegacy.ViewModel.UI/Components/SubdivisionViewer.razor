@@ -1,4 +1,6 @@
-﻿@if (Model is FormalSubdivision formalSubdivision)
+﻿@inherits SpecificNodeType
+<HeadContentSetter Title=@Model.Title SiteName=@SiteName Description=@Description />
+@if (Model is FormalSubdivision formalSubdivision)
 {
     <LabeledNonNullableStringViewer Label="ISO 3166-2 code" Value="@formalSubdivision.ISO3166_2_Code" />
 }
@@ -8,4 +10,6 @@
     [Parameter]
     [EditorRequired]
     public Subdivision Model { get; set; } = default!;
+
+    protected override string? Description => $"Detailed information about the subdivision {Model?.Title}";
 }

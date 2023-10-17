@@ -1,4 +1,6 @@
-﻿@if (Model is not null) {
+﻿@inherits SpecificNodeType
+@if (Model is not null) {
+    <HeadContentSetter Title=@Model.Title SiteName=@SiteName Description=@Description />
     <ImageViewer Model="@Model.Portrait" />
     <LabeledNullableStringViewer Value="@Model.FirstName" Label="First name"/>
     <LabeledNullableStringViewer Value="@Model.MiddleName" Label="Middle name" />
@@ -18,5 +20,7 @@
 @code{
     [Parameter]
     [EditorRequired]
-    public Person? Model { get; set; }
+    public Person? Model { get; set; } 
+
+    protected override string? Description => $"Detailed information about the person {Model?.Title}";
 }

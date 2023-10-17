@@ -1,77 +1,81 @@
 ﻿@inherits Viewer
-<BreadCrumElementViewer Model="BreadCrumElements" />
 
-<ArticleViewer>
-    <div class="meeting">
-        <h2>@Model.MeetingName</h2>
-        <div>@Model.DateFrom.ToString("d MMMM yyyy") - @Model.DateTo.ToString("d MMMM yyyy")</div>
-    </div>
-    @foreach(var state in Model.States.OrderBy(x => x.State.Title)) 
-    {
-        <div class="state-representation">
-            <h4><a href="@state.State.Path">@state.State.Title</a></h4>
-            @foreach(var member in state.Members.OrderBy(x => x.Title)) 
-            {
-                <div class="member-of-congress">
-                    <img src="@member.FilePathPortrait" style="height:220px;width:auto"/>
-                    <div>
-                        <label>Name</label>
-                        <div class="list-entries"><a href="@member.Path">@member.Title</a></div>
-                        @if (member.Bills.Any())
+<HeadContentSetter Title=@Title SiteName=@SiteName Description=@Description />
+<div class="meeting">
+    <h2>@Model.MeetingName</h2>
+    <div>@Model.DateFrom.ToString("d MMMM yyyy") - @Model.DateTo.ToString("d MMMM yyyy")</div>
+</div>
+@foreach(var state in Model.States.OrderBy(x => x.State.Title)) 
+{
+    <div class="state-representation">
+        <h4><a href="@state.State.Path">@state.State.Title</a></h4>
+        @foreach(var member in state.Members.OrderBy(x => x.Title)) 
+        {
+            <div class="member-of-congress">
+                <img src="@member.FilePathPortrait" style="height:220px;width:auto"/>
+                <div>
+                    <label>Name</label>
+                    <div class="list-entries"><a href="@member.Path">@member.Title</a></div>
+                    @if (member.Bills.Any())
+                    {
+                        <label>Bills sponsored</label>
+                        <div class="list-entries">
+                        @foreach (var bill in member.Bills)
                         {
-                            <label>Bills sponsored</label>
-                            <div class="list-entries">
-                            @foreach (var bill in member.Bills)
-                            {
-                                <div><a href="@bill.Path">@bill.Title</a></div>
+                            <div><a href="@bill.Path">@bill.Title</a></div>
+                        }
+                        </div>
+                    }
+                    @if (member.Letters.Any()) {
+                        <label>Letters singed</label>
+                        <div class="list-entries">
+                            @foreach (var letter in member.Letters) {
+                                <div><a href="@letter.Path">@letter.Title</a></div>
                             }
-                            </div>
+                        </div>
+                    }
+                    @if (member.Terms.Any()) {
+                        <label>Terms</label>
+                        <div class="list-entries">
+                        <table>
+                        @foreach(var term in member.Terms.OrderBy(x => x.DateFrom)) {
+                            <tr>
+                                <td>@term.MemberType</td>
+                                <td><a href="@term.State.Path">@term.State.Title</a></td>
+                                    <td>@term.DateFrom?.ToString("yyyy MMM dd")</td>
+                                    <td>@term.DateTo?.ToString("yyyy MMM dd")</td>
+                            </tr>
                         }
-                        @if (member.Letters.Any()) {
-                            <label>Letters singed</label>
-                            <div class="list-entries">
-                                @foreach (var letter in member.Letters) {
-                                    <div><a href="@letter.Path">@letter.Title</a></div>
-                                }
-                            </div>
-                        }
-                        @if (member.Terms.Any()) {
-                            <label>Terms</label>
-                            <div class="list-entries">
-                            <table>
-                            @foreach(var term in member.Terms.OrderBy(x => x.DateFrom)) {
+                        </table>
+                        </div>
+                    }
+                    @if (member.Parties.Any()) {
+                        <label>Party affiliation</label>
+                        <div class="list-entries">
+                        <table>
+                            @foreach (var party in member.Parties.OrderBy(x => x.DateFrom)) {
                                 <tr>
-                                    <td>@term.MemberType</td>
-                                    <td><a href="@term.State.Path">@term.State.Title</a></td>
-                                        <td>@term.DateFrom?.ToString("yyyy MMM dd")</td>
-                                        <td>@term.DateTo?.ToString("yyyy MMM dd")</td>
+                                    <td><a href="@party.Path">@party.Title</a></td>
+                                    <td>@party.DateFrom?.ToString("yyyy MMM dd")</td>
+                                    <td>@party.DateTo?.ToString("yyyy MMM dd")</td>
                                 </tr>
                             }
-                            </table>
-                            </div>
-                        }
-                        @if (member.Parties.Any()) {
-                            <label>Party affiliation</label>
-                            <div class="list-entries">
-                            <table>
-                                @foreach (var party in member.Parties.OrderBy(x => x.DateFrom)) {
-                                    <tr>
-                                        <td><a href="@party.Path">@party.Title</a></td>
-                                        <td>@party.DateFrom?.ToString("yyyy MMM dd")</td>
-                                        <td>@party.DateTo?.ToString("yyyy MMM dd")</td>
-                                    </tr>
-                                }
-                            </table>
-                            </div>
-                        }
-                    </div>
+                        </table>
+                        </div>
+                    }
                 </div>
-            }
-        </div>
-    }
-</ArticleViewer>
+            </div>
+        }
+    </div>
+}
+
 @code {
     [Parameter]
     [EditorRequired]
     public CongressionalMeetingChamber Model { get; set; } = default!;
+
+    protected override string Title => $"{SiteName} | US Congressional Meetings";
+
+    protected override string Description => "A page representing the meetings of the senate and the house of representatives since 2000";
+
 }

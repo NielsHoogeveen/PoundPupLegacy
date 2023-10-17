@@ -2,16 +2,19 @@
 @inject ICongressionalDataService CongressionalDataService
 
 @if (Model is not null){
-    <div class="article-with-comments">
-    
-        <BreadCrumElementViewer Model="BreadCrumElements"/>
-        <UnitedStatesCongressChamberViewer Model="Model.Senate" Label="Senate"/>
-        <UnitedStatesCongressChamberViewer Model="Model.House" Label="House of Representatives" />
-    </div>
+    <HeadContentSetter Title=@Title SiteName=@SiteName Description=@Description />
+    <BreadCrumElementViewer Model="BreadCrumElements" />
+    <UnitedStatesCongressChamberViewer Model="Model.Senate" Label="Senate"/>
+    <UnitedStatesCongressChamberViewer Model="Model.House" Label="House of Representatives" />
 }
 @code{
  
     public UnitedStatesCongress? Model { get; set; }
+
+    protected override string Title => $"{SiteName} | US Congress";
+
+    protected override string Description => "A page with information about the United States Congress";
+
 
     protected override async Task OnInitializedAsync()
     {

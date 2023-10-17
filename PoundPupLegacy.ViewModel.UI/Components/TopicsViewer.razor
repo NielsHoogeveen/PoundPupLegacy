@@ -1,16 +1,23 @@
 ﻿@using Microsoft.Extensions.Primitives
 @inherits PagedSearchViewer<TopicListEntry>
 @inject IFetchTopicsService TopicService
+<HeadContentSetter Title=@Title SiteName=@SiteName Description=@Description />
 <BreadCrumElementViewer Model="BreadCrumElements" />
-<SearchForm PagedSearchListSettings="PagedListSettings" OnSearch="OnSearch"/>
+<SearchForm PagedSearchListSettings="PagedListSettings" OnSearch="OnSearch" />
 <ListEntriesViewer 
     ListEntries="ListEntries" 
     PagedListSettings="PagedListSettings" 
     SelectPage="SelectPage"
     ElementsName="topics"/>
+
 @code {
 
     protected override int PageSize => 50;
+
+    protected override string Title => $"{SiteName} | Topics";
+
+    protected override string Description => "List of all topics";
+
 
     protected override void SetPagedListSettings(Dictionary<string, StringValues> parsedQuery)
     {

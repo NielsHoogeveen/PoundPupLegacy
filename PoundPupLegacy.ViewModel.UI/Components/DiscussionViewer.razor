@@ -1,0 +1,20 @@
+﻿@inherits SpecificNodeType
+<HeadContentSetter Title=@Model.Title SiteName=@SiteName Description=@Description />
+<AuthoringViewer Model="Model.Authoring" />
+@code {
+    [Parameter]
+    [EditorRequired]
+    public Discussion Model { get; set; } = default!;
+
+    private List<string> Keywords => Model.Tags.Select(x => x.Title).ToList();
+
+    private string topicsDecription => Keywords.Any()
+        ? Keywords.Count > 1
+            ? $"about {string.Join(',', Keywords.Take(Keywords.Count - 1)).Replace(",", ", ")} and {Keywords.TakeLast(1).ToList()[0]}"
+            : $"about {Keywords[0]}"
+        : "";
+
+
+    protected override string? Description => $"Discussion started by {Model.Authoring.Name} {topicsDecription}";
+
+}

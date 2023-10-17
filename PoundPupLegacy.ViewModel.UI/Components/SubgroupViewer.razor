@@ -1,5 +1,6 @@
 ﻿@inherits PagedViewer<SubgroupListEntry>
 @inject IFetchSubgroupService SubgroupService
+<HeadContentSetter Title=@Title SiteName=@SiteName Description=@Description />
 @if (ListEntries is not null)
 {
     <table>
@@ -13,7 +14,6 @@
         }
     </table>
 }
-
 @code {
     [Parameter]
     [EditorRequired]
@@ -33,6 +33,10 @@
     }
 
     protected override int PageSize => 150;
+
+    protected override string Title => $"{SiteName} | Subgroups";
+
+    protected override string Description => "A list of subgroups of this site";
 
     protected override async Task<IPagedList<SubgroupListEntry>> GetListEntriesAsync()
     {

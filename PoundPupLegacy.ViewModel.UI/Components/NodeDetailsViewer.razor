@@ -1,17 +1,20 @@
-﻿<BreadCrumElementViewer Model="@Model.BreadCrumElements"/>
+﻿@inherits ViewerBase
+
+<BreadCrumElementViewer Model="@Model.BreadCrumElements"/>
     
 @if (!Model.HasBeenPublished) {
     <WaterMarkViewer />
 }
-<ArticleViewer>
-    <div class="title">
-        <h1>@Model.Title</h1>
-    </div>
-    @if (Model is Document document) {
-        <DocumentViewer Model="document" />
+<article>
+    <h1>@Model.Title</h1>
+    @if (Model is BlogPost blogPost) {
+        <BlogPostViewer Model="blogPost" />
     }
-    @if (Model is Discussion || Model is BlogPost) {
-        <AuthoringViewer Model="Model.Authoring" />
+    @if (Model is Discussion discussion) {
+        <DiscussionViewer Model="discussion" />
+    }
+    @if (Model is Document document) {
+        <DocumentViewer Model="document"/>
     }
     @if (Model is SimpleTextNode simpleTextNode) {
         <SimpleTextNodeViewer Model="simpleTextNode"/>
@@ -48,9 +51,10 @@
     @if (Model is Locatable locatable) {
         <LocatableViewer Model="locatable" />
     }
-</ArticleViewer>
+</article>
 @code{
     [Parameter]
     [EditorRequired]
     public Node Model { get; set; } = default!;
+
 }

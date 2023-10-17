@@ -1,7 +1,7 @@
 ﻿@using PoundPupLegacy.Services
 @using PoundPupLegacy.Readers
 @using PoundPupLegacy.Models
-@inherits Viewer
+@inherits ViewerBase
 @inject ISiteDataService siteDataService
 @inject IUserService userService
 @inject INodeAccessReadService nodeAccessReadService
@@ -37,14 +37,14 @@
         }
     }   
     <div class=" tab content1">
-        <NodeDetailsViewer Model="Model" />
+        <NodeDetailsViewer Model="Model" @ref=nodeDetailsViewer/>
     </div>
     
     @if (siteDataService.CanEdit(node: Model, userId: UserId, tenantId: TenantId))
     {
         <CascadingValue Value="Model.NodeId" Name="NodeId">
         <div class="tab content2">
-            <ArticleViewer>
+            <EditorViewer>
                 @if (Model is ViewModel.Models.BlogPost){
                     <BlogPostUpdater UrlId="Model.UrlId"/>
                 }
@@ -87,7 +87,7 @@
                 @if (Model is ViewModel.Models.WrongfulRemovalCase) {
                     <WrongfulRemovalCaseUpdater UrlId="Model.UrlId" />
                 }
-            </ArticleViewer>
+            </EditorViewer>
             </div>
         </CascadingValue>
     }
@@ -117,6 +117,8 @@
     [Parameter]
     [EditorRequired]
     public ViewModel.Models.Node Model { get; set; } = default!;
+
+    private NodeDetailsViewer nodeDetailsViewer = default!;
 
     private List<NodeAccess> nodeAccesses = new List<NodeAccess>();
 

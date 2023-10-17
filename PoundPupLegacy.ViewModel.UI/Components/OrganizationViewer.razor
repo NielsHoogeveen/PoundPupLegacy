@@ -1,4 +1,6 @@
-﻿<LargeTextViewer Value="@Model.Description" />
+﻿@inherits SpecificNodeType
+<HeadContentSetter Title=@Model.Title SiteName=@SiteName Description=@Description />
+<LargeTextViewer Value="@Model.Description" />
 <LabeledNullableStringViewer Value="@Model.WebsiteUrl" Label="Website"/>
 <LabeledNullableStringViewer Value="@Model.EmailAddress" Label="Email" />
 <LabeledNullableFuzzyDateViewer Value="Model.Establishment" Label="Established" />
@@ -12,4 +14,6 @@
     [Parameter]
     [EditorRequired]
     public Organization Model { get; set; } = default!;
+
+    protected override string? Description => $"Detailed information about the orgization {Model.Title}";
 }

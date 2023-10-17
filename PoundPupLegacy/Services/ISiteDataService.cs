@@ -42,5 +42,6 @@ public interface ISiteDataService
 
     string? GetTitle(int tenantId);
     string? GetDomainName(int tenantId);
+    string? GetName(int tenantId);
     Task RefreshTenants();
 }

@@ -1,7 +1,9 @@
 ﻿@inject IFetchCasesService FetchCasesService
 @inherits PagedViewer<NonSpecificCaseListEntry>
+<HeadContentSetter Title=@Title SiteName=@SiteName Description=@Description />
 <BreadCrumElementViewer Model="BreadCrumElements" />
 <TeaserListViewer ListEntries="ListEntries" PagedListSettings="PagedListSettings" SelectPage="SelectPage">
+    <div class="case-types">
     <h1>Cases</h1>
     <div>
     @foreach(var caseType in CaseTypeListEntries.OrderBy(x => x.Title)) {
@@ -13,11 +15,16 @@
         </div>
     }
     </div>
+    </div>
 </TeaserListViewer>
 
 @code {
 
     protected override int PageSize => 10;
+
+    protected override string Title => $"{SiteName} | Cases";
+
+    protected override string Description => "A break down of the various types of cases and a list of the most recent cases";
 
     private CaseTypeListEntry[] CaseTypeListEntries { get; set; } = Array.Empty<CaseTypeListEntry>();
 

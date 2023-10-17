@@ -1,15 +1,19 @@
 ﻿@using Microsoft.Extensions.Primitives
 @inherits PagedSearchViewer<SearchResultListEntry>
 @inject IFetchSearchService FetchSearchService
+<HeadContentSetter Title=@Title SiteName=@SiteName Description=@Description />
 <TeaserListViewer ListEntries="ListEntries" PagedListSettings="PagedListSettings" SelectPage="SelectPage"/>
 @code {
 
     protected override int PageSize => 25;
+
+    protected override string Title => $"{SiteName} | Search";
+
+    protected override string Description => "";
+
     protected override void SetPagedListSettings(Dictionary<string, StringValues> parsedQuery)
     {
-
     }
-
 
     protected override async Task<IPagedList<SearchResultListEntry>> GetListEntriesAsync()
     {

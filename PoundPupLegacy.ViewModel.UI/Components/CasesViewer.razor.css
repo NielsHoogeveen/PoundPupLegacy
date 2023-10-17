@@ -1,4 +1,5 @@
-﻿.case-type {
+﻿
+.case-type {
     display: grid;
     grid-template-columns: 1fr 3fr;
     border-bottom: solid thin gray;

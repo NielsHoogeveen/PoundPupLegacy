@@ -2,8 +2,9 @@
 @inject IFetchCountriesService FetchCountriesService
 @if (Model is not null)
 {
-    <BreadCrumElementViewer Model="BreadCrumElements"/>
-    <ArticleViewer>
+    <HeadContentSetter Title=@Title SiteName=@SiteName Description=@Description />
+    <BreadCrumElementViewer Model="BreadCrumElements" />
+    <article>
         @foreach (var entry in Model)
         {
             <ul>
@@ -50,11 +51,16 @@
                 }
             </ul>
         }
-    </ArticleViewer>
+    </article>
 }
 @code {
 
     private IEnumerable<FirstLevelRegionListEntry>? Model { get; set; }
+
+    protected override string Title => $"{SiteName} | Countries";
+
+    protected override string Description => "A page presenting all the countries in the world broken down by region";
+
 
     protected override async Task OnInitializedAsync()
     {

@@ -1,5 +1,7 @@
 ﻿.teaser-list {
     display: grid;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
 }
 
 h1 {

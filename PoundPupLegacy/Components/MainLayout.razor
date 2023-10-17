@@ -9,18 +9,20 @@
 <CascadingValue Value="HamburgerMenuOpen" Name="HamburgerMenuOpen">
     <CascadingValue Value="UserId" Name="UserId">
         <CascadingValue Value="TenantId" Name="TenantId">
-            <Header Logo="@Logo" Subtitle="@SubTitle" />
-            <main>
-                <HamburgerMenu />
-                @if(notFound) {
-                    <NotFound />
-                }else{
-                    <ContentViewer>
-                        @Body
-                    </ContentViewer>
-                }
-            </main>
-            <Footer Text="@FooterText"/>
+                <CascadingValue Value="SiteName" Name="SiteName">
+                    <Header Logo="@Logo" Subtitle="@SubTitle" />
+                    <main>
+                        <HamburgerMenu />
+                        @if(notFound) {
+                            <NotFound />
+                        }else{
+                            <ContentViewer>
+                                @Body
+                            </ContentViewer>
+                        }
+                    </main>
+                    <Footer Text="@FooterText"/>
+            </CascadingValue>
         </CascadingValue>
     </CascadingValue>
 </CascadingValue>
@@ -32,6 +34,8 @@
     private int UserId { get; set; }
 
     private bool notFound;
+
+    private string? SiteName { get; set; }
 
     private string? Logo { get; set; }
 
@@ -57,6 +61,7 @@
         SubTitle = SiteDataService.GetSubTitle(TenantId);
         FooterText = SiteDataService.GetFooterText(TenantId);
         Title = SiteDataService.GetTitle(TenantId);
+        SiteName = SiteDataService.GetName(TenantId);
 
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         if (authState.User.Identity is not null) 

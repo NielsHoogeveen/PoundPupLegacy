@@ -1,4 +1,6 @@
-﻿<LargeTextViewer Value="@Model.Description" />
+﻿@inherits SpecificNodeType
+<HeadContentSetter Title=@Model.Title SiteName=@SiteName Description=@Description />
+<LargeTextViewer Value="@Model.Description" />
 <div class="details">
     <LabeledNullableFuzzyDateViewer Value="@Model.Date" Label="Incident date" />
     @if(Model is AbuseCase abuseCase) {
@@ -16,4 +18,6 @@
     [Parameter]
     [EditorRequired]
     public Case Model { get; set; } = default!;
+
+    protected override string? Description => $"Detailed information about the case of {Model?.Title}";
 }

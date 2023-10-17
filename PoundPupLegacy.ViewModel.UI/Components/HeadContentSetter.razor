@@ -1,0 +1,20 @@
+﻿<PageTitle>@Title</PageTitle>
+    @if (Description is not null) {
+    <HeadContent>
+        <meta name="description" content=@Description>
+    </HeadContent>
+}
+@code {
+    [Parameter]
+    [EditorRequired]
+    public string SiteName { get; set; }  = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public string Title { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public string? Description { get; set; }
+
+}
