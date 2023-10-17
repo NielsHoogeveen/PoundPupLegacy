@@ -47,12 +47,8 @@ internal class SiteMapService(
 
                     strBuilder.Append($"""
                     <url>
-                        <loc>
-                            {siteMapElement.Path}
-                        </loc>
-                        <changefreq>
-                            {siteMapElement.ChangeFrequency}
-                        </changefreq>
+                        <loc>{siteMapElement.Path}</loc>
+                        <changefreq>{siteMapElement.ChangeFrequency}</changefreq>
                     </url>
                     """
                     );
@@ -60,12 +56,8 @@ internal class SiteMapService(
                 if (siteMapElement.LastChanged is not null) {
                     strBuilder.Append($"""
                     <url>
-                        <loc>
-                            {siteMapElement.Path}
-                        </loc>
-                        <lastmod>
-                            {siteMapElement.LastChanged.Value.ToString("yyyy-MM-dd")}
-                        </lastmod>
+                        <loc>{siteMapElement.Path}</loc>
+                        <lastmod>{siteMapElement.LastChanged.Value.ToString("yyyy-MM-dd")}</lastmod>
                     </url>
                     """
                     );
