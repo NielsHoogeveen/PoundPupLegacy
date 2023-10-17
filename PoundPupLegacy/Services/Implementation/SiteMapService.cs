@@ -23,7 +23,7 @@ internal class SiteMapService(
         foreach (var index in Enumerable.Range(0, count.Count / 5000 + 1)) {
             strBuilder.Append($"""
             <sitemap>
-                <loc>https://{count.DomainName}/sitemap/{index}</loc>
+                <loc>http://{count.DomainName}/sitemap/{index}</loc>
                 </sitemap>
             """);
         }
