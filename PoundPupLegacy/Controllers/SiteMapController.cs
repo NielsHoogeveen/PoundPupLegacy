@@ -28,6 +28,28 @@ namespace PoundPupLegacy.Controllers
                 ContentType = "application/xml"
             };
         }
+        [Route("robots.txt")]
+        public IActionResult Robots()
+        {
+            var request = HttpContext.Request;
+            var uri = new UriBuilder(request.Scheme, request.Host.Host, request.Host.Port ?? -1, request.PathBase).Uri;
+            var tenantId = siteDataService.GetTenantId(uri);
+            var domainName = siteDataService.GetDomainName(tenantId);
+            var text = $"""
+                User-agent: Googlebot
+
+                User-agent: *
+                Allow: /
+
+                Sitemap: http://{domainName}/sitemap.xml
+                """;
+
+            return new ContentResult {
+                Content = text,
+                ContentType = "text"
+            };
+        }
+
 
     }
 }
