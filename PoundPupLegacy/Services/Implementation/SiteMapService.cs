@@ -33,7 +33,9 @@ internal class SiteMapService(
                 {strBuilder}                
             </sitemapindex>
             """;
-        return doc;
+        var utf8 = Encoding.UTF8;
+        byte[] utfBytes = utf8.GetBytes(doc);
+        return utf8.GetString(utfBytes, 0, utfBytes.Length);
     }
 
     public async Task<string> GetSiteMap(int tenantId, int index)
@@ -72,6 +74,8 @@ internal class SiteMapService(
                 {elements}
             </urlset>
             """;
-        return doc;
+        var utf8 = Encoding.UTF8;
+        byte[] utfBytes = utf8.GetBytes(doc);
+        return utf8.GetString(utfBytes, 0, utfBytes.Length);
     }
 }
