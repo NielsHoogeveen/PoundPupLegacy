@@ -1,6 +1,6 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
-using PoundPupLegacy.Models;
+using PoundPupLegacy.DomainModel;
 
 namespace PoundPupLegacy.Readers;
 
@@ -13,6 +13,7 @@ internal sealed record SiteMapCountReaderRequest : IRequest
 internal sealed record SiteMapCount: IRequest
 {
     public required int Count { get; init; }
+    public required string DomainName { get; init; }
 }
 
 internal sealed class SiteMapCountReaderFactory : MandatorySingleItemDatabaseReaderFactory<Request, SiteMapCount>
@@ -20,12 +21,14 @@ internal sealed class SiteMapCountReaderFactory : MandatorySingleItemDatabaseRea
     private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
 
     private static readonly IntValueReader Count = new() { Name = "count" };
-    
-    
+    private static readonly StringValueReader DomainName = new() { Name = "domain_name" };
+
+
     public override string Sql => SQL;
 
     const string SQL = """
         select 
+            t.domain_name,
             count(*) count
         FROM(
             SELECT 
@@ -44,6 +47,8 @@ internal sealed class SiteMapCountReaderFactory : MandatorySingleItemDatabaseRea
             where t.id = 1
             and tn.publication_status_id = @tenant_id
         ) as x
+        join tenant t on t.id = @tenant_id
+        group by t.domain_name
         """;
 
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
@@ -56,6 +61,7 @@ internal sealed class SiteMapCountReaderFactory : MandatorySingleItemDatabaseRea
     protected override SiteMapCount Read(NpgsqlDataReader reader)
     {
         return new SiteMapCount {
+            DomainName = DomainName.GetValue(reader),
             Count = Count.GetValue(reader),
         };
     }
