@@ -15,8 +15,9 @@ public sealed class Program
     public static async Task Main(string[] args)
     {
         IJsonTypeInfoResolver[] resolvers = new IJsonTypeInfoResolver[] {
-            Models.CreateOptionsJsonContext.Default,
-            Models.ListOptionsJsonContext.Default,
+            Models.CreateOptionJsonContext.Default,
+            Models.SubgroupJsonContext.Default,
+            Models.ListOptionJsonContext.Default,
             Models.MenuItemJsonContext.Default,
             Models.NamedActionJsonContext.Default,
             Models.NodeAccessJsonContext.Default,

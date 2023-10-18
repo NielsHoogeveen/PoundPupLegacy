@@ -1,18 +1,40 @@
 ﻿@inherits PagedViewer<SubgroupListEntry>
 @inject IFetchSubgroupService SubgroupService
 <HeadContentSetter Title=@Title SiteName=@SiteName Description=@Description />
+<BreadCrumElementViewer Model="BreadCrumElements" />
+<h1>@GroupName</h1>
+<div>@GroupDescription</div>
 @if (ListEntries is not null)
 {
-    <table>
-        @foreach (var item in ListEntries.OrderByDescending(x => x.Authoring.CreatedDateTime))
-        {
-            <tr>
-                <td>
-                    <a href="@item.Path">@item.Title</a>
-                </td>
-            </tr>
+    <div class="group-list">
+        <div class="header">
+            Title
+        </div>
+        <div class="header">
+            Author
+        </div>
+        <div class="header">
+            Created
+        </div>
+        <div class="header">
+            Changed
+        </div>
+        @foreach (var item in ListEntries.OrderByDescending(x => x.Authoring.CreatedDateTime)) {
+            <div>
+                <a href="@item.Path">@item.Title</a>
+            </div>
+            <div>
+                @item.Authoring.Name
+            </div>
+            <div>
+                @item.Authoring.CreatedDateTime.ToString("yyyy MMM dd")
+            </div>
+            <div>
+                @item.Authoring.ChangedDateTime.ToString("yyyy MMM dd")
+            </div>
         }
-    </table>
+    </div>
+    <Pager Model="PagedListSettings" SelectPage="SelectPage" />
 }
 @code {
     [Parameter]
@@ -31,8 +53,11 @@
             await OnInitializedAsync();
         }
     }
+    private string? GroupName { get; set; }
 
-    protected override int PageSize => 150;
+    private string? GroupDescription { get; set; }
+
+    protected override int PageSize => 50;
 
     protected override string Title => $"Subgroups";
 
@@ -40,10 +65,13 @@
 
     protected override async Task<IPagedList<SubgroupListEntry>> GetListEntriesAsync()
     {
-        return await SubgroupService.GetSubGroupPagedList(
+        var list =  await SubgroupService.GetSubGroupPagedList(
             userId: UserId, 
             subgroupId: Id, 
             pageSize: PagedListSettings.PageSize, 
             pageNumber: PagedListSettings.PageNumber);
+        GroupName = list.Name;
+        GroupDescription = list.Description;
+        return list;
     }
 }

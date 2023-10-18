@@ -1,0 +1,16 @@
+.group-list{
+    display: grid;
+    grid-template-columns: 6fr 1fr 9em 9em;
+    width:100%;
+    margin-top:1em;
+}
+
+.group-list > * {
+    padding: 0.5em;
+    border: 1px solid #ccc;
+}
+
+.header{
+    background-color: grey;
+    color: white;
+}

@@ -25,7 +25,10 @@ internal sealed class FetchSubgroupService(
                 return result;
             return new SubgroupPagedList {
                 Entries = Array.Empty<SubgroupListEntry>(),
-                NumberOfEntries = 0
+                NumberOfEntries = 0,
+                Name = "",
+                Description = ""
+
             };
         });
     }

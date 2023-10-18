@@ -8,11 +8,11 @@ namespace PoundPupLegacy.Services.Implementation;
 internal class CreateOptionsService(
     IDbConnection connection,
     ILogger<AuthenticationService> logger,
-    ISingleItemDatabaseReaderFactory<CreateOptionsReaderRequest, List<CreateOptions>> readerFactory
+    ISingleItemDatabaseReaderFactory<CreateOptionsReaderRequest, List<CreateOption>> readerFactory
 
 ) : DatabaseService(connection, logger), ICreateOptionsService
 {
-    public async Task<List<CreateOptions>> GetCreateOptions(int tenantId, int userId)
+    public async Task<List<CreateOption>> GetCreateOptions(int tenantId, int userId)
     {
         return await WithConnection(async (connection) => {
             var reader = await readerFactory.CreateAsync(connection);
@@ -21,7 +21,7 @@ internal class CreateOptionsService(
                 UserId = userId
             });
             if(result is null) {
-                return new List<CreateOptions>();
+                return new List<CreateOption>();
             }
             return result;
         });

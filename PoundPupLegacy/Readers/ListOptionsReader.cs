@@ -10,12 +10,12 @@ public sealed record ListOptionsReaderRequest : IRequest
     public required int TenantId { get; init; }
     public required int UserId { get; init; }
 }
-internal sealed class ListOptionsReaderFactory : SingleItemDatabaseReaderFactory<Request, List<ListOptions>>
+internal sealed class ListOptionsReaderFactory : SingleItemDatabaseReaderFactory<Request, List<ListOption>>
 {
     private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     private static readonly NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
 
-    private static readonly FieldValueReader<List<ListOptions>> DocumentReader = new() { Name = "document" };
+    private static readonly FieldValueReader<List<ListOption>> DocumentReader = new() { Name = "document" };
 
     public override string Sql => SQL;
 
@@ -30,6 +30,7 @@ internal sealed class ListOptionsReaderFactory : SingleItemDatabaseReaderFactory
         		'Path',
         		path
         	)
+            order by name
         ) document
         from(
         	select
@@ -90,7 +91,7 @@ internal sealed class ListOptionsReaderFactory : SingleItemDatabaseReaderFactory
         };
     }
 
-    protected override List<ListOptions> Read(NpgsqlDataReader reader)
+    protected override List<ListOption> Read(NpgsqlDataReader reader)
     {
         return DocumentReader.GetValue(reader);
     }

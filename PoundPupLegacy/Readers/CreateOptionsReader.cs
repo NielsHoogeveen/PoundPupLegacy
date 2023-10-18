@@ -10,12 +10,12 @@ public sealed record CreateOptionsReaderRequest : IRequest
     public required int TenantId { get; init; }
     public required int UserId { get; init; }
 }
-internal sealed class CreateOptionsReaderFactory : SingleItemDatabaseReaderFactory<Request, List<CreateOptions>>
+internal sealed class CreateOptionsReaderFactory : SingleItemDatabaseReaderFactory<Request, List<CreateOption>>
 {
     private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     private static readonly NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
 
-    private static readonly FieldValueReader<List<CreateOptions>> DocumentReader = new() { Name = "document" };
+    private static readonly FieldValueReader<List<CreateOption>> DocumentReader = new() { Name = "document" };
 
     public override string Sql => SQL;
 
@@ -91,7 +91,7 @@ internal sealed class CreateOptionsReaderFactory : SingleItemDatabaseReaderFacto
         };
     }
 
-    protected override List<CreateOptions> Read(NpgsqlDataReader reader)
+    protected override List<CreateOption> Read(NpgsqlDataReader reader)
     {
         return DocumentReader.GetValue(reader);
     }

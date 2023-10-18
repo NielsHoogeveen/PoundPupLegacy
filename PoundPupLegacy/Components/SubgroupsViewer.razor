@@ -1,13 +1,13 @@
 ﻿@using PoundPupLegacy.Models
 @using PoundPupLegacy.Services
-@inject IListOptionsService ListOptionsService
+@inject ISubgroupsService SubgroupsService
 @inherits ViewerBase
 <div class="breadcrum">
     <span class="breadcrum-element">
         <a href="/home">Home</a>
     </span>
 </div>
-<h1>List content</h1>
+<h1>Groups</h1>
 @if(_model is not null) {
     <div class="create-options">
     @foreach(var elem in _model) {
@@ -18,10 +18,10 @@
 
 }
 @code {
-    private List<ListOption>? _model;
+    private List<Subgroup>? _model;
 
     protected override async Task OnInitializedAsync()
     {
-        _model = await ListOptionsService.GetListOptions(TenantId, UserId);
+        _model = await SubgroupsService.GetSubgroups(TenantId);
     }
 }

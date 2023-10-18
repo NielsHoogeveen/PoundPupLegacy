@@ -26,9 +26,10 @@ public static class DependencyInjection
         services.AddTransient<IListOptionsService, ListOptionsService>();
         services.AddSingleton<INodeAccessReadService, NodeAccessReadService>();
         services.AddSingleton<INodeAccessService, NodeAccessService>();
-        services.AddTransient<ITenantRefreshService, TenantRefreshService>();
         services.AddSingleton<ISiteDataService, SiteDataService>();
         services.AddTransient<ISiteMapService, SiteMapService>();
+        services.AddTransient<ISubgroupsService, SubgroupsService>();
+        services.AddTransient<ITenantRefreshService, TenantRefreshService>();
         services.AddTransient<IUserService, UserService>();
     }
 }

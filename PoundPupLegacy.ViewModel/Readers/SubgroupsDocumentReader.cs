@@ -27,6 +27,10 @@ internal sealed class SubgroupsDocumentReaderFactory : SingleItemDatabaseReaderF
                 jsonb_build_object(
             	    'NumberOfEntries',
             	    number_of_entries,
+                    'Name',
+                    group_name,
+                    'Description',
+                    group_description,
             	    'Entries',
             	    jsonb_agg(
             		    jsonb_build_object(
@@ -47,6 +51,7 @@ internal sealed class SubgroupsDocumentReaderFactory : SingleItemDatabaseReaderF
             				    else true
             			    end
             		    )
+                        order by changed_date_time desc
             	    )
                 ) document
             from(
@@ -62,6 +67,8 @@ internal sealed class SubgroupsDocumentReaderFactory : SingleItemDatabaseReaderF
                     url_id,
                     publisher_id,
                     publisher_name,
+                    group_name,
+                    group_description,
                     count(id) over() number_of_entries,
                     url_path,
             	    subgroup_id,
@@ -84,6 +91,8 @@ internal sealed class SubgroupsDocumentReaderFactory : SingleItemDatabaseReaderF
             	        tn.url_id,
             	        p.name publisher_name,
             	        count(tn.id) over() number_of_entries,
+                        ug.name group_name,
+                        ug.description group_description,
             	        case 
             		        when tn.url_path is null then '/node/' || tn.url_id
             		        else '/' || url_path
@@ -125,15 +134,19 @@ internal sealed class SubgroupsDocumentReaderFactory : SingleItemDatabaseReaderF
                         end status	
             	        from tenant_node tn
             	        join subgroup s on s.id = tn.subgroup_id
+                        join user_group ug on ug.id = s.id
             	        join node n on n.id = tn.node_id
             	        JOIN publisher p on p.id = n.publisher_id
             	        WHERE s.id = @subgroup_id
                     ) an
                     where an.status <> -1
-                    
+                    order by changed_date_time desc
                     LIMIT @limit OFFSET @offset
                 ) an
-                group by number_of_entries
+                group by 
+                group_name, 
+                group_description,
+                number_of_entries
             """
             ;
 

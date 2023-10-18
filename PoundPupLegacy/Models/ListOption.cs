@@ -1,10 +1,10 @@
 ﻿using System.Text.Json.Serialization;
 
 namespace PoundPupLegacy.Models;
-[JsonSerializable(typeof(List<CreateOptions>))]
-public partial class CreateOptionsJsonContext : JsonSerializerContext { }
+[JsonSerializable(typeof(List<ListOption>))]
+public partial class ListOptionJsonContext : JsonSerializerContext { }
 
-public record CreateOptions
+public record ListOption
 {
     public required string Name { get; init; }
     public required string Path { get; init; }

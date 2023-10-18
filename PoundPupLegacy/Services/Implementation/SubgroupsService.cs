@@ -5,23 +5,22 @@ using System.Data;
 
 namespace PoundPupLegacy.Services.Implementation;
 
-internal class ListOptionsService(
+internal class SubgroupsService(
     IDbConnection connection,
     ILogger<AuthenticationService> logger,
-    ISingleItemDatabaseReaderFactory<ListOptionsReaderRequest, List<ListOption>> readerFactory
+    ISingleItemDatabaseReaderFactory<SubgroupsReaderRequest, List<Subgroup>> readerFactory
 
-) : DatabaseService(connection, logger), IListOptionsService
+) : DatabaseService(connection, logger), ISubgroupsService
 {
-    public async Task<List<ListOption>> GetListOptions(int tenantId, int userId)
+    public async Task<List<Subgroup>> GetSubgroups(int tenantId)
     {
         return await WithConnection(async (connection) => {
             var reader = await readerFactory.CreateAsync(connection);
-            var result =  await reader.ReadAsync(new ListOptionsReaderRequest {
-                TenantId = tenantId,
-                UserId = userId
+            var result =  await reader.ReadAsync(new SubgroupsReaderRequest {
+                TenantId = tenantId
             });
             if(result is null) {
-                return new List<ListOption>();
+                return new List<Subgroup>();
             }
             return result;
         });

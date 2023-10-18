@@ -4,5 +4,5 @@ namespace PoundPupLegacy.Services;
 
 public interface IListOptionsService
 {
-    public Task<List<ListOptions>> GetListOptions(int tenantId, int userId);
+    public Task<List<ListOption>> GetListOptions(int tenantId, int userId);
 }
