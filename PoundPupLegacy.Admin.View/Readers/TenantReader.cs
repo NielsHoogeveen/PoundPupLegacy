@@ -80,7 +80,7 @@ internal sealed class TenantReaderFactory : SingleItemDatabaseReaderFactory<Requ
         ur.id user_role_id,
         ur.name user_role_name,
         case 
-        	when ug.administrator_role_id = ur.id then true
+        	when t.administrator_role_id = ur.id then true
         	else false
         end is_administrator,
         (

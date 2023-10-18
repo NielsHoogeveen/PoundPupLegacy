@@ -44,6 +44,18 @@ internal sealed class UserTenantActionReaderFactory : EnumerableDatabaseReaderFa
         where arp.access_role_id = t.access_role_id_not_logged_in
         union
         select
+        distinct
+        ugur2.user_id,
+        t.id tenant_id,
+        ba.path
+        from basic_action ba
+        join tenant_action ta on ta.action_id = ba.id
+        join user_group_user_role_user ugur on ugur.user_group_id = ta.tenant_id
+        join user_group ug on ug.id = ugur.user_group_id
+        join tenant t on t.id = ug.id
+        join user_group_user_role_user ugur2 on ugur2.user_group_id = ug.id and ugur2.user_role_id = ug.administrator_role_id
+        union
+        select
         	distinct
         	ugur.user_id,
         	t.id tenant_id,
@@ -73,8 +85,8 @@ internal sealed class UserTenantActionReaderFactory : EnumerableDatabaseReaderFa
         '/' || replace(nt.name, ' ', '_') || '/create' "action"
         from create_node_action cna
         join node_type nt on nt.id = cna.node_type_id
-        join access_role_privilege arp on arp.action_id = cna.id
-        join user_group_user_role_user ugur on ugur.user_role_id = arp.access_role_id
+        join tenant_action ta on ta.action_id = cna.id
+        join user_group_user_role_user ugur on ugur.user_group_id = ta.tenant_id
         join user_group ug on ug.id = ugur.user_group_id
         join tenant t on t.id = ug.id
         join user_group_user_role_user ugur2 on ugur2.user_group_id = ug.id and ugur2.user_role_id = ug.administrator_role_id
