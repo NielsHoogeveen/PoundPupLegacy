@@ -14,16 +14,6 @@
         {
             <LinkListElementViewer Link="@item" />
         }
-        @if (UserId != 0) {
-            <li>
-                <LogoutForm />
-            </li>
-        }
-        else {
-            <li>
-                <LoginForm />
-            </li>
-        }
     </ul>
 </nav>
 
@@ -31,11 +21,9 @@
 @code {
     private IEnumerable<MenuItem> _menuItems = Array.Empty<MenuItem>();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
 
-        _menuItems = SiteDataService.GetMenuItemsForUser(
-            userId: UserId, 
-            tenantId: TenantId);
+        _menuItems = await SiteDataService.GetMenuItemsForUser(UserId);
     }
 }

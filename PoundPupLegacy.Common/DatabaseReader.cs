@@ -212,7 +212,7 @@ namespace PoundPupLegacy.Common
             }
             await using var reader = await _command.ExecuteReaderAsync();
             if (!reader.HasRows)
-                throw new Exception(_errorMessageFunction(request)); ;
+                throw new ReadException(_errorMessageFunction(request)); ;
             await reader.ReadAsync();
             return _readerFunction(reader);
         }

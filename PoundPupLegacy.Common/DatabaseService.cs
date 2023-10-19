@@ -6,14 +6,14 @@ namespace PoundPupLegacy.Common;
 
 public abstract class DatabaseService
 {
-    public NpgsqlConnection connection;
-    protected ILogger logger;
+    public NpgsqlConnection _connection;
+    protected ILogger _logger;
     protected DatabaseService(IDbConnection connection, ILogger logger)
     {
         if (connection is not NpgsqlConnection)
             throw new Exception("Application only works with a Postgres database");
-        this.connection = (NpgsqlConnection)connection;
-        this.logger = logger;
+        _connection = (NpgsqlConnection)connection;
+        _logger = logger;
     }
 
     private SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
@@ -21,15 +21,15 @@ public abstract class DatabaseService
     {
         await semaphore.WaitAsync();
         try {
-            await connection.OpenAsync();
-            return await func(connection);
+            await _connection.OpenAsync();
+            return await func(_connection);
         }
         catch (Exception e) {
-            logger.LogError(e, "Error while executing database query");
+            _logger.LogError(e, "Error while executing database query");
             throw;
         }
         finally {
-            await connection.CloseAsync();
+            await _connection.CloseAsync();
             semaphore.Release();
         }
     }
@@ -37,10 +37,10 @@ public abstract class DatabaseService
     protected async Task<T> WithTransactedConnection<T>(Func<NpgsqlConnection, Task<T>> func)
     {
         try {
-            await connection.OpenAsync();
-            var tx = await connection.BeginTransactionAsync();
+            await _connection.OpenAsync();
+            var tx = await _connection.BeginTransactionAsync();
             try {
-                var result = await func(connection);
+                var result = await func(_connection);
                 await tx.CommitAsync();
                 return result;
             }
@@ -50,25 +50,25 @@ public abstract class DatabaseService
             }
         }
         catch (Exception e) {
-            logger.LogError(e, "Error while executing database query");
+            _logger.LogError(e, "Error while executing database query");
             throw;
         }
         finally {
-            await connection.CloseAsync();
+            await _connection.CloseAsync();
         }
     }
     protected async Task<T> WithConnection<T>(Func<NpgsqlConnection, Task<T>> func)
     {
         try {
-            await connection.OpenAsync();
-            return await func(connection);
+            await _connection.OpenAsync();
+            return await func(_connection);
         }
         catch (Exception e) {
-            logger.LogError(e, "Error while executing database query");
+            _logger.LogError(e, "Error while executing database query");
             throw;
         }
         finally {
-            await connection.CloseAsync();
+            await _connection.CloseAsync();
         }
     }
 }

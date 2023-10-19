@@ -68,3 +68,11 @@ header .subtitle {
         text-align: center;
     }
 }
+
+#search-form {
+    margin-right: 2em;
+}
+::deep a {
+    color: silver;
+    margin-right: 1em;
+}

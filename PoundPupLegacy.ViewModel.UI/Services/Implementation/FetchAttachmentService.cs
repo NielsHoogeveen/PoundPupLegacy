@@ -19,7 +19,7 @@ internal sealed class FetchAttachmentService(
     {
         var attachementsLocation = configuration["AttachmentsLocation"];
         if (attachementsLocation is null) {
-            logger.LogError("AttachmentsLocation is not defined in appsettings.json");
+            _logger.LogError("AttachmentsLocation is not defined in appsettings.json");
             return new None();
         }
 

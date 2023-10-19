@@ -2,6 +2,6 @@
 
 public interface ISiteMapService
 {
-    public Task<string> GetSiteMapIndex(int tenantId);
-    public Task<string> GetSiteMap(int tenantId, int index);
+    public Task<string> GetSiteMapIndex();
+    public Task<string> GetSiteMap(int index);
 }

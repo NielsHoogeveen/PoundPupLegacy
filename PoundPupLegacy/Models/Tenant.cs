@@ -10,6 +10,8 @@ public sealed record Tenant
     public int Id { get; init; }
     public required string Name { get; init; }
 
+    public required string Title { get; init; }
+
     public required string Description { get; init; }
 
     public required string DomainName { get; init; }
@@ -28,7 +30,11 @@ public sealed record Tenant
 
     public required string? CssFile { get; init; }
 
+    public required int FrontPageId{ get; init; }
+
     public required string? GoogleAnalyticsMeasurementId { get; init; }
+
+    public required SmtpConnection SmtpConnection { get; init; }
 
     public required Dictionary<string, int> UrlToId { get; init; }
 

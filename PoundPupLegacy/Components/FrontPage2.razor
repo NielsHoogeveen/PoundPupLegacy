@@ -1,0 +1,32 @@
+﻿@using PoundPupLegacy.Components
+@using PoundPupLegacy.ViewModel.UI.Components
+@using PoundPupLegacy.Services
+@inject ISiteDataService SiteDataService
+
+<div class="front-page-container">
+<div class="frontpage">
+    <div class="front-page-text">
+        @if (FrontPageText is not null) {
+            @FrontPageText
+        }
+    </div>
+        
+</div>
+<div class="document-list">
+    <ArticlesViewer />
+</div>
+</div>
+
+
+@code {
+    [CascadingParameter(Name = "TenantId")]
+    public int TenantId { get; set; }
+
+    private MarkupString? FrontPageText { get; set; }
+
+    protected override void OnInitialized()
+    {
+        var result = SiteDataService.GetFrontPageText();
+        FrontPageText = result == null ? null : new MarkupString(result);
+    }
+}

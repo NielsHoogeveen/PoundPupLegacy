@@ -4,17 +4,21 @@ using PoundPupLegacy.Models;
 
 namespace PoundPupLegacy.Readers;
 
-using Request = TenantsReaderRequest;
+using Request = TenantReaderRequest;
 
-internal sealed record TenantsReaderRequest : IRequest
+public sealed record TenantReaderRequest : IRequest
 {
-
+    public required int TenantId { get; init; }
 }
 
-internal sealed class TenantsReaderFactory : EnumerableDatabaseReaderFactory<Request, Tenant>
+internal sealed class TenantReaderFactory : MandatorySingleItemDatabaseReaderFactory<Request, Tenant>
 {
+
+    private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
+
     private static readonly IntValueReader TenantIdReader = new() { Name = "tenant_id" };
     private static readonly StringValueReader NameReader = new() { Name = "name" };
+    private static readonly StringValueReader TitleReader = new() { Name = "title" };
     private static readonly StringValueReader DescriptionReader = new() { Name = "description" };
     private static readonly StringValueReader DomainNameReader = new() { Name = "domain_name" };
     private static readonly IntValueReader CountryIdDefaultReader = new() { Name = "country_id_default" };
@@ -25,6 +29,12 @@ internal sealed class TenantsReaderFactory : EnumerableDatabaseReaderFactory<Req
     private static readonly NullableStringValueReader SubTitle = new() { Name = "sub_title" };
     private static readonly NullableStringValueReader FooterText = new() { Name = "footer_text" };
     private static readonly NullableStringValueReader GoogleAnalyticsMeasurementId = new() { Name = "google_analytics_measurement_id" };
+    private static readonly IntValueReader FrontPageId = new() { Name = "frontpage_id" };
+    private static readonly IntValueReader SmtpConnectionId = new() { Name = "smtp_connection_id" };
+    private static readonly StringValueReader SmptHost = new() { Name = "smtp_host" };
+    private static readonly IntValueReader SmtpPort = new() { Name = "smtp_port" };
+    private static readonly StringValueReader SmptUserName = new() { Name = "smtp_user_name" };
+    private static readonly StringValueReader SmptPassword = new() { Name = "smtp_password" };
 
     public override string Sql => SQL;
 
@@ -37,19 +47,30 @@ internal sealed class TenantsReaderFactory : EnumerableDatabaseReaderFactory<Req
         t.country_id_default,
         n.title country_name,
         t.front_page_text,
+        t.frontpage_id,
         t.logo,
         t.sub_title,
         t.footer_text,
         t.css_file,
-        t.google_analytics_measurement_id
+        t.title,
+        t.google_analytics_measurement_id,
+        sc.id smtp_connection_id,
+        sc.host smtp_host,
+        sc.port smtp_port,
+        sc.user_name  smtp_user_name,
+        sc.password  smtp_password
         from tenant t
         join user_group ug on ug.id = t.id
         join node n on n.id = t.country_id_default
+        join smtp_connection sc on sc.id = t.smtp_connection_id
+        where t.id = @tenant_id
         """;
 
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
-        return new ParameterValue[] { };
+        return new ParameterValue[] {
+            ParameterValue.Create(TenantIdParameter, request.TenantId),
+        };
     }
 
     protected override Tenant Read(NpgsqlDataReader reader)
@@ -57,6 +78,7 @@ internal sealed class TenantsReaderFactory : EnumerableDatabaseReaderFactory<Req
         return new Tenant {
             Id = TenantIdReader.GetValue(reader),
             Name = NameReader.GetValue(reader),
+            Title = TitleReader.GetValue(reader),
             Description = DescriptionReader.GetValue(reader),
             DomainName = DomainNameReader.GetValue(reader),
             CountryIdDefault = CountryIdDefaultReader.GetValue(reader),
@@ -68,7 +90,20 @@ internal sealed class TenantsReaderFactory : EnumerableDatabaseReaderFactory<Req
             CssFile = CssFile.GetValue(reader),
             Subtitle = SubTitle.GetValue(reader),
             FooterText = FooterText.GetValue(reader),
+            FrontPageId = FrontPageId.GetValue(reader),
             GoogleAnalyticsMeasurementId = GoogleAnalyticsMeasurementId.GetValue(reader),
+            SmtpConnection = new SmtpConnection { 
+                Id = SmtpConnectionId.GetValue(reader),
+                Host = SmptHost.GetValue(reader),
+                Port = SmtpPort.GetValue(reader),
+                Username = SmptUserName.GetValue(reader),
+                Password = SmptPassword.GetValue(reader)
+            }
         };
+    }
+
+    protected override string GetErrorMessage(Request request)
+    {
+        return $"No tenant was found with Id {request.TenantId}";
     }
 }

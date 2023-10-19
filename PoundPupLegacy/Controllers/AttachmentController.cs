@@ -23,8 +23,8 @@ public sealed class AttachmentController : Controller
     [HttpGet("{id}")]
     public async Task<IActionResult> Index(int id)
     {
-        var userId = _userService.GetUserId(HttpContext.User);
-        var tenantId = _siteDataService.GetTenantId(Request.GetUri());
+        var userId = await _userService.GetUserId(HttpContext.User);
+        var tenantId = _siteDataService.GetTenantId();
         var res = await _attachmentService.GetFileStream(
             id: id,
             userId: userId,

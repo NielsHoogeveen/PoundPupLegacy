@@ -8,16 +8,17 @@ namespace PoundPupLegacy.Services.Implementation;
 
 internal class SiteMapService(
     IDbConnection connection,
-    ILogger<SiteDataService> _logger,
+    ILogger<SiteDataService> logger,
+    ISiteDataService siteDataService,
     IEnumerableDatabaseReaderFactory<SiteMapReaderRequest, SiteMapElement> siteMapReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<SiteMapCountReaderRequest, SiteMapCount> siteMapCountReaderFactory
-) : DatabaseService(connection, _logger), ISiteMapService
+) : DatabaseService(connection, logger), ISiteMapService
 {
-    public async Task<string> GetSiteMapIndex(int tenantId)
+    public async Task<string> GetSiteMapIndex()
     {
         var count = await WithConnection(async (connection) => {
             await using var siteMapCountReader = await siteMapCountReaderFactory.CreateAsync(connection);
-            return await siteMapCountReader.ReadAsync(new SiteMapCountReaderRequest { TenantId = tenantId });
+            return await siteMapCountReader.ReadAsync(new SiteMapCountReaderRequest { TenantId = siteDataService.GetTenantId()});
         });
         var strBuilder = new StringBuilder();
         foreach (var index in Enumerable.Range(0, count.Count / 5000 + 1)) {
@@ -38,12 +39,12 @@ internal class SiteMapService(
         return utf8.GetString(utfBytes, 0, utfBytes.Length);
     }
 
-    public async Task<string> GetSiteMap(int tenantId, int index)
+    public async Task<string> GetSiteMap(int index)
     {
         var strBuilder = new StringBuilder();
         var elements = await WithConnection(async (connection) => {
             await using var siteMapReader = await siteMapReaderFactory.CreateAsync(connection);
-            await foreach (var siteMapElement in siteMapReader.ReadAsync(new SiteMapReaderRequest { TenantId = tenantId, Index = index})) {
+            await foreach (var siteMapElement in siteMapReader.ReadAsync(new SiteMapReaderRequest { TenantId = siteDataService.GetTenantId(), Index = index})) {
 
                 if (siteMapElement.ChangeFrequency is not null) {
 

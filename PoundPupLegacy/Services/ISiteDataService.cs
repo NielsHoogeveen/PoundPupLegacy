@@ -7,42 +7,43 @@ namespace PoundPupLegacy.Services;
 public interface ISiteDataService
 {
     (int, string) GetDefaultCountry(int tenantId);
-    Task InitializeAsync();
 
-    [RequireNamedArgs]
-    string? GetUrlPathForId(int tenantId, int urlId);
+    Task<bool> InitializeAsync();
 
-    [RequireNamedArgs]
-    bool HasAccess(int userId, int tenantId, string path);
+    int? GetUserByNameIdentifier(string id);
 
-    [RequireNamedArgs]
-    bool CanEdit(Node node, int userId, int tenantId);
+    string? GetUrlPathForId(int urlId);
 
-    [RequireNamedArgs]
-    bool CanViewNodeAccess(int userId, int tenantId);
+    Task<bool> HasAccess(int userId, string path);
 
-    int GetTenantId(Uri uri);
+    Task<bool> CanEdit(Node node, int userId);
 
-    int? GetIdForUrlPath(string urlPath, int tenantId);
+    Task<bool> CanViewNodeAccess(int userId);
 
-    [RequireNamedArgs]
-    IEnumerable<MenuItem> GetMenuItemsForUser(int userId, int tenantId);
+    int GetTenantId();
 
-    string? GetFrontPageText(int tenantId);
+    int? GetIdForUrlPath(string urlPath);
 
-    string? GetLogo(int tenantId);
+    Task<List<MenuItem>> GetMenuItemsForUser(int userId);
 
-    string? GetSubTitle(int tenantId);
+    string? GetFrontPageText();
 
-    string? GetFooterText(int tenantId);
+    int GetFrontPageId();
 
-    string? GetCssFile(int tenantId);
+    string? GetLogo();
 
-    string? GetIcoFile(int tenantId);
+    string? GetSubTitle();
 
-    string? GetTitle(int tenantId);
-    string? GetDomainName(int tenantId);
-    string? GetName(int tenantId);
-    string? GetGoogleAnalyticsMearurementId(int tenantId);
+    string? GetFooterText();
+
+    string? GetCssFile();
+
+    string? GetIcoFile();
+
+    string? GetTitle();
+    string? GetDomainName();
+    string? GetName();
+    string? GetGoogleAnalyticsMearurementId();
+    SmtpConnection GetSmtpConnection();
     Task RefreshTenants();
 }

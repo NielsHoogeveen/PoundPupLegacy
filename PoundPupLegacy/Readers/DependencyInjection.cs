@@ -11,17 +11,14 @@ public static class DependencyInjection
         services.AddTransient<ISingleItemDatabaseReaderFactory<CreateOptionsReaderRequest, List<CreateOption>>, CreateOptionsReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<SubgroupsReaderRequest, List<Subgroup>>, SubgroupsReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<ListOptionsReaderRequest, List<ListOption>>, ListOptionsReaderFactory>();
-        services.AddTransient<IEnumerableDatabaseReaderFactory<MenuItemsReaderRequest, UserTenantMenuItems>, MenuItemsReaderFactory>();
         services.AddTransient<IEnumerableDatabaseReaderFactory<NodeAccessReaderRequest, NodeAccess>, NodeAccessReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<PasswordValidationReaderRequest, PasswordValidationReaderResponse>, PasswordValidationReaderFactory>();
-        services.AddTransient<IEnumerableDatabaseReaderFactory<NamedActionsReaderRequest, NamedAction>, NamedActionsReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<UserByEmailReaderRequest, UserIdByEmail>, UserByEmailReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<UserByNameIdentifierReaderRequest, UserIdByNameIdentifier>, UserByNameIdentifierReaderFactory>();
         services.AddTransient<IEnumerableDatabaseReaderFactory<SiteMapReaderRequest, SiteMapElement>, SiteMapReaderFactory>();
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<SiteMapCountReaderRequest, SiteMapCount>, SiteMapCountReaderFactory>();
+        services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<UserDocumentReaderRequest, User>, UserDocumentReaderFactory>();
         services.AddTransient<IEnumerableDatabaseReaderFactory<TenantNodesReaderRequest, TenantNode>, TenantNodesReaderFactory>();
-        services.AddTransient<IEnumerableDatabaseReaderFactory<TenantsReaderRequest, Tenant>, TenantsReaderFactory>();
-        services.AddTransient<IEnumerableDatabaseReaderFactory<UserTenantActionReaderRequest, UserTenantAction>, UserTenantActionReaderFactory>();
-        services.AddTransient<IEnumerableDatabaseReaderFactory<UserTenantCreateActionReaderRequest, UserTenantCreateAction>, UserTenantCreateActionReaderFactory>();
-        services.AddTransient<IEnumerableDatabaseReaderFactory<UserTenantEditActionReaderRequest, UserTenantEditAction>, UserTenantEditActionReaderFactory>();
-        services.AddTransient<IEnumerableDatabaseReaderFactory<UserTenantEditOwnActionReaderRequest, UserTenantEditOwnAction>, UserTenantEditOwnActionReaderFactory>();
+        services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<TenantReaderRequest, Tenant>, TenantReaderFactory>();
     }
 }

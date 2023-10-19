@@ -3,24 +3,24 @@
 @using PoundPupLegacy.Services
 @inject ISiteDataService SiteDataService
 
-<div class="frontpage">
-    <div class="front-page-text">
-    @if (FrontPageText is not null)
-    {
-        @FrontPageText
-    }
-    </div>
-</div>
+@if (frontPageId == 1)
+{
+    <FrontPage1 />
+}
+@if (frontPageId == 2)
+{
+    <FrontPage1 />
+}
+
 
 @code{
     [CascadingParameter(Name ="TenantId")]
     public int TenantId { get; set; }
 
-    private MarkupString? FrontPageText { get; set; }
+    private int frontPageId;
 
     protected override void OnInitialized()
     {
-        var result = SiteDataService.GetFrontPageText(TenantId);
-        FrontPageText  = result == null ? null : new MarkupString(result);
+        frontPageId = SiteDataService.GetFrontPageId();
     }
 }

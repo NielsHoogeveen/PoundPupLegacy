@@ -10,10 +10,8 @@ namespace PoundPupLegacy.Controllers
         public async Task<IActionResult> Index()
         {
             var request = HttpContext.Request;
-            var uri = new UriBuilder(request.Scheme, request.Host.Host, request.Host.Port ?? -1, request.PathBase).Uri;
-            var tenantId = siteDataService.GetTenantId(uri);
             return new ContentResult {
-                Content = await siteMapService.GetSiteMapIndex(tenantId),
+                Content = await siteMapService.GetSiteMapIndex(),
                 ContentType = "application/xml"
             };
         }
@@ -21,10 +19,8 @@ namespace PoundPupLegacy.Controllers
         public async Task<IActionResult> Index(int index)
         {
             var request = HttpContext.Request;
-            var uri = new UriBuilder(request.Scheme, request.Host.Host, request.Host.Port ?? -1, request.PathBase).Uri;
-            var tenantId = siteDataService.GetTenantId(uri);
             return new ContentResult {
-                Content = await siteMapService.GetSiteMap(tenantId, index),
+                Content = await siteMapService.GetSiteMap(index),
                 ContentType = "application/xml"
             };
         }
@@ -32,9 +28,7 @@ namespace PoundPupLegacy.Controllers
         public IActionResult Robots()
         {
             var request = HttpContext.Request;
-            var uri = new UriBuilder(request.Scheme, request.Host.Host, request.Host.Port ?? -1, request.PathBase).Uri;
-            var tenantId = siteDataService.GetTenantId(uri);
-            var domainName = siteDataService.GetDomainName(tenantId);
+            var domainName = siteDataService.GetDomainName();
             var text = $"""
                 User-agent: Googlebot
 

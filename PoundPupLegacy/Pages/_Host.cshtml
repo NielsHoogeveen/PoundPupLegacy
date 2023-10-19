@@ -25,10 +25,10 @@
     @{
         var request = HttpContext.Request;
         var uri = new UriBuilder(request.Scheme, request.Host.Host, request.Host.Port ?? -1, request.PathBase).Uri;
-        var tenantId = SiteDataService.GetTenantId(uri);
-        var cssFile = SiteDataService.GetCssFile(tenantId);
-        var icoFIle = SiteDataService.GetIcoFile(tenantId);
-        var analyticsKey = SiteDataService.GetGoogleAnalyticsMearurementId(tenantId);
+        var tenantId = SiteDataService.GetTenantId();
+        var cssFile = SiteDataService.GetCssFile();
+        var icoFIle = SiteDataService.GetIcoFile();
+        var analyticsKey = SiteDataService.GetGoogleAnalyticsMearurementId();
     }
     <link href="/css/@cssFile" rel="stylesheet" type="text/css" asp-append-version="true" />
     <link href="PoundPupLegacy.styles.css" rel="stylesheet" asp-append-version="true" />
@@ -55,6 +55,7 @@
         gtag('config', '@analyticsKey');
     </script>
     }
+
 </head>
 <body>
     @if (HttpContext.User.Identity is not null && HttpContext.User.Identity.IsAuthenticated) 

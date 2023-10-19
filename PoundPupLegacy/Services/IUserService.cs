@@ -4,5 +4,5 @@ namespace PoundPupLegacy.Services;
 
 public interface IUserService
 {
-    int GetUserId(ClaimsPrincipal claimsPrincipal);
+    Task<int> GetUserId(ClaimsPrincipal claimsPrincipal);
 }

@@ -1,0 +1,8 @@
+﻿.front-page-container{
+    display: flex;
+    flex-direction: column;
+
+}
+.document-list{
+    flex: 3;
+}

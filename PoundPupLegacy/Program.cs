@@ -1,12 +1,18 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Npgsql;
 using PoundPupLegacy.Common;
+using PoundPupLegacy.Data;
 using PoundPupLegacy.Services;
 using Quartz;
 using Quartz.AspNetCore;
 using System.Data;
 using System.Text.Json.Serialization.Metadata;
+using BlazorApp2.Areas.Identity;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace PoundPupLegacy;
 
@@ -14,19 +20,199 @@ public sealed class Program
 {
     public static async Task Main(string[] args)
     {
-        IJsonTypeInfoResolver[] resolvers = new IJsonTypeInfoResolver[] {
+        IJsonTypeInfoResolver[] resolvers = Extensions.GetResolvers();
+        var builder = WebApplication.CreateBuilder(args);
+
+        builder.Services.AddHttpContextAccessor();
+        var connectionString = builder.Configuration.GetValue<string>("ConnectString")!;
+
+        builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseNpgsql(connectionString));
+
+        builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+        builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            .AddEntityFrameworkStores<ApplicationDbContext>();
+
+
+        builder.Services.AddAuthentication()//(CookieAuthenticationDefaults.AuthenticationScheme)
+            //.AddCookie()
+            .AddProviders(builder.Configuration.GetSection("OAuth2Providers").Get<List<OAuthProvider>>()!);
+        ;
+        
+
+
+        builder.Services.AddLogging(loggingBuilder => {
+            loggingBuilder.AddApplicationInsights(
+                configureTelemetryConfiguration: (config) => config.ConnectionString = "InstrumentationKey=61d8fcaa-1c19-44ec-b880-4fb84d08ee5a;IngestionEndpoint=https://eastus-8.in.applicationinsights.azure.com/;LiveEndpoint=https://eastus.livediagnostics.monitor.azure.com/",
+                configureApplicationInsightsLoggerOptions: (options) => { }
+            );
+        });
+        builder.Services.AddScoped<NotFoundListener>();
+        builder.Services.AddSignalR(e => {
+            e.MaximumReceiveMessageSize = 102400000;
+        });
+
+        builder.Services.AddRazorPages()
+            .AddJsonOptions(options => {
+                 options
+                     .JsonSerializerOptions
+                     .Converters.Add(FuzzyDateJsonConverter.Default);
+
+                 options
+                     .JsonSerializerOptions
+                     .TypeInfoResolver = JsonTypeInfoResolver.Combine(resolvers);
+
+             });
+
+        builder.Services.AddControllersWithViews()
+            .AddJsonOptions(options => {
+                options
+                    .JsonSerializerOptions
+                    .Converters.Add(FuzzyDateJsonConverter.Default);
+
+                options
+                    .JsonSerializerOptions
+                    .TypeInfoResolver = JsonTypeInfoResolver.Combine(resolvers);
+
+            });
+
+        builder.Services.AddServerSideBlazor();
+        
+        builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
+
+        builder.Services.AddSingleton<NpgsqlDataSource>((sp) => {
+            var configuration = sp.GetService<IConfiguration>()!;
+            var connectString = configuration["ConnectString"]!;
+            var dataSource = new NpgsqlDataSourceBuilder(connectString)
+                .EnableDynamicJsonMappings(new System.Text.Json.JsonSerializerOptions {
+                   TypeInfoResolver = JsonTypeInfoResolver.Combine(resolvers),
+                    Converters = { FuzzyDateJsonConverter.Default }
+                })
+                .Build();
+            return dataSource;
+        });
+        builder.Services.AddTransient<IDbConnection>((sp) => {
+            var dataSource = sp.GetRequiredService<NpgsqlDataSource>();
+            return dataSource.CreateConnection();
+        });
+        builder.Services.AddApplicationServices();
+        builder.Services.AddQuartz(q => {
+            q.UseSimpleTypeLoader();
+            q.UseInMemoryStore();
+            q.UseDefaultThreadPool(tp => {
+                tp.MaxConcurrency = 1;
+            });
+            q.ScheduleJob<INodeAccessService>(trigger => trigger
+            .WithIdentity("1")
+            .StartAt(DateBuilder.EvenSecondDate(DateTimeOffset.UtcNow.AddSeconds(7)))
+            .WithDailyTimeIntervalSchedule(x => x.WithInterval(10, IntervalUnit.Second))
+            .WithDescription("Flushing node access to database")
+        );
+        });
+
+        builder.Services.AddQuartzServer(options => {
+            // when shutting down we want jobs to complete gracefully
+            options.WaitForJobsToComplete = true;
+        });
+
+        builder.Services.AddApplicationInsightsTelemetry();
+
+        var app = builder.Build();
+
+
+        if (!app.Environment.IsDevelopment()) {
+            app.UseExceptionHandler("/Home/Error");
+            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            app.UseHsts();
+
+        }
+
+        app.Use(async (context, next) => {
+            await next();
+            if (context.Response.StatusCode == 404) {
+                context.Request.Path = "/NotFound";
+                await next();
+            }
+        });
+        app.UseHttpsRedirection();
+        app.UseStaticFiles();
+
+        var configuration = app.Services.GetService<IConfiguration>()!;
+        var filesPath = configuration["FilesLocation"]!;
+        app.UseStaticFiles(new StaticFileOptions {
+
+            FileProvider = new PhysicalFileProvider(filesPath),
+            RequestPath = "/files"
+        });
+
+        app.UseRouting();
+
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+        app.MapControllers();
+        app.MapBlazorHub();
+        app.MapFallbackToPage("/_Host");
+
+        app.MapControllerRoute(
+            name: "default",
+            pattern: "{controller=Home}/{action=Index}/{id?}");
+
+        //app.MapControllerRoute(
+        //   name: "all-else",
+        //   pattern: "{*url}",
+        //   defaults: new { controller = "Home", action = "AllElse" });
+
+
+        var res = app.Services.GetService<ISiteDataService>();
+        if (res != null) {
+            if(await res.InitializeAsync()) {
+                app.Run();
+            }
+        }
+    }
+}
+
+public static class Extensions
+{
+    public static AuthenticationBuilder AddProviders(this AuthenticationBuilder builder, List<OAuthProvider> providers)
+    {
+        foreach(var provider in providers) {
+            if(provider.Name == "Google") {
+                builder.AddGoogle(options => {
+                    options.ClientId = provider.ClientId;
+                    options.ClientSecret = provider.ClientSecret;
+                });
+            }
+            if (provider.Name == "Microsoft") {
+                builder.AddMicrosoftAccount(options => {
+                    options.ClientId = provider.ClientId;
+                    options.ClientSecret = provider.ClientSecret;
+                });
+            }
+            if (provider.Name == "Yahoo") {
+                builder.AddYahoo(options => {
+                    options.ClientId = provider.ClientId;
+                    options.ClientSecret = provider.ClientSecret;
+                });
+            }
+        }
+        return builder;
+    }
+
+    public static IJsonTypeInfoResolver[] GetResolvers()
+    {
+        return [
             Models.CreateOptionJsonContext.Default,
             Models.SubgroupJsonContext.Default,
             Models.ListOptionJsonContext.Default,
             Models.MenuItemJsonContext.Default,
-            Models.NamedActionJsonContext.Default,
             Models.NodeAccessJsonContext.Default,
             Models.TenantJsonContext.Default,
             Models.TenantNodeJsonContext.Default,
-            Models.UserTenantActionJsonContext.Default,
-            Models.UserTenantEditOwnActionJsonContext.Default,
-            Models.UserTenantMenuItemsJsonContext.Default,
-            
+            Models.UserJsonContext.Default,
+
             ViewModel.Models.AbuseCaseJsonContext.Default,
             ViewModel.Models.AbuseCaseListJsonContext.Default,
             ViewModel.Models.AbuseCasesJsonContext.Default,
@@ -176,7 +362,7 @@ public sealed class Program
             EditModel.SubdivisionListItemJsonContext.Default,
             EditModel.SubgroupJsonContext.Default,
             EditModel.TagNodeTypeJsonContext.Default,
-            
+
             EditModel.TenantDetailsJsonContext.Default,
             EditModel.ExistingTenantNodeJsonContext.Default,
             EditModel.TermJsonContext.Default,
@@ -192,149 +378,7 @@ public sealed class Program
             EditModel.PersonListItemJsonContext.Default,
 
             Admin.View.TenantJsonContext.Default
-        };
+        ];
 
-        var builder = WebApplication.CreateBuilder(args);
-
-        builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            .AddCookie(options => {
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
-                options.SlidingExpiration = true;
-                options.AccessDeniedPath = "/Forbidden/";
-
-            });
-
-        builder.Services.AddLogging(loggingBuilder => {
-            loggingBuilder.AddApplicationInsights(
-                configureTelemetryConfiguration: (config) => config.ConnectionString = "InstrumentationKey=61d8fcaa-1c19-44ec-b880-4fb84d08ee5a;IngestionEndpoint=https://eastus-8.in.applicationinsights.azure.com/;LiveEndpoint=https://eastus.livediagnostics.monitor.azure.com/",
-                configureApplicationInsightsLoggerOptions: (options) => { }
-            );
-        });
-        builder.Services.AddScoped<NotFoundListener>();
-        builder.Services.AddSignalR(e => {
-            e.MaximumReceiveMessageSize = 102400000;
-        });
-
-        builder.Services.AddRazorPages().AddJsonOptions(options => {
-            options
-                .JsonSerializerOptions
-                .Converters.Add(FuzzyDateJsonConverter.Default);
-
-            options
-                .JsonSerializerOptions
-                .TypeInfoResolver = JsonTypeInfoResolver.Combine(resolvers);
-
-        });
-
-        builder.Services.AddControllersWithViews().AddJsonOptions(options => {
-            options
-                .JsonSerializerOptions
-                .Converters.Add(FuzzyDateJsonConverter.Default);
-
-            options
-                .JsonSerializerOptions
-                .TypeInfoResolver = JsonTypeInfoResolver.Combine(resolvers);
-
-        });
-
-        builder.Services.AddServerSideBlazor();
-        builder.Services.AddSingleton<NpgsqlDataSource>((sp) => {
-            var configuration = sp.GetService<IConfiguration>()!;
-            var connectString = configuration["ConnectString"]!;
-            var dataSource = new NpgsqlDataSourceBuilder(connectString)
-                .UseSystemTextJson(new System.Text.Json.JsonSerializerOptions {
-                    TypeInfoResolver = JsonTypeInfoResolver.Combine(resolvers),
-                    Converters = { FuzzyDateJsonConverter.Default }
-                })
-                .Build();
-            return dataSource;
-        });
-        builder.Services.AddTransient<IDbConnection>((sp) => {
-            var dataSource = sp.GetRequiredService<NpgsqlDataSource>();
-            return dataSource.CreateConnection();
-        });
-        builder.Services.AddApplicationServices();
-        builder.Services.AddQuartz(q => {
-            // base Quartz scheduler, job and trigger configuration
-            q.UseMicrosoftDependencyInjectionJobFactory();
-            q.UseSimpleTypeLoader();
-            q.UseInMemoryStore();
-            q.UseDefaultThreadPool(tp =>
-            {
-                tp.MaxConcurrency = 1;
-            });
-            q.ScheduleJob<INodeAccessService>(trigger => trigger
-            .WithIdentity("1")
-            .StartAt(DateBuilder.EvenSecondDate(DateTimeOffset.UtcNow.AddSeconds(7)))
-            .WithDailyTimeIntervalSchedule(x => x.WithInterval(10, IntervalUnit.Second))
-            .WithDescription("Flushing node access to database")
-        );
-        });
-
-        // ASP.NET Core hosting
-        builder.Services.AddQuartzServer(options => {
-            // when shutting down we want jobs to complete gracefully
-            options.WaitForJobsToComplete = true;
-        });
-
-        builder.Services.AddApplicationInsightsTelemetry();
-
-        var app = builder.Build();
-
-
-        if (!app.Environment.IsDevelopment()) {
-            app.UseExceptionHandler("/Home/Error");
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-            app.UseHsts();
-
-        }
-        var cookiePolicyOptions = new CookiePolicyOptions {
-            MinimumSameSitePolicy = SameSiteMode.Strict,
-        };
-
-        app.UseCookiePolicy(cookiePolicyOptions);
-
-        app.Use(async (context, next) => {
-            await next();
-            if (context.Response.StatusCode == 404) {
-                context.Request.Path = "/NotFound";
-                await next();
-            }
-        });
-        app.UseHttpsRedirection();
-        app.UseStaticFiles();
-
-        var configuration = app.Services.GetService<IConfiguration>()!;
-        var filesPath = configuration["FilesLocation"]!;
-        app.UseStaticFiles(new StaticFileOptions {
-
-            FileProvider = new PhysicalFileProvider(filesPath),
-            RequestPath = "/files"
-        });
-
-        app.UseRouting();
-
-        app.UseAuthentication();
-        app.UseAuthorization();
-
-        app.MapBlazorHub();
-        app.MapFallbackToPage("/_Host");
-
-        app.MapControllerRoute(
-            name: "default",
-            pattern: "{controller=Home}/{action=Index}/{id?}");
-
-        //app.MapControllerRoute(
-        //   name: "all-else",
-        //   pattern: "{*url}",
-        //   defaults: new { controller = "Home", action = "AllElse" });
-
-
-        var res = app.Services.GetService<ISiteDataService>();
-        if (res != null) {
-            await res.InitializeAsync();
-        }
-
-        app.Run();
     }
 }

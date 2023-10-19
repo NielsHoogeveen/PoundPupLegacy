@@ -16,15 +16,15 @@ internal sealed class LocationService(
     public async IAsyncEnumerable<SubdivisionListItem> SubdivisionsOfCountry(int countryId)
     {
         try {
-            await connection.OpenAsync();
-            await using var reader = await subdivisionListItemReaderFactory.CreateAsync(connection);
+            await _connection.OpenAsync();
+            await using var reader = await subdivisionListItemReaderFactory.CreateAsync(_connection);
             await foreach (var subdivision in reader.ReadAsync(new SubdivisionListItemsReaderRequest { CountryId = countryId })) {
                 yield return subdivision;
             }
         }
         finally {
-            if (connection.State == ConnectionState.Open) {
-                await connection.CloseAsync();
+            if (_connection.State == ConnectionState.Open) {
+                await _connection.CloseAsync();
             }
 
         }
@@ -33,14 +33,14 @@ internal sealed class LocationService(
     public async IAsyncEnumerable<CountryListItem> Countries()
     {
         try {
-            await connection.OpenAsync();
-            await using var reader = await countryListItemReaderFactory.CreateAsync(connection);
+            await _connection.OpenAsync();
+            await using var reader = await countryListItemReaderFactory.CreateAsync(_connection);
             await foreach (var country in reader.ReadAsync(new CountryListItemsReaderRequest())) {
                 yield return country;
             }
         }
         finally {
-            await connection.CloseAsync();
+            await _connection.CloseAsync();
         }
     }
 

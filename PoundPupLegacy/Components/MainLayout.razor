@@ -56,17 +56,17 @@
     protected override async Task OnInitializedAsync()
     {
         var uri = new Uri(NavigationManager.Uri);
-        TenantId = SiteDataService.GetTenantId(uri);
-        Logo = SiteDataService.GetLogo(TenantId);
-        SubTitle = SiteDataService.GetSubTitle(TenantId);
-        FooterText = SiteDataService.GetFooterText(TenantId);
-        Title = SiteDataService.GetTitle(TenantId);
-        SiteName = SiteDataService.GetName(TenantId);
+        TenantId = SiteDataService.GetTenantId();
+        Logo = SiteDataService.GetLogo();
+        SubTitle = SiteDataService.GetSubTitle();
+        FooterText = SiteDataService.GetFooterText();
+        Title = SiteDataService.GetTitle();
+        SiteName = SiteDataService.GetName();
 
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         if (authState.User.Identity is not null) 
         {
-            UserId = UserService.GetUserId(authState.User);
+            UserId = await UserService.GetUserId(authState.User);
         }
         else
         {

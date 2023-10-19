@@ -8,7 +8,7 @@
 
 <NodeContentViewer Model="Model">
 
-    @if (siteDataService.CanEdit(node: Model, userId: UserId, tenantId: TenantId))
+    @if (canEdit)
     {
         @if (displayMode == DisplayMode.View)
         {
@@ -26,7 +26,7 @@
             <input class="tab-button" type="radio" name="tabs" id="tab2" @onclick="() => SwitchDisplayMode(DisplayMode.Edit)" />
         }
         <label for="tab2">Edit</label>
-        @if (CanViewNodeAccess) {
+        @if (canViewNodeAccess) {
             @if (displayMode == DisplayMode.NodeAccess) {
                 <input class="tab-button" type="radio" name="tabs" id="tab3" checked />
             }
@@ -40,7 +40,7 @@
         <NodeDetailsViewer Model="Model" @ref=nodeDetailsViewer/>
     </div>
     
-    @if (siteDataService.CanEdit(node: Model, userId: UserId, tenantId: TenantId))
+    @if (canEdit)
     {
         <CascadingValue Value="Model.NodeId" Name="NodeId">
         <div class="tab content2">
@@ -91,7 +91,7 @@
             </div>
         </CascadingValue>
     }
-    @if (CanViewNodeAccess) {
+    @if (canViewNodeAccess) {
         <div class="tab content3">
             <div class="node-access">
                 <div class="header">
@@ -120,6 +120,8 @@
 
     private NodeDetailsViewer nodeDetailsViewer = default!;
 
+    private bool canEdit = false;
+
     private List<NodeAccess> nodeAccesses = new List<NodeAccess>();
 
     private DisplayMode displayMode = DisplayMode.View;
@@ -134,7 +136,9 @@
     protected override async Task OnInitializedAsync()
     {
         nodeAccesses = await nodeAccessReadService.ReadNodeAccess(Model.NodeId);
+        canEdit = await siteDataService.CanEdit(node: Model, userId: UserId);
+        canViewNodeAccess = await siteDataService.CanViewNodeAccess(userId: UserId);
     }
 
-    private bool CanViewNodeAccess => siteDataService.CanViewNodeAccess(userId: UserId, tenantId: TenantId);
+    private bool canViewNodeAccess = false;
 }
