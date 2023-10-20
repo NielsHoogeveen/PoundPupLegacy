@@ -10,7 +10,7 @@ using Quartz;
 using Quartz.AspNetCore;
 using System.Data;
 using System.Text.Json.Serialization.Metadata;
-using BlazorApp2.Areas.Identity;
+using PoundPupLegacy.Areas.Identity;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
