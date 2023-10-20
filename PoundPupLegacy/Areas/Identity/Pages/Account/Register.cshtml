@@ -1,41 +1,41 @@
 ﻿@page
+@using PoundPupLegacy.Services
 @model RegisterModel
+@inject ISiteDataService SiteDataService
 @{
     ViewData["Title"] = "Register";
 }
 
-<h1>@ViewData["Title"]</h1>
-
-<div class="row">
-    @*
-    <div class="col-md-4">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Create a new account.</h2>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.Email">Email</label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.Password">Password</label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.ConfirmPassword">Confirm Password</label>
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </form>
+<div class="content">
+    <div class="breadcrum">
+        <span class="breadcrum-element">
+            <a href="/">Home</a>
+        </span>
     </div>
-    *@
-    <div class="col-md-6 col-md-offset-2">
+    <div class="page">
+        <h1>@ViewData["Title"]</h1>
         <section>
-            <h3>Use another service to register.</h3>
-            <hr />
+            <p>
+                @SiteDataService.GetTenant().Name uses only external identity providers for logging in.
+            </p>
+            <p>
+                This makes our site more secure and easier to use. <em>We do not store any passwords></em>.
+            </p>
+            <p>
+                You will receive a confirmation email in your inbox. Please click the link in that email to confirm your registration. 
+            </p>
+            <p>
+                The email may end up in your spam box. Please look there if you haven't received the email within a minute.'
+            </p>
+            <p>
+                First time you log in, you will be asked to provide the user name you would like to be known by. We also ask you to explain briefly why you wanted to sign up for our site, so we can set your permissions that best meet your needs. Until an administrator has set your permissions, the site will behave the same as if you were not logged in.
+            </p>
+            @if(SiteDataService.GetTenant().RegistrationText is not null) {
+                <p>
+                    @Html.Raw(SiteDataService.GetTenant().RegistrationText)
+                </p>
+            }
+            <h3>These are the supported identity providers</h3>
             @{
                 if ((Model.ExternalLogins?.Count ?? 0) == 0)
                 {

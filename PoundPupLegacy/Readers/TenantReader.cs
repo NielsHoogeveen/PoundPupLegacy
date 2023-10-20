@@ -35,6 +35,7 @@ internal sealed class TenantReaderFactory : MandatorySingleItemDatabaseReaderFac
     private static readonly IntValueReader SmtpPort = new() { Name = "smtp_port" };
     private static readonly StringValueReader SmptUserName = new() { Name = "smtp_user_name" };
     private static readonly StringValueReader SmptPassword = new() { Name = "smtp_password" };
+    private static readonly NullableStringValueReader RegistrationText = new() { Name = "registration_text" };
 
     public override string Sql => SQL;
 
@@ -54,6 +55,7 @@ internal sealed class TenantReaderFactory : MandatorySingleItemDatabaseReaderFac
         t.css_file,
         t.title,
         t.google_analytics_measurement_id,
+        t.registration_text,
         sc.id smtp_connection_id,
         sc.host smtp_host,
         sc.port smtp_port,
@@ -92,6 +94,7 @@ internal sealed class TenantReaderFactory : MandatorySingleItemDatabaseReaderFac
             FooterText = FooterText.GetValue(reader),
             FrontPageId = FrontPageId.GetValue(reader),
             GoogleAnalyticsMeasurementId = GoogleAnalyticsMeasurementId.GetValue(reader),
+            RegistrationText = RegistrationText.GetValue(reader),
             SmtpConnection = new SmtpConnection { 
                 Id = SmtpConnectionId.GetValue(reader),
                 Host = SmptHost.GetValue(reader),

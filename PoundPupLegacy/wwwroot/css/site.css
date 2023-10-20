@@ -145,3 +145,154 @@ input[type=file] {
     margin-bottom: 1em;
     background-color: lightpink;
 }
+header form {
+    margin-top: 0.25em;
+    margin-bottom: 0.25em;
+}
+
+header {
+    background: var(--header-bg-color);
+    margin: 0;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    flex-grow: 0;
+    grid-template-columns: 10em auto;
+}
+
+header .logo {
+    font-family: 'Raleway', sans-serif;
+    margin-left: 2em;
+    color: silver;
+    flex-grow: 0;
+    font-size: clamp(16px, 6vw, 36px);
+    font-weight: 400;
+}
+
+header .central-header {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+header .central-header form {
+    margin-left: 0.25em;
+}
+
+header .central-header form input[type=submit] {
+    margin-left: 0.15em;
+    margin-top: 0.15em;
+}
+
+header .central-header form input[name=search] {
+    width: 8em;
+}
+
+header .subtitle {
+    color: silver;
+    padding-left: 0.25em;
+    font-family: BhuTuka Expanded One;
+    font-size: clamp(11px, 2vw, 24px);
+    font-weight: 900;
+    margin-top: 0.15em;
+    margin-right: 1em;
+}
+
+@media screen and (min-width: 880px) {
+    header {
+        flex-direction: row;
+    }
+
+        header .central-header {
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+
+        header .subtitle {
+            text-align: center;
+        }
+}
+
+#search-form {
+    margin-right: 2em;
+}
+
+header a {
+    color: silver;
+    margin-right: 1em;
+}
+main {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1
+}
+
+@media screen and (min-width: 880px) {
+    main {
+        /*flex-direction: row;*/
+    }
+}
+
+
+footer {
+    background-color: var(--footer-bg-color);
+    flex-grow: 0;
+}
+
+footer ul {
+    margin: 0;
+    margin-top: 0.5em;
+    padding-left: 1em;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+footer ul li {
+    display: inline;
+    margin-right: 0.5em;
+    border-left: solid 2px #386fff;
+    padding-left: 0.25em;
+}
+
+footer ul li a {
+    font-size: 90%;
+    color: silver;
+    text-decoration: none;
+}
+
+footer h2 {
+    font-size: clamp(32px, 6vw, 22px);
+    color: #444;
+    margin: 0.25em
+}
+
+.page {
+    flex: 1;
+}
+
+.breadcrum {
+    background: var(--breadcrum-bg-color);
+    color: var(--breadcrum-color);
+    margin: 0;
+    padding-left: 0.60em;
+    padding-bottom: 0.25em;
+    padding-top: 0.25em;
+    border-bottom: solid 1px var(--nav-border-color);
+}
+
+.breadcrum a {
+    color: var(--breadcrum-color);
+    text-decoration: none;
+}
+
+.breadcrum-element::after {
+    content: ' > ';
+}
+
+.breadcrum-element:last-of-type::after {
+    content: '';
+}

@@ -1,15 +1,1 @@
-﻿main {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-}
-
-@media screen and (min-width: 880px) {
-    main {
-        flex-direction: row;
-    }
-
-    .content {
-        width: calc(50% - 10em);
-    }
-}
+﻿

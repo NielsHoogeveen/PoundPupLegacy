@@ -33,6 +33,7 @@ public sealed record Tenant
     public required int FrontPageId{ get; init; }
 
     public required string? GoogleAnalyticsMeasurementId { get; init; }
+    public required string? RegistrationText { get; init; }
 
     public required SmtpConnection SmtpConnection { get; init; }
 

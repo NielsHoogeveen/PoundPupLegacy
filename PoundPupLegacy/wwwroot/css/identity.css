@@ -1,0 +1,23 @@
+﻿#search-form{
+    visibility: hidden;
+}
+.page {
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+button {
+    margin-top: 1em;
+    margin-left: 0.25em;
+    padding: 0.5em 1em;
+    border: 0;
+    background-color: var(--button-color);
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 3px 3px 2px 1px rgba(20, 20, 20, .25);
+}
+
+button:hover {
+    background-color: var(--button-hover-color);
+}
