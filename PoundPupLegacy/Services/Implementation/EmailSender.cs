@@ -12,12 +12,11 @@ public class EmailSender(
 
     public async Task SendEmailAsync(string toEmail, string subject, string message)
     {
-        var domainname = siteDataService.GetDomainName();
-        var smtpConnection = siteDataService.GetSmtpConnection();
+        var tenant = siteDataService.GetTenant();
         var client = new SmtpClient();
         try {
             MimeMessage emailMessage = new MimeMessage();
-            emailMessage.From.Add(MailboxAddress.Parse($"no-reply@{domainname}"));
+            emailMessage.From.Add(MailboxAddress.Parse($"no-reply@{tenant.DomainName}"));
             emailMessage.To.Add(MailboxAddress.Parse(toEmail));
             emailMessage.Subject = subject;
 
@@ -25,8 +24,8 @@ public class EmailSender(
             emailBodyBuilder.TextBody = message;
             emailMessage.Body = emailBodyBuilder.ToMessageBody();
 
-            client.Connect(smtpConnection.Host, smtpConnection.Port, false);
-            client.Authenticate(smtpConnection.Username, smtpConnection.Password);
+            client.Connect(tenant.SmtpConnection.Host, tenant.SmtpConnection.Port, false);
+            client.Authenticate(tenant.SmtpConnection.Username, tenant.SmtpConnection.Password);
             await client.SendAsync(emailMessage);
 
         }

@@ -18,7 +18,7 @@
     protected override void OnInitialized()
     {
         var urlPath = new Uri(NavigationManager.Uri).AbsolutePath;
-        var tenantId = SiteDataService.GetTenantId();
+        var tenantId = SiteDataService.GetTenant().Id;
         _nodeId = SiteDataService.GetIdForUrlPath(urlPath);
     }
 }

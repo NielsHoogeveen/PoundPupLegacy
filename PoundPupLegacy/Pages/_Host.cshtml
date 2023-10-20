@@ -25,10 +25,11 @@
     @{
         var request = HttpContext.Request;
         var uri = new UriBuilder(request.Scheme, request.Host.Host, request.Host.Port ?? -1, request.PathBase).Uri;
-        var tenantId = SiteDataService.GetTenantId();
-        var cssFile = SiteDataService.GetCssFile();
-        var icoFIle = SiteDataService.GetIcoFile();
-        var analyticsKey = SiteDataService.GetGoogleAnalyticsMearurementId();
+        var tenant = SiteDataService.GetTenant();
+        var tenantId = tenant.Id;
+        var cssFile = tenant.CssFile;
+        var icoFIle = $"{tenant.Id}.ico";
+        var analyticsKey = tenant.GoogleAnalyticsMeasurementId;
     }
     <link href="/css/@cssFile" rel="stylesheet" type="text/css" asp-append-version="true" />
     <link href="PoundPupLegacy.styles.css" rel="stylesheet" asp-append-version="true" />

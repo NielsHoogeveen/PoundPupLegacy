@@ -26,7 +26,7 @@
 
     protected override void OnInitialized()
     {
-        var result = SiteDataService.GetFrontPageText();
+        var result = SiteDataService.GetTenant().FrontPageText;
         FrontPageText = result == null ? null : new MarkupString(result);
     }
 }

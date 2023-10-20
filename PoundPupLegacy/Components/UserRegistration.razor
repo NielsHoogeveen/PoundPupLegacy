@@ -1,0 +1,59 @@
+﻿@using PoundPupLegacy.Services
+@using PoundPupLegacy.Models
+@inject ISiteDataService SiteDataService
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+<div class="user-registration">
+    <h1>Welcome to @SiteDataService.GetTenant().Name</h1>
+    <EditForm EditContext="EditContext" OnValidSubmit="@HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <p>
+            Before we let you explore the site, we need to know a little bit about you.
+        </p>
+        <div class="form-group">
+            <label for="UserName">Under what name would you like to be known here?</label>
+            <InputText id="UserName" class="form-control" @bind-Value="UserRegistrationData.UserName" />
+        </div>
+        <div class="form-group">
+            <label for="RegistrationReason">What do you want to achieve by signing up to this site</label>
+            <InputTextArea id="RegistrationReason" class="form-control" @bind-Value="UserRegistrationData.RegistrationReason" />
+        </div>
+        <button type="submit" class="btn btn-primary">Register</button>
+    </EditForm>
+</div>
+@code {
+    [Parameter]
+    [EditorRequired]
+    public string NameIdentifier { get; set; } = default!;
+
+    private UserRegistrationData UserRegistrationData { get; set; } = new UserRegistrationData { UserName = "", RegistrationReason=""};
+
+    private EditContext EditContext { get; set; } = default!;
+    private ValidationMessageStore ValidationMessageStore { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        EditContext = new EditContext(UserRegistrationData);
+        ValidationMessageStore = new ValidationMessageStore(EditContext);
+    }
+    private async Task HandleValidSubmit()
+    {
+        var result = await UserService.RegisterUser(new CompletedUserRegistrationData
+            {
+                NameIdentifier = NameIdentifier,
+                UserName = UserRegistrationData.UserName!,
+                RegistrationReason = UserRegistrationData.RegistrationReason!
+            });
+            if(result is UserRegistrationResponse.RegisteredUser)
+            {
+                NavigationManager.NavigateTo($"/", true);
+            }
+            else
+            {
+                ValidationMessageStore.Add(() => UserRegistrationData.UserName!, "Name is already in use");
+            };
+            StateHasChanged();
+    }
+
+}

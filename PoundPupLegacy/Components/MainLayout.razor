@@ -5,45 +5,54 @@
 @inject NotFoundListener NotFoundListener
 @inject ISiteDataService SiteDataService
 @inject IUserService UserService
-<PageTitle>@Title</PageTitle>
+<PageTitle>@Tenant.Title</PageTitle>
 <CascadingValue Value="HamburgerMenuOpen" Name="HamburgerMenuOpen">
-    <CascadingValue Value="UserId" Name="UserId">
-        <CascadingValue Value="TenantId" Name="TenantId">
-                <CascadingValue Value="SiteName" Name="SiteName">
-                    <Header Logo="@Logo" Subtitle="@SubTitle" />
-                    <main>
-                        <HamburgerMenu />
-                        @if(notFound) {
-                            <NotFound />
-                        }else{
-                            <ContentViewer>
-                                @Body
-                            </ContentViewer>
-                        }
-                    </main>
-                    <Footer Text="@FooterText"/>
-            </CascadingValue>
+    <CascadingValue Value="Tenant.Id" Name="TenantId">
+        <CascadingValue Value="Tenant.Name" Name="SiteName">
+            <Header Logo="@Tenant.Logo" Subtitle="@Tenant.Subtitle" />
+            <main>
+            @if(UserInfo is UserLookupResponse.ExistingUser existingUser) {
+                <CascadingValue Value="existingUser.Id" Name="UserId">
+                    <HamburgerMenu />
+                    @if (notFound) {
+                        <NotFound />
+                    }
+                    else {
+                        <ContentViewer>
+                            @Body
+                        </ContentViewer>
+                    }
+                </CascadingValue>
+            }
+            @if (UserInfo is UserLookupResponse.NoUser) {
+                <CascadingValue Value="0" Name="UserId">
+                    <HamburgerMenu />
+                    @if (notFound) {
+                        <NotFound />
+                    }
+                    else {
+                        <ContentViewer>
+                            @Body
+                        </ContentViewer>
+                    }
+                </CascadingValue>
+            }
+            @if(UserInfo is UserLookupResponse.NewUser newUser) {
+                <UserRegistration NameIdentifier="@newUser.NameIdentifier"/>
+            }
+            </main>
+            <Footer Text="@Tenant.FooterText" />
         </CascadingValue>
     </CascadingValue>
 </CascadingValue>
 @code{
     private bool HamburgerMenuOpen { get; set; } = false;
 
-    private int TenantId { get; set; }
+    private Models.Tenant Tenant { get; set; } = default!;
 
-    private int UserId { get; set; }
+    private UserLookupResponse UserInfo { get; set; } = default!;
 
     private bool notFound;
-
-    private string? SiteName { get; set; }
-
-    private string? Logo { get; set; }
-
-    private string? SubTitle { get; set; } 
-
-    private string? Title { get; set; }
-
-    private string? FooterText { get; set; }
 
     protected override void OnInitialized() => NotFoundListener.OnNotFound += SetNotFound;
 
@@ -56,21 +65,17 @@
     protected override async Task OnInitializedAsync()
     {
         var uri = new Uri(NavigationManager.Uri);
-        TenantId = SiteDataService.GetTenantId();
-        Logo = SiteDataService.GetLogo();
-        SubTitle = SiteDataService.GetSubTitle();
-        FooterText = SiteDataService.GetFooterText();
-        Title = SiteDataService.GetTitle();
-        SiteName = SiteDataService.GetName();
+
+        Tenant = SiteDataService.GetTenant();
 
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         if (authState.User.Identity is not null) 
         {
-            UserId = await UserService.GetUserId(authState.User);
+            UserInfo = await UserService.GetUserInfo(authState.User);
         }
         else
         {
-            UserId = 0;
+            UserInfo = new UserLookupResponse.NoUser();
         }
     }
 }

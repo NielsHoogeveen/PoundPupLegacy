@@ -35,12 +35,10 @@ public sealed class Program
             .AddEntityFrameworkStores<ApplicationDbContext>();
 
 
-        builder.Services.AddAuthentication()//(CookieAuthenticationDefaults.AuthenticationScheme)
-            //.AddCookie()
+        builder.Services.AddAuthentication()
             .AddProviders(builder.Configuration.GetSection("OAuth2Providers").Get<List<OAuthProvider>>()!);
         ;
         
-
 
         builder.Services.AddLogging(loggingBuilder => {
             loggingBuilder.AddApplicationInsights(

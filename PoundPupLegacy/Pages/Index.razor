@@ -21,6 +21,6 @@
 
     protected override void OnInitialized()
     {
-        frontPageId = SiteDataService.GetFrontPageId();
+        frontPageId = SiteDataService.GetTenant().FrontPageId;
     }
 }

@@ -20,30 +20,11 @@ public interface ISiteDataService
 
     Task<bool> CanViewNodeAccess(int userId);
 
-    int GetTenantId();
+    Tenant GetTenant();
 
     int? GetIdForUrlPath(string urlPath);
 
     Task<List<MenuItem>> GetMenuItemsForUser(int userId);
 
-    string? GetFrontPageText();
-
-    int GetFrontPageId();
-
-    string? GetLogo();
-
-    string? GetSubTitle();
-
-    string? GetFooterText();
-
-    string? GetCssFile();
-
-    string? GetIcoFile();
-
-    string? GetTitle();
-    string? GetDomainName();
-    string? GetName();
-    string? GetGoogleAnalyticsMearurementId();
-    SmtpConnection GetSmtpConnection();
     Task RefreshTenants();
 }

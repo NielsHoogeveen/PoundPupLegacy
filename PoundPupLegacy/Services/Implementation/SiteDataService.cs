@@ -98,11 +98,7 @@ internal sealed class SiteDataService(
         }
         return null;
     }
-    public int GetTenantId()
-    {
-        return siteData.Tenant.Id;
-    }
-
+ 
     public int? GetIdForUrlPath(HttpRequest httpRequest)
     {
         var urlPath = httpRequest.Path.Value![1..];
@@ -135,56 +131,9 @@ internal sealed class SiteDataService(
         return false;
     }
 
-    public string? GetLogo()
+    public Tenant GetTenant()
     {
-        return siteData.Tenant.Logo;
+        return siteData.Tenant;
     }
 
-    public string? GetSubTitle()
-    {
-        return siteData.Tenant.Subtitle;
-    }
-
-    public string? GetFooterText()
-    {
-        return siteData.Tenant.FooterText;
-    }
-    public string? GetFrontPageText()
-    {
-        return siteData.Tenant.FrontPageText;
-    }
-    public string? GetCssFile()
-    {
-        return siteData.Tenant.CssFile;
-    }
-    public string? GetIcoFile()
-    {
-        return $"{GetTenantId()}.ico";
-    }
-    public string? GetTitle()
-    {
-        return siteData.Tenant.Title;
-    }
-
-    public string? GetDomainName()
-    {
-        return siteData.Tenant.DomainName;
-    }
-    public string? GetName()
-    {
-        return siteData.Tenant.Name;
-    }
-    public string? GetGoogleAnalyticsMearurementId()
-    {
-        return siteData.Tenant.GoogleAnalyticsMeasurementId;
-    }
-
-    public int GetFrontPageId()
-    {
-        return siteData.Tenant.FrontPageId;
-    }
-    public SmtpConnection GetSmtpConnection()
-    {
-        return siteData.Tenant.SmtpConnection;
-    }
 }

@@ -18,7 +18,7 @@ internal class SiteMapService(
     {
         var count = await WithConnection(async (connection) => {
             await using var siteMapCountReader = await siteMapCountReaderFactory.CreateAsync(connection);
-            return await siteMapCountReader.ReadAsync(new SiteMapCountReaderRequest { TenantId = siteDataService.GetTenantId()});
+            return await siteMapCountReader.ReadAsync(new SiteMapCountReaderRequest { TenantId = siteDataService.GetTenant().Id});
         });
         var strBuilder = new StringBuilder();
         foreach (var index in Enumerable.Range(0, count.Count / 5000 + 1)) {
@@ -44,7 +44,7 @@ internal class SiteMapService(
         var strBuilder = new StringBuilder();
         var elements = await WithConnection(async (connection) => {
             await using var siteMapReader = await siteMapReaderFactory.CreateAsync(connection);
-            await foreach (var siteMapElement in siteMapReader.ReadAsync(new SiteMapReaderRequest { TenantId = siteDataService.GetTenantId(), Index = index})) {
+            await foreach (var siteMapElement in siteMapReader.ReadAsync(new SiteMapReaderRequest { TenantId = siteDataService.GetTenant().Id, Index = index})) {
 
                 if (siteMapElement.ChangeFrequency is not null) {
 

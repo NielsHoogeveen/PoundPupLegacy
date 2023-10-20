@@ -28,7 +28,7 @@ namespace PoundPupLegacy.Controllers
         public IActionResult Robots()
         {
             var request = HttpContext.Request;
-            var domainName = siteDataService.GetDomainName();
+            var domainName = siteDataService.GetTenant().DomainName;
             var text = $"""
                 User-agent: Googlebot
 
