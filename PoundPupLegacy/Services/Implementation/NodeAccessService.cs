@@ -2,7 +2,6 @@
 using PoundPupLegacy.DomainModel;
 using Quartz;
 using System.Data;
-using System.Data.Common;
 
 namespace PoundPupLegacy.Services.Implementation;
 

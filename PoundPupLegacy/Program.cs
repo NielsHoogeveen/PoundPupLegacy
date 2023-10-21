@@ -105,8 +105,13 @@ public sealed class Program
             .WithIdentity("1")
             .StartAt(DateBuilder.EvenSecondDate(DateTimeOffset.UtcNow.AddSeconds(7)))
             .WithDailyTimeIntervalSchedule(x => x.WithInterval(10, IntervalUnit.Second))
-            .WithDescription("Flushing node access to database")
-        );
+            .WithDescription("Flushing node access to database"));
+            q.ScheduleJob<IRemoveExpiredRolesService>(trigger => trigger
+            .WithIdentity("2")
+            .StartAt(DateBuilder.EvenSecondDate(DateTimeOffset.UtcNow.AddSeconds(15)))
+            .WithDailyTimeIntervalSchedule(x => x.WithInterval(1, IntervalUnit.Minute))
+            .WithDescription("Removing expired roles"));
+
         });
 
         builder.Services.AddQuartzServer(options => {
@@ -210,6 +215,7 @@ public static class Extensions
             Models.TenantJsonContext.Default,
             Models.TenantNodeJsonContext.Default,
             Models.UserJsonContext.Default,
+            Models.UserRolesToAssignJsonContext.Default,
 
             ViewModel.Models.AbuseCaseJsonContext.Default,
             ViewModel.Models.AbuseCaseListJsonContext.Default,

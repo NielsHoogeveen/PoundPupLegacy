@@ -1,8 +1,9 @@
-﻿using Npgsql;
+﻿using Microsoft.AspNetCore.Identity.UI.Services;
 using PoundPupLegacy.Common;
 using PoundPupLegacy.Models;
 using PoundPupLegacy.Readers;
 using PoundPupLegacy.Updaters;
+using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
 using System.Security.Claims;
 
@@ -12,15 +13,77 @@ internal sealed class UserService(
     IDbConnection connection,
     ILogger<SiteDataService> logger,
     ISiteDataService siteDataService,
+    IEmailSender emailSender,
+    ISingleItemDatabaseReaderFactory<UsersRolesToAsignReaderRequest, List<UserRolesToAssign>> userRolesToAssignFactory,
     ISingleItemDatabaseReaderFactory<UserByNameIdentifierReaderRequest, UserIdByNameIdentifier> userByNameIdentifierReaderFactory,
     ISingleItemDatabaseReaderFactory<UserByEmailReaderRequest, UserIdByEmail> userByEmailReaderFactory,
     IDatabaseUpdaterFactory<UserNameIdentifierUpdaterRequest> userNameIdentifierUpdaterFactory
 ) : DatabaseService(connection, logger), IUserService
 {
-
+    public async Task AssignUserRoles(UserRolesToAssign userRolesToAssign)
+    {
+        await WithConnection<Unit>(async (connection) => {
+            var tx = await connection.BeginTransactionAsync();
+            try {
+                using var insertRoleStatement = connection.CreateCommand();
+                insertRoleStatement.CommandType = CommandType.Text;
+                insertRoleStatement.CommandTimeout = 60;
+                insertRoleStatement.CommandText = """
+                insert into user_role_user(user_id, user_role_id, expiry_date)
+                values(@user_id, @user_role_id, @expiry_date);
+                """;
+                insertRoleStatement.Parameters.Add("user_id", NpgsqlTypes.NpgsqlDbType.Integer);
+                insertRoleStatement.Parameters.Add("user_role_id", NpgsqlTypes.NpgsqlDbType.Integer);
+                insertRoleStatement.Parameters.Add("expiry_date", NpgsqlTypes.NpgsqlDbType.Date);
+                await insertRoleStatement.PrepareAsync();
+                foreach(var tenant in userRolesToAssign.Tenants) {
+                    foreach(var userRole in tenant.UserRoles.Where(x => x.HasBeenAssigned)) {
+                        insertRoleStatement.Parameters["user_id"].Value = userRolesToAssign.UserId;
+                        insertRoleStatement.Parameters["user_role_id"].Value = userRole.Id;
+                        if (userRole.ExpiryDate is null) {
+                            insertRoleStatement.Parameters["expiry_date"].Value  = DBNull.Value;
+                        }
+                        else {
+                            insertRoleStatement.Parameters["expiry_date"].Value = userRole.ExpiryDate;
+                        }
+                        var x = await insertRoleStatement.ExecuteNonQueryAsync();
+                    }
+                }
+                using var updateUserStatement = connection.CreateCommand();
+                updateUserStatement.CommandType = CommandType.Text;
+                updateUserStatement.CommandTimeout = 60;
+                updateUserStatement.CommandText = """
+                    update "user"
+                    set user_status_id = 1
+                    where id = @user_id;
+                """;
+                updateUserStatement.Parameters.Add("user_id", NpgsqlTypes.NpgsqlDbType.Integer);
+                await updateUserStatement.PrepareAsync();
+                updateUserStatement.Parameters["user_id"].Value = userRolesToAssign.UserId;
+                await updateUserStatement.ExecuteNonQueryAsync();
+                await tx.CommitAsync();
+                return Unit.Instance;
+            }
+            catch (Exception e) {
+                await tx.RollbackAsync();
+                throw;
+            }
+        });
+    }
+    public async Task<List<UserRolesToAssign>> GetUserRolesToAssign(int userId)
+    {
+        return await WithConnection<List<UserRolesToAssign>>(async (connection) => {
+            var reader = await userRolesToAssignFactory.CreateAsync(connection);
+            var result = await reader.ReadAsync(new UsersRolesToAsignReaderRequest { UserId = userId });
+            if(result is null) {
+                return new();
+            }
+            return result;
+        });
+    }
     public async Task<UserRegistrationResponse> RegisterUser(CompletedUserRegistrationData registrationData) 
     {
-        return await WithConnection<UserRegistrationResponse>(async (connection) => {
+        var result = await WithConnection<UserRegistrationResponse>(async (connection) => {
             try {
                 var statement = connection.CreateCommand();
                 statement.CommandType = CommandType.Text;
@@ -29,13 +92,12 @@ internal sealed class UserService(
                 insert into principal default values;
                 insert into publisher(id, name) values(lastval(), @name);
                 insert into "user"(id, created_date_time, user_status_id, name_identifier, registration_reason)
-                values(lastval(), now(), 1, @name_identifier, @registration_reason);
+                values(lastval(), now(), 2, @name_identifier, @registration_reason);
                 insert into user_role_user(user_id, user_role_id)
                 select
                     lastval(),
                     t.access_role_id_not_logged_in
-                from tenant t
-                where t.id = @tenant_id;
+                from tenant t;
                 SELECT lastval();
                 """;
                 statement.Parameters.Add("name", NpgsqlTypes.NpgsqlDbType.Varchar);
@@ -57,6 +119,39 @@ internal sealed class UserService(
                 throw;
             }
         });
+        if (result is UserRegistrationResponse.RegisteredUser) {
+            foreach (var email in await GetAdminEmailAccounts()){
+                await emailSender.SendEmailAsync(email, "New User Registration", $"A new user has registered: {registrationData.UserName}");
+            }
+        }
+        return result;
+    }
+
+    private async Task<List<string>> GetAdminEmailAccounts()
+    {
+        var emails = new List<string>();
+        await WithConnection<Unit>(async (connection) => {
+            var statement = connection.CreateCommand();
+            statement.CommandType = CommandType.Text;
+            statement.CommandTimeout = 60;
+            statement.CommandText = """
+                select 
+                    distinct
+                    email 
+                    from "user" u
+                    join user_role_user uru on uru.user_id = u.id
+                    join tenant t on t.administrator_role_id = uru.user_role_id
+                    where u.id = 1
+                """;
+            await statement.PrepareAsync();
+            var reader = await statement.ExecuteReaderAsync();
+            while (reader.Read()) {
+                emails.Add(reader.GetString(0));
+            }
+            return Unit.Instance;
+        });
+        return emails;
+
     }
     public async Task<UserLookupResponse> GetUserInfo(ClaimsPrincipal claimsPrincipal)
     {

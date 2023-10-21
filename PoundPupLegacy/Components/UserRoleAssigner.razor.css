@@ -1,0 +1,52 @@
+﻿h1, .users{
+}
+.users {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 10em 1fr 5fr 5fr;
+}
+.users > div {
+    border-bottom: 1px solid #b4b4b4;
+    margin-bottom: 1em;
+}
+
+.tenants {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+.tenants > div {
+    border-bottom: 1px solid #b4b4b4;
+    margin-bottom: 0.5em
+}
+.tenants > div:nth-last-child(-n+2) {
+    border-bottom: 0;
+}
+.roles {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    
+}
+button {
+    margin-top: 0.15em;
+    padding: 0.5em 1em;
+    border: 0;
+    background-color: var(--button-color);
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 3px 3px 2px 1px rgba(20, 20, 20, .25);
+}
+
+button:hover {
+    background-color: var(--button-hover-color);
+}
+
+.header {
+    background-color: grey;
+    color: white;
+    height: 2em;
+    padding-top: 0.5em;
+}
+.header, .header-group {
+    border-bottom: 0 !important;
+}

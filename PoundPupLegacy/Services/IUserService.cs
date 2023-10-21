@@ -28,6 +28,8 @@ public abstract record UserLookupResponse
 }
 public interface IUserService
 {
+    Task<List<UserRolesToAssign>> GetUserRolesToAssign(int userId);
+    Task AssignUserRoles(UserRolesToAssign userRolesToAssign);
     Task<UserRegistrationResponse> RegisterUser(CompletedUserRegistrationData registrationData);
     Task<UserLookupResponse> GetUserInfo(ClaimsPrincipal claimsPrincipal);
 }

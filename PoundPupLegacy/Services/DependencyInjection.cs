@@ -30,6 +30,7 @@ public static class DependencyInjection
         services.AddTransient<IListOptionsService, ListOptionsService>();
         services.AddSingleton<INodeAccessReadService, NodeAccessReadService>();
         services.AddSingleton<INodeAccessService, NodeAccessService>();
+        services.AddSingleton<IRemoveExpiredRolesService, RemoveExpiredRolesService>();
         services.AddSingleton<ISiteDataLoader, SiteDataLoader>();
         services.AddSingleton<ISiteDataService, SiteDataService>();
         services.AddTransient<ISiteMapService, SiteMapService>();

@@ -30,3 +30,7 @@
     --table-row-bg-color: #faf6f0;
     --table-row-bg-color-even: #f1ebe2;
 }
+
+header {
+    color: white;
+}

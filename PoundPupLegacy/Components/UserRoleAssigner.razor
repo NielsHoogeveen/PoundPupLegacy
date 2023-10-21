@@ -1,0 +1,99 @@
+﻿@using PoundPupLegacy.Common
+@using PoundPupLegacy.Models
+@using PoundPupLegacy.Services
+@inherits ViewerBase
+@inject IUserService UserService
+
+<div class="page">
+    <div class="breadcrum">
+        <span class="breadcrum-element">
+            <a href="/">Home</a>
+        </span>
+    </div>    
+    <h1>Site Administration</h1>
+    <h3>New Users</h3>
+    <div class="users">
+        <div class="header">&nbsp;</div>
+        <div class="header">User</div>
+        <div class="header">Reason</div>
+        <div class="tenants header-group">
+            <div class="header">Tenant</div>
+            <div class="roles header-group">
+                <div class="header">Role</div>
+                <div class="header">Assign</div>
+                <div class="header">Expiry Date</div>
+            </div>
+        </div>
+        @foreach(var user in UserRolesToAssign)
+        {
+            <div>
+                <button @onclick=@(async (args) => await Assign(user))>Assign</button>
+            </div>
+            <div>
+                @user.UserName
+            </div>
+            <div>
+                @user.RegistrationReason
+            </div>
+            <div class="tenants">
+                @foreach(var tenant in user.Tenants) {
+                    <div>
+                        @tenant.DomainName
+                    </div>
+                    <div class="roles">
+                    @foreach(var role in tenant.UserRoles) {
+                        <div>
+                            @role.Name
+                        </div>
+                        <div>
+                            <input type="checkbox" checked="@role.HasBeenAssigned" @onchange="@((args) => OnChange(role))" />
+                        </div>
+                        <div>
+                        @if(role.HasBeenAssigned){
+                            <InputDate @bind-Value="@role.ExpiryDate"/>
+                        }
+                        else {
+                            <InputDate @bind-Value="@role.ExpiryDate" style="visibility: hidden;" />
+                        }
+                        </div>
+                    }
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+@code {
+    private List<UserRolesToAssign> UserRolesToAssign { get; set; } = new List<UserRolesToAssign>();
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Load();
+    }
+
+    private async Task Load()
+    {
+        UserRolesToAssign = await UserService.GetUserRolesToAssign(UserId);
+    }
+
+    private async Task Submit()
+    {
+        await Task.CompletedTask;
+    }
+    public void OnChange(UserRole userRole)
+    {
+        userRole.HasBeenAssigned = !userRole.HasBeenAssigned;
+        if (!userRole.HasBeenAssigned) {
+            userRole.ExpiryDate = null;
+        }
+        StateHasChanged();
+    }
+    public async Task Assign(UserRolesToAssign user)
+    {
+        await UserService.AssignUserRoles(user);
+        await Load();
+        StateHasChanged();
+    }
+}
