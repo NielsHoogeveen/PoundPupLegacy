@@ -34,7 +34,8 @@ internal sealed class SiteMapCountReaderFactory : MandatorySingleItemDatabaseRea
             SELECT 
                 ba.id
             FROM public.tenant t
-            join access_role_privilege arp on arp.access_role_id = t.access_role_id_not_logged_in
+            join publishing_user_group pug on pug.id = t.id
+            join access_role_privilege arp on arp.access_role_id = pug.access_role_id_not_logged_in
             join basic_action ba on ba.id = arp.action_id
             where t.id = @tenant_id
             and ba.path not ilike '%{%'

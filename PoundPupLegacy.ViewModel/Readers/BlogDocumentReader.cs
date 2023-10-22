@@ -7,6 +7,7 @@ public sealed record BlogDocumentReaderRequest : IRequest
 {
     public required int PublisherId { get; init; }
     public required int TenantId { get; init; }
+    public required int UserId { get; init; }
     public required int Length { get; init; }
     public required int StartIndex { get; init; }
 }
@@ -15,6 +16,7 @@ internal sealed class BlogDocumentReaderFactory : SingleItemDatabaseReaderFactor
 {
     private static readonly NonNullableIntegerDatabaseParameter PublishedIdParameter = new() { Name = "publisher_id" };
     private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
+    private static readonly NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
     private static readonly NonNullableIntegerDatabaseParameter LengthParameter = new() { Name = "length" };
     private static readonly NonNullableIntegerDatabaseParameter StartIndexParameter = new() { Name = "start_index" };
 
@@ -24,6 +26,7 @@ internal sealed class BlogDocumentReaderFactory : SingleItemDatabaseReaderFactor
 
     const string SQL = $"""
             WITH 
+            {SharedSql.ACCESSIBLE_PUBLICATIONS_STATUS},
             fetch_blog_post_documents AS (
                 SELECT 
                     jsonb_build_object(
@@ -61,61 +64,39 @@ internal sealed class BlogDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         publisher_id,
                         publisher_name,
                         case 
-            			    when status = 0 then false
+            			    when publication_status_id = 0 then false
             				else true
             	        end has_been_published
                     FROM(
                         SELECT
                             tn.url_id id, 
                             tn.url_path url_path,
+                            tn.publication_status_id,
                             n.title, 
                             n.created_date_time, 
                             n.changed_date_time, 
                             stn.teaser,
                             n.publisher_id, 
-                            p.name publisher_name,
-            		        case
-            			        when tn.publication_status_id = 0 then (
-            				        select
-            					        case 
-            						        when count(*) > 0 then 0
-            						        else -1
-            					        end status
-            				        from user_group_user_role_user ugu
-                                    join user_group ug on ug.id = ugu.user_group_id
-            				        WHERE ugu.user_group_id = 
-            				        case
-            					        when tn.subgroup_id is null then tn.tenant_id 
-            					        else tn.subgroup_id 
-            				        end 
-            				        AND ugu.user_role_id = ug.administrator_role_id
-            				        AND ugu.user_id = @user_id
-            			        )
-            			        when tn.publication_status_id = 1 then 1
-            			        when tn.publication_status_id = 2 then (
-            				        select
-            					        case 
-            						        when count(*) > 0 then 1
-            						        else -1
-            					        end status
-            				        from user_group_user_role_user ugu
-            				        WHERE ugu.user_group_id = 
-            					        case
-            						        when tn.subgroup_id is null then tn.tenant_id 
-            						        else tn.subgroup_id 
-            					        end
-            					        AND ugu.user_id = @user_id
-            				    )
-            			    end status	
+                            p.name publisher_name
                         FROM node n
                         JOIN blog_post bp on bp.id = n.id
                         JOIN simple_text_node stn on stn.id = n.id
                         JOIN publisher p on p.id = n.publisher_id
                         JOIN tenant_node tn on tn.node_id = n.id AND tn.tenant_id = @tenant_id
-                        WHERE p.id = @publisher_id AND tn.publication_status_id = 1
+                        WHERE p.id = @publisher_id
+                        AND tn.publication_status_id in 
+                        (
+                            select 
+                            id 
+                            from accessible_publication_status 
+                            where tenant_id = tn.tenant_id 
+                            and (
+                                subgroup_id = tn.subgroup_id 
+                                or subgroup_id is null and tn.subgroup_id is null
+                            )
+                        )
                         ORDER BY n.created_date_time DESC
                     ) n
-                    WHERE status >= 0
                     LIMIT @length OFFSET @start_index
                 ) n
             ) 
@@ -137,7 +118,18 @@ internal sealed class BlogDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 JOIN node n on n.publisher_id = p.id
                 JOIN blog_post b on b.id = n.id
                 JOIN tenant_node tn on tn.node_id = n.id AND tn.tenant_id = @tenant_id
-                WHERE p.id = @publisher_id AND tn.publication_status_id = 1
+                WHERE p.id = @publisher_id 
+                AND tn.publication_status_id in 
+                (
+                    select 
+                    id 
+                    from accessible_publication_status 
+                    where tenant_id = tn.tenant_id 
+                    and (
+                        subgroup_id = tn.subgroup_id 
+                        or subgroup_id is null and tn.subgroup_id is null
+                    )
+                )
                 GROUP BY p.id, p.name
             """;
 
@@ -146,6 +138,7 @@ internal sealed class BlogDocumentReaderFactory : SingleItemDatabaseReaderFactor
         return new ParameterValue[] {
             ParameterValue.Create(PublishedIdParameter, request.PublisherId),
             ParameterValue.Create(TenantIdParameter, request.TenantId),
+            ParameterValue.Create(UserIdParameter, request.UserId),
             ParameterValue.Create(StartIndexParameter, request.StartIndex),
             ParameterValue.Create(LengthParameter, request.Length),
         };

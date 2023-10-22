@@ -20,7 +20,9 @@ internal sealed class FileDocumentReaderFactory : SingleItemDatabaseReaderFactor
 
     public override string Sql => SQL;
 
-    const string SQL = """
+    const string SQL = $"""
+        with
+        {SharedSql.ACCESSIBLE_PUBLICATIONS_STATUS}
         select
             jsonb_build_object(
                 'Id', 
@@ -41,68 +43,41 @@ internal sealed class FileDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 name,
                 mime_type,
                 size,
-                case 
-                    when status = 1 then true
-                    else false
-                end can_be_accessed
+                true can_be_accessed
             from(
                 SELECT 
                     f.id,
                     f.path,
                     f.name,
                     f.mime_type,
-                    f.size,
-                    case
-                    when tn.publication_status_id = 0 then (
-                        select
-                            case 
-                                when count(*) > 0 then 0
-                                else -1
-                            end status
-                        from user_group_user_role_user ugu
-                        join user_group ug on ug.id = ugu.user_group_id
-                        WHERE ugu.user_group_id = 
-                        case
-                            when tn.subgroup_id is null then tn.tenant_id 
-                            else tn.subgroup_id 
-                        end 
-                        AND ugu.user_role_id = ug.administrator_role_id
-                        AND ugu.user_id = @user_id
-                    )
-                    when tn.publication_status_id = 1 then 1
-                    when tn.publication_status_id = 2 then (
-                        select
-                            case 
-                                when count(*) > 0 then 1
-                                else -1
-                            end status
-                        from user_group_user_role_user ugu
-                        WHERE ugu.user_group_id = 
-                            case
-                                when tn.subgroup_id is null then tn.tenant_id 
-                                else tn.subgroup_id 
-                            end
-                            AND ugu.user_id = @user_id
-                        )
-                    end status	
+                    f.size
                 FROM public.file f
                 join node_file nf on nf.file_id = f.id
                 join tenant_node tn on tn.node_id = nf.node_id 
                 where tn.tenant_id = @tenant_id and f.id = @file_id
+                and tn.publication_status_id in 
+                (
+                    select 
+                    id 
+                    from accessible_publication_status 
+                    where tenant_id = tn.tenant_id 
+                    and (
+                        subgroup_id = tn.subgroup_id 
+                        or subgroup_id is null and tn.subgroup_id is null
+                    )
+                )
                 union
                 select
                     f.id,
                     f.path,
                     f.name,
                     f.mime_type,
-                    f.size,
-                	1 status
+                    f.size
                 from "file" f
                 left join node_file nf on nf.file_id = f.id
                 where f.id = @file_id
                 and nf.file_id is null
             ) x
-            where status > -1
         ) x
         group by id,
         path,

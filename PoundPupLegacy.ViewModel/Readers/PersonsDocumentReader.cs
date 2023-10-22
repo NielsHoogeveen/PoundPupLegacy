@@ -27,6 +27,8 @@ internal sealed class PersonsDocumentReaderFactory : SingleItemDatabaseReaderFac
     public override string Sql => SQL;
 
     const string SQL = $"""
+        with
+        {SharedSql.ACCESSIBLE_PUBLICATIONS_STATUS}
         select
             jsonb_build_object(
             	'NumberOfEntries',
@@ -48,8 +50,8 @@ internal sealed class PersonsDocumentReaderFactory : SingleItemDatabaseReaderFac
                 path, 
                 title,
                 case 
-            	    when status = 1 then true
-            	    else false
+            	    when publication_status_id = 0 then false
+            	    else true
                 end has_been_published,	
                 count(*) over () number_of_entries
             from(
@@ -59,47 +61,25 @@ internal sealed class PersonsDocumentReaderFactory : SingleItemDatabaseReaderFac
             		    else '/' || url_path
             	    end path,
             	    n.title,
-            	    case
-            		    when tn.publication_status_id = 0 then (
-            			    select
-            				    case 
-            					    when count(*) > 0 then 0
-            					    else -1
-            				    end status
-            			    from user_group_user_role_user ugu
-            			    join user_group ug on ug.id = ugu.user_group_id
-            			    WHERE ugu.user_group_id = 
-            			    case
-            				    when tn.subgroup_id is null then tn.tenant_id 
-            				    else tn.subgroup_id 
-            			    end 
-            			    AND ugu.user_role_id = ug.administrator_role_id
-            			    AND ugu.user_id = @user_id
-            		    )
-            		    when tn.publication_status_id = 1 then 1
-            		    when tn.publication_status_id = 2 then (
-            			    select
-            				    case 
-            					    when count(*) > 0 then 1
-            					    else -1
-            				    end status
-            			    from user_group_user_role_user ugu
-            			    WHERE ugu.user_group_id = 
-            				    case
-            					    when tn.subgroup_id is null then tn.tenant_id 
-            					    else tn.subgroup_id 
-            				    end
-            				    AND ugu.user_id = @user_id
-            			    )
-            	    end status	 
+                    tn.publication_status_id
                 from tenant_node tn
                 join person p on p.id = tn.node_id
                 join node n on n.id = p.id
                 where tn.tenant_id = @tenant_id
+                and tn.publication_status_id in 
+                (
+                    select 
+                    id 
+                    from accessible_publication_status 
+                    where tenant_id = tn.tenant_id 
+                    and (
+                        subgroup_id = tn.subgroup_id 
+                        or subgroup_id is null and tn.subgroup_id is null
+                    )
+                )
                 and n.title ilike @pattern
                 order by n.title
             ) x 
-            where status = 1
             limit @limit offset @offset
         ) x
         group by 

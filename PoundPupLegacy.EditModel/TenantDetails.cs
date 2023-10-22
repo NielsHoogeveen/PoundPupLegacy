@@ -20,6 +20,8 @@ public sealed record TenantDetails
 
     public required int PublicationStatusIdDefault { get; init; }
 
+    public required bool PublicationStatusDefaultIsOnlyOption { get; init; }
+
     public required bool AllowAccess { get; init; }
 
     public TenantNode? TenantNode { get; set; }

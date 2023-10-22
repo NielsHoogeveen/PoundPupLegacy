@@ -17,15 +17,15 @@ internal sealed class NodeAccessReaderFactory : EnumerableDatabaseReaderFactory<
     public override string Sql => SQL;
 
     const string SQL = $"""
-            select
-            p.name,
-            na.date_time
-            from node_access na
-            join publisher p on p.id = na.user_id
-            where node_id = @node_id
-            order by na.date_time desc
-            limit 50
-            """;
+        select
+        p.name,
+        na.date_time
+        from node_access na
+        join publisher p on p.id = na.user_id
+        where node_id = @node_id
+        order by na.date_time desc
+        limit 50
+        """;
 
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {

@@ -9,4 +9,6 @@ public sealed record Subgroup
     public required string Name { get; init; }
 
     public required int PublicationStatusIdDefault { get; init; }
+
+    public required bool PublicationStatusDefaultIsOnlyOption { get; init; }
 }

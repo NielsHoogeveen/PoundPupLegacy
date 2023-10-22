@@ -14,6 +14,7 @@ internal sealed class UserService(
     ILogger<SiteDataService> logger,
     ISiteDataService siteDataService,
     IEmailSender emailSender,
+    ISiteDataService siteDateService,
     ISingleItemDatabaseReaderFactory<UsersRolesToAsignReaderRequest, List<UserRolesToAssign>> userRolesToAssignFactory,
     ISingleItemDatabaseReaderFactory<UserByNameIdentifierReaderRequest, UserIdByNameIdentifier> userByNameIdentifierReaderFactory,
     ISingleItemDatabaseReaderFactory<UserByEmailReaderRequest, UserIdByEmail> userByEmailReaderFactory,
@@ -62,6 +63,7 @@ internal sealed class UserService(
                 updateUserStatement.Parameters["user_id"].Value = userRolesToAssign.UserId;
                 await updateUserStatement.ExecuteNonQueryAsync();
                 await tx.CommitAsync();
+                siteDataService.RemoveUser(userRolesToAssign.UserId);
                 return Unit.Instance;
             }
             catch (Exception e) {
@@ -96,8 +98,9 @@ internal sealed class UserService(
                 insert into user_role_user(user_id, user_role_id)
                 select
                     lastval(),
-                    t.access_role_id_not_logged_in
+                    pug.access_role_id_not_logged_in
                 from tenant t;
+                join publishing_user_group pug on pug.id = t.id
                 SELECT lastval();
                 """;
                 statement.Parameters.Add("name", NpgsqlTypes.NpgsqlDbType.Varchar);

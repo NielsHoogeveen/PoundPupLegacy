@@ -56,6 +56,7 @@ public abstract record NodeDetails
             DomainName = x.DomainName, 
             Id = x.Id, 
             PublicationStatusIdDefault = x.PublicationStatusIdDefault, 
+            PublicationStatusDefaultIsOnlyOption = x.PublicationStatusDefaultIsOnlyOption,
             Subgroups = x.Subgroups, 
             TenantNode = null
         }).ToList(),

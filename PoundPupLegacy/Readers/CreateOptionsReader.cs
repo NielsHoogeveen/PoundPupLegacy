@@ -65,7 +65,8 @@ internal sealed class CreateOptionsReaderFactory : SingleItemDatabaseReaderFacto
                 join access_role_privilege arp on arp.action_id = ba.id
                 join user_group_user_role_user ugur on ugur.user_role_id = arp.access_role_id
                 join tenant t on t.id = ugur.user_group_id
-                where arp.access_role_id = t.access_role_id_not_logged_in
+                join publishing_user_group pug on pug.id = t.id
+                where arp.access_role_id = pug.access_role_id_not_logged_in
                 union
                 select
                     uguru.user_id,

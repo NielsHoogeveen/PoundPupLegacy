@@ -10,7 +10,7 @@ internal sealed class FetchBlogService(
     ISingleItemDatabaseReaderFactory<BlogDocumentReaderRequest, Blog> blogDocumentReaderFactory
 ) : DatabaseService(connection, logger), IFetchBlogService
 {
-    public async Task<Blog> FetchBlog(int publisherId, int tenantId, int pageNumber, int pageSize)
+    public async Task<Blog> FetchBlog(int publisherId, int tenantId, int userId, int pageNumber, int pageSize)
     {
 
         var startIndex = (pageNumber - 1) * pageSize;
@@ -19,6 +19,7 @@ internal sealed class FetchBlogService(
             var blog = await reader.ReadAsync(new BlogDocumentReaderRequest {
                 PublisherId = publisherId,
                 TenantId = tenantId,
+                UserId = userId,
                 StartIndex = startIndex,
                 Length = pageSize
             });

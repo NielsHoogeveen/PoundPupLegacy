@@ -17,6 +17,8 @@ internal sealed class CountriesDocumentReaderFactory : SingleItemDatabaseReaderF
     public override string Sql => SQL;
 
     const string SQL = $"""
+        with
+        {SharedSql.ACCESSIBLE_PUBLICATIONS_STATUS}
         select
             jsonb_agg(
                 jsonb_build_object(

@@ -22,133 +22,111 @@ internal sealed class SubgroupsDocumentReaderFactory : SingleItemDatabaseReaderF
 
     public override string Sql => SQL;
 
-    const string SQL = """
+    const string SQL = $"""
+        with
+        {SharedSql.ACCESSIBLE_PUBLICATIONS_STATUS}
+        select
+        jsonb_build_object(
+            'NumberOfEntries',
+            number_of_entries,
+            'Name',
+            group_name,
+            'Description',
+            group_description,
+            'Entries',
+            jsonb_agg(
+            	jsonb_build_object(
+            		'Title',
+            		title,
+            		'Path',
+            		path,
+            		'Authoring', 
+            		jsonb_build_object(
+            			'Id', publisher_id, 
+            			'Name', publisher_name,
+            			'CreatedDateTime', created_date_time,
+            			'ChangedDateTime', changed_date_time
+            		),
+            		'HasBeenPublished',
+            		case 
+            			when publication_status_id = 0 then false
+            			else true
+            		end
+            	)
+                order by changed_date_time desc
+            )
+        ) document
+        from(
+        select
+            id,
+            title,
+            node_type_id,
+            path,
+            tenant_id,
+            node_id,
+            created_date_time,
+            changed_date_time,
+            url_id,
+            publisher_id,
+            publisher_name,
+            group_name,
+            group_description,
+            count(id) over() number_of_entries,
+            url_path,
+            subgroup_id,
+            publication_status_id
+        from(
             select
-                jsonb_build_object(
-            	    'NumberOfEntries',
-            	    number_of_entries,
-                    'Name',
-                    group_name,
-                    'Description',
-                    group_description,
-            	    'Entries',
-            	    jsonb_agg(
-            		    jsonb_build_object(
-            			    'Title',
-            			    title,
-            			    'Path',
-            			    path,
-            			    'Authoring', 
-            			    jsonb_build_object(
-            				    'Id', publisher_id, 
-            				    'Name', publisher_name,
-            				    'CreatedDateTime', created_date_time,
-            				    'ChangedDateTime', changed_date_time
-            			    ),
-            			    'HasBeenPublished',
-            			    case 
-            				    when status = 0 then false
-            				    else true
-            			    end
-            		    )
-                        order by changed_date_time desc
-            	    )
-                ) document
-            from(
-                select
-                    id,
-                    title,
-                    node_type_id,
-                    path,
-                    tenant_id,
-                    node_id,
-                    created_date_time,
-                    changed_date_time,
-                    url_id,
-                    publisher_id,
-                    publisher_name,
-                    group_name,
-                    group_description,
-                    count(id) over() number_of_entries,
-                    url_path,
-            	    subgroup_id,
-            	    publication_status_id,
-                    status
-                from(
-                    select
-            	        tn.id,
-            	        n.title,
-            	        n.node_type_id,
-            	        case 
-            		        when tn.url_path is null then '/node/' || tn.url_id
-            		        else '/' || tn.url_path
-            	        end path,
-            	        tn.tenant_id,
-            	        tn.node_id,
-            	        n.created_date_time,
-            	        n.publisher_id,
-            	        n.changed_date_time,
-            	        tn.url_id,
-            	        p.name publisher_name,
-            	        count(tn.id) over() number_of_entries,
-                        ug.name group_name,
-                        ug.description group_description,
-            	        case 
-            		        when tn.url_path is null then '/node/' || tn.url_id
-            		        else '/' || url_path
-            	        end url_path,
-            	        tn.subgroup_id,
-            	        tn.publication_status_id,
-            	        case
-                            when tn.publication_status_id = 0 then (
-                                select
-                                    case 
-                                        when count(*) > 0 then 0
-                                        else -1
-                                    end status
-                                from user_group_user_role_user ugu
-                                join user_group ug on ug.id = ugu.user_group_id
-                                WHERE ugu.user_group_id = 
-                                case
-                                    when tn.subgroup_id is null then tn.tenant_id 
-                                    else tn.subgroup_id 
-                                end 
-                                AND ugu.user_role_id = ug.administrator_role_id
-                                AND ugu.user_id = @user_id
-                            )
-                            when tn.publication_status_id = 1 then 1
-                            when tn.publication_status_id = 2 then (
-                                select
-                                    case 
-                                        when count(*) > 0 then 1
-                                        else -1
-                                    end status
-                                from user_group_user_role_user ugu
-                                WHERE ugu.user_group_id = 
-                                    case
-                                        when tn.subgroup_id is null then tn.tenant_id 
-                                        else tn.subgroup_id 
-                                    end
-                                    AND ugu.user_id = @user_id
-                                )
-                        end status	
-            	        from tenant_node tn
-            	        join subgroup s on s.id = tn.subgroup_id
-                        join user_group ug on ug.id = s.id
-            	        join node n on n.id = tn.node_id
-            	        JOIN publisher p on p.id = n.publisher_id
-            	        WHERE s.id = @subgroup_id
-                    ) an
-                    where an.status <> -1
-                    order by changed_date_time desc
-                    LIMIT @limit OFFSET @offset
-                ) an
-                group by 
-                group_name, 
-                group_description,
-                number_of_entries
-            """
-            ;
+            	tn.id,
+            	n.title,
+            	n.node_type_id,
+            	case 
+            		when tn.url_path is null then '/node/' || tn.url_id
+            		else '/' || tn.url_path
+            	end path,
+            	tn.tenant_id,
+            	tn.node_id,
+            	n.created_date_time,
+            	n.publisher_id,
+            	n.changed_date_time,
+            	tn.url_id,
+            	p.name publisher_name,
+            	count(tn.id) over() number_of_entries,
+                ug.name group_name,
+                ug.description group_description,
+            	case 
+            		when tn.url_path is null then '/node/' || tn.url_id
+            		else '/' || url_path
+            	end url_path,
+            	tn.subgroup_id,
+            	tn.publication_status_id
+            	from tenant_node tn
+            	join subgroup s on s.id = tn.subgroup_id
+                join user_group ug on ug.id = s.id
+            	join node n on n.id = tn.node_id
+            	JOIN publisher p on p.id = n.publisher_id
+            	WHERE s.id = @subgroup_id
+                AND tn.publication_status_id in 
+                (
+                	select 
+                	id 
+                	from accessible_publication_status 
+                	where tenant_id = tn.tenant_id 
+                	and (
+                		subgroup_id = tn.subgroup_id 
+                		or subgroup_id is null and tn.subgroup_id is null
+                	)
+                )
+            ) an
+            order by changed_date_time desc
+            LIMIT @limit OFFSET @offset
+        ) an
+        group by 
+        group_name, 
+        group_description,
+        number_of_entries
+        """
+        ;
 
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {

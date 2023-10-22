@@ -65,8 +65,9 @@ internal sealed class UsersRolesToAsignReaderFactory : SingleItemDatabaseReaderF
         		join publisher p on p.id = u.id
         		join user_role_user uru on uru.user_id = @user_id
         		join tenant t on t.administrator_role_id = uru.user_role_id
+                join publishing_user_group pug on pug.id = t.id
         		join user_role ur on ur.user_group_id = t.id 
-                    and ur.id <> t.access_role_id_not_logged_in
+                    and ur.id <> pug.access_role_id_not_logged_in
                     and ur.id <> t.administrator_role_id
         		where u.user_status_id = 2
         		group by u.id, p.name, registration_reason, tenant_id, domain_name

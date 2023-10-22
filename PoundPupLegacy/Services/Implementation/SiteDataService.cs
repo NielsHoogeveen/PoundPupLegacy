@@ -46,6 +46,11 @@ internal sealed class SiteDataService(
         return siteData.Users.FirstOrDefault(x => x.Value.NameIdentifier == id).Value?.Id;
     }
 
+    public void RemoveUser(int userId)
+    {
+        siteData.Users.Remove(userId);
+    }
+
     private async Task<User?> GetUser(int userId)
     {
         if (siteData.Users.TryGetValue(userId, out var user)) {

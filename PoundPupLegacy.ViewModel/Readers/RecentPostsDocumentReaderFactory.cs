@@ -23,7 +23,9 @@ internal sealed class RecentPostsDocumentReaderFactory : SingleItemDatabaseReade
     public override string Sql => SQL;
 
 
-    private const string SQL = """
+    private const string SQL = $"""
+        with
+        {SharedSql.ACCESSIBLE_PUBLICATIONS_STATUS}
         select
             jsonb_build_object(
                 'NumberOfEntries', 
@@ -69,48 +71,26 @@ internal sealed class RecentPostsDocumentReaderFactory : SingleItemDatabaseReade
                     n.created_date_time,
         	        n.changed_date_time,
         	        nt.name node_type,
-        	        case
-        	        when tn.publication_status_id = 0 then (
-        		        select
-        			        case 
-        				        when count(*) > 0 then 0
-        				        else -1
-        			        end status
-        		        from user_group_user_role_user ugu
-        		        join user_group ug on ug.id = ugu.user_group_id
-        		        WHERE ugu.user_group_id = 
-        		        case
-        			        when tn.subgroup_id is null then tn.tenant_id 
-        			        else tn.subgroup_id 
-        		        end 
-        		        AND ugu.user_role_id = ug.administrator_role_id
-        		        AND ugu.user_id = @user_id
-        	        )
-        	        when tn.publication_status_id = 1 then 1
-        	        when tn.publication_status_id = 2 then (
-        		        select
-        			        case 
-        				        when count(*) > 0 then 1
-        				        else -1
-        			        end status
-        		        from user_group_user_role_user ugu
-        		        WHERE ugu.user_group_id = 
-        			        case
-        				        when tn.subgroup_id is null then tn.tenant_id 
-        				        else tn.subgroup_id 
-        			        end
-        			        AND ugu.user_id = @user_id
-        		        )
-        	        end status	
+                    tn.publication_status_id
         	        from node n
         	        join tenant_node tn on tn.node_id = n.id
         	        join publisher p on p.id = n.publisher_id
         	        join node_type nt on nt.id = n.node_type_id
                     where tn.tenant_id = @tenant_id
+                    and tn.publication_status_id in 
+                    (
+                        select 
+                        id 
+                        from accessible_publication_status 
+                        where tenant_id = tn.tenant_id 
+                        and (
+                            subgroup_id = tn.subgroup_id 
+                            or subgroup_id is null and tn.subgroup_id is null
+                        )
+                    )
                     and n.node_type_id not in (45,46,47,48,49)
         	        order by n.changed_date_time desc
                 ) x
-                where status <> -1
                 LIMIT @limit OFFSET @offset
             ) x
         ) x

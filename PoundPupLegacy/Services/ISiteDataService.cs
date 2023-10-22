@@ -27,4 +27,5 @@ public interface ISiteDataService
     Task<List<MenuItem>> GetMenuItemsForUser(int userId);
 
     Task RefreshTenants();
+    void RemoveUser(int userId);
 }

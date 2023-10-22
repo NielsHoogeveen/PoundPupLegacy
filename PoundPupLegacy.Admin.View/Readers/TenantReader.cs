@@ -69,7 +69,7 @@ internal sealed class TenantReaderFactory : SingleItemDatabaseReaderFactory<Requ
         select
         t.id tenant_id,
         t.domain_name,
-        t.access_role_id_not_logged_in,
+        pug.access_role_id_not_logged_in,
         t.country_id_default,
         c.title country_name_default,
         t.front_page_text,
@@ -224,6 +224,7 @@ internal sealed class TenantReaderFactory : SingleItemDatabaseReaderFactory<Requ
         	where tn.tenant_id = t.id
         ) tenant_node_menu_item
         from tenant t
+        join publishing_user_group pug on pug.id = t.id
         join node c on c.id = t.country_id_default
         join user_group ug on ug.id = t.id
         join user_role ur on ur.user_group_id = ug.id
@@ -232,7 +233,7 @@ internal sealed class TenantReaderFactory : SingleItemDatabaseReaderFactory<Requ
         group by
         t.tenant_id,
         t.domain_name,
-        t.access_role_id_not_logged_in,
+        pug.access_role_id_not_logged_in,
         t.country_id_default,
         t.country_name_default,
         t.front_page_text,

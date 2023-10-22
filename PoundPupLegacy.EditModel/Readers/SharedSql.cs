@@ -1260,6 +1260,8 @@ internal static class SharedSql
                     subgroup_id,
                     'PublicationStatusId',
                     publication_status_id,
+                    'PublicationStatusIsOnlyOption',
+                    false,
                     'HasBeenStored',
                     true,
                     'CanBeUnchecked',
@@ -1323,6 +1325,8 @@ internal static class SharedSql
         		        allow_access,
                         'PublicationStatusIdDefault',
                         tenant_publication_status_id_default,
+                        'PublicationStatusDefaultIsOnlyOption',
+                        false,
         		        'Subgroups',
         		        case 
         			        when subgroups = '[null]' then null
@@ -1345,7 +1349,9 @@ internal static class SharedSql
         		            'Name',
         		            subgroup_name,
                             'PublicationStatusIdDefault',
-                            subgroup_publication_status_id_default
+                            subgroup_publication_status_id_default,
+                            'PublicationStatusDefaultIsOnlyOption', 
+                            false
         	            )
         	            end
                     ) subgroups

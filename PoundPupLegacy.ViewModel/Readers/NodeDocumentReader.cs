@@ -20,6 +20,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
 
     const string SQL = $"""
             WITH 
+            {SharedSql.ACCESSIBLE_PUBLICATIONS_STATUS},
             {AUTHENTICATED_NODE},
             {FILES_DOCUMENT},
             {SEE_ALSO_DOCUMENT},
@@ -118,77 +119,40 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
     const string AUTHENTICATED_NODE = """
         authenticated_node as (
             select
-                id,
-                title,
-                node_type_id,
-                tenant_id,
-                node_id,
-                publisher_id,
-                created_date_time,
-                changed_date_time,
-                url_id,
-                url_path,
-                subgroup_id,
-                publication_status_id,
-                case 
-                    when status = 0 then false
-                    else true
-                end has_been_published
-            from(
-                select
-                tn.id,
-                n.title,
-                n.node_type_id,
-                tn.tenant_id,
-                tn.node_id,
-                n.publisher_id,
-                n.created_date_time,
-                n.changed_date_time,
-                tn.url_id,
-                case 
-                    when tn.url_path is null then '/node/' || tn.url_id
-                    else '/' || url_path
-                end url_path,
-                tn.subgroup_id,
-                tn.publication_status_id,
-                case
-                    when tn.publication_status_id = 0 then (
-                        select
-                            case 
-                                when count(*) > 0 then 0
-                                else -1
-                            end status
-                        from user_group_user_role_user ugu
-                        join user_group ug on ug.id = ugu.user_group_id
-                        WHERE ugu.user_group_id = 
-                        case
-                            when tn.subgroup_id is null then tn.tenant_id 
-                            else tn.subgroup_id 
-                        end 
-                        AND ugu.user_role_id = ug.administrator_role_id
-                        AND ugu.user_id = @user_id
-                    )
-                    when tn.publication_status_id = 1 then 1
-                    when tn.publication_status_id = 2 then (
-                        select
-                            case 
-                                when count(*) > 0 then 1
-                                else -1
-                            end status
-                        from user_group_user_role_user ugu
-                        WHERE ugu.user_group_id = 
-                            case
-                                when tn.subgroup_id is null then tn.tenant_id 
-                                else tn.subgroup_id 
-                            end
-                            AND ugu.user_id = @user_id
-                        )
-                    end status	
-                    from tenant_node tn
-                    join node n on n.id = tn.node_id
-                    WHERE tn.tenant_id = @tenant_id AND tn.url_id = @url_id
-                ) an
-                where an.status <> -1
+            tn.id,
+            n.title,
+            n.node_type_id,
+            tn.tenant_id,
+            tn.node_id,
+            n.publisher_id,
+            n.created_date_time,
+            n.changed_date_time,
+            tn.url_id,
+            case 
+                when tn.url_path is null then '/node/' || tn.url_id
+                else '/' || url_path
+            end url_path,
+            tn.subgroup_id,
+            tn.publication_status_id,
+            case 
+                when tn.publication_status_id = 1 then true 
+                else false 
+            end has_been_published
+            from tenant_node tn
+            join node n on n.id = tn.node_id
+            where tn.tenant_id = @tenant_id 
+            and tn.url_id = @url_id
+            and tn.publication_status_id in 
+            (
+                select 
+                id 
+                from accessible_publication_status 
+                where tenant_id = tn.tenant_id 
+                and (
+                    subgroup_id = tn.subgroup_id 
+                    or subgroup_id is null and tn.subgroup_id is null
+                )
+            )
         )
         """;
     const string POLL_OPTIONS_DOCUMENT = """
@@ -310,7 +274,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         'DateFrom', lower(date_range),
                         'DateTo', upper(date_range),
                         'ProofDocument', case
-        	                when status4 is null or status4 = -1 then null
+        	                when publication_status_id_5 is null then null
         	                else jsonb_build_object(
         		                'Title', document_proof_name,
         		                'Path', document_proof_path
@@ -319,185 +283,85 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     )
                 ) document
             from(
-            select
-        		n2.title party_name,
-        		case
-        			when tn2.url_path is null then '/node/' || tn2.url_id
-        			else tn2.url_path
-        		end party_path,
-        		n3.title political_entity_name,
-        		case
-        			when tn3.url_path is null then '/node/' || tn3.url_id
-        			else tn3.url_path
-        		end political_entity_path,
-        		n4.title party_political_entity_relation_type_name,
-        		case
-        			when tn4.url_path is null then '/node/' || tn4.url_id
-        			else tn4.url_path
-        		end party_political_entity_relation_type_path,
-        		pper.date_range,
-        		case 
-        			when tn.url_path is null then '/node/' || tn.url_id
-        			else '/' || tn.url_path
-        		end path,
-        		n5.title document_proof_name,
-        		case 
-        			when tn5.id is null then null
-        			when tn5.url_path is null then '/node/' || tn.url_id
-        			else '/' || tn.url_path
-        		end document_proof_path,
-        		case 
-        			when tn.publication_status_id = 0 then (
-        				select
-        					case 
-        						when count(*) > 0 then 0
-        						else -1
-        					end status
-        				from user_group_user_role_user ugu
-        				join user_group ug on ug.id = ugu.user_group_id
-        				WHERE ugu.user_group_id = 
-        				case
-        					when tn.subgroup_id is null then tn.tenant_id 
-        					else tn.subgroup_id 
-        				end 
-        				AND ugu.user_role_id = ug.administrator_role_id
-        				AND ugu.user_id = @user_id
-        			)
-        			when tn.publication_status_id = 1 then 1
-        			when tn.publication_status_id = 2 then (
-        				select
-        					case 
-        						when count(*) > 0 then 1
-        						else -1
-        					end status
-        				from user_group_user_role_user ugu
-        				WHERE ugu.user_group_id = 
-        					case
-        						when tn.subgroup_id is null then tn.tenant_id 
-        						else tn.subgroup_id 
-        					end
-        					AND ugu.user_id = @user_id
-        				)
-        		end status,
-        		case 
-        			when tn3.publication_status_id = 0 then (
-        				select
-        					case 
-        						when count(*) > 0 then 0
-        						else -1
-        					end status
-        				from user_group_user_role_user ugu
-        				join user_group ug on ug.id = ugu.user_group_id
-        				WHERE ugu.user_group_id = 
-        				case
-        					when tn3.subgroup_id is null then tn3.tenant_id 
-        					else tn3.subgroup_id 
-        				end 
-        				AND ugu.user_role_id = ug.administrator_role_id
-        				AND ugu.user_id = @user_id
-        			)
-        			when tn3.publication_status_id = 1 then 1
-        			when tn3.publication_status_id = 2 then (
-        				select
-        					case 
-        						when count(*) > 0 then 1
-        						else -1
-        					end status
-        				from user_group_user_role_user ugu
-        				WHERE ugu.user_group_id = 
-        					case
-        						when tn3.subgroup_id is null then tn3.tenant_id 
-        						else tn3.subgroup_id 
-        					end
-        					AND ugu.user_id = @user_id
-        				)
-        		end status2,
-        		case 
-        			when tn4.publication_status_id = 0 then (
-        				select
-        					case 
-        						when count(*) > 0 then 0
-        						else -1
-        					end status
-        				from user_group_user_role_user ugu
-        				join user_group ug on ug.id = ugu.user_group_id
-        				WHERE ugu.user_group_id = 
-        				case
-        					when tn4.subgroup_id is null then tn4.tenant_id 
-        					else tn4.subgroup_id 
-        				end 
-        				AND ugu.user_role_id = ug.administrator_role_id
-        				AND ugu.user_id = @user_id
-        			)
-        			when tn4.publication_status_id = 1 then 1
-        			when tn4.publication_status_id = 2 then (
-        				select
-        					case 
-        						when count(*) > 0 then 1
-        						else -1
-        					end status
-        				from user_group_user_role_user ugu
-        				WHERE ugu.user_group_id = 
-        					case
-        						when tn4.subgroup_id is null then tn4.tenant_id 
-        						else tn4.subgroup_id 
-        					end
-        					AND ugu.user_id = @user_id
-        				)
-        		end status3,
-        		case 
-        			when tn5.publication_status_id = null then null
-        			when tn5.publication_status_id = 0 then (
-        				select
-        					case 
-        						when count(*) > 0 then 0
-        						else -1
-        					end status
-        				from user_group_user_role_user ugu
-        				join user_group ug on ug.id = ugu.user_group_id
-        				WHERE ugu.user_group_id = 
-        				case
-        					when tn5.subgroup_id is null then tn5.tenant_id 
-        					else tn5.subgroup_id 
-        				end 
-        				AND ugu.user_role_id = ug.administrator_role_id
-        				AND ugu.user_id = @user_id
-        			)
-        			when tn5.publication_status_id = 1 then 1
-        			when tn5.publication_status_id = 2 then (
-        				select
-        					case 
-        						when count(*) > 0 then 1
-        						else -1
-        					end status
-        				from user_group_user_role_user ugu
-        				WHERE ugu.user_group_id = 
-        					case
-        						when tn5.subgroup_id is null then tn5.tenant_id 
-        						else tn5.subgroup_id 
-        					end
-        					AND ugu.user_id = @user_id
-        				)
-        		end status4
-        	from  node n
-        	join tenant_node tn on tn.node_id = n.id
-        	join party_political_entity_relation pper on pper.id = n.id 
+                select
+        		    n2.title party_name,
+        		    case
+        			    when tn2.url_path is null then '/node/' || tn2.url_id
+        			    else tn2.url_path
+        		    end party_path,
+        		    n3.title political_entity_name,
+        		    case
+        			    when tn3.url_path is null then '/node/' || tn3.url_id
+        			    else tn3.url_path
+        		    end political_entity_path,
+                    tn5.publication_status_id publication_status_id_5,
+        		    n4.title party_political_entity_relation_type_name,
+        		    case
+        			    when tn4.url_path is null then '/node/' || tn4.url_id
+        			    else tn4.url_path
+        		    end party_political_entity_relation_type_path,
+        		    pper.date_range,
+        		    case 
+        			    when tn.url_path is null then '/node/' || tn.url_id
+        			    else '/' || tn.url_path
+        		    end path,
+        		    n5.title document_proof_name,
+        		    case 
+        			    when tn5.id is null then null
+        			    when tn5.url_path is null then '/node/' || tn.url_id
+        			    else '/' || tn.url_path
+        		    end document_proof_path
+        	    from  node n
+        	    join tenant_node tn on tn.node_id = n.id
+        	    join party_political_entity_relation pper on pper.id = n.id 
 
-        	join node n2 on n2.id = pper.party_id				
-        	join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = tn.tenant_id
+        	    join node n2 on n2.id = pper.party_id				
+        	    join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = tn.tenant_id
 
-        	join node n3 on n3.id = pper.political_entity_id				
-        	join tenant_node tn3 on tn3.node_id = n3.id and tn3.tenant_id = tn.tenant_id
+        	    join node n3 on n3.id = pper.political_entity_id				
+        	    join tenant_node tn3 on tn3.node_id = n3.id and tn3.tenant_id = tn.tenant_id
 
-        	join node n4 on n4.id = pper.party_political_entity_relation_type_id
-        	join tenant_node tn4 on tn4.node_id = n4.id and tn4.tenant_id = tn.tenant_id
+        	    join node n4 on n4.id = pper.party_political_entity_relation_type_id
+        	    join tenant_node tn4 on tn4.node_id = n4.id and tn4.tenant_id = tn.tenant_id
 
-        	left join node n5 on n5.id = pper.document_id_proof
-        	left join tenant_node tn5 on tn4.node_id = n5.id and tn5.tenant_id = tn.tenant_id
+        	    left join node n5 on n5.id = pper.document_id_proof
+        	    left join tenant_node tn5 on tn4.node_id = n5.id and tn5.tenant_id = tn.tenant_id
 
-        	where tn.tenant_id = @tenant_id and tn2.url_id = @url_id
+        	    where tn.tenant_id = @tenant_id and tn2.url_id = @url_id
+                and tn.publication_status_id in 
+                (
+                    select 
+                    id 
+                    from accessible_publication_status 
+                    where tenant_id = tn.tenant_id 
+                    and (
+                        subgroup_id = tn.subgroup_id 
+                        or subgroup_id is null and tn.subgroup_id is null
+                    )
+                )
+                and tn3.publication_status_id in 
+                (
+                    select 
+                    id 
+                    from accessible_publication_status 
+                    where tenant_id = tn3.tenant_id 
+                    and (
+                        subgroup_id = tn3.subgroup_id 
+                        or subgroup_id is null and tn3.subgroup_id is null
+                    )
+                )
+                and tn4.publication_status_id in 
+                (
+                    select 
+                    id 
+                    from accessible_publication_status 
+                    where tenant_id = tn4.tenant_id 
+                    and (
+                        subgroup_id = tn4.subgroup_id 
+                        or subgroup_id is null and tn4.subgroup_id is null
+                    )
+                )
         	) x
-        	where status <> -1 and status2 <> -1 and status3 <> -1
         )	
         """;
 
@@ -535,40 +399,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         			    case 
         				    when tn.url_path is null then '/node/' || tn.url_id
         				    else '/' || tn.url_path
-        			    end path,
-        			    case 
-        				    when tn.publication_status_id = 0 then (
-        					    select
-        						    case 
-        							    when count(*) > 0 then 0
-        							    else -1
-        						    end status
-        					    from user_group_user_role_user ugu
-        					    join user_group ug on ug.id = ugu.user_group_id
-        					    WHERE ugu.user_group_id = 
-        					    case
-        						    when tn.subgroup_id is null then tn.tenant_id 
-        						    else tn.subgroup_id 
-        					    end 
-        					    AND ugu.user_role_id = ug.administrator_role_id
-        					    AND ugu.user_id = @user_id
-        				    )
-        				    when tn.publication_status_id = 1 then 1
-        				    when tn.publication_status_id = 2 then (
-        					    select
-        						    case 
-        							    when count(*) > 0 then 1
-        							    else -1
-        						    end status
-        					    from user_group_user_role_user ugu
-        					    WHERE ugu.user_group_id = 
-        						    case
-        							    when tn.subgroup_id is null then tn.tenant_id 
-        							    else tn.subgroup_id 
-        						    end
-        						    AND ugu.user_id = @user_id
-        					    )
-        			    end status	
+        			    end path
         		    from case_parties cp
                     join case_case_parties ccp on ccp.case_parties_id = cp.id 
         		    join node n on n.id = ccp.case_id
@@ -580,8 +411,18 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         		    join node_type nt on nt.id = n.node_type_id
         		    join tenant_node tn on tn.node_id = n.id and tn.tenant_id = tn2.tenant_id
         		    where tn2.tenant_id = @tenant_id and tn2.url_id = @url_id
+                    and tn.publication_status_id in 
+                    (
+                        select 
+                        id 
+                        from accessible_publication_status 
+                        where tenant_id = tn.tenant_id 
+                        and (
+                            subgroup_id = tn.subgroup_id 
+                            or subgroup_id is null and tn.subgroup_id is null
+                        )
+                    )
         	    )x 
-        	    where status <> -1
         	    group by case_type_name, case_party_type_name
             ) x
             group by case_type_name
@@ -622,40 +463,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         			    case 
         				    when tn.url_path is null then '/node/' || tn.url_id
         				    else '/' || tn.url_path
-        			    end path,
-        			    case 
-        				    when tn.publication_status_id = 0 then (
-        					    select
-        						    case 
-        							    when count(*) > 0 then 0
-        							    else -1
-        						    end status
-        					    from user_group_user_role_user ugu
-        					    join user_group ug on ug.id = ugu.user_group_id
-        					    WHERE ugu.user_group_id = 
-        					    case
-        						    when tn.subgroup_id is null then tn.tenant_id 
-        						    else tn.subgroup_id 
-        					    end 
-        					    AND ugu.user_role_id = ug.administrator_role_id
-        					    AND ugu.user_id = @user_id
-        				    )
-        				    when tn.publication_status_id = 1 then 1
-        				    when tn.publication_status_id = 2 then (
-        					    select
-        						    case 
-        							    when count(*) > 0 then 1
-        							    else -1
-        						    end status
-        					    from user_group_user_role_user ugu
-        					    WHERE ugu.user_group_id = 
-        						    case
-        							    when tn.subgroup_id is null then tn.tenant_id 
-        							    else tn.subgroup_id 
-        						    end
-        						    AND ugu.user_id = @user_id
-        					    )
-        			    end status	
+        			    end path
         		    from case_parties cp
         		    join case_case_parties ccp on ccp.case_parties_id = cp.id 
         		    join node n on n.id = ccp.case_id
@@ -667,8 +475,18 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         		    join node_type nt on nt.id = n.node_type_id
         		    join tenant_node tn on tn.node_id = n.id and tn.tenant_id = tn2.tenant_id
         		    where tn2.tenant_id = @tenant_id and tn2.url_id = @url_id
+                    and tn.publication_status_id in 
+                    (
+                        select 
+                        id 
+                        from accessible_publication_status 
+                        where tenant_id = tn.tenant_id 
+                        and (
+                            subgroup_id = tn.subgroup_id 
+                            or subgroup_id is null and tn.subgroup_id is null
+                        )
+                    )
         	    )x 
-        	    where status <> -1
         	    group by case_type_name, case_party_type_name
             ) x
             group by case_type_name
@@ -691,40 +509,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     case 
                         when tn.url_path is null then '/node/' || tn.url_id
                         else '/' || tn.url_path
-                    end url_path,
-                    case
-                        when tn.publication_status_id = 0 then (
-                            select
-                                case 
-                                    when count(*) > 0 then 0
-                                    else -1
-                                end status
-                            from user_group_user_role_user ugu
-                            join user_group ug on ug.id = ugu.user_group_id
-                            WHERE ugu.user_group_id = 
-                            case
-                                when tn.subgroup_id is null then tn.tenant_id 
-                                else tn.subgroup_id 
-                            end 
-                            AND ugu.user_role_id = ug.administrator_role_id
-                            AND ugu.user_id = @user_id
-                        )
-                        when tn.publication_status_id = 1 then 1
-                        when tn.publication_status_id = 2 then (
-                            select
-                                case 
-                                    when count(*) > 0 then 1
-                                    else -1
-                                end status
-                            from user_group_user_role_user ugu
-                            WHERE ugu.user_group_id = 
-                                case
-                                    when tn.subgroup_id is null then tn.tenant_id 
-                                    else tn.subgroup_id 
-                                end
-                                AND ugu.user_id = @user_id
-                            )
-                    end status	
+                    end url_path
                 from tenant_node tn
         		join tenant tt on tt.id = tn.tenant_id
                 join node n on n.id = tn.node_id
@@ -734,8 +519,18 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         		join term t2 on t2.id = th.term_id_parent
         		join tenant_node tn2 on tn2.tenant_id = tn.tenant_id and tn2.node_id = t2.nameable_id
                 WHERE tn.tenant_id = @tenant_id AND tn2.url_id = @url_id
+                and tn.publication_status_id in 
+                (
+                    select 
+                    id 
+                    from accessible_publication_status 
+                    where tenant_id = tn.tenant_id 
+                    and (
+                        subgroup_id = tn.subgroup_id 
+                        or subgroup_id is null and tn.subgroup_id is null
+                    )
+                )
             ) an
-            where an.status <> -1
         )
         """;
 
@@ -754,40 +549,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     case 
                         when tn.url_path is null then '/node/' || tn.url_id
                         else '/' || tn.url_path
-                    end url_path,
-                    case
-                        when tn.publication_status_id = 0 then (
-                            select
-                                case 
-                                    when count(*) > 0 then 0
-                                    else -1
-                                end status
-                            from user_group_user_role_user ugu
-                            join user_group ug on ug.id = ugu.user_group_id
-                            WHERE ugu.user_group_id = 
-                            case
-                                when tn.subgroup_id is null then tn.tenant_id 
-                                else tn.subgroup_id 
-                            end 
-                            AND ugu.user_role_id = ug.administrator_role_id
-                            AND ugu.user_id = @user_id
-                        )
-                        when tn.publication_status_id = 1 then 1
-                        when tn.publication_status_id = 2 then (
-                            select
-                                case 
-                                    when count(*) > 0 then 1
-                                    else -1
-                                end status
-                            from user_group_user_role_user ugu
-                            WHERE ugu.user_group_id = 
-                                case
-                                    when tn.subgroup_id is null then tn.tenant_id 
-                                    else tn.subgroup_id 
-                                end
-                                AND ugu.user_id = @user_id
-                            )
-                    end status	
+                    end url_path
                 from tenant_node tn
         		join tenant tt on tt.id = tn.tenant_id
                 join node n on n.id = tn.node_id
@@ -797,8 +559,18 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         		join term t2 on t2.id = th.term_id_child
         		join tenant_node tn2 on tn2.tenant_id = tn.tenant_id and tn2.node_id = t2.nameable_id
                 WHERE tn.tenant_id = @tenant_id AND tn2.url_id = @url_id
+                and tn.publication_status_id in 
+                (
+                    select 
+                    id 
+                    from accessible_publication_status 
+                    where tenant_id = tn.tenant_id 
+                    and (
+                        subgroup_id = tn.subgroup_id 
+                        or subgroup_id is null and tn.subgroup_id is null
+                    )
+                )
             ) an
-            where an.status <> -1
         )
         """;
 
@@ -831,39 +603,6 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                             select
                                 case_parties_id,
                                 n2.title organization_name,
-                                case
-                                    when tn2.publication_status_id = 0 then (
-                                        select
-                                            case 
-                                                when count(*) > 0 then 0
-                                                else -1
-                                            end status
-                                        from user_group_user_role_user ugu
-                                        join user_group ug on ug.id = ugu.user_group_id
-                                        WHERE ugu.user_group_id = 
-                                        case
-                                            when tn2.subgroup_id is null then tn2.tenant_id 
-                                            else tn2.subgroup_id 
-                                        end 
-                                        AND ugu.user_role_id = ug.administrator_role_id
-                                        AND ugu.user_id = @user_id
-                                    )
-                                    when tn2.publication_status_id = 1 then 1
-                                    when tn2.publication_status_id = 2 then (
-                                        select
-                                            case 
-                                                when count(*) > 0 then 1
-                                                else -1
-                                            end status
-                                        from user_group_user_role_user ugu
-                                        WHERE ugu.user_group_id = 
-                                        case
-                                            when tn2.subgroup_id is null then tn2.tenant_id 
-                                            else tn2.subgroup_id 
-                                        end
-                                        AND ugu.user_id = @user_id
-                                    )
-                                 end status,
                                 case 
                                     when tn2.url_path is null then '/node/' || tn2.url_id
                                     else tn2.url_path
@@ -872,7 +611,18 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                             join node n2 on n2.id = cpo.organization_id
                             join tenant_node tn2 on tn2.node_id = n2.id
                             where tn2.tenant_id = @tenant_id and cpo.case_parties_id = cp.id
-                        ) x where status <> -1
+                            and tn2.publication_status_id in 
+                            (
+                                select 
+                                id 
+                                from accessible_publication_status 
+                                where tenant_id = tn2.tenant_id 
+                                and (
+                                    subgroup_id = tn2.subgroup_id 
+                                    or subgroup_id is null and tn2.subgroup_id is null
+                                )
+                            )
+                        ) x 
                     ) organizations,
                     (
                         select
@@ -884,39 +634,6 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                             select
                                 case_parties_id,
                                 n3.title person_name,
-                                case
-                                    when tn3.publication_status_id = 0 then (
-                                        select
-                                            case 
-                                                when count(*) > 0 then 0
-                                                else -1
-                                            end status
-                                        from user_group_user_role_user ugu
-                                        join user_group ug on ug.id = ugu.user_group_id
-                                        WHERE ugu.user_group_id = 
-                                        case
-                                            when tn3.subgroup_id is null then tn3.tenant_id 
-                                            else tn3.subgroup_id 
-                                        end 
-                                        AND ugu.user_role_id = ug.administrator_role_id
-                                        AND ugu.user_id = @user_id
-                                    )
-                                    when tn3.publication_status_id = 1 then 1
-                                    when tn3.publication_status_id = 2 then (
-                                        select
-                                            case 
-                                                when count(*) > 0 then 1
-                                                else -1
-                                            end status
-                                        from user_group_user_role_user ugu
-                                        WHERE ugu.user_group_id = 
-                                        case
-                                            when tn3.subgroup_id is null then tn3.tenant_id 
-                                            else tn3.subgroup_id 
-                                        end
-                                        AND ugu.user_id = @user_id
-                                    )
-                                end status,
                                 case 
                                     when tn3.url_path is null then '/node/' || tn3.url_id
                                     else tn3.url_path
@@ -925,7 +642,18 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                             join node n3 on n3.id = cpp.person_id
                             join tenant_node tn3 on tn3.node_id = n3.id
                             where tn3.tenant_id = @tenant_id and cpp.case_parties_id = cp.id
-                        ) x where status <> -1
+                            and tn3.publication_status_id in 
+                            (
+                                select 
+                                id 
+                                from accessible_publication_status 
+                                where tenant_id = tn3.tenant_id 
+                                and (
+                                    subgroup_id = tn3.subgroup_id 
+                                    or subgroup_id is null and tn3.subgroup_id is null
+                                )
+                            )
+                        ) x 
                     ) persons
                 from node n
                 join case_case_parties ccp on ccp.case_id = n.id
@@ -1441,40 +1169,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         case
                             when nmt.tag_label_name is not null then nmt.tag_label_name
                             else nt2.name
-                        end node_type_name,
-                        case
-                            when tn.publication_status_id = 0 then (
-                                select
-                                    case 
-                                        when count(*) > 0 then 0
-                                        else -1
-                                    end status
-                                from user_group_user_role_user ugu
-                                join user_group ug on ug.id = ugu.user_group_id
-                                WHERE ugu.user_group_id = 
-                                case
-                                    when tn.subgroup_id is null then tn.tenant_id 
-                                    else tn.subgroup_id 
-                                end 
-                                AND ugu.user_role_id = ug.administrator_role_id
-                                AND ugu.user_id = @user_id
-                            )
-                            when tn.publication_status_id = 1 then 1
-                            when tn.publication_status_id = 2 then (
-                                select
-                                    case 
-                                        when count(*) > 0 then 1
-                                        else -1
-                                    end status
-                                from user_group_user_role_user ugu
-                                WHERE ugu.user_group_id = 
-                                    case
-                                        when tn.subgroup_id is null then tn.tenant_id 
-                                        else tn.subgroup_id 
-                                    end
-                                    AND ugu.user_id = @user_id
-                                )
-                        end status	
+                        end node_type_name
                     FROM node_term nt 
                     JOIN tenant_node tn2 on tn2.node_id = nt.node_id
                     JOIN term t on t.id = nt.term_id
@@ -1483,8 +1178,18 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     left join nameable_type nmt on nmt.id = n.node_type_id and nmt.tag_label_name is not null
                     JOIN tenant_node tn on tn.node_id = t.nameable_id and tn.tenant_id = @tenant_id
                     WHERE tn2.url_id = @url_id and tn2.tenant_id = @tenant_id
+                    and tn.publication_status_id in 
+                    (
+                        select 
+                        id 
+                        from accessible_publication_status 
+                        where tenant_id = tn.tenant_id 
+                        and (
+                            subgroup_id = tn.subgroup_id 
+                            or subgroup_id is null and tn.subgroup_id is null
+                        )
+                    )
                 ) t
-                where t.status <> -1
             ) t
         )
         """;
@@ -1571,59 +1276,35 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         		            'Path', "path"
         	            )
                     ) organizations
-                from(
-                    select
-                        n2.title organization_type,
-                        n.title organization_name,
-                        case 
-        	                when tn2.url_path is null then '/node/' || tn2.url_id
-        	                else '/' || tn2.url_path
-                        end "path",
-                        case
-                            when tn2.publication_status_id = 0 then (
-                                select
-                                    case 
-                                        when count(*) > 0 then 0
-                                        else -1
-                                    end status
-                                from user_group_user_role_user ugu
-                                join user_group ug on ug.id = ugu.user_group_id
-                                WHERE ugu.user_group_id = 
-                                case
-                                    when tn2.subgroup_id is null then tn2.tenant_id 
-                                    else tn2.subgroup_id 
-                                end 
-                                AND ugu.user_role_id = ug.administrator_role_id
-                                AND ugu.user_id = @user_id
+                    from(
+                        select
+                            n2.title organization_type,
+                            n.title organization_name,
+                            case 
+        	                    when tn2.url_path is null then '/node/' || tn2.url_id
+        	                    else '/' || tn2.url_path
+                            end "path"
+                        from node n
+                        join tenant_node tn2 on tn2.node_id = n.id and tn2.tenant_id = @tenant_id
+                        join organization o on o.id = n.id
+                        join organization_organization_type oot on oot.organization_id = o.id
+                        join organization_type ot on ot.id = oot.organization_type_id
+                        join node n2 on n2.id = ot.id
+                        join location_locatable ll on ll.locatable_id = n.id
+                        join "location" l on l.id = ll.location_id
+                        join tenant_node tn on tn.url_id = @url_id and tn.node_id = l.country_id and tn.tenant_id = @tenant_id
+                        where tn2.publication_status_id in 
+                        (
+                            select 
+                            id 
+                            from accessible_publication_status 
+                            where tenant_id = tn2.tenant_id 
+                            and (
+                                subgroup_id = tn2.subgroup_id 
+                                or subgroup_id is null and tn2.subgroup_id is null
                             )
-                            when tn2.publication_status_id = 1 then 1
-                            when tn2.publication_status_id = 2 then (
-                                select
-                                    case 
-                                        when count(*) > 0 then 1
-                                        else -1
-                                    end status
-                                from user_group_user_role_user ugu
-                                WHERE ugu.user_group_id = 
-                                    case
-                                        when tn2.subgroup_id is null then tn2.tenant_id 
-                                        else tn2.subgroup_id 
-                                    end
-                                    AND ugu.user_id = @user_id
-                                )
-                        end status	
-        
-                    from node n
-                    join tenant_node tn2 on tn2.node_id = n.id and tn2.tenant_id = @tenant_id
-                    join organization o on o.id = n.id
-                    join organization_organization_type oot on oot.organization_id = o.id
-                    join organization_type ot on ot.id = oot.organization_type_id
-                    join node n2 on n2.id = ot.id
-                    join location_locatable ll on ll.locatable_id = n.id
-                    join "location" l on l.id = ll.location_id
-                    join tenant_node tn on tn.url_id = @url_id and tn.node_id = l.country_id and tn.tenant_id = @tenant_id
+                        )
         	        ) x
-                    where x.status <> -1
                 group by x.organization_type
             ) x
         )
@@ -1699,48 +1380,25 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         n2.title,
         	            lower(d.published) sort_date,
                         lower(d.published) publication_date_from,
-                        upper(d.published) publication_date_to,
-                        case
-                        when tn.publication_status_id = 0 then (
-                            select
-                                case 
-                                    when count(*) > 0 then 0
-                                    else -1
-                                end status
-                            from user_group_user_role_user ugu
-                            join user_group ug on ug.id = ugu.user_group_id
-                            WHERE ugu.user_group_id = 
-                            case
-                                when tn.subgroup_id is null then tn.tenant_id 
-                                else tn.subgroup_id 
-                            end 
-                            AND ugu.user_role_id = ug.administrator_role_id
-                            AND ugu.user_id = @user_id
-                        )
-                        when tn.publication_status_id = 1 then 1
-                        when tn.publication_status_id = 2 then (
-                            select
-                                case 
-                                    when count(*) > 0 then 1
-                                    else -1
-                                end status
-                            from user_group_user_role_user ugu
-                            WHERE ugu.user_group_id = 
-                                case
-                                    when tn.subgroup_id is null then tn.tenant_id 
-                                    else tn.subgroup_id 
-                                end
-                                AND ugu.user_id = @user_id
-                            )
-                    end status	
+                        upper(d.published) publication_date_to
                     from node_term nt
                     join term t on t.id = nt.term_id
                     join tenant_node tn2 on tn2.url_id = @url_id and tn2.tenant_id = @tenant_id and tn2.node_id = t.nameable_id
                     join tenant_node tn on tn.node_id = nt.node_id and tn.tenant_id = @tenant_id
                     join node n2 on n2.Id = tn.node_id
                     join "document" d on d.id = n2.id
+                    where tn.publication_status_id in 
+                    (
+                        select 
+                        id 
+                        from accessible_publication_status 
+                        where tenant_id = tn.tenant_id 
+                        and (
+                            subgroup_id = tn.subgroup_id 
+                            or subgroup_id is null and tn.subgroup_id is null
+                        )
+                    )
                 ) x
-                where status <> -1
             ) docs
         )
         """;
@@ -1772,9 +1430,10 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     '/blog+/' || p.id, 
                     p.name || '''s blog', 
                     2
-                FROM authenticated_node an
-                JOIN publisher p on p.id = an.publisher_id
-                WHERE an.url_id = @url_id and an.tenant_id = @tenant_id
+                FROM node n
+                join tenant_node tn on tn.node_id = n.id and tn.tenant_id = @tenant_id and tn.url_id = @url_id
+                JOIN publisher p on p.id = n.publisher_id
+                WHERE tn.url_id = @url_id and tn.tenant_id = @tenant_id
                 ) bce
                 ORDER BY bce."order"
             ) bces
@@ -2486,8 +2145,9 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         end "CommentIdParent"
         	        FROM comment c
         	        JOIN publisher p on p.id = c.publisher_id
-                    JOIN authenticated_node an on an.node_id = c.node_id
-        	        WHERE an.url_id = @url_id and an.tenant_id = @tenant_id
+                    JOIN node n on n.id = c.node_id
+                    join tenant_node tn on tn.node_id = n.id
+        	        WHERE tn.url_id = @url_id and tn.tenant_id = @tenant_id
                 ) sub
         	) agg        
         )
@@ -3189,40 +2849,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         			case 
         				when tn.url_path is null then '/node/' || tn.url_id
         				else '/' || tn.url_path
-        			end path,
-        			case 
-        				when tn.publication_status_id = 0 then (
-        					select
-        						case 
-        							when count(*) > 0 then 0
-        							else -1
-        						end status
-        					from user_group_user_role_user ugu
-        					join user_group ug on ug.id = ugu.user_group_id
-        					WHERE ugu.user_group_id = 
-        					case
-        						when tn.subgroup_id is null then tn.tenant_id 
-        						else tn.subgroup_id 
-        					end 
-        					AND ugu.user_role_id = ug.administrator_role_id
-        					AND ugu.user_id = @user_id
-        				)
-        				when tn.publication_status_id = 1 then 1
-        				when tn.publication_status_id = 2 then (
-        					select
-        						case 
-        							when count(*) > 0 then 1
-        							else -1
-        						end status
-        					from user_group_user_role_user ugu
-        					WHERE ugu.user_group_id = 
-        						case
-        							when tn.subgroup_id is null then tn.tenant_id 
-        							else tn.subgroup_id 
-        						end
-        						AND ugu.user_id = @user_id
-        					)
-        			end status	
+        			end path
         		from  node n
         		join person pe  on pe.id = n.id
         		join person_organization_relation por on por.person_id = pe.Id
@@ -3230,8 +2857,18 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         		join tenant_node tn2 on tn2.node_id = por.organization_id
         		join tenant_node tn on tn.node_id = n.id and tn.tenant_id = tn2.tenant_id
         		where tn2.tenant_id = @tenant_id and tn2.url_id = @url_id
+                and tn.publication_status_id in 
+                (
+                    select 
+                    id 
+                    from accessible_publication_status 
+                    where tenant_id = tn.tenant_id 
+                    and (
+                        subgroup_id = tn.subgroup_id 
+                        or subgroup_id is null and tn.subgroup_id is null
+                    )
+                )
         	) x
-        	where x.status <> -1
         )
         """;
     const string ORGANIZATION_PERSON_RELATIONS_DOCUMENT = """
@@ -3254,40 +2891,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         			case 
         				when tn.url_path is null then '/node/' || tn.url_id
         				else '/' || tn.url_path
-        			end path,
-        			case 
-        				when tn.publication_status_id = 0 then (
-        					select
-        						case 
-        							when count(*) > 0 then 0
-        							else -1
-        						end status
-        					from user_group_user_role_user ugu
-        					join user_group ug on ug.id = ugu.user_group_id
-        					WHERE ugu.user_group_id = 
-        					case
-        						when tn.subgroup_id is null then tn.tenant_id 
-        						else tn.subgroup_id 
-        					end 
-        					AND ugu.user_role_id = ug.administrator_role_id
-        					AND ugu.user_id = @user_id
-        				)
-        				when tn.publication_status_id = 1 then 1
-        				when tn.publication_status_id = 2 then (
-        					select
-        						case 
-        							when count(*) > 0 then 1
-        							else -1
-        						end status
-        					from user_group_user_role_user ugu
-        					WHERE ugu.user_group_id = 
-        						case
-        							when tn.subgroup_id is null then tn.tenant_id 
-        							else tn.subgroup_id 
-        						end
-        						AND ugu.user_id = @user_id
-        					)
-        			end status	
+        			end path
         		from  node n
         		join organization pe  on pe.id = n.id
         		join person_organization_relation por on por.organization_id = pe.Id
@@ -3295,8 +2899,18 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         		join tenant_node tn2 on tn2.node_id = por.person_id
         		join tenant_node tn on tn.node_id = n.id and tn.tenant_id = tn2.tenant_id
         		where tn2.tenant_id = @tenant_id and tn2.url_id = @url_id
+                and tn.publication_status_id in 
+                (
+                    select 
+                    id 
+                    from accessible_publication_status 
+                    where tenant_id = tn.tenant_id 
+                    and (
+                        subgroup_id = tn.subgroup_id 
+                        or subgroup_id is null and tn.subgroup_id is null
+                    )
+                )
         	) x
-        	where x.status <> -1
         )
         """;
 
@@ -3439,19 +3053,25 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         blog_post_document AS (
             SELECT 
                 jsonb_build_object(
-                'UrlId', n.url_id,
-                'NodeId', n.node_id,
-                'NodeTypeId', n.node_type_id,
-                'Title', n.title, 
-                'Text', n.text,
-                'HasBeenPublished', n.has_been_published,
+                'UrlId', 
+                url_id,
+                'NodeId', 
+                node_id,
+                'NodeTypeId', 
+                node_type_id,
+                'Title', 
+                title, 
+                'Text', 
+                text,
+                'HasBeenPublished', 
+                has_been_published,
                 'Authoring', jsonb_build_object(
-                    'Id', n.publisher_id, 
-                    'Name', n.publisher_name,
-                    'CreatedDateTime', n.created_date_time,
-                    'ChangedDateTime', n.changed_date_time
+                    'Id', publisher_id, 
+                    'Name', publisher_name,
+                    'CreatedDateTime', created_date_time,
+                    'ChangedDateTime', changed_date_time
                 ),
-                'HasBeenPublished', n.has_been_published,
+                'HasBeenPublished', has_been_published,
                 'BreadCrumElements', (SELECT document FROM blog_post_bread_crum_document),
                 'Tags', (SELECT document FROM tags_document),
                 'SeeAlsoBoxElements', (SELECT document FROM see_also_document),
@@ -3460,19 +3080,24 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             ) document
             FROM (
                 SELECT
-                    an.url_id,  
-                    an.node_id,
-                    an.node_type_id,
-                    an.title, 
-                    an.created_date_time, 
-                    an.changed_date_time, 
+                    tn.url_id,  
+                    tn.node_id,
+                    n.node_type_id,
+                    n.title, 
+                    n.created_date_time, 
+                    n.changed_date_time, 
                     stn.text, 
-                    an.publisher_id, 
+                    n.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published
-                FROM authenticated_node an
-                join simple_text_node stn on stn.id = an.node_id 
-                JOIN publisher p on p.id = an.publisher_id
+                    case 
+                        when tn.publication_status_id = 0 then false
+                        else true
+                    end has_been_published
+                FROM node n
+                join tenant_node tn on tn.node_id = n.id 
+                join simple_text_node stn on stn.id = n.id 
+                JOIN publisher p on p.id = n.publisher_id
+                where tn.url_id = @url_id and tn.tenant_id = @tenant_id
             ) n
         ) 
         """;
@@ -3636,27 +3261,48 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         'ChangedDateTime', n.changed_date_time
                     ),
                     'HasBeenPublished', n.has_been_published,
-                    'BreadCrumElements', (SELECT document FROM page_bread_crum_document),
-                    'Tags', (SELECT document FROM tags_document),
-                    'SeeAlsoBoxElements', (SELECT document FROM see_also_document),
-                    'CommentListItems', (SELECT document FROM  comments_document),
-                    'Files', (SELECT document FROM files_document)
+                    'BreadCrumElements', 
+                    (SELECT document FROM page_bread_crum_document),
+                    'Tags', 
+                    (SELECT document FROM tags_document),
+                    'SeeAlsoBoxElements', 
+                    (SELECT document FROM see_also_document),
+                    'CommentListItems', 
+                    (SELECT document FROM  comments_document),
+                    'Files', 
+                    (SELECT document FROM files_document)
                 ) document
             FROM (
                 SELECT
-                    an.url_id,  
-                    an.node_id,
-                    an.node_type_id,
-                    an.title, 
-                    an.created_date_time, 
-                    an.changed_date_time, 
+                    tn.url_id,  
+                    tn.node_id,
+                    n.node_type_id,
+                    n.title, 
+                    n.created_date_time, 
+                    n.changed_date_time, 
                     stn.text, 
-                    an.publisher_id, 
+                    n.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published
-                FROM authenticated_node an
-                join simple_text_node stn on stn.id = an.node_id 
-                JOIN publisher p on p.id = an.publisher_id
+                    case 
+                        when tn.publication_status_id = 0 then false
+                        else true
+                    end has_been_published
+                FROM node n
+                join tenant_node tn on tn.node_id = n.id
+                join simple_text_node stn on stn.id = n.id 
+                JOIN publisher p on p.id = n.publisher_id
+                where tn.tenant_id = @tenant_id and tn.url_id = @url_id
+                and tn.publication_status_id in 
+                (
+                    select 
+                    id 
+                    from accessible_publication_status 
+                    where tenant_id = tn.tenant_id 
+                    and (
+                        subgroup_id = tn.subgroup_id 
+                        or subgroup_id is null and tn.subgroup_id is null
+                    )
+                )
             ) n
         ) 
         """;
@@ -4250,57 +3896,69 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
     const string NODE_DOCUMENT = """
         node_document AS (
             SELECT
-                an.node_type_id,
+                n.node_type_id,
                 case
-                    when an.node_type_id = 1 then (select document from basic_nameable_document)
-                    when an.node_type_id = 2 then (select document from basic_nameable_document)
-                    when an.node_type_id = 3 then (select document from basic_nameable_document)
-                    when an.node_type_id = 4 then (select document from basic_nameable_document)
-                    when an.node_type_id = 5 then (select document from basic_nameable_document)
-                    when an.node_type_id = 6 then (select document from basic_nameable_document)
-                    when an.node_type_id = 7 then (select document from basic_nameable_document)
-                    when an.node_type_id = 8 then (select document from basic_nameable_document)
-                    when an.node_type_id = 9 then (select document from basic_nameable_document)
-                    when an.node_type_id = 10 then (select document from document_document)
-                    when an.node_type_id = 11 then (select document from global_region_document)
-                    when an.node_type_id = 12 then (select document from global_region_document)
-                    when an.node_type_id = 13 then (select document from basic_country_document)
-                    when an.node_type_id = 14 then (select document from bound_country_document)
-                    when an.node_type_id = 15 then (select document from country_and_subdivision_document)
-                    when an.node_type_id = 16 then (select document from country_and_subdivision_document)
-                    when an.node_type_id = 17 then (select document from formal_subdivision_document)
-                    when an.node_type_id = 18 then (select document from informal_subdivision_document)
-                    when an.node_type_id = 19 then (select document from formal_subdivision_document)
-                    when an.node_type_id = 20 then (select document from binding_country_document)
-                    when an.node_type_id = 21 then (select document from country_and_subdivision_document)
-                    when an.node_type_id = 22 then (select document from formal_subdivision_document)
-                    when an.node_type_id = 23 then (select document from organization_document)
-                    when an.node_type_id = 24 then (select document from person_document)
-                    when an.node_type_id = 26 then (select document from abuse_case_document)
-                    when an.node_type_id = 27 then (select document from basic_nameable_document)
-                    when an.node_type_id = 28 then (select document from basic_nameable_document)
-                    when an.node_type_id = 29 then (select document from child_trafficking_case_document)
-                    when an.node_type_id = 30 then (select document from coerced_adoption_case_document)
-                    when an.node_type_id = 31 then (select document from deportation_case_document)
-                    when an.node_type_id = 32 then (select document from fathers_rights_violation_case_document)
-                    when an.node_type_id = 33 then (select document from wrongful_medication_case_document)
-                    when an.node_type_id = 34 then (select document from wrongful_removal_case_document)
-                    when an.node_type_id = 35 then (select document from blog_post_document)
-                    when an.node_type_id = 37 then (select document from discussion_document)
-                    when an.node_type_id = 39 then (select document from basic_nameable_document)
-                    when an.node_type_id = 40 then (select document from basic_nameable_document)
-                    when an.node_type_id = 41 then (select document from basic_nameable_document)
-                    when an.node_type_id = 42 then (select document from page_document)
-                    when an.node_type_id = 44 then (select document from disrupted_placement_case_document)
-                    when an.node_type_id = 50 then (select document from basic_nameable_document)
-                    when an.node_type_id = 51 then (select document from basic_nameable_document)
-                    when an.node_type_id = 52 then (select document from basic_nameable_document)
-                    when an.node_type_id = 53 then (select document from single_question_poll_document)
-                    when an.node_type_id = 54 then (select document from multi_question_poll_document)
-                    when an.node_type_id = 58 then (select document from basic_nameable_document)
+                    when n.node_type_id = 1 then (select document from basic_nameable_document)
+                    when n.node_type_id = 2 then (select document from basic_nameable_document)
+                    when n.node_type_id = 3 then (select document from basic_nameable_document)
+                    when n.node_type_id = 4 then (select document from basic_nameable_document)
+                    when n.node_type_id = 5 then (select document from basic_nameable_document)
+                    when n.node_type_id = 6 then (select document from basic_nameable_document)
+                    when n.node_type_id = 7 then (select document from basic_nameable_document)
+                    when n.node_type_id = 8 then (select document from basic_nameable_document)
+                    when n.node_type_id = 9 then (select document from basic_nameable_document)
+                    when n.node_type_id = 10 then (select document from document_document)
+                    when n.node_type_id = 11 then (select document from global_region_document)
+                    when n.node_type_id = 12 then (select document from global_region_document)
+                    when n.node_type_id = 13 then (select document from basic_country_document)
+                    when n.node_type_id = 14 then (select document from bound_country_document)
+                    when n.node_type_id = 15 then (select document from country_and_subdivision_document)
+                    when n.node_type_id = 16 then (select document from country_and_subdivision_document)
+                    when n.node_type_id = 17 then (select document from formal_subdivision_document)
+                    when n.node_type_id = 18 then (select document from informal_subdivision_document)
+                    when n.node_type_id = 19 then (select document from formal_subdivision_document)
+                    when n.node_type_id = 20 then (select document from binding_country_document)
+                    when n.node_type_id = 21 then (select document from country_and_subdivision_document)
+                    when n.node_type_id = 22 then (select document from formal_subdivision_document)
+                    when n.node_type_id = 23 then (select document from organization_document)
+                    when n.node_type_id = 24 then (select document from person_document)
+                    when n.node_type_id = 26 then (select document from abuse_case_document)
+                    when n.node_type_id = 27 then (select document from basic_nameable_document)
+                    when n.node_type_id = 28 then (select document from basic_nameable_document)
+                    when n.node_type_id = 29 then (select document from child_trafficking_case_document)
+                    when n.node_type_id = 30 then (select document from coerced_adoption_case_document)
+                    when n.node_type_id = 31 then (select document from deportation_case_document)
+                    when n.node_type_id = 32 then (select document from fathers_rights_violation_case_document)
+                    when n.node_type_id = 33 then (select document from wrongful_medication_case_document)
+                    when n.node_type_id = 34 then (select document from wrongful_removal_case_document)
+                    when n.node_type_id = 35 then (select document from blog_post_document)
+                    when n.node_type_id = 37 then (select document from discussion_document)
+                    when n.node_type_id = 39 then (select document from basic_nameable_document)
+                    when n.node_type_id = 40 then (select document from basic_nameable_document)
+                    when n.node_type_id = 41 then (select document from basic_nameable_document)
+                    when n.node_type_id = 42 then (select document from page_document)
+                    when n.node_type_id = 44 then (select document from disrupted_placement_case_document)
+                    when n.node_type_id = 50 then (select document from basic_nameable_document)
+                    when n.node_type_id = 51 then (select document from basic_nameable_document)
+                    when n.node_type_id = 52 then (select document from basic_nameable_document)
+                    when n.node_type_id = 53 then (select document from single_question_poll_document)
+                    when n.node_type_id = 54 then (select document from multi_question_poll_document)
+                    when n.node_type_id = 58 then (select document from basic_nameable_document)
                 end document
-            FROM authenticated_node an 
-            WHERE an.url_id = @url_id and an.tenant_id = @tenant_id
+            FROM node n 
+            join tenant_node tn on tn.node_id = n.id and tn.tenant_id = @tenant_id
+            WHERE tn.url_id = @url_id and tn.tenant_id = @tenant_id
+            and tn.publication_status_id in 
+            (
+                select 
+                id 
+                from accessible_publication_status 
+                where tenant_id = tn.tenant_id 
+                and (
+                    subgroup_id = tn.subgroup_id 
+                    or subgroup_id is null and tn.subgroup_id is null
+                )
+            )
         ) 
         """;
 

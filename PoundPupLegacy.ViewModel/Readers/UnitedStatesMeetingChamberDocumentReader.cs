@@ -19,7 +19,9 @@ internal sealed class UnitedStatesMeetingChamberDocumentReaderFactory : SingleIt
 
     public override string Sql => SQL;
 
-    const string SQL = """
+    const string SQL = $"""
+        with
+        {SharedSql.ACCESSIBLE_PUBLICATIONS_STATUS}
         select
         	jsonb_build_object(
         		'MeetingName',	

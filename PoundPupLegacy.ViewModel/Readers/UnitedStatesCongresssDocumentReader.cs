@@ -13,7 +13,9 @@ internal sealed class UnitedStatesCongresssDocumentReaderFactory : SingleItemDat
     private static readonly FieldValueReader<UnitedStatesCongress> DocumentReader = new() { Name = "document" };
     public override string Sql => SQL;
 
-    private const string SQL = """
+    private const string SQL = $"""
+        with
+        {SharedSql.ACCESSIBLE_PUBLICATIONS_STATUS}
         select
         	jsonb_build_object(
         		'Senate',

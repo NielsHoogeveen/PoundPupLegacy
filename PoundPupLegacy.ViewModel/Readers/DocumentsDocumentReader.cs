@@ -24,6 +24,8 @@ internal sealed class DocumentsDocumentReaderFactory : SingleItemDatabaseReaderF
     public override string Sql => SQL;
 
     const string SQL = $"""
+        with
+        {SharedSql.ACCESSIBLE_PUBLICATIONS_STATUS}
         select
             jsonb_build_object(
                 'TermNames',
@@ -79,8 +81,8 @@ internal sealed class DocumentsDocumentReaderFactory : SingleItemDatabaseReaderF
         				    path,
                             changed_date_time,
         				    case 
-        					    when status = 1 then true
-        					    else false
+        					    when publication_status_id = 0 then false
+        					    else true
         				    end has_been_published,
         				    sum(weight) weight,
                             jsonb_agg(
@@ -100,45 +102,13 @@ internal sealed class DocumentsDocumentReaderFactory : SingleItemDatabaseReaderF
         				    nt.node_id,
         				    n.title,
                             n.changed_date_time,
+                            tn.publication_status_id,
                             lower(d.published) publication_date,
         				    stn.teaser,
         				    case
         					    when tn.url_path is null then '/node/' || tn.url_id
         					    else '/' || tn.url_path
         				    end path,
-        			        case
-        					    when tn.publication_status_id = 0 then (
-        					    select
-        						    case 
-        							    when count(*) > 0 then 0
-        							    else -1
-        						    end status
-        					    from user_group_user_role_user ugu
-        					    join user_group ug on ug.id = ugu.user_group_id
-        					    WHERE ugu.user_group_id = 
-        					    case
-        						    when tn.subgroup_id is null then tn.tenant_id 
-        						    else tn.subgroup_id 
-        					    end 
-        					    AND ugu.user_role_id = ug.administrator_role_id
-        					    AND ugu.user_id = @user_id
-        				    )
-        				    when tn.publication_status_id = 1 then 1
-        				    when tn.publication_status_id = 2 then (
-        					    select
-        						    case 
-        							    when count(*) > 0 then 1
-        							    else -1
-        						    end status
-        					    from user_group_user_role_user ugu
-        					    WHERE ugu.user_group_id = 
-        						    case
-        							    when tn.subgroup_id is null then tn.tenant_id 
-        							    else tn.subgroup_id 
-        						    end
-        						    AND ugu.user_id = @user_id
-        				    )
-        				    end status,
                             t.name term_name,
                             case 
                                 when tn2.url_path is null then '/node/' || tn2.url_id
@@ -159,7 +129,29 @@ internal sealed class DocumentsDocumentReaderFactory : SingleItemDatabaseReaderF
                             join node n2 on n2.id = t.nameable_id
                             left join nameable_type nt2 on nt2.id = n2.node_type_id and nt2.tag_label_name is not null
                             join tenant_node tn2 on tn2.node_id = t.nameable_id and tn2.tenant_id = @tenant_id
-        				    where (@terms is null or n.id in (
+        				    where tn.publication_status_id in 
+                            (
+                                select 
+                                id 
+                                from accessible_publication_status 
+                                where tenant_id = tn.tenant_id 
+                                and (
+                                    subgroup_id = tn.subgroup_id 
+                                    or subgroup_id is null and tn.subgroup_id is null
+                                )
+                            )
+                            and tn2.publication_status_id in 
+                            (
+                                select 
+                                id 
+                                from accessible_publication_status 
+                                where tenant_id = tn2.tenant_id 
+                                and (
+                                    subgroup_id = tn2.subgroup_id 
+                                    or subgroup_id is null and tn2.subgroup_id is null
+                                )
+                            )
+                            and (@terms is null or n.id in (
                                 select
                                 node_id
                                 from (
@@ -176,7 +168,6 @@ internal sealed class DocumentsDocumentReaderFactory : SingleItemDatabaseReaderF
                             and n.node_type_id = 10
                             and stn.teaser <> ''
         			    ) x
-        			    WHERE status > 0
         			    GROUP BY 
         				    node_id,
         				    title,
@@ -211,72 +202,6 @@ internal sealed class DocumentsDocumentReaderFactory : SingleItemDatabaseReaderF
         			    select
         				    t.id,
         				    n.title,
-        				    case
-        					    when tn.publication_status_id = 0 then (
-        					    select
-        						    case 
-        							    when count(*) > 0 then 0
-        							    else -1
-        						    end status
-        					    from user_group_user_role_user ugu
-        					    join user_group ug on ug.id = ugu.user_group_id
-        					    WHERE ugu.user_group_id = 
-        					    case
-        						    when tn.subgroup_id is null then tn.tenant_id 
-        						    else tn.subgroup_id 
-        					    end 
-        					    AND ugu.user_role_id = ug.administrator_role_id
-        					    AND ugu.user_id = @user_id
-        				    )
-        				    when tn.publication_status_id = 1 then 1
-        				    when tn.publication_status_id = 2 then (
-        					    select
-        						    case 
-        							    when count(*) > 0 then 1
-        							    else -1
-        						    end status
-        					    from user_group_user_role_user ugu
-        					    WHERE ugu.user_group_id = 
-        						    case
-        							    when tn.subgroup_id is null then tn.tenant_id 
-        							    else tn.subgroup_id 
-        						    end
-        						    AND ugu.user_id = @user_id
-        				    )
-        				    end status_term,
-        				    case
-        					    when tn2.publication_status_id = 0 then (
-        					    select
-        						    case 
-        							    when count(*) > 0 then 0
-        							    else -1
-        						    end status
-        					    from user_group_user_role_user ugu
-        					    join user_group ug on ug.id = ugu.user_group_id
-        					    WHERE ugu.user_group_id = 
-        					    case
-        						    when tn2.subgroup_id is null then tn2.tenant_id 
-        						    else tn2.subgroup_id 
-        					    end 
-        					    AND ugu.user_role_id = ug.administrator_role_id
-        					    AND ugu.user_id = @user_id
-        				    )
-        				    when tn2.publication_status_id = 1 then 1
-        				    when tn2.publication_status_id = 2 then (
-        					    select
-        						    case 
-        							    when count(*) > 0 then 1
-        							    else -1
-        						    end status
-        					    from user_group_user_role_user ugu
-        					    WHERE ugu.user_group_id = 
-        						    case
-        							    when tn2.subgroup_id is null then tn2.tenant_id 
-        							    else tn2.subgroup_id 
-        						    end
-        						    AND ugu.user_id = @user_id
-        				    )
-        				    end status_node,		
         				    case 
         					    when n.node_type_id = 41 then 5
         					    when n.node_type_id = 23 then 2
@@ -290,7 +215,29 @@ internal sealed class DocumentsDocumentReaderFactory : SingleItemDatabaseReaderF
         			    join node n2 on n2.id = nt.node_id
                         join simple_text_node stn on stn.id = n2.id
         			    join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = @tenant_id
-        			    where v.name = 'Topics'
+        			    where tn.publication_status_id in 
+                        (
+                            select 
+                            id 
+                            from accessible_publication_status 
+                            where tenant_id = tn.tenant_id 
+                            and (
+                                subgroup_id = tn.subgroup_id 
+                                or subgroup_id is null and tn.subgroup_id is null
+                            )
+                        )
+                        and tn2.publication_status_id in 
+                        (
+                            select 
+                            id 
+                            from accessible_publication_status 
+                            where tenant_id = tn2.tenant_id 
+                            and (
+                                subgroup_id = tn2.subgroup_id 
+                                or subgroup_id is null and tn2.subgroup_id is null
+                            )
+                        )
+                        and v.name = 'Topics'
         			    and (@terms is null or n2.id in (
                             select
                             node_id
@@ -308,7 +255,6 @@ internal sealed class DocumentsDocumentReaderFactory : SingleItemDatabaseReaderF
                         and n2.node_type_id = 10
                         and stn.teaser <> ''
         		    ) x
-        		    where status_node > 0 and status_term > 0
         	    )x
         	    group by 
         	    x.id,

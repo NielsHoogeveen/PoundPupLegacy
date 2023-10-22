@@ -1,68 +1,62 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(TenantNodeDetails.ForUpdate))]
-public partial class ExistingTenantNodeDetailsJsonContext : JsonSerializerContext { }
+[JsonSerializable(typeof(TenantNode.ToUpdate))]
+public partial class ExistingTenantNodeJsonContext : JsonSerializerContext { }
 
-[JsonSerializable(typeof(TenantNodeDetails.ForUpdate))]
-public partial class NewTenantNodeDetailsJsonContext : JsonSerializerContext { }
-
-public abstract record TenantNodeDetails
+public abstract record TenantNode
 {
-    public abstract IEnumerable<TenantNode> TenantNodes { get; }
+    public required int TenantId { get; set; }
+    public required string? UrlPath { get; set; }
+    public int? SubgroupId { get; set; }
+    public required int PublicationStatusId { get; set; }
+    public required bool HasBeenStored { get; set; }
+    public bool HasBeenDeleted { get; set; } = false;
+    public bool CanBeUnchecked { get; set; } = true;
 
-    public sealed record ForUpdate: TenantNodeDetails
+    public abstract void Match(
+        Action<ToUpdate> existingTenantNode,
+        Action<ToCreateForExistingNode> newTenantNodeForExistingNode,
+        Action<ToCreateForNewNode> newTenantNodeForNewNode
+    );
+
+    public sealed record ToUpdate: TenantNode
     {
-        private List<TenantNode.ToCreateForExistingNode> tenantNodesToAdd = new();
-
-        public List<TenantNode.ToCreateForExistingNode> TenantNodesToAdd {
-            get => tenantNodesToAdd;
-            init {
-                if (value is not null) {
-                    tenantNodesToAdd = value;
-                }
-            }
-        }
-        private List<TenantNode.ToUpdate> tenantNodesToUpdate = new();
-
-        public required List<TenantNode.ToUpdate> TenantNodesToUpdate {
-            get => tenantNodesToUpdate;
-            init {
-                if (value is not null) {
-                    tenantNodesToUpdate = value;
-                }
-            }
-        }
-
-        public override IEnumerable<TenantNode> TenantNodes => GetTenantNodes();
-
-        private IEnumerable<TenantNode> GetTenantNodes()
+        public int Id { get; set; }
+        public int UrlId { get; set; }
+        public int NodeId { get; set; }
+        public override void Match(
+            Action<ToUpdate> existingTenantNode,
+            Action<ToCreateForExistingNode> newTenantNodeForExistingNode,
+            Action<ToCreateForNewNode> newTenantNodeForNewNode
+        )
         {
-            foreach (var elem in tenantNodesToUpdate) {
-                yield return elem;
-            }
-            foreach (var elem in tenantNodesToAdd) {
-                yield return elem;
-            }
+            existingTenantNode(this);
         }
     }
-    public sealed record ForCreate: TenantNodeDetails
+    public sealed record ToCreateForNewNode: TenantNode
     {
-        public static ForCreate EmptyInstance => new ForCreate {
-            TenantNodesToAdd = new List<TenantNode.ToCreateForNewNode>(),
-        };
-
-        private List<TenantNode.ToCreateForNewNode> tenantNodesToAdd = new();
-
-        public List<TenantNode.ToCreateForNewNode> TenantNodesToAdd {
-            get => tenantNodesToAdd;
-            init {
-                if (value is not null) {
-                    tenantNodesToAdd = value;
-                }
-            }
+        public override void Match(
+            Action<ToUpdate> existingTenantNode,
+            Action<ToCreateForExistingNode> newTenantNodeForExistingNode,
+            Action<ToCreateForNewNode> newTenantNodeForNewNode
+        )
+        {
+            newTenantNodeForNewNode(this);
         }
 
-        public override IEnumerable<TenantNode> TenantNodes => TenantNodesToAdd;
+    }
+    public sealed record ToCreateForExistingNode: TenantNode
+    {
+        public int UrlId { get; set; }
+        public int NodeId { get; set; }
+        public override void Match(
+            Action<ToUpdate> existingTenantNode,
+            Action<ToCreateForExistingNode> newTenantNodeForExistingNode,
+            Action<ToCreateForNewNode> newTenantNodeForNewNode
+        )
+        {
+            newTenantNodeForExistingNode(this);
+        }
 
     }
 }

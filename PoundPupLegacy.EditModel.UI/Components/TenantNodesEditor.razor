@@ -37,6 +37,9 @@
                             <select @onchange="(e) => OnSelectPublicationStatus(tenant.Id, e)">
                             @foreach(var option in new List<(int, string)> {(0, "unpublished"), (1, "published"), (2, "private") }) 
                             {
+                                if(option.Item1 != tenant.PublicationStatusIdDefault && tenant.PublicationStatusDefaultIsOnlyOption) {
+                                    continue;
+                                }
                                 @if(tenant.TenantNode.PublicationStatusId == option.Item1) 
                                 {
                                     <option selected value="@option.Item1">@option.Item2</option>
@@ -118,11 +121,9 @@
                     break;
                 case TenantNode.ToCreateForExistingNode newTenantNodeForExistingNode:
                     tenant.TenantNode = null;
-                    Model.Remove(tenant);
                     break;
                 case TenantNode.ToCreateForNewNode newTenantNodeForNewNode:
                     tenant.TenantNode = null;
-                    Model.Remove(tenant);
                     break;
 
             }
