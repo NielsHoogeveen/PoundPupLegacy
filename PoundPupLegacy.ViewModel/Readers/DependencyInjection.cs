@@ -10,8 +10,6 @@ public static class DependencyInjection
     public static void AddViewModelReaders(this IServiceCollection services)
     {
         services.AddTransient<ISingleItemDatabaseReaderFactory<AbuseCasesDocumentReaderRequest, AbuseCases>, AbuseCasesDocumentReaderFactory>();
-        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeTypeReaderRequest, BlogPost>, BlogPostReaderFactory>();
-        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeTypeReaderRequest, NodeTypeResponse>, NodeTypeReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<BlogDocumentReaderRequest, Blog>, BlogDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<BlogsDocumentReaderRequest, List<BlogListEntry>>, BlogsDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<CasesDocumentReaderRequest, Cases>, CasesDocumentReaderFactory>();
