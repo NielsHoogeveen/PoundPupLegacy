@@ -25,8 +25,6 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             {FILES_DOCUMENT},
             {SEE_ALSO_DOCUMENT},
             {LOCATIONS_DOCUMENT},
-            {POLL_OPTIONS_DOCUMENT},
-            {POLL_QUESTIONS_DOCUMENT},
             {ORGANIZATION_CASES_DOCUMENT},
             {PERSON_CASES_DOCUMENT},
             {CASE_CASE_PARTIES_DOCUMENT},
@@ -55,6 +53,8 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             {PERSON_BREADCRUM_DOCUMENT},
             {DOCUMENT_BREADCRUM_DOCUMENT},
             {POLL_BREADCRUM_DOCUMENT},
+            {POLL_OPTIONS_DOCUMENT},
+            {POLL_QUESTIONS_DOCUMENT},
             {ABUSE_CASE_BREADCRUM_DOCUMENT},
             {CHILD_TRAFFICKING_CASE_BREADCRUM_DOCUMENT},
             {COERCED_ADOPTION_CASE_BREADCRUM_DOCUMENT},
@@ -185,23 +185,39 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             select
         	    jsonb_agg(
         		    jsonb_build_object(
-        			    'Id', id,
-        			    'Text',  question_text,
-        			    'Authoring', jsonb_build_object(
+                        'UrlId', 
+                        url_id,
+                        'NodeId', 
+                        node_id,
+                        'NodeTypeId', 
+                        node_type_id,
+                        'Title', 
+                        title, 
+        			    'Text',  
+                        question_text,
+        			    'Authoring', 
+                        jsonb_build_object(
         				    'Id', publisher_id, 
         				    'Name', publisher_name,
         				    'CreatedDateTime', created_date_time,
                             'ChangedDateTime', changed_date_time
                         ),
-                        'NodeTypeId', node_type_id,
-                        'Title', title,
-                        'HasBeenPublished', true,
-        			    'PollOptions', poll_options
+                        'HasBeenPublished', 
+                        true,
+        			    'PollOptions', 
+                        poll_options,
+                        'BreadCrumElements', 
+                        (SELECT document FROM poll_breadcrum_document),
+                        'Files', 
+                        (SELECT document FROM files_document),
+                        'Tags', 
+                        (SELECT document FROM tags_document)
         		    )
         	    ) document
             from(
         	    select
-        		    id,
+        		    node_id,
+                    url_id,
         		    question_text,
         		    node_type_id,
                     title,
@@ -219,7 +235,8 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         		    ) poll_options
         	    from(
         		    select 
-        		    stn.id,
+        		    tn.node_id,
+                    tn.url_id,
         		    stn.text question_text,
         		    n.node_type_id,
                     n.title,
@@ -241,7 +258,8 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         		    where tn.tenant_id = @tenant_id and tn.url_id = @url_id
         	    ) x
         	    group by 
-        		    id,
+        		    node_id,
+                    url_id,
                     title,
         		    question_text,
         		    node_type_id,
@@ -1127,12 +1145,14 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         else '/' || tn.url_path
                     end path,
                     n2.title
-                FROM authenticated_node an
-                JOIN node_term nt1 on nt1.node_id = an.node_id
+                FROM node n
+                JOIN tenant_node tn2 on tn2.node_id = n.id 
+                JOIN node_term nt1 on nt1.node_id = n.id
                 JOIN node_term nt2 on nt2.term_id = nt1.term_id and nt2.node_id <> nt1.node_id
                 JOIN tenant_node tn on tn.node_id = nt2.node_id and tn.tenant_id = @tenant_id and tn.publication_status_id = 1
                 JOIN node n2 on n2.id = tn.node_id
-                GROUP BY an.node_id, tn.node_id, tn.url_path, tn.url_id, n2.title
+                where tn2.tenant_id = @tenant_id and tn2.url_id = @url_id
+                GROUP BY tn.node_id, tn.url_path, tn.url_id, n2.title
                 HAVING COUNT(tn.node_id) > 2 
                 ORDER BY count(tn.node_id) desc, n2.title
                 LIMIT 10
@@ -2091,7 +2111,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         )
         """;
     const string POLL_BREADCRUM_DOCUMENT = """
-        poll_bread_crum_document AS (
+        poll_breadcrum_document AS (
             SELECT jsonb_agg(
                 jsonb_build_object(
                     'Path', url,
@@ -2790,16 +2810,19 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             ) document
             FROM(
                 SELECT
-                    an.url_id, 
-                    an.node_id,
-                    an.node_type_id,
-                    an.title,
-                    an.created_date_time,
-                    an.changed_date_time,
+                    tn.url_id, 
+                    tn.node_id,
+                    n.node_type_id,
+                    n.title,
+                    n.created_date_time,
+                    n.changed_date_time,
                     stn.text,
-                    an.publisher_id,
+                    n.publisher_id,
                     p.name publisher_name,
-                    an.has_been_published,
+                    case 
+                        when tn.publication_status_id = 0 then false
+                        else true
+                    end has_been_published,
                     d.published,
                     d.source_url,
                     case 
@@ -2810,9 +2833,10 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                             'Path', dt.path
                         )
                     end document_type
-                FROM authenticated_node an
-                join document d on d.id = an.node_id
-                join simple_text_node stn on stn.id = an.node_id
+                FROM node n
+                join tenant_node tn on tn.node_id = n.id 
+                join document d on d.id = n.id
+                join simple_text_node stn on stn.id = n.id
                 left join (
                     select 
                     dt.id,
@@ -2824,7 +2848,8 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     join node n on n.id = dt.id
                     join tenant_node tn on tn.node_id = dt.id and tn.tenant_id = @tenant_id
                 ) dt on dt.id = d.document_type_id
-                JOIN publisher p on p.id = an.publisher_id
+                JOIN publisher p on p.id = n.publisher_id
+                where tn.tenant_id = @tenant_id and tn.url_id = @url_id
             ) n
         )
         """;
@@ -2951,24 +2976,29 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             ) document
             FROM (
                  SELECT
-                    an.url_id,  
-                    an.node_id,
-                    an.node_type_id,
-                    an.title, 
-                    an.created_date_time, 
-                    an.changed_date_time, 
+                    tn.url_id,  
+                    tn.node_id,
+                    n.node_type_id,
+                    n.title, 
+                    n.created_date_time, 
+                    n.changed_date_time, 
                     nm.description, 
-                    an.publisher_id, 
+                    n.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published,
+                    case
+                        when tn.publication_status_id = 0 then false
+                        else true
+                    end has_been_published,
                     o.website_url,
                     o.email_address,
                     o.established,
                     o.terminated
-                FROM authenticated_node an
-                join organization o on o.id = an.node_id 
-                join nameable nm on nm.id = an.node_id
-                JOIN publisher p on p.id = an.publisher_id
+                FROM node n
+                join tenant_node tn on tn.node_id = n.id
+                join organization o on o.id = n.id 
+                join nameable nm on nm.id = n.id
+                JOIN publisher p on p.id = n.publisher_id
+                where tn.tenant_id = @tenant_id and tn.url_id = @url_id
             ) n
         ) 
         """;
@@ -3021,16 +3051,19 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             ) document
             FROM (
                  SELECT
-                    an.url_id,  
-                    an.node_id,
-                    an.node_type_id,
-                    an.title, 
-                    an.created_date_time, 
-                    an.changed_date_time, 
+                    tn.url_id,  
+                    tn.node_id,
+                    n.node_type_id,
+                    n.title, 
+                    n.created_date_time, 
+                    n.changed_date_time, 
                     nm.description, 
-                    an.publisher_id, 
+                    n.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published,
+                    case
+                        when tn.publication_status_id = 0 then false
+                        else true
+                    end has_been_published,
                     o.date_of_birth,
                     o.date_of_death,
                     o.first_name,
@@ -3040,11 +3073,13 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     o.suffix,
                     o.nick_name,
                     '/attachment/' || f.id portrait_file_path
-                FROM authenticated_node an
-                join person o on o.id = an.node_id 
+                FROM node n
+                join tenant_node tn on tn.node_id = n.id
+                join person o on o.id = n.id 
                 left join file f on f.id = o.file_id_portrait
-                join nameable nm on nm.id = an.node_id
-                JOIN publisher p on p.id = an.publisher_id
+                join nameable nm on nm.id = n.id
+                JOIN publisher p on p.id = n.publisher_id
+                where tn.tenant_id = @tenant_id and tn.url_id = @url_id
             ) n
         ) 
         """;
@@ -3122,7 +3157,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 'Question', question,
                 'DateTimeClosure', date_time_closure,
                 'PollStatusId', poll_status_id,
-                'BreadCrumElements', (SELECT document FROM poll_bread_crum_document),
+                'BreadCrumElements', (SELECT document FROM poll_breadcrum_document),
                 'Tags', (SELECT document FROM tags_document),
                 'SeeAlsoBoxElements', (SELECT document FROM see_also_document),
                 'CommentListItems', (SELECT document FROM  comments_document),
@@ -3131,24 +3166,29 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             ) document
             FROM (
                 SELECT
-                    an.url_id,  
-                    an.node_id,
-                    an.node_type_id,
-                    an.title, 
-                    an.created_date_time, 
-                    an.changed_date_time, 
+                    tn.url_id,  
+                    tn.node_id,
+                    n.node_type_id,
+                    n.title, 
+                    n.created_date_time, 
+                    n.changed_date_time, 
                     stn.text, 
-                    an.publisher_id, 
+                    n.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published,
+                    case 
+                        when tn.publication_status_id = 0 then false
+                        else true
+                    end has_been_published,
                     pq.question,
                     pl.date_time_closure,
                     pl.poll_status_id
-                FROM authenticated_node an
-                join simple_text_node stn on stn.id = an.node_id 
-                join poll pl on pl.id = an.node_id 
+                FROM node n
+                join tenant_node tn on tn.node_id = n.id
+                join simple_text_node stn on stn.id = n.id 
+                join poll pl on pl.id = n.id 
                 join poll_question pq on pq.id = pl.id
-                JOIN publisher p on p.id = an.publisher_id
+                JOIN publisher p on p.id = n.publisher_id
+                where tn.url_id = @url_id and tn.tenant_id = @tenant_id
             ) n
         ) 
         """;
@@ -3171,7 +3211,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 'HasBeenPublished', n.has_been_published,
                 'DateTimeClosure', date_time_closure,
                 'PollStatusId', poll_status_id,
-                'BreadCrumElements', (SELECT document FROM poll_bread_crum_document),
+                'BreadCrumElements', (SELECT document FROM poll_breadcrum_document),
                 'Tags', (SELECT document FROM tags_document),
                 'SeeAlsoBoxElements', (SELECT document FROM see_also_document),
                 'CommentListItems', (SELECT document FROM  comments_document),
@@ -3180,22 +3220,27 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             ) document
             FROM (
                 SELECT
-                    an.url_id,  
-                    an.node_id,
-                    an.node_type_id,
-                    an.title, 
-                    an.created_date_time, 
-                    an.changed_date_time, 
+                    tn.url_id,  
+                    tn.node_id,
+                    n.node_type_id,
+                    n.title, 
+                    n.created_date_time, 
+                    n.changed_date_time, 
                     stn.text, 
-                    an.publisher_id, 
+                    n.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published,
+                    case 
+                        when tn.publication_status_id = 0 then false
+                        else true
+                    end has_been_published,
                     pl.date_time_closure,
                     pl.poll_status_id
-                FROM authenticated_node an
-                join simple_text_node stn on stn.id = an.node_id 
-                join poll pl on pl.id = an.node_id 
-                JOIN publisher p on p.id = an.publisher_id
+                FROM node n
+                join tenant_node tn on tn.node_id = n.id
+                join simple_text_node stn on stn.id = n.id 
+                join poll pl on pl.id = n.id 
+                JOIN publisher p on p.id = n.publisher_id
+                where tn.url_id = @url_id and tn.tenant_id = @tenant_id
             ) n
         ) 
         """;
@@ -3427,16 +3472,19 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 ) document
             FROM (
                 SELECT
-                    an.url_id,  
-                    an.node_id,
-                    an.node_type_id,
-                    an.title, 
-                    an.created_date_time, 
-                    an.changed_date_time, 
-                    n.description, 
-                    an.publisher_id, 
+                    tn.url_id,  
+                    tn.node_id,
+                    n.node_type_id,
+                    n.title, 
+                    n.created_date_time, 
+                    n.changed_date_time, 
+                    nm.description, 
+                    n.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published,
+                    case 
+                        when tn.publication_status_id = 0 then false
+                        else true
+                    end has_been_published,
                     c.fuzzy_date,
                     case 
                         when tn2.node_id is null then null
@@ -3455,11 +3503,12 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     ac.home_schooling_involved,
                     ac.fundamental_faith_involved,
                     ac.disabilities_involved
-                FROM authenticated_node an
-                join "case" c on c.id = an.node_id 
-                join abuse_case ac on ac.id = an.node_id 
-                join nameable n on n.id = an.node_id 
-                JOIN publisher p on p.id = an.publisher_id
+                FROM node n
+                join tenant_node tn on tn.node_id = n.id
+                join "case" c on c.id = n.id 
+                join abuse_case ac on ac.id = n.id 
+                join nameable nm on nm.id = n.id 
+                JOIN publisher p on p.id = n.publisher_id
                 LEFT JOIN (
                     select 
                     n2.id node_id,
@@ -3488,6 +3537,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     join tenant_node tn3 on tn3.node_id = t.vocabulary_id and tn3.tenant_id = 1
                     where tn3.url_id = 117
                 ) tn4 on tn4.node_id = ac.family_size_id            
+                WHERE tn.tenant_id = @tenant_id and tn.url_id = @url_id
             ) n
         ) 
         """;

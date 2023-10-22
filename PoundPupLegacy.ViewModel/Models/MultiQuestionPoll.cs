@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-[JsonSerializable(typeof(MemberOfCongress))]
+[JsonSerializable(typeof(MultiQuestionPoll))]
 public partial class MultiQuestionPollJsonContext : JsonSerializerContext { }
 
 public sealed record class MultiQuestionPoll : PollBase
