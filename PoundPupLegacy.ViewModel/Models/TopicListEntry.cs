@@ -3,8 +3,8 @@
 [JsonSerializable(typeof(TopicListEntry))]
 public partial class TopicListEntryJsonContext : JsonSerializerContext { }
 
-public sealed record TopicListEntry : ListEntryBase
+public sealed record TopicListEntry : EntityListEntryBase
 {
-    public required bool HasBeenPublished { get; init; }
+
 
 }

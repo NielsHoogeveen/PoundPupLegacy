@@ -48,7 +48,12 @@ internal sealed class OrganizationsDocumentReaderFactory : SingleItemDatabaseRea
                             select
                             distinct
                             n.title "name",
-                            tn.url_id
+                            tn.url_id,
+                            tn.publication_status_id,
+                            case
+                                when tn.publication_status_id = 0 then false
+                                else true
+                            end has_been_published
                             from organization o
                             join location_locatable ll on ll.locatable_id = o.id
                             join location l on l.id = ll.location_id
@@ -94,7 +99,9 @@ internal sealed class OrganizationsDocumentReaderFactory : SingleItemDatabaseRea
                                     case 
             		                    when publication_status_id = 0 then false
             		                    else true
-            	                    end
+            	                    end,
+                                    'PublicationStatusId',
+                                    publication_status_id
             	                )
                             )
             	        )

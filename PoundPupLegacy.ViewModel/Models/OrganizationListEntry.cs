@@ -3,6 +3,6 @@
 [JsonSerializable(typeof(OrganizationListEntry))]
 public partial class OrganizationListEntryJsonContext : JsonSerializerContext { }
 
-public sealed record OrganizationListEntry : ListEntryBase
+public sealed record OrganizationListEntry : EntityListEntryBase
 {
 }

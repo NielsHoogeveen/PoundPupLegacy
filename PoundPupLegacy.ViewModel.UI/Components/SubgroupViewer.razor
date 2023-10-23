@@ -19,6 +19,7 @@
         <div class="header">
             Changed
         </div>
+        <div class="header">&nbsp;</div>
         @foreach (var item in ListEntries.OrderByDescending(x => x.Authoring.CreatedDateTime)) {
             <div>
                 <a href="@item.Path">@item.Title</a>
@@ -31,6 +32,18 @@
             </div>
             <div>
                 @item.Authoring.ChangedDateTime.ToString("yyyy MMM dd")
+            </div>
+            <div class="tooltip publication-status-@item.PublicationStatusId">
+                ⬤
+                @if (@item.PublicationStatusId == 0) {
+                    <span class="tooltip-text">unpublished</span>
+                }
+                @if (@item.PublicationStatusId == 1) {
+                    <span class="tooltip-text">published</span>
+                }
+                @if (@item.PublicationStatusId == 2) {
+                    <span class="tooltip-text ">private</span>
+                }
             </div>
         }
     </div>

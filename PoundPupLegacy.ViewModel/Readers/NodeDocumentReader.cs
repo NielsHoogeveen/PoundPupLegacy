@@ -21,7 +21,6 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
     const string SQL = $"""
             WITH 
             {SharedSql.ACCESSIBLE_PUBLICATIONS_STATUS},
-            {AUTHENTICATED_NODE},
             {FILES_DOCUMENT},
             {SEE_ALSO_DOCUMENT},
             {LOCATIONS_DOCUMENT},
@@ -204,6 +203,8 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         ),
                         'HasBeenPublished', 
                         true,
+                        'PublicationStatusId',
+                        1,
         			    'PollOptions', 
                         poll_options,
                         'BreadCrumElements', 
@@ -1447,7 +1448,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     1
                 UNION
                 SELECT 
-                    '/blog+/' || p.id, 
+                    '/blog/' || p.id, 
                     p.name || '''s blog', 
                     2
                 FROM node n
@@ -2352,6 +2353,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 'Title', n.title, 
                 'Description', n.description,
                 'HasBeenPublished', n.has_been_published,
+                'PublicationStatusId', publication_status_id,
                 'Authoring', jsonb_build_object(
                     'Id', n.publisher_id, 
                     'Name', n.publisher_name,
@@ -2363,6 +2365,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     'Title', n.country_name
                 ),
                 'HasBeenPublished', n.has_been_published,
+                'PublicationStatusId', publication_status_id,
                 'BreadCrumElements', (SELECT document FROM country_bread_crum_document),
                 'Tags', (SELECT document FROM tags_document),
                 'CommentListItems', (SELECT document FROM  comments_document),
@@ -2375,29 +2378,33 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             ) document
             FROM (
                  SELECT
-                    an.url_id, 
-                    an.node_id,
-                    an.node_type_id,
-                    an.title, 
-                    an.created_date_time, 
-                    an.changed_date_time, 
+                    tn.url_id, 
+                    tn.node_id,
+                    n.node_type_id,
+                    n.title, 
+                    n.created_date_time, 
+                    n.changed_date_time, 
                     nm.description, 
-                    an.publisher_id, 
+                    n.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published,
+                    case when 
+                        tn.publication_status_id = 0 then false
+                        else true
+                    end has_been_published,                  
+                    tn.publication_status_id,
                     case 
                         when tn.url_path is null then '/node/' || tn.url_id
                         else '/' || tn.url_path
                     end country_path,
                     n.title country_name,
                     n2.title subdivision_type_name
-                FROM authenticated_node an
-                join subdivision sd on sd.id = an.node_id 
-                join node n on n.id = sd.country_id
-                join tenant_node tn on tn.node_id = an.node_id and tn.tenant_id = @tenant_id 
+                FROM node n
+                join tenant_node tn on tn.node_id = n.id 
+                join subdivision sd on sd.id = n.id 
                 join node n2 on n2.id = sd.subdivision_type_id
-                join nameable nm on nm.id = an.node_id
-                JOIN publisher p on p.id = an.publisher_id
+                join nameable nm on nm.id = n.id
+                JOIN publisher p on p.id = n.publisher_id
+                where tn.tenant_id = @tenant_id and tn.url_id = @url_id
             ) n
         ) 
         """;
@@ -2412,6 +2419,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 'Title', n.title, 
                 'Description', n.description,
                 'HasBeenPublished', n.has_been_published,
+                'PublicationStatusId', publication_status_id,
                 'Authoring', jsonb_build_object(
                     'Id', n.publisher_id, 
                     'Name', n.publisher_name,
@@ -2436,16 +2444,20 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             ) document
             FROM (
                  SELECT
-                    an.url_id,  
-                    an.node_id,
-                    an.node_type_id,
-                    an.title, 
-                    an.created_date_time, 
-                    an.changed_date_time, 
+                    tn.url_id,  
+                    tn.node_id,
+                    n.node_type_id,
+                    n.title, 
+                    n.created_date_time, 
+                    n.changed_date_time, 
                     nm.description, 
-                    an.publisher_id, 
+                    n.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published,
+                    case when 
+                        tn.publication_status_id = 0 then false
+                        else true
+                    end has_been_published,
+                    tn.publication_status_id,
                     ics.iso_3166_2_code,
                     case 
                         when tn.url_path is null then '/node/' || tn.url_id
@@ -2453,14 +2465,14 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     end country_path,
                     n.title country_name,
                     n2.title subdivision_type_name
-                FROM authenticated_node an
-                join subdivision sd on sd.id = an.node_id 
+                FROM node n
+                join subdivision sd on sd.id = n.id 
                 join iso_coded_subdivision ics on ics.id = sd.id
-                join node n on n.id = sd.country_id
-                join tenant_node tn on tn.node_id = an.node_id and tn.tenant_id = @tenant_id 
+                join tenant_node tn on tn.node_id = n.id 
                 join node n2 on n2.id = sd.subdivision_type_id
-                join nameable nm on nm.id = an.node_id
-                JOIN publisher p on p.id = an.publisher_id
+                join nameable nm on nm.id = n.id
+                JOIN publisher p on p.id = n.publisher_id
+                where tn.tenant_id = @tenant_id and tn.url_id = @url_id
             ) n
         ) 
         """;
@@ -2474,13 +2486,13 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 'Title', n.title, 
                 'Description', n.description,
                 'HasBeenPublished', n.has_been_published,
+                'PublicationStatusId', publication_status_id,
                 'Authoring', jsonb_build_object(
                     'Id', n.publisher_id, 
                     'Name', n.publisher_name,
                     'CreatedDateTime', n.created_date_time,
                     'ChangedDateTime', n.changed_date_time
                 ),
-                'HasBeenPublished', n.has_been_published,
                 'BreadCrumElements', (SELECT document FROM global_region_bread_crum_document),
                 'Tags', (SELECT document FROM tags_document),
                 'CommentListItems', (SELECT document FROM  comments_document),
@@ -2491,21 +2503,26 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             ) document
             FROM (
                  SELECT
-                    an.url_id,  
-                    an.node_id,
-                    an.node_type_id,
-                    an.title, 
-                    an.created_date_time, 
-                    an.changed_date_time, 
+                    tn.url_id,  
+                    tn.node_id,
+                    n.node_type_id,
+                    n.title, 
+                    n.created_date_time, 
+                    n.changed_date_time, 
                     nm.description, 
-                    an.publisher_id, 
+                    n.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published
-                FROM authenticated_node an
-                join global_region tlc on tlc.id = an.node_id 
-                join tenant_node tn on tn.node_id = an.node_id and tn.tenant_id = @tenant_id 
-                join nameable nm on nm.id = an.node_id
-                JOIN publisher p on p.id = an.publisher_id
+                    case when 
+                        tn.publication_status_id = 0 then false
+                        else true
+                    end has_been_published,
+                    tn.publication_status_id
+                FROM node n
+                join global_region tlc on tlc.id = n.id 
+                join tenant_node tn on tn.node_id = n.id 
+                join nameable nm on nm.id = n.id
+                JOIN publisher p on p.id = n.publisher_id
+                where tn.tenant_id = @tenant_id and tn.url_id = @url_id
             ) n
         ) 
         """;
@@ -2520,6 +2537,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 'Title', n.title, 
                 'Description', n.description,
                 'HasBeenPublished', n.has_been_published,
+                'PublicationStatusId', publication_status_id,
                 'Authoring', jsonb_build_object(
                     'Id', n.publisher_id, 
                     'Name', n.publisher_name,
@@ -2537,7 +2555,6 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     'Label',
                     n.title
                 ),
-                'HasBeenPublished', n.has_been_published,
                 'BreadCrumElements', (SELECT document FROM country_bread_crum_document),
                 'Tags', (SELECT document FROM tags_document),
                 'CommentListItems', (SELECT document FROM  comments_document),
@@ -2551,28 +2568,32 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             ) document
             FROM (
                  SELECT
-                    an.url_id,  
-                    an.node_id,
-                    an.node_type_id,
-                    an.title, 
-                    an.created_date_time, 
-                    an.changed_date_time, 
+                    tn.url_id,  
+                    tn.node_id,
+                    n.node_type_id,
+                    n.title, 
+                    n.created_date_time, 
+                    n.changed_date_time, 
                     nm.description, 
-                    an.publisher_id, 
+                    n.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published,
+                    case when 
+                        tn.publication_status_id = 0 then false
+                        else true
+                    end has_been_published,
+                    tn.publication_status_id,
                     tlc.iso_3166_1_code,
                     case 
                         when tn.url_path is null then '/node/' || tn.url_id
                         else '/' || tn.url_path
                     end global_region_path,
                     n.title global_region_name
-                FROM authenticated_node an
-                join top_level_country tlc on tlc.id = an.node_id 
-                join node n on n.id = tlc.global_region_id
-                join tenant_node tn on tn.node_id = an.node_id and tn.tenant_id = @tenant_id 
-                join nameable nm on nm.id = an.node_id
-                JOIN publisher p on p.id = an.publisher_id
+                FROM node n
+                join top_level_country tlc on tlc.id = n.id 
+                join tenant_node tn on tn.node_id = n.id
+                join nameable nm on nm.id = n.id
+                JOIN publisher p on p.id = n.publisher_id
+                where tn.tenant_id = @tenant_id and tn.url_id = @url_id
             ) n
         ) 
         """;
@@ -2587,6 +2608,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 'Title', n.title, 
                 'Description', n.description,
                 'HasBeenPublished', n.has_been_published,
+                'PublicationStatusId', publication_status_id,
                 'Authoring', jsonb_build_object(
                     'Id', n.publisher_id, 
                     'Name', n.publisher_name,
@@ -2605,7 +2627,6 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     'Label',
                     n.title
                 ),
-                'HasBeenPublished', n.has_been_published,
                 'BreadCrumElements', (SELECT document FROM country_bread_crum_document),
                 'Tags', (SELECT document FROM tags_document),
                 'CommentListItems', (SELECT document FROM  comments_document),
@@ -2619,16 +2640,20 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             ) document
             FROM (
                  SELECT
-                    an.url_id,  
-                    an.node_id,
-                    an.node_type_id,
-                    an.title, 
-                    an.created_date_time, 
-                    an.changed_date_time, 
+                    tn.url_id,  
+                    tn.node_id,
+                    n.node_type_id,
+                    n.title, 
+                    n.created_date_time, 
+                    n.changed_date_time, 
                     nm.description, 
-                    an.publisher_id, 
+                    n.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published,
+                    case when 
+                        tn.publication_status_id = 0 then false
+                        else true
+                    end has_been_published,
+                    tn.publication_status_id,
                     tlc.iso_3166_1_code,
                     sd.iso_3166_2_code,
                     case 
@@ -2636,13 +2661,13 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         else '/' || tn.url_path
                     end global_region_path,
                     n.title global_region_name
-                FROM authenticated_node an
-                join top_level_country tlc on tlc.id = an.node_id 
-                join iso_coded_subdivision sd on sd.id = an.node_id 
-                join node n on n.id = tlc.global_region_id
-                join tenant_node tn on tn.node_id = an.node_id and tn.tenant_id = @tenant_id 
-                join nameable nm on nm.id = an.node_id
-                JOIN publisher p on p.id = an.publisher_id
+                FROM node n
+                join top_level_country tlc on tlc.id = n.id 
+                join iso_coded_subdivision sd on sd.id = n.id 
+                join tenant_node tn on tn.node_id = n.id
+                join nameable nm on nm.id = n.id
+                JOIN publisher p on p.id = n.publisher_id
+                where tn.tenant_id = @tenant_id and tn.url_id = @url_id
             ) n
         ) 
         """;
@@ -2657,6 +2682,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 'Title', n.title, 
                 'Description', n.description,
                 'HasBeenPublished', n.has_been_published,
+                'PublicationStatusId', publication_status_id,
                 'Authoring', jsonb_build_object(
                     'Id', n.publisher_id, 
                     'Name', n.publisher_name,
@@ -2674,7 +2700,6 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     'Label',
                     n.title
                 ),
-                'HasBeenPublished', n.has_been_published,
                 'BreadCrumElements', (SELECT document FROM country_bread_crum_document),
                 'Tags', (SELECT document FROM tags_document),
                 'CommentListItems', (SELECT document FROM  comments_document),
@@ -2689,28 +2714,32 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             ) document
             FROM (
                  SELECT
-                    an.url_id,  
-                    an.node_id,
-                    an.node_type_id,
-                    an.title, 
-                    an.created_date_time, 
-                    an.changed_date_time, 
+                    tn.url_id,  
+                    tn.node_id,
+                    n.node_type_id,
+                    n.title, 
+                    n.created_date_time, 
+                    n.changed_date_time, 
                     nm.description, 
-                    an.publisher_id, 
+                    n.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published,
+                    case when 
+                        tn.publication_status_id = 0 then false
+                        else true
+                    end has_been_published,
+                    tn.publication_status_id,
                     tlc.iso_3166_1_code,
                     case 
                         when tn.url_path is null then '/node/' || tn.url_id
                         else '/' || tn.url_path
                     end global_region_path,
                     n.title global_region_name
-                FROM authenticated_node an
-                join top_level_country tlc on tlc.id = an.node_id 
-                join node n on n.id = tlc.global_region_id
-                join tenant_node tn on tn.node_id = an.node_id and tn.tenant_id = @tenant_id 
-                join nameable nm on nm.id = an.node_id
-                JOIN publisher p on p.id = an.publisher_id
+                FROM node n
+                join top_level_country tlc on tlc.id = n.id 
+                join tenant_node tn on tn.node_id = n.id
+                join nameable nm on nm.id = n.id
+                JOIN publisher p on p.id = n.publisher_id
+                where tn.tenant_id = @tenant_id and tn.url_id = @url_id
             ) n
         ) 
         """;
@@ -2725,6 +2754,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 'Title', n.title, 
                 'Description', n.description,
                 'HasBeenPublished', n.has_been_published,
+                'PublicationStatusId', publication_status_id,
                 'Authoring', jsonb_build_object(
                     'Id', n.publisher_id, 
                     'Name', n.publisher_name,
@@ -2742,7 +2772,6 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     'Label',
                     n.title
                 ),
-                'HasBeenPublished', n.has_been_published,
                 'BreadCrumElements', (SELECT document FROM country_bread_crum_document),
                 'Tags', (SELECT document FROM tags_document),
                 'CommentListItems', (SELECT document FROM  comments_document),
@@ -2756,29 +2785,33 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             ) document
             FROM (
                  SELECT
-                    an.url_id,  
-                    an.node_id,
-                    an.node_type_id,
-                    an.title, 
-                    an.created_date_time, 
-                    an.changed_date_time, 
+                    tn.url_id,  
+                    tn.node_id,
+                    n.node_type_id,
+                    n.title, 
+                    n.created_date_time, 
+                    n.changed_date_time, 
                     nm.description, 
-                    an.publisher_id, 
+                    n.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published,
+                    case when 
+                        tn.publication_status_id = 0 then false
+                        else true
+                    end has_been_published,
+                    tn.publication_status_id,
                     ics.iso_3166_2_code,
                     case 
                         when tn.url_path is null then '/node/' || tn.url_id
                         else '/' || tn.url_path
                     end binding_country_path,
                     n.title binding_country_name
-                FROM authenticated_node an
-                join bound_country bc on bc.id = an.node_id 
+                FROM node n
+                join bound_country bc on bc.id = n.id 
                 join iso_coded_subdivision ics on ics.id = bc.id
-                join node n on n.id = bc.binding_country_id
-                join tenant_node tn on tn.node_id = bc.binding_country_id and tn.tenant_id = @tenant_id 
-                join nameable nm on nm.id = an.node_id
-                JOIN publisher p on p.id = an.publisher_id
+                join tenant_node tn on tn.node_id = n.id
+                join nameable nm on nm.id = n.id
+                JOIN publisher p on p.id = n.publisher_id
+                where tn.tenant_id = @tenant_id and tn.url_id = @url_id
             ) n
         ) 
         """;
@@ -2793,13 +2826,13 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     'Title', n.title,
                     'Text', n.text,
                     'HasBeenPublished', n.has_been_published,
+                    'PublicationStatusId', publication_status_id,
                     'Authoring', jsonb_build_object(
                         'Id', n.publisher_id,
                         'Name', n.publisher_name,
                         'CreatedDateTime', n.created_date_time,
                         'ChangedDateTime', n.changed_date_time
                     ),
-                    'HasBeenPublished', n.has_been_published,
                     'Published', published,
                     'SourceUrl', source_url,
                     'DocumentType', document_type,
@@ -2823,6 +2856,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         when tn.publication_status_id = 0 then false
                         else true
                     end has_been_published,
+                    tn.publication_status_id,
                     d.published,
                     d.source_url,
                     case 
@@ -2949,13 +2983,13 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 'Title', n.title, 
                 'Description', n.description,
                 'HasBeenPublished', n.has_been_published,
+                'PublicationStatusId', publication_status_id,
                 'Authoring', jsonb_build_object(
                     'Id', n.publisher_id, 
                     'Name', n.publisher_name,
                     'CreatedDateTime', n.created_date_time,
                     'ChangedDateTime', n.changed_date_time
                 ),
-                'HasBeenPublished', n.has_been_published,
                 'WebsiteUrl', n.website_url,
                 'EmailAddress', n.email_address,
                 'Establishment', n.established,
@@ -2989,6 +3023,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         when tn.publication_status_id = 0 then false
                         else true
                     end has_been_published,
+                    tn.publication_status_id,
                     o.website_url,
                     o.email_address,
                     o.established,
@@ -3013,13 +3048,13 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 'Title', n.title, 
                 'Description', n.description,
                 'HasBeenPublished', n.has_been_published,
+                'PublicationStatusId', publication_status_id,
                 'Authoring', jsonb_build_object(
                     'Id', n.publisher_id, 
                     'Name', n.publisher_name,
                     'CreatedDateTime', n.created_date_time,
                     'ChangedDateTime', n.changed_date_time
                 ),
-                'HasBeenPublished', n.has_been_published,
                 'DateOfBirth', date_of_birth,
                 'DateOfDeath', date_of_death,
                 'FirstName', first_name,
@@ -3064,6 +3099,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         when tn.publication_status_id = 0 then false
                         else true
                     end has_been_published,
+                    tn.publication_status_id,
                     o.date_of_birth,
                     o.date_of_death,
                     o.first_name,
@@ -3100,18 +3136,25 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 text,
                 'HasBeenPublished', 
                 has_been_published,
-                'Authoring', jsonb_build_object(
+                'PublicationStatusId', 
+                publication_status_id,
+                'Authoring', 
+                jsonb_build_object(
                     'Id', publisher_id, 
                     'Name', publisher_name,
                     'CreatedDateTime', created_date_time,
                     'ChangedDateTime', changed_date_time
                 ),
-                'HasBeenPublished', has_been_published,
-                'BreadCrumElements', (SELECT document FROM blog_post_bread_crum_document),
-                'Tags', (SELECT document FROM tags_document),
-                'SeeAlsoBoxElements', (SELECT document FROM see_also_document),
-                'CommentListItems', (SELECT document FROM  comments_document),
-                'Files', (SELECT document FROM files_document)
+                'BreadCrumElements', 
+                (SELECT document FROM blog_post_bread_crum_document),
+                'Tags', 
+                (SELECT document FROM tags_document),
+                'SeeAlsoBoxElements', 
+                (SELECT document FROM see_also_document),
+                'CommentListItems', 
+                (SELECT document FROM  comments_document),
+                'Files', 
+                (SELECT document FROM files_document)
             ) document
             FROM (
                 SELECT
@@ -3127,7 +3170,8 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     case 
                         when tn.publication_status_id = 0 then false
                         else true
-                    end has_been_published
+                    end has_been_published,
+                    tn.publication_status_id
                 FROM node n
                 join tenant_node tn on tn.node_id = n.id 
                 join simple_text_node stn on stn.id = n.id 
@@ -3147,13 +3191,13 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 'Title', n.title, 
                 'Text', n.text,
                 'HasBeenPublished', n.has_been_published,
+                'PublicationStatusId', publication_status_id,
                 'Authoring', jsonb_build_object(
                     'Id', n.publisher_id, 
                     'Name', n.publisher_name,
                     'CreatedDateTime', n.created_date_time,
                     'ChangedDateTime', n.changed_date_time
                 ),
-                'HasBeenPublished', n.has_been_published,
                 'Question', question,
                 'DateTimeClosure', date_time_closure,
                 'PollStatusId', poll_status_id,
@@ -3179,6 +3223,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         when tn.publication_status_id = 0 then false
                         else true
                     end has_been_published,
+                    tn.publication_status_id,
                     pq.question,
                     pl.date_time_closure,
                     pl.poll_status_id
@@ -3192,6 +3237,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             ) n
         ) 
         """;
+
     const string MULTIPLE_QUESTION_POLL_DOCUMENT = """
         multi_question_poll_document AS (
             SELECT 
@@ -3202,13 +3248,13 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 'Title', n.title, 
                 'Text', n.text,
                 'HasBeenPublished', n.has_been_published,
+                'PublicationStatusId', publication_status_id,
                 'Authoring', jsonb_build_object(
                     'Id', n.publisher_id, 
                     'Name', n.publisher_name,
                     'CreatedDateTime', n.created_date_time,
                     'ChangedDateTime', n.changed_date_time
                 ),
-                'HasBeenPublished', n.has_been_published,
                 'DateTimeClosure', date_time_closure,
                 'PollStatusId', poll_status_id,
                 'BreadCrumElements', (SELECT document FROM poll_breadcrum_document),
@@ -3233,6 +3279,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         when tn.publication_status_id = 0 then false
                         else true
                     end has_been_published,
+                    tn.publication_status_id,
                     pl.date_time_closure,
                     pl.poll_status_id
                 FROM node n
@@ -3256,13 +3303,13 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     'Title', n.title, 
                     'Text', n.text,
                     'HasBeenPublished', n.has_been_published,
+                    'PublicationStatusId', publication_status_id,
                     'Authoring', jsonb_build_object(
                         'Id', n.publisher_id, 
                         'Name', n.publisher_name,
                         'CreatedDateTime', n.created_date_time,
                         'ChangedDateTime', n.changed_date_time
                     ),
-                    'HasBeenPublished', n.has_been_published,
                     'BreadCrumElements', (SELECT document FROM discussion_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
                     'SeeAlsoBoxElements', (SELECT document FROM see_also_document),
@@ -3271,19 +3318,25 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 ) document
             FROM (
                 SELECT
-                    an.url_id,  
-                    an.node_id,
-                    an.node_type_id,
-                    an.title, 
-                    an.created_date_time, 
-                    an.changed_date_time, 
+                    tn.url_id,  
+                    tn.node_id,
+                    n.node_type_id,
+                    n.title, 
+                    n.created_date_time, 
+                    n.changed_date_time, 
                     stn.text, 
-                    an.publisher_id, 
+                    n.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published
-                FROM authenticated_node an
-                join simple_text_node stn on stn.id = an.node_id 
-                JOIN publisher p on p.id = an.publisher_id
+                    case 
+                        when tn.publication_status_id = 0 then false
+                        else true
+                    end has_been_published,
+                    tn.publication_status_id
+                FROM node n
+                join simple_text_node stn on stn.id = n.id 
+                join tenant_node tn on tn.node_id = n.id
+                JOIN publisher p on p.id = n.publisher_id
+                where tn.tenant_id = @tenant_id and tn.url_id = @url_id
             ) n
         ) 
         """;
@@ -3299,13 +3352,13 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     'Title', n.title, 
                     'Text', n.text,
                     'HasBeenPublished', n.has_been_published,
+                    'PublicationStatusId', publication_status_id,
                     'Authoring', jsonb_build_object(
                         'Id', n.publisher_id, 
                         'Name', n.publisher_name,
                         'CreatedDateTime', n.created_date_time,
                         'ChangedDateTime', n.changed_date_time
                     ),
-                    'HasBeenPublished', n.has_been_published,
                     'BreadCrumElements', 
                     (SELECT document FROM page_bread_crum_document),
                     'Tags', 
@@ -3331,7 +3384,8 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     case 
                         when tn.publication_status_id = 0 then false
                         else true
-                    end has_been_published
+                    end has_been_published,
+                    tn.publication_status_id
                 FROM node n
                 join tenant_node tn on tn.node_id = n.id
                 join simple_text_node stn on stn.id = n.id 
@@ -3362,13 +3416,13 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     'Title', n.title, 
                     'Description', n.description,
                     'HasBeenPublished', n.has_been_published,
+                    'PublicationStatusId', publication_status_id,
                     'Authoring', jsonb_build_object(
                         'Id', n.publisher_id, 
                         'Name', n.publisher_name,
                         'CreatedDateTime', n.created_date_time,
                         'ChangedDateTime', n.changed_date_time
                     ),
-                    'HasBeenPublished', n.has_been_published,
                     'BreadCrumElements', (SELECT document FROM topics_bread_crum_document),
                     'Tags', (SELECT document FROM tags_document),
                     'CommentListItems', (SELECT document FROM  comments_document),
@@ -3379,22 +3433,29 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 ) document
             FROM (
                 SELECT
-                    an.url_id,  
-                    an.node_id,
-                    an.node_type_id,
-                    an.title, 
-                    an.created_date_time, 
-                    an.changed_date_time, 
-                    n.description, 
-                    an.publisher_id, 
+                    tn.url_id,  
+                    tn.node_id,
+                    n.node_type_id,
+                    n.title, 
+                    n.created_date_time, 
+                    n.changed_date_time, 
+                    nm.description, 
+                    n.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published
-                FROM authenticated_node an
-                join nameable n on n.id = an.node_id 
-                JOIN publisher p on p.id = an.publisher_id
+                    case 
+                        when tn.publication_status_id = 0 then false
+                        else true
+                    end has_been_published,
+                    tn.publication_status_id
+                FROM node n
+                join tenant_node tn on tn.node_id = n.id
+                join nameable nm on nm.id = n.id 
+                JOIN publisher p on p.id = n.publisher_id
+                where tn.tenant_id = @tenant_id and tn.url_id = @url_id
             ) n
         ) 
         """;
+
     const string ABUSE_CASE_DOCUMENT = """
         abuse_case_document AS (
             SELECT 
@@ -3405,6 +3466,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     'Title', n.title, 
                     'Description', n.description,
                     'HasBeenPublished', n.has_been_published,
+                    'PublicationStatusId', publication_status_id,
                     'Authoring', jsonb_build_object(
                         'Id', n.publisher_id, 
                         'Name', n.publisher_name,
@@ -3485,6 +3547,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         when tn.publication_status_id = 0 then false
                         else true
                     end has_been_published,
+                    tn.publication_status_id,
                     c.fuzzy_date,
                     case 
                         when tn2.node_id is null then null
@@ -3552,6 +3615,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     'Title', n.title, 
                     'Description', n.description,
                     'HasBeenPublished', n.has_been_published,
+                    'PublicationStatusId', publication_status_id,
                     'Authoring', jsonb_build_object(
                         'Id', n.publisher_id, 
                         'Name', n.publisher_name,
@@ -3573,16 +3637,20 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 ) document
             FROM (
                 SELECT
-                    an.url_id,  
-                    an.node_id,
-                    an.node_type_id,
-                    an.title, 
-                    an.created_date_time, 
-                    an.changed_date_time, 
-                    n.description, 
-                    an.publisher_id, 
+                    tn.url_id,  
+                    tn.node_id,
+                    n.node_type_id,
+                    n.title, 
+                    n.created_date_time, 
+                    n.changed_date_time, 
+                    nm.description, 
+                    n.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published,
+                    case 
+                        when tn.publication_status_id = 0 then false
+                        else true
+                    end has_been_published,
+                    tn.publication_status_id,
                     c.fuzzy_date,
                     case 
                         when tn2.node_id is null then null
@@ -3592,11 +3660,12 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         )
                     end country_from,
                     ac.number_of_children_involved
-                FROM authenticated_node an
-                join "case" c on c.id = an.node_id 
-                join child_trafficking_case ac on ac.id = an.node_id 
-                join nameable n on n.id = an.node_id 
-                JOIN publisher p on p.id = an.publisher_id
+                FROM node n
+                join tenant_node tn on tn.node_id = n.id
+                join "case" c on c.id = n.id 
+                join child_trafficking_case ac on ac.id = n.id 
+                join nameable nm on nm.id = n.id 
+                JOIN publisher p on p.id = n.publisher_id
                 LEFT JOIN (
                     select 
                     n2.id node_id,
@@ -3608,7 +3677,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     from node n2
                     join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = @tenant_id
                 ) tn2 on tn2.node_id = ac.country_id_from
-        
+                WHERE tn.tenant_id = @tenant_id and tn.url_id = @url_id
             ) n
         ) 
         """;
@@ -3623,6 +3692,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     'Title', n.title, 
                     'Description', n.description,
                     'HasBeenPublished', n.has_been_published,
+                    'PublicationStatusId', publication_status_id,
                     'Authoring', jsonb_build_object(
                         'Id', n.publisher_id, 
                         'Name', n.publisher_name,
@@ -3642,22 +3712,28 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 ) document
             FROM (
                 SELECT
-                    an.url_id,  
-                    an.node_id,
-                    an.node_type_id,
-                    an.title, 
-                    an.created_date_time, 
-                    an.changed_date_time, 
-                    n.description, 
-                    an.publisher_id, 
+                    tn.url_id,  
+                    tn.node_id,
+                    n.node_type_id,
+                    n.title, 
+                    n.created_date_time, 
+                    n.changed_date_time, 
+                    nm.description, 
+                    n.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published,
+                    case 
+                        when tn.publication_status_id = 0 then false
+                        else true
+                    end has_been_published,
+                    tn.publication_status_id,
                     c.fuzzy_date
-                FROM authenticated_node an
-                join "case" c on c.id = an.node_id 
-                join coerced_adoption_case ac on ac.id = an.node_id 
-                join nameable n on n.id = an.node_id 
-                JOIN publisher p on p.id = an.publisher_id
+                FROM node n
+                join tenant_node tn on tn.node_id = n.id
+                join "case" c on c.id = n.id 
+                join coerced_adoption_case ac on ac.id = n.id 
+                join nameable nm on nm.id = n.id 
+                JOIN publisher p on p.id = n.publisher_id
+                WHERE tn.tenant_id = @tenant_id and tn.url_id = @url_id
             ) n
         ) 
         """;
@@ -3672,6 +3748,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     'Title', n.title, 
                     'Description', n.description,
                     'HasBeenPublished', n.has_been_published,
+                    'PublicationStatusId', publication_status_id,
                     'Authoring', jsonb_build_object(
                         'Id', n.publisher_id, 
                         'Name', n.publisher_name,
@@ -3693,16 +3770,20 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 ) document
             FROM (
                 SELECT
-                    an.url_id,  
-                    an.node_id,
-                    an.node_type_id,
-                    an.title, 
-                    an.created_date_time, 
-                    an.changed_date_time, 
-                    n.description, 
-                    an.publisher_id, 
+                    tn.url_id,  
+                    tn.node_id,
+                    n.node_type_id,
+                    n.title, 
+                    n.created_date_time, 
+                    n.changed_date_time, 
+                    nm.description, 
+                    n.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published,
+                    case 
+                        when tn.publication_status_id = 0 then false
+                        else true
+                    end has_been_published,
+                    tn.publication_status_id,
                     c.fuzzy_date,
                     case 
                         when tn4.node_id is null then null
@@ -3718,11 +3799,12 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                             'Path', tn2.path
                         )
                     end country_to
-                FROM authenticated_node an
-                join "case" c on c.id = an.node_id 
-                join deportation_case ac on ac.id = an.node_id 
-                join nameable n on n.id = an.node_id 
-                JOIN publisher p on p.id = an.publisher_id
+                FROM node n
+                join tenant_node tn on tn.node_id = n.id
+                join "case" c on c.id = n.id 
+                join deportation_case ac on ac.id = n.id 
+                join nameable nm on nm.id = n.id 
+                JOIN publisher p on p.id = n.publisher_id
                 LEFT JOIN (
                     select 
                     n2.id node_id,
@@ -3746,6 +3828,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     join subdivision s on s.id = n2.id
                     join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = @tenant_id
                 ) tn4 on tn4.node_id = ac.subdivision_id_from
+                WHERE tn.tenant_id = @tenant_id and tn.url_id = @url_id
             ) n
         ) 
         """;
@@ -3760,6 +3843,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     'Title', n.title, 
                     'Description', n.description,
                     'HasBeenPublished', n.has_been_published,
+                    'PublicationStatusId', publication_status_id,
                     'Authoring', jsonb_build_object(
                         'Id', n.publisher_id, 
                         'Name', n.publisher_name,
@@ -3779,25 +3863,32 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 ) document
             FROM (
                 SELECT
-                    an.url_id,  
-                    an.node_id,
-                    an.node_type_id,
-                    an.title, 
-                    an.created_date_time, 
-                    an.changed_date_time, 
-                    n.description, 
-                    an.publisher_id, 
+                    tn.url_id,  
+                    tn.node_id,
+                    n.node_type_id,
+                    n.title, 
+                    n.created_date_time, 
+                    n.changed_date_time, 
+                    nm.description, 
+                    n.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published,
+                    case 
+                        when tn.publication_status_id = 0 then false
+                        else true
+                    end has_been_published,
+                    tn.publication_status_id,
                     c.fuzzy_date
-                FROM authenticated_node an
-                join "case" c on c.id = an.node_id 
-                join disrupted_placement_case ac on ac.id = an.node_id 
-                join nameable n on n.id = an.node_id 
-                JOIN publisher p on p.id = an.publisher_id
+                FROM node n
+                join tenant_node tn on tn.node_id = n.id
+                join "case" c on c.id = n.id 
+                join disrupted_placement_case ac on ac.id = n.id 
+                join nameable nm on nm.id = n.id 
+                JOIN publisher p on p.id = n.publisher_id
+                WHERE tn.tenant_id = @tenant_id and tn.url_id = @url_id
             ) n
         ) 
         """;
+
     const string FATHERS_RIGHTS_VIOLATION_CASE_DOCUMENT = """
         fathers_rights_violation_case_document AS (
             SELECT 
@@ -3808,6 +3899,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     'Title', n.title, 
                     'Description', n.description,
                     'HasBeenPublished', n.has_been_published,
+                    'PublicationStatusId', publication_status_id,
                     'Authoring', jsonb_build_object(
                         'Id', n.publisher_id, 
                         'Name', n.publisher_name,
@@ -3827,22 +3919,28 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 ) document
             FROM (
                 SELECT
-                    an.url_id,  
-                    an.node_id,
-                    an.node_type_id,
-                    an.title, 
-                    an.created_date_time, 
-                    an.changed_date_time, 
-                    n.description, 
-                    an.publisher_id, 
+                    tn.url_id,  
+                    tn.node_id,
+                    n.node_type_id,
+                    n.title, 
+                    n.created_date_time, 
+                    n.changed_date_time, 
+                    nm.description, 
+                    n.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published,
+                    case 
+                        when tn.publication_status_id = 0 then false
+                        else true
+                    end has_been_published,
+                    tn.publication_status_id,
                     c.fuzzy_date
-                FROM authenticated_node an
-                join "case" c on c.id = an.node_id 
-                join fathers_rights_violation_case ac on ac.id = an.node_id 
-                join nameable n on n.id = an.node_id 
-                JOIN publisher p on p.id = an.publisher_id
+                FROM node n
+                join tenant_node tn on tn.node_id = n.id
+                join "case" c on c.id = n.id 
+                join fathers_rights_violation_case ac on ac.id = n.id 
+                join nameable nm on nm.id = n.id 
+                JOIN publisher p on p.id = n.publisher_id
+                WHERE tn.tenant_id = @tenant_id and tn.url_id = @url_id
             ) n
         ) 
         """;
@@ -3856,6 +3954,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     'Title', n.title, 
                     'Description', n.description,
                     'HasBeenPublished', n.has_been_published,
+                    'PublicationStatusId', publication_status_id,
                     'Authoring', jsonb_build_object(
                         'Id', n.publisher_id, 
                         'Name', n.publisher_name,
@@ -3875,22 +3974,28 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 ) document
             FROM (
                 SELECT
-                    an.url_id,  
-                    an.node_id,
-                    an.node_type_id,
-                    an.title, 
-                    an.created_date_time, 
-                    an.changed_date_time, 
-                    n.description, 
-                    an.publisher_id, 
+                    tn.url_id,  
+                    tn.node_id,
+                    n.node_type_id,
+                    n.title, 
+                    n.created_date_time, 
+                    n.changed_date_time, 
+                    nm.description, 
+                    n.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published,
+                    case 
+                        when tn.publication_status_id = 0 then false
+                        else true
+                    end has_been_published,
+                    tn.publication_status_id,
                     c.fuzzy_date
-                FROM authenticated_node an
-                join "case" c on c.id = an.node_id 
-                join wrongful_medication_case ac on ac.id = an.node_id 
-                join nameable n on n.id = an.node_id 
-                JOIN publisher p on p.id = an.publisher_id
+                FROM node n
+                join tenant_node tn on tn.node_id = n.id
+                join "case" c on c.id = n.id 
+                join wrongful_medication_case ac on ac.id = n.id 
+                join nameable nm on nm.id = n.id 
+                JOIN publisher p on p.id = n.publisher_id
+                WHERE tn.tenant_id = @tenant_id and tn.url_id = @url_id
             ) n
         ) 
         """;
@@ -3904,6 +4009,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     'Title', n.title, 
                     'Description', n.description,
                     'HasBeenPublished', n.has_been_published,
+                    'PublicationStatusId', publication_status_id,
                     'Authoring', jsonb_build_object(
                         'Id', n.publisher_id, 
                         'Name', n.publisher_name,
@@ -3923,22 +4029,28 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 ) document
             FROM (
                 SELECT
-                    an.url_id, 
-                    an.node_id, 
-                    an.node_type_id,
-                    an.title, 
-                    an.created_date_time, 
-                    an.changed_date_time, 
-                    n.description, 
-                    an.publisher_id, 
+                    tn.url_id, 
+                    tn.node_id, 
+                    n.node_type_id,
+                    n.title, 
+                    n.created_date_time, 
+                    n.changed_date_time, 
+                    nm.description, 
+                    n.publisher_id, 
                     p.name publisher_name,
-                    an.has_been_published,
+                    case 
+                        when tn.publication_status_id = 0 then false
+                        else true
+                    end has_been_published,
+                    tn.publication_status_id,
                     c.fuzzy_date
-                FROM authenticated_node an
-                join "case" c on c.id = an.node_id 
-                join wrongful_removal_case ac on ac.id = an.node_id 
-                join nameable n on n.id = an.node_id 
-                JOIN publisher p on p.id = an.publisher_id
+                FROM node n
+                join tenant_node tn on tn.node_id = n.id
+                join "case" c on c.id = n.id 
+                join wrongful_removal_case ac on ac.id = n.id 
+                join nameable nm on nm.id = n.id 
+                JOIN publisher p on p.id = n.publisher_id
+                WHERE tn.tenant_id = @tenant_id and tn.url_id = @url_id
             ) n
         ) 
         """;
@@ -3996,7 +4108,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     when n.node_type_id = 58 then (select document from basic_nameable_document)
                 end document
             FROM node n 
-            join tenant_node tn on tn.node_id = n.id and tn.tenant_id = @tenant_id
+            join tenant_node tn on tn.node_id = n.id
             WHERE tn.url_id = @url_id and tn.tenant_id = @tenant_id
             and tn.publication_status_id in 
             (

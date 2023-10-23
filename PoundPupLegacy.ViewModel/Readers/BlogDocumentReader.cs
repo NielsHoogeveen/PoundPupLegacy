@@ -51,7 +51,9 @@ internal sealed class BlogDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         n.changed_date_time
                     ),
                     'HasBeenPublished',
-                    n.has_been_published
+                    n.has_been_published,
+                    'PublicationStatusId',
+                    n.publication_status_id
                 ) document
                 FROM (
                     SELECT
@@ -66,7 +68,8 @@ internal sealed class BlogDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         case 
             			    when publication_status_id = 0 then false
             				else true
-            	        end has_been_published
+            	        end has_been_published,
+                        publication_status_id
                     FROM(
                         SELECT
                             tn.url_id id, 

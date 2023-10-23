@@ -68,7 +68,8 @@ internal sealed class FathersRightsViolationCasesDocumentReaderFactory : SingleI
         				    teaser,
         				    'HasBeenPublished',
         				    has_been_published,
-                            'Date',
+                            'PublicationStatusId',
+                            publication_status_id,'Date',
                             fuzzy_date,
                             'Tags',
                             terms
@@ -83,6 +84,7 @@ internal sealed class FathersRightsViolationCasesDocumentReaderFactory : SingleI
                         path,
                         changed_date_time,
                         has_been_published,
+                        publication_status_id,
                         fuzzy_date,
                         terms
                         from(
@@ -97,6 +99,7 @@ internal sealed class FathersRightsViolationCasesDocumentReaderFactory : SingleI
         					        when publication_status_id = 0 then false
         					        else true
         				        end has_been_published,
+                                publication_status_id,
                                 fuzzy_date,
         				        sum(weight) weight,
                                 jsonb_agg(
@@ -186,6 +189,7 @@ internal sealed class FathersRightsViolationCasesDocumentReaderFactory : SingleI
         				        path,
         				        teaser,
         				        has_been_published,
+                                publication_status_id,
                                 changed_date_time,
                                 fuzzy_date
                         ) x

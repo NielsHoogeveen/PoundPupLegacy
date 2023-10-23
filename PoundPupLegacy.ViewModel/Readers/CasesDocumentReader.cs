@@ -66,6 +66,8 @@ internal sealed class CasesDocumentReaderFactory : SingleItemDatabaseReaderFacto
             					when publication_status_id = 0 then false
             					else true
             				end,
+                            'PublicationStatusId',
+                            publication_status_id,
                             'Tags',
                             (
                                 select jsonb_agg

@@ -10,6 +10,7 @@
         <div class="header">Created</div>
         <div class="header">Last Updated</div>
         <div class="header">Type</div>
+        <div class="header">&nbsp;</div>
         @foreach (var listEntry in ListEntries) {
             <div>
                 <LinkViewer Link="@listEntry"/>
@@ -18,6 +19,19 @@
             <div>@listEntry.CreatedDateTime</div>
             <div>@listEntry.LastChangedDateTime</div>
             <div>@listEntry.NodeType</div>
+            <div class="tooltip publication-status-@listEntry.PublicationStatusId">
+                ⬤
+                @if (@listEntry.PublicationStatusId == 0)
+                {
+                    <span class="tooltip-text">unpublished</span>
+                }
+                @if (@listEntry.PublicationStatusId == 1) {
+                    <span class="tooltip-text">published</span>
+                }
+                @if (@listEntry.PublicationStatusId == 2) {
+                    <span class="tooltip-text ">private</span>
+                }
+            </div>
         }
     </div>
     <Pager Model="PagedListSettings" SelectPage="SelectPage" />

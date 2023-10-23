@@ -12,3 +12,10 @@ article {
     padding-left: 0.5em;
     padding-right: 0.5em;
 }
+.title {
+    display: grid;
+    grid-template-columns: calc(100% - 2rem) 2rem;
+}
+.tooltip {
+    padding-top: 1.25em;
+}

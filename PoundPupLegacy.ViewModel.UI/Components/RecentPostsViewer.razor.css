@@ -1,6 +1,6 @@
 .list-entries{
     display: grid;
-    grid-template-columns: 6fr 2fr 2fr 2fr 2fr;
+    grid-template-columns: 6fr 2fr 2fr 2fr 2fr 2em;
 }
 
 .list-entries *{

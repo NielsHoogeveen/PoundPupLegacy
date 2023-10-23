@@ -66,6 +66,8 @@ internal sealed class DocumentsDocumentReaderFactory : SingleItemDatabaseReaderF
         				    teaser,
         				    'HasBeenPublished',
         				    has_been_published,
+                            'PublicationStatusId',
+                            publication_status_id,
         				    'Weight',
         				    weight,
                             'Tags',
@@ -84,6 +86,7 @@ internal sealed class DocumentsDocumentReaderFactory : SingleItemDatabaseReaderF
         					    when publication_status_id = 0 then false
         					    else true
         				    end has_been_published,
+                            publication_status_id,
         				    sum(weight) weight,
                             jsonb_agg(
                                 jsonb_build_object(
@@ -174,6 +177,7 @@ internal sealed class DocumentsDocumentReaderFactory : SingleItemDatabaseReaderF
         				    path,
         				    teaser,
         				    has_been_published,
+                            publication_status_id,
                             number_of_elements,
                             changed_date_time,
                             publication_date

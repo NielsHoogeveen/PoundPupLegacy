@@ -19,6 +19,5 @@ public sealed record DocumentListEntry : ListEntryBase
             return null;
         }
     }
-
     public int SortOrder { get; set; }
 }

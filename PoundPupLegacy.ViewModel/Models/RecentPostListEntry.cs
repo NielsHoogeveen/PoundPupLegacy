@@ -15,6 +15,7 @@ public sealed record RecentPostListEntry: ListEntry
     public required string Path { get; init; }
     public required string Publisher { get; init; }
     public required string NodeType { get; init; }
+    public required int PublicationStatusId { get; init; }
     public required DateTime CreatedDateTime { get; init; }
     public required DateTime LastChangedDateTime { get; init; }
 

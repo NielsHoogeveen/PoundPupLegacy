@@ -51,7 +51,9 @@ internal sealed class SubgroupsDocumentReaderFactory : SingleItemDatabaseReaderF
             		case 
             			when publication_status_id = 0 then false
             			else true
-            		end
+            		end,
+                    'PublicationStatusId',
+                    publication_status_id
             	)
                 order by changed_date_time desc
             )

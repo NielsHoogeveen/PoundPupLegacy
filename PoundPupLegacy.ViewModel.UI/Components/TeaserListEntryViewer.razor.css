@@ -12,3 +12,13 @@
 .details{
     margin-bottom: 1em;
 }
+.tooltip{
+    padding-top: 1.25em;
+}
+.title{
+    display: grid;
+    grid-template-columns: calc(100% - 2rem) 2rem;
+}
+.unpublished{
+    background-color: #ddd;
+}

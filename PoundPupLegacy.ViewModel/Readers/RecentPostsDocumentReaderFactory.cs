@@ -44,7 +44,9 @@ internal sealed class RecentPostsDocumentReaderFactory : SingleItemDatabaseReade
                         'CreatedDateTime', 
                         created_date_time,
                         'LastChangedDateTime', 
-                        changed_date_time
+                        changed_date_time,
+                        'PublicationStatusId',
+                        publication_status_id
                     )
                 ) 
             ) document
@@ -57,6 +59,7 @@ internal sealed class RecentPostsDocumentReaderFactory : SingleItemDatabaseReade
                 path,
                 publisher_name,
                 node_type,
+                publication_status_id,
                 created_date_time,
                 changed_date_time,
                 count(*) over() number_of_entries

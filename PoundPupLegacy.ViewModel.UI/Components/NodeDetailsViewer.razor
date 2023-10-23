@@ -6,7 +6,21 @@
     <WaterMarkViewer />
 }
 <article>
-    <h1>@Model.Title</h1>
+    <div class="title">
+        <h1>@Model.Title</h1>
+        <div class="tooltip publication-status-@Model.PublicationStatusId">
+            ⬤
+            @if (@Model.PublicationStatusId == 0) {
+                <span class="tooltip-text">unpublished</span>
+            }
+            @if (@Model.PublicationStatusId == 1) {
+                <span class="tooltip-text">published</span>
+            }
+            @if (@Model.PublicationStatusId == 2) {
+                <span class="tooltip-text ">private</span>
+            }
+        </div>
+    </div>
     @if (Model is BlogPost blogPost) {
         <BlogPostViewer Model="blogPost" />
     }

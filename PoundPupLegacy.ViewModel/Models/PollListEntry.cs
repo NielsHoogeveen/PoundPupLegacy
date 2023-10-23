@@ -11,4 +11,5 @@ public sealed record PollListEntry : TeaserListEntry
     public required string Text { get; init; }
     public required bool HasBeenPublished { get; init; }
 
+    public required int PublicationStatusId { get; init; }
 }

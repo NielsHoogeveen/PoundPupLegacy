@@ -1,5 +1,6 @@
 using Npgsql;
 using System.Reflection;
+using System.Text.Json.Serialization.Metadata;
 using Xunit.Abstractions;
 
 namespace PoundPupLegacy.Common.Test;
@@ -67,8 +68,8 @@ public abstract class DatabaseValidatorBase
     public static NpgsqlConnection GetConnection()
     {
         var dataSource = new NpgsqlDataSourceBuilder(ConnectStringPostgresql)
-            .UseSystemTextJson(new System.Text.Json.JsonSerializerOptions {
-                Converters = {FuzzyDateJsonConverter.Default}
+            .EnableDynamicJsonMappings(new System.Text.Json.JsonSerializerOptions {
+                Converters = { FuzzyDateJsonConverter.Default }
             })
             .Build();
 

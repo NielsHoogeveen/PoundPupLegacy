@@ -2,6 +2,18 @@
     @foreach (var listEntry in ListEntries) {
         <div class="list-entry">
             <LinkViewer Link="@listEntry" />
+            <div class="tooltip publication-status-@listEntry.PublicationStatusId">
+                ⬤
+                @if (@listEntry.PublicationStatusId == 0) {
+                    <span class="tooltip-text">unpublished</span>
+                }
+                @if (@listEntry.PublicationStatusId == 1) {
+                    <span class="tooltip-text">published</span>
+                }
+                @if (@listEntry.PublicationStatusId == 2) {
+                    <span class="tooltip-text ">private</span>
+                }
+            </div>
         </div>
     }
     <Pager Model="PagedListSettings" SelectPage="SelectPage"/>
@@ -14,7 +26,7 @@ else {
 @code {
     [Parameter]
     [EditorRequired]
-    public ListEntry[] ListEntries { get; set; } = Array.Empty<ListEntry>();
+    public EntityListEntry[] ListEntries { get; set; } = Array.Empty<EntityListEntry>();
 
     [Parameter]
     [EditorRequired]

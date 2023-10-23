@@ -45,6 +45,7 @@ public abstract record NodeBase : Node
     public required string Title { get; init; }
     public required Authoring Authoring { get; init; }
     public required bool HasBeenPublished { get; init; }
+    public required int PublicationStatusId { get; init; }
 
     private TagListEntry[] tags = Array.Empty<TagListEntry>();
     public TagListEntry[] Tags {
@@ -82,16 +83,17 @@ public abstract record NodeBase : Node
 
 public interface Node
 {
-    public int UrlId { get; }
-    public int NodeId { get; }
-    public int NodeTypeId { get; }
-    public string Title { get; }
-    public Authoring Authoring { get; }
-    public bool HasBeenPublished { get; }
-    public TagListEntry[] Tags { get; }
-    public CommentListItem[] CommentListItems { get; }
-    public Comment[] Comments { get; }
-    public BasicLink[] BreadCrumElements { get; }
-    public File[] Files { get; }
+    int UrlId { get; }
+    int NodeId { get; }
+    int NodeTypeId { get; }
+    string Title { get; }
+    Authoring Authoring { get; }
+    bool HasBeenPublished { get; }
+    int PublicationStatusId { get; }
+    TagListEntry[] Tags { get; }
+    CommentListItem[] CommentListItems { get; }
+    Comment[] Comments { get; }
+    BasicLink[] BreadCrumElements { get; }
+    File[] Files { get; }
 
 }

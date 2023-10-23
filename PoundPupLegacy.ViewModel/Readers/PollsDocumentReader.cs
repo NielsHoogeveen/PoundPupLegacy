@@ -30,13 +30,19 @@ internal sealed class PollsDocumentReaderFactory : SingleItemDatabaseReaderFacto
                 'NumberOfEntries', number_of_entries,
                 'Entries', jsonb_agg(
                     jsonb_build_object(
-                        'Path', url_path,
-                        'Title', title,
-                        'Text', text,
-                        'HasBeenPublished', case 
+                        'Path', 
+                        url_path,
+                        'Title', 
+                        title,
+                        'Text', 
+                        text,
+                        'HasBeenPublished', 
+                        case 
                         	when publication_status_id = 0 then false
                         	else true
-                        end
+                        end,
+                        'PublicationStatusId', 
+                        publication_status_id
                     )
                 )
             ) document

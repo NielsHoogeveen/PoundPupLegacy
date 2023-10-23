@@ -41,7 +41,9 @@ internal sealed class PersonsDocumentReaderFactory : SingleItemDatabaseReaderFac
             			'Path',
             			path,
             			'HasBeenPublished',
-            			has_been_published
+            			has_been_published,
+                        'PublicationStatusId',
+                        publication_status_id
             		)
             	) 
             ) document
@@ -53,6 +55,7 @@ internal sealed class PersonsDocumentReaderFactory : SingleItemDatabaseReaderFac
             	    when publication_status_id = 0 then false
             	    else true
                 end has_been_published,	
+                publication_status_id,
                 count(*) over () number_of_entries
             from(
                 select

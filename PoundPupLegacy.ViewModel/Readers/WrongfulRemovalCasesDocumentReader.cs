@@ -68,6 +68,8 @@ internal sealed class WrongfulRemovalCasesDocumentReaderFactory : SingleItemData
         				    teaser,
         				    'HasBeenPublished',
         				    has_been_published,
+                            'PublicationStatusId',
+                            publication_status_id,
                             'Date',
                             fuzzy_date,
                             'Tags',
@@ -83,6 +85,7 @@ internal sealed class WrongfulRemovalCasesDocumentReaderFactory : SingleItemData
                         path,
                         changed_date_time,
                         has_been_published,
+                        publication_status_id,
                         fuzzy_date,
                         terms
                         from(
@@ -97,6 +100,7 @@ internal sealed class WrongfulRemovalCasesDocumentReaderFactory : SingleItemData
         					        when publication_status_id = 0 then false
         					        else true
         				        end has_been_published,
+                                publication_status_id,
                                 fuzzy_date,
         				        sum(weight) weight,
                                 jsonb_agg(
@@ -186,6 +190,7 @@ internal sealed class WrongfulRemovalCasesDocumentReaderFactory : SingleItemData
         				        path,
         				        teaser,
         				        has_been_published,
+                                publication_status_id,
                                 changed_date_time,
                                 fuzzy_date
                         ) x
