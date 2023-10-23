@@ -297,15 +297,15 @@ footer h2 {
     content: '';
 }
 .publication-status-0 {
-    color: darkred;
+    color: indianred;
 }
 
 .publication-status-1 {
-    color: green;
+    color: dodgerblue;
 }
 
 .publication-status-2 {
-    color: orange;
+    color: mediumseagreen;
 }
 
 .tooltip {

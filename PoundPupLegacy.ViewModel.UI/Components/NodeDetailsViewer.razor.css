@@ -17,5 +17,5 @@ article {
     grid-template-columns: calc(100% - 2rem) 2rem;
 }
 .tooltip {
-    padding-top: 1.25em;
+    padding-top: 1.65em;
 }
