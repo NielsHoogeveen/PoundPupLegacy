@@ -12,6 +12,7 @@ internal sealed class FetchNodeService(
 {
     public async Task<Node?> FetchNode(int urlId, int userId, int tenantId)
     {
+        _logger.LogInformation($"Fetching node {urlId}");
         return await WithConnection(async (connection) => {
             await using var reader = await nodeDocumentReaderFactory.CreateAsync(connection);
             return await reader.ReadAsync(new NodeDocumentReaderRequest {

@@ -115,7 +115,6 @@ public sealed class Program
         });
 
         builder.Services.AddQuartzServer(options => {
-            // when shutting down we want jobs to complete gracefully
             options.WaitForJobsToComplete = true;
         });
 

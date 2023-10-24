@@ -12,6 +12,7 @@ public class EmailSender(
 
     public async Task SendEmailAsync(string toEmail, string subject, string message)
     {
+        logger.LogInformation($"Sending email to {toEmail}");
         var tenant = siteDataService.GetTenant();
         var client = new SmtpClient();
         try {
@@ -27,10 +28,10 @@ public class EmailSender(
             client.Connect(tenant.SmtpConnection.Host, tenant.SmtpConnection.Port, false);
             client.Authenticate(tenant.SmtpConnection.Username, tenant.SmtpConnection.Password);
             await client.SendAsync(emailMessage);
-
+            logger.LogInformation($"Sent email to {toEmail}");
         }
         catch (Exception ex) {
-            logger.LogError(ex.Message);
+            logger.LogError($"Failed to send message to {toEmail} with {0}", ex.Message);
         }
         finally {
             client.Disconnect(true);

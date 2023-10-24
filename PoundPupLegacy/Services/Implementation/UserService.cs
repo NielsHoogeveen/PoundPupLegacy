@@ -85,7 +85,9 @@ internal sealed class UserService(
     }
     public async Task<UserRegistrationResponse> RegisterUser(CompletedUserRegistrationData registrationData) 
     {
+        _logger.LogInformation($"Start registration of user {registrationData.UserName}");
         var result = await WithConnection<UserRegistrationResponse>(async (connection) => {
+
             try {
                 var statement = connection.CreateCommand();
                 statement.CommandType = CommandType.Text;
@@ -99,8 +101,8 @@ internal sealed class UserService(
                 select
                     lastval(),
                     pug.access_role_id_not_logged_in
-                from tenant t;
-                join publishing_user_group pug on pug.id = t.id
+                from tenant t
+                join publishing_user_group pug on pug.id = t.id;
                 SELECT lastval();
                 """;
                 statement.Parameters.Add("name", NpgsqlTypes.NpgsqlDbType.Varchar);
@@ -113,12 +115,14 @@ internal sealed class UserService(
                 statement.Parameters["registration_reason"].Value = registrationData.RegistrationReason;
                 statement.Parameters["tenant_id"].Value = siteDataService.GetTenant().Id;
                 var x = await statement.ExecuteNonQueryAsync();
+                _logger.LogInformation($"User registration of user {registrationData.UserName} succeeded");
                 return new UserRegistrationResponse.RegisteredUser(x);
             }
             catch (Exception e) {
                 if(e.Message.StartsWith("23505")) {
                     return new UserRegistrationResponse.NameInUse();
                 }
+                _logger.LogError($"Error processing registration of {registrationData.UserName} {0}",e);
                 throw;
             }
         });
@@ -144,7 +148,6 @@ internal sealed class UserService(
                     from "user" u
                     join user_role_user uru on uru.user_id = u.id
                     join tenant t on t.administrator_role_id = uru.user_role_id
-                    where u.id = 1
                 """;
             await statement.PrepareAsync();
             var reader = await statement.ExecuteReaderAsync();
