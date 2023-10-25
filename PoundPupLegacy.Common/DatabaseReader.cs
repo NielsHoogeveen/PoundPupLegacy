@@ -210,11 +210,23 @@ namespace PoundPupLegacy.Common
             foreach (var parameter in GetParameterValues(request)) {
                 parameter.Set(_command);
             }
-            await using var reader = await _command.ExecuteReaderAsync();
-            if (!reader.HasRows)
-                throw new ReadException(_errorMessageFunction(request)); ;
-            await reader.ReadAsync();
-            return _readerFunction(reader);
+            var reader = await _command.ExecuteReaderAsync();
+            try {
+
+                if (!reader.HasRows)
+                    throw new ReadException(_errorMessageFunction(request)); ;
+                await reader.ReadAsync();
+                var result = _readerFunction(reader);
+                await reader.CloseAsync();
+                return result;
+            }
+            finally {
+                await reader.CloseAsync();
+                await reader.DisposeAsync();
+                _command.Cancel();
+                await _command.DisposeAsync();
+            }
+            
         }
     }
 
@@ -240,12 +252,18 @@ namespace PoundPupLegacy.Common
             foreach (var parameter in GetParameterValues(request)) {
                 parameter.Set(_command);
             }
-            await using var reader = await _command.ExecuteReaderAsync();
-            if (!reader.HasRows)
-                return null;
-            await reader.ReadAsync();
-
-            return _readerFunction(reader);
+            var reader = await _command.ExecuteReaderAsync();
+            try {
+                if (!reader.HasRows)
+                    return null;
+                await reader.ReadAsync();
+                var result = _readerFunction(reader);
+                
+                return result;
+            }finally {
+                await reader.CloseAsync();
+                await reader.DisposeAsync(); 
+            }
         }
     }
     public class EnumerableDatabaseReader<TRequest, TResponse> : DatabaseAccessor<TRequest>, IEnumerableDatabaseReader<TRequest, TResponse>
@@ -264,10 +282,12 @@ namespace PoundPupLegacy.Common
             foreach (var parameter in GetParameterValues(request)) {
                 parameter.Set(_command);
             }
-            await using var reader = await _command.ExecuteReaderAsync();
+            var reader = await _command.ExecuteReaderAsync();
             while (await reader.ReadAsync()) {
                 yield return _readerFunction(reader);
             }
+            await reader.CloseAsync();
+            await reader.DisposeAsync();
         }
 
         protected override IEnumerable<ParameterValue> GetParameterValues(TRequest request)

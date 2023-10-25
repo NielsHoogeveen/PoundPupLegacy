@@ -27,7 +27,7 @@ internal sealed class TenantNodesReaderFactory : EnumerableDatabaseReaderFactory
         tn.url_path
         from tenant_node tn 
         where tn.url_path is not null
-        and tn.tenant_id = @tenant_id
+        and tn.id = @tenant_id
         """;
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {

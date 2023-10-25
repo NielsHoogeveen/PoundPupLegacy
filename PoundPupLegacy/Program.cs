@@ -13,6 +13,7 @@ using System.Text.Json.Serialization.Metadata;
 using PoundPupLegacy.Areas.Identity;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Build.Execution;
 
 namespace PoundPupLegacy;
 
@@ -79,10 +80,11 @@ public sealed class Program
         
         builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 
-        builder.Services.AddSingleton<NpgsqlDataSource>((sp) => {
+        builder.Services.AddSingleton((sp) => {
             var configuration = sp.GetService<IConfiguration>()!;
             var connectString = configuration["ConnectString"]!;
             var dataSource = new NpgsqlDataSourceBuilder(connectString)
+                .UseLoggerFactory(sp.GetRequiredService<ILoggerFactory>())
                 .EnableDynamicJsonMappings(new System.Text.Json.JsonSerializerOptions {
                    TypeInfoResolver = JsonTypeInfoResolver.Combine(resolvers),
                     Converters = { FuzzyDateJsonConverter.Default }
@@ -165,6 +167,9 @@ public sealed class Program
         //   name: "all-else",
         //   pattern: "{*url}",
         //   defaults: new { controller = "Home", action = "AllElse" });
+
+        //var sdl = app.Services.GetService<ISiteDataLoader>();
+        //await sdl.GetSiteData();
 
 
         var res = app.Services.GetService<ISiteDataService>();
@@ -385,3 +390,4 @@ public static class Extensions
 
     }
 }
+
