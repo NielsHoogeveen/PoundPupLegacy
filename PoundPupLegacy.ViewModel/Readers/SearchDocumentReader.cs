@@ -51,7 +51,9 @@ internal sealed class SearchDocumentReaderFactory : SingleItemDatabaseReaderFact
                         case 
                             when publication_status_id = 0 then false 
                             else true 
-                        end
+                        end,
+                        'PublicationStatusId',
+                        publication_status_id
                     )
                 )
             ) document
@@ -122,6 +124,16 @@ internal sealed class SearchDocumentReaderFactory : SingleItemDatabaseReaderFact
                         join node_type nt on nt.id = n.node_type_id
                         join tenant_node tn on tn.node_id = n.id and tn.tenant_id = @tenant_id
                         where s.tsvector @@ to_tsquery(@search_string)
+                        and tn.publication_status_id in (
+                            select 
+                            id 
+                            from accessible_publication_status 
+                            where tenant_id = tn.tenant_id 
+                            and (
+                                subgroup_id = tn.subgroup_id 
+                                or subgroup_id is null and tn.subgroup_id is null
+                            )
+                        )
                     ) x
                 ) x
                 LIMIT @limit OFFSET @offset
