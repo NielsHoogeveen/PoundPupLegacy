@@ -41,26 +41,67 @@ internal sealed class TenantReaderFactory : MandatorySingleItemDatabaseReaderFac
 
     const string SQL = """
         select
-        t.id tenant_id,
-        ug.name,
-        ug.description,
-        t.domain_name,
-        t.country_id_default,
-        n.title country_name,
-        t.front_page_text,
-        t.frontpage_id,
-        t.logo,
-        t.sub_title,
-        t.footer_text,
-        t.css_file,
-        t.title,
-        t.google_analytics_measurement_id,
-        t.registration_text,
-        sc.id smtp_connection_id,
-        sc.host smtp_host,
-        sc.port smtp_port,
-        sc.user_name  smtp_user_name,
-        sc.password  smtp_password
+        jsonb_build_object(
+            'Id',
+            t.id,
+            'Name',
+            ug.name,
+            'Description',
+            ug.description,
+            'DomainName',
+            t.domain_name,
+            'CountryIdDefault',
+            t.country_id_default,
+            'CountryNameDefault',
+            n.title,
+            'FrontPageText',
+            t.front_page_text,
+            'FrontPageId',
+            t.frontpage_id,
+            'Logo',
+            t.logo,
+            'Subtitle',
+            t.sub_title,
+            'FooterText',
+            t.footer_text,
+            'CssFile',
+            t.css_file,
+            'Title',
+            t.title,
+            'GoogleAnalyticsMeasurementId',
+            t.google_analytics_measurement_id,
+            'RegistrationText',
+            t.registration_text,
+            'SmtpConnection',
+            jsonb_build_object(
+                'Id',
+                sc.id,
+                'Host',
+                sc.host,
+                'Port',
+                sc.port,
+                'UserName',
+                sc.user_name,
+                'Password',
+                sc.password
+            ),
+            'TenantNodes',
+            (
+                select jsonb_agg(
+                    jsonb_build_object(
+                        'TenantId',
+                        tn.tenant_id,
+                        'UrlPath',
+                        tn.url_path,
+                        'UrlId',
+                        tn.url_id
+                    )
+                )
+                from tenant_node tn
+                where tn.tenant_id = t.id
+                and tn.url_path is not null
+            )
+        ) as document
         from tenant t
         join user_group ug on ug.id = t.id
         join node n on n.id = t.country_id_default
@@ -77,32 +118,8 @@ internal sealed class TenantReaderFactory : MandatorySingleItemDatabaseReaderFac
 
     protected override Tenant Read(NpgsqlDataReader reader)
     {
-        return new Tenant {
-            Id = TenantIdReader.GetValue(reader),
-            Name = NameReader.GetValue(reader),
-            Title = TitleReader.GetValue(reader),
-            Description = DescriptionReader.GetValue(reader),
-            DomainName = DomainNameReader.GetValue(reader),
-            CountryIdDefault = CountryIdDefaultReader.GetValue(reader),
-            CountryNameDefault = CountryNameDefault.GetValue(reader),
-            IdToUrl = new Dictionary<int, string>(),
-            UrlToId = new Dictionary<string, int>(),
-            FrontPageText = FrontPageText.GetValue(reader),
-            Logo = Logo.GetValue(reader),
-            CssFile = CssFile.GetValue(reader),
-            Subtitle = SubTitle.GetValue(reader),
-            FooterText = FooterText.GetValue(reader),
-            FrontPageId = FrontPageId.GetValue(reader),
-            GoogleAnalyticsMeasurementId = GoogleAnalyticsMeasurementId.GetValue(reader),
-            RegistrationText = RegistrationText.GetValue(reader),
-            SmtpConnection = new SmtpConnection { 
-                Id = SmtpConnectionId.GetValue(reader),
-                Host = SmptHost.GetValue(reader),
-                Port = SmtpPort.GetValue(reader),
-                Username = SmptUserName.GetValue(reader),
-                Password = SmptPassword.GetValue(reader)
-            }
-        };
+        var tenant = reader.GetFieldValue<Tenant>(0);
+        return tenant;
     }
 
     protected override string GetErrorMessage(Request request)

@@ -1,18 +1,17 @@
-﻿using Npgsql;
-using PoundPupLegacy.Common;
+﻿using PoundPupLegacy.Common;
 using PoundPupLegacy.Models;
 using PoundPupLegacy.Readers;
+using System.Data;
 
 namespace PoundPupLegacy.Services.Implementation;
 
 internal sealed class SiteDataLoader(
-    NpgsqlDataSource dataSource,
+    IDbConnection connection,
     ILogger<SiteDataService> logger,
     IConfiguration configuration,
     IMandatorySingleItemDatabaseReaderFactory<TenantReaderRequest, Tenant> tenantReaderFactory,
-    IMandatorySingleItemDatabaseReaderFactory<UserDocumentReaderRequest, User> userDocumentReaderFactory,
-    IEnumerableDatabaseReaderFactory<TenantNodesReaderRequest, TenantNode> tenantNodesReaderFactory
-) : DatabaseService2(dataSource, logger), ISiteDataLoader
+    IMandatorySingleItemDatabaseReaderFactory<UserDocumentReaderRequest, User> userDocumentReaderFactory
+) : DatabaseService(connection, logger), ISiteDataLoader
 {
 
     public async Task<SiteData> GetSiteData()
@@ -50,7 +49,10 @@ internal sealed class SiteDataLoader(
             try {
                 var tenant = await tenantReader.ReadAsync(new TenantReaderRequest { TenantId = tenantId });
                 await tenantReader.DisposeAsync();
-                await SetUrlPaths(tenant);
+                foreach (var tenantNode in tenant.TenantNodes) {
+                    tenant.UrlToId.Add(tenantNode.UrlPath, tenantNode.UrlId);
+                    tenant.IdToUrl.Add(tenantNode.UrlId, tenantNode.UrlPath);
+                }
                 return tenant;
             }catch(Exception ex) {
                 logger.LogError($"Unknown tenant id {tenantId} in appsettings.json");
@@ -58,18 +60,6 @@ internal sealed class SiteDataLoader(
             }
         });
     }
-    private async Task SetUrlPaths(Tenant tenant)
-    {
-        await WithConnection(async (connection) => {
-            await using var tenantNodesReader = await tenantNodesReaderFactory.CreateAsync(connection);
-            await foreach (var tenantNode in tenantNodesReader.ReadAsync(new TenantNodesReaderRequest { TenantId = tenant.Id })) {
-                tenant.UrlToId.Add(tenantNode.UrlPath, tenantNode.UrlId);
-                tenant.IdToUrl.Add(tenantNode.UrlId, tenantNode.UrlPath);
-            }
-            return Unit.Instance;
-        });
-    }
-
     private async Task<Tenant> LoadTenantAsync()
     {
         var tenantString = configuration["Tenant"];

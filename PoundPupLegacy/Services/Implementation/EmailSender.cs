@@ -26,7 +26,7 @@ public class EmailSender(
             emailMessage.Body = emailBodyBuilder.ToMessageBody();
 
             client.Connect(tenant.SmtpConnection.Host, tenant.SmtpConnection.Port, false);
-            client.Authenticate(tenant.SmtpConnection.Username, tenant.SmtpConnection.Password);
+            client.Authenticate(tenant.SmtpConnection.UserName, tenant.SmtpConnection.Password);
             await client.SendAsync(emailMessage);
             logger.LogInformation($"Sent email to {toEmail}");
         }

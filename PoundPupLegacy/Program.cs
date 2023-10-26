@@ -84,7 +84,7 @@ public sealed class Program
             var configuration = sp.GetService<IConfiguration>()!;
             var connectString = configuration["ConnectString"]!;
             var dataSource = new NpgsqlDataSourceBuilder(connectString)
-                .UseLoggerFactory(sp.GetRequiredService<ILoggerFactory>())
+                //.UseLoggerFactory(sp.GetRequiredService<ILoggerFactory>())
                 .EnableDynamicJsonMappings(new System.Text.Json.JsonSerializerOptions {
                    TypeInfoResolver = JsonTypeInfoResolver.Combine(resolvers),
                     Converters = { FuzzyDateJsonConverter.Default }

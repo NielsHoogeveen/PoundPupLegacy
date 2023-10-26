@@ -19,7 +19,6 @@ public static class DependencyInjection
         services.AddTransient<IEnumerableDatabaseReaderFactory<SiteMapReaderRequest, SiteMapElement>, SiteMapReaderFactory>();
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<SiteMapCountReaderRequest, SiteMapCount>, SiteMapCountReaderFactory>();
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<UserDocumentReaderRequest, User>, UserDocumentReaderFactory>();
-        services.AddTransient<IEnumerableDatabaseReaderFactory<TenantNodesReaderRequest, TenantNode>, TenantNodesReaderFactory>();
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<TenantReaderRequest, Tenant>, TenantReaderFactory>();
     }
 }
