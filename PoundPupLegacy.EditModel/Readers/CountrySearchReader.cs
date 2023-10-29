@@ -49,7 +49,7 @@ internal sealed class CountriesReaderFactory : EnumerableDatabaseReaderFactory<R
         return new ParameterValue[] {
             ParameterValue.Create(TenantIdParameter, request.TenantId),
             ParameterValue.Create(SearchStringParameter, request.SearchString),
-            ParameterValue.Create(SearchOptionParameter, (request.SearchString, SearchOption.StartsWith)),
+            ParameterValue.Create(SearchOptionParameter, (request.SearchString, SearchOption.Contains)),
         };
     }
 

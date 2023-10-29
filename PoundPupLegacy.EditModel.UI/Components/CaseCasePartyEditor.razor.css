@@ -59,7 +59,3 @@ button:hover {
     margin-bottom: 0.5em;
 }
 
-.text-input, .selector {
-    display: grid;
-    grid-template-columns: 99%;
-}
