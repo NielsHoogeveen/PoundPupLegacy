@@ -91,7 +91,7 @@ internal sealed class RecentPostsDocumentReaderFactory : SingleItemDatabaseReade
                             or subgroup_id is null and tn.subgroup_id is null
                         )
                     )
-                    and n.node_type_id not in (45,46,47,48,49)
+                    and nt.has_viewing_support = true
         	        order by n.changed_date_time desc
                 ) x
                 LIMIT @limit OFFSET @offset

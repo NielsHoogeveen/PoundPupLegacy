@@ -163,8 +163,8 @@ public partial record FuzzyDate: IComparable<FuzzyDate>
         if (Month is null)
             return $"{Year}";
         if (Day is null)
-            return $"{CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Month.Value)} {Year}";
-        return $"{Day} {CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Month.Value)} {Year}";
+            return $" {Year} {CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(Month.Value)}";
+        return $"{Year} {CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(Month.Value)} {Day}";
 
     }
 

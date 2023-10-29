@@ -1,6 +1,5 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
-using PoundPupLegacy.DomainModel;
 
 namespace PoundPupLegacy.Readers;
 
@@ -45,8 +44,10 @@ internal sealed class SiteMapCountReaderFactory : MandatorySingleItemDatabaseRea
             from tenant_node tn
             join tenant t on t.id = tn.tenant_id
             join node n on n.id = tn.node_id
-            where t.id = 1
-            and tn.publication_status_id = @tenant_id
+            join node_type nt on nt.id = n.node_type_id
+            where t.id = @tenant_id
+            and nt.has_viewing_support = true
+            and tn.publication_status_id = 1
         ) as x
         join tenant t on t.id = @tenant_id
         group by t.domain_name

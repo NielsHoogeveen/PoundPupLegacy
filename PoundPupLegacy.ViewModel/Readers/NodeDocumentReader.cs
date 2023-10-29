@@ -1562,7 +1562,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         	    "name"
             FROM(
                 SELECT 
-                    '/home' url, 
+                    '/' url, 
                     'Home' "name", 
                     0 "order"
                 UNION
@@ -1599,7 +1599,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         	    "name"
             FROM(
                 SELECT 
-                    '/home' url, 
+                    '/' url, 
                     'Home' "name", 
                     0 "order"
                 ) bce
@@ -1618,7 +1618,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             ) document
             FROM(
                 SELECT 
-                    '/home' url, 
+                    '/' url, 
                     'Home' "name", 
                     0 "order"
             ) bces
@@ -1639,7 +1639,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         	    "name"
             FROM(
                 SELECT 
-                    '/home' url, 
+                    '/' url, 
                     'Home' "name", 
                     0 "order"
                 UNION
@@ -1666,7 +1666,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         	    "name"
             FROM(
                 SELECT 
-                    '/home' url, 
+                    '/' url, 
                     'Home' "name", 
                     0 "order"
                 UNION
@@ -1693,7 +1693,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         	    "name"
             FROM(
                 SELECT 
-                    '/home' url, 
+                    '/' url, 
                     'Home' "name", 
                     0 "order"
                 UNION
@@ -1720,7 +1720,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         	    "name"
             FROM(
                 SELECT 
-                    '/home' url, 
+                    '/' url, 
                     'Home' "name", 
                     0 "order"
                 UNION
@@ -1899,7 +1899,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         	    "name"
             FROM(
                 SELECT 
-                    '/home' url, 
+                    '/' url, 
                     'Home' "name", 
                     0 "order"
                 UNION
@@ -1927,7 +1927,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         	    "name"
             FROM(
                 SELECT 
-                    '/home' url, 
+                    '/' url, 
                     'Home' "name", 
                     0 "order"
                 UNION
@@ -1969,7 +1969,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         	    "name"
             FROM(
                 SELECT 
-                    '/home' url, 
+                    '/' url, 
                     'Home' "name", 
                     0 "order"
                 ) bce
@@ -1991,7 +1991,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         	    "name"
             FROM(
                 SELECT 
-                    '/home' url, 
+                    '/' url, 
                     'Home' "name", 
                     0 "order"
                 UNION
@@ -2025,7 +2025,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         	    "name"
             FROM(
                 SELECT 
-                    '/home' url, 
+                    '/' url, 
                     'Home' "name", 
                     0 "order"
                 UNION
@@ -2057,7 +2057,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         	    "name"
             FROM(
                 SELECT 
-                    '/home' url, 
+                    '/' url, 
                     'Home' "name", 
                     0 "order"
                 UNION
@@ -2089,7 +2089,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         	    "name"
             FROM(
                 SELECT 
-                    '/home' url, 
+                    '/' url, 
                     'Home' "name", 
                     0 "order"
                 UNION
@@ -2121,7 +2121,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         	    "name"
             FROM(
                 SELECT 
-                    '/home' url, 
+                    '/' url, 
                     'Home' "name", 
                     0 "order"
                 UNION
@@ -2153,7 +2153,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         	    "name"
             FROM(
                 SELECT 
-                    '/home' url, 
+                    '/' url, 
                     'Home' "name", 
                     0 "order"
                 UNION
@@ -2185,7 +2185,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         	    "name"
             FROM(
                 SELECT 
-                    '/home' url, 
+                    '/' url, 
                     'Home' "name", 
                     0 "order"
                 UNION
@@ -2217,7 +2217,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         	    "name"
             FROM(
                 SELECT 
-                    '/home' url, 
+                    '/' url, 
                     'Home' "name", 
                     0 "order"
                 UNION
@@ -2249,7 +2249,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         	    "name"
             FROM(
                 SELECT 
-                    '/home' url, 
+                    '/' url, 
                     'Home' "name", 
                     0 "order"
                 UNION

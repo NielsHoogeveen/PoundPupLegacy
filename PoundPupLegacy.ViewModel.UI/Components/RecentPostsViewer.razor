@@ -16,8 +16,8 @@
                 <LinkViewer Link="@listEntry"/>
             </div>
             <div>@listEntry.Publisher</div>
-            <div>@listEntry.CreatedDateTime</div>
-            <div>@listEntry.LastChangedDateTime</div>
+            <div>@listEntry.CreatedDateTime.ToString("yyyy MMM dd, h:mm:ss tt")</div>
+            <div>@listEntry.LastChangedDateTime.ToString("yyyy MMM dd, h:mm:ss tt")</div>
             <div>@listEntry.NodeType</div>
             <div class="tooltip publication-status-@listEntry.PublicationStatusId">
                 ⬤

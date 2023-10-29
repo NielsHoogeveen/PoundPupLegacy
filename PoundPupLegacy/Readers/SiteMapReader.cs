@@ -46,7 +46,9 @@ internal sealed class SiteMapReaderFactory : EnumerableDatabaseReaderFactory<Req
         from tenant_node tn
         join tenant t on t.id = tn.tenant_id
         join node n on n.id = tn.node_id
+        join node_type nt on nt.id = n.node_type_id
         where t.id = 1
+        and nt.has_viewing_support = true
         and tn.publication_status_id = @tenant_id
         order by path
         limit 5000 offset @index * 5000
