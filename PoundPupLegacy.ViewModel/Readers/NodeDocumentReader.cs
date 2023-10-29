@@ -21,7 +21,9 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
 
     const string SQL = $"""
             WITH 
+            {TERM_DESCENDANCY},
             {SharedSql.ACCESSIBLE_PUBLICATIONS_STATUS},
+            {NODES_WITH_DESCENDANTS},
             {NAMEABLE_CASES_DOCUMENT},
             {FILES_DOCUMENT},
             {SEE_ALSO_DOCUMENT},
@@ -98,6 +100,37 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             """
     ;
 
+    const string TERM_DESCENDANCY = """
+         RECURSIVE term_descendancy AS(
+            select
+        	n.id node_id,
+        	n.title,
+        	t.id term_id
+        	from node n
+        	join term t on t.nameable_id = n.id
+        	join tenant_node tn on tn.node_id = n.id
+        	where tn.tenant_id = @tenant_id and tn.url_id = @url_id
+            UNION ALL
+            select
+        	n.id node_id,
+        	n.title,
+        	t.id term_id
+        	from node n
+        	join term t on t.nameable_id = n.id
+        	join term_hierarchy th on th.term_id_child = t.id
+        	join tenant_node tn on tn.node_id = n.id
+        	join term_descendancy td on td.term_id = th.term_id_parent 
+        )
+        """;
+    const string NODES_WITH_DESCENDANTS = """
+        node_with_descendants as
+        (
+        	SELECT 
+            DISTINCT n.* 
+        	FROM term_descendancy td
+        	join node n on n.id = td.node_id
+        )
+        """;
     const string FILES_DOCUMENT = """
         files_document as(
             select
@@ -426,83 +459,111 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             ) document
             from(
         	    select
-        	    nt2.name,
+        	    name,
         	    jsonb_agg(
         		    jsonb_build_object(
         			    'Path',
         			    case 
-        				    when tn2.url_path is null then '/node/' || tn2.url_id
-        				    else '/' || tn2.url_path
+        				    when url_path is null then '/node/' || url_id
+        				    else '/' || url_path
         			    end,
         			    'Title',
-        			    n2.title,
+        			    title,
                         'Date',
-                        c.fuzzy_date
+                        fuzzy_date
         		    )
-        		    order by n2.title
+        		    order by title
         	    ) cases
-        		    from node n
-        	    join tenant_node tn on tn.node_id = n.id
-        	    join(		
-        		    select
-        		    distinct
-        		    *
-        		    from(
-        			    select
-        			    t.nameable_id,
-        			    n2.id,
-        			    n2.node_type_id,
-        			    n2.title
-        			    from term t 
-        			    join node_term nt on nt.term_id = t.id
-        			    join node n2 on n2.id = nt.node_id
-        			    union
-        			    select
-        			    l.subdivision_id nameable_id,
-        			    n2.id,
-        			    n2.node_type_id,
-        			    n2.title
-        			    from "location" l
-        			    join location_locatable ll on ll.location_id = l.id
-        			    join node n2 on n2.id = ll.locatable_id
-        			    union
-        			    select
-        			    l.country_id nameable_id,
-        			    n2.id,
-        			    n2.node_type_id,
-        			    n2.title
-        			    from "location" l
-        			    join location_locatable ll on ll.location_id = l.id
-        			    join node n2 on n2.id = ll.locatable_id
-        		    ) n2
-        	    ) n2 on n2.nameable_id = n.id
-        	    join "case" c on c.id = n2.id
-        	    join node_type nt2 on nt2.id = n2.node_type_id
-        	    join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = tn.tenant_id
-                where tn.tenant_id = @tenant_id and tn.url_id = @url_id
-                and tn.publication_status_id in 
-                (
-                    select 
-                    id 
-                    from accessible_publication_status 
-                    where tenant_id = tn.tenant_id 
-                    and (
-                        subgroup_id = tn.subgroup_id 
-                        or subgroup_id is null and tn.subgroup_id is null
+                from(
+                    select
+                    distinct 
+                    n2.title,
+                    nt2.name,
+                    tn2.url_path,
+                    tn2.url_id,
+                    c.fuzzy_date
+        	        from node_with_descendants n
+        	        join tenant_node tn on tn.node_id = n.id
+        	        join(		
+        		        select
+        		        distinct
+        		        nameable_id,
+                        id,
+                        node_type_id,
+                        title
+        		        from(
+        			        select
+        			        t.nameable_id,
+        			        n2.id,
+        			        n2.node_type_id,
+        			        n2.title
+        			        from term t 
+        			        join node_term nt on nt.term_id = t.id
+        			        join node n2 on n2.id = nt.node_id
+        			        union
+        			        select
+        			        l.subdivision_id nameable_id,
+        			        n2.id,
+        			        n2.node_type_id,
+        			        n2.title
+        			        from "location" l
+        			        join location_locatable ll on ll.location_id = l.id
+        			        join node n2 on n2.id = ll.locatable_id
+        			        union
+        			        select
+        			        l.country_id nameable_id,
+        			        n2.id,
+        			        n2.node_type_id,
+        			        n2.title
+        			        from "location" l
+        			        join location_locatable ll on ll.location_id = l.id
+        			        join node n2 on n2.id = ll.locatable_id
+                            union
+                            select
+                            t.type_of_abuse_id nameable_id,
+                            n2.id,
+                            n2.node_type_id,
+                            n2.title
+                            from abuse_case_type_of_abuse t
+                            join node n2 on n2.id = t.abuse_case_id
+                            union
+                            select
+                            t.type_of_abuser_id nameable_id,
+                            n2.id,
+                            n2.node_type_id,
+                            n2.title
+                            from abuse_case_type_of_abuser t
+                            join node n2 on n2.id = t.abuse_case_id
+        
+        		        ) n2
+        	        ) n2 on n2.nameable_id = n.id
+        	        join "case" c on c.id = n2.id
+        	        join node_type nt2 on nt2.id = n2.node_type_id
+        	        join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = tn.tenant_id
+                    where tn.publication_status_id in 
+                    (
+                        select 
+                        id 
+                        from accessible_publication_status 
+                        where tenant_id = tn.tenant_id 
+                        and (
+                            subgroup_id = tn.subgroup_id 
+                            or subgroup_id is null and tn.subgroup_id is null
+                        )
                     )
-                )
-                and tn2.publication_status_id in 
-                (
-                    select 
-                    id 
-                    from accessible_publication_status 
-                    where tenant_id = tn2.tenant_id 
-                    and (
-                        subgroup_id = tn2.subgroup_id 
-                        or subgroup_id is null and tn2.subgroup_id is null
+                    and tn2.publication_status_id in 
+                    (
+                        select 
+                        id 
+                        from accessible_publication_status 
+                        where tenant_id = tn2.tenant_id 
+                        and (
+                            subgroup_id = tn2.subgroup_id 
+                            or subgroup_id is null and tn2.subgroup_id is null
+                        )
                     )
-                )
-        	    group by nt2.name
+                ) x
+                group by name
             ) x
         )
         """;
@@ -1445,6 +1506,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 ) document
             from(
                 select
+                    distinct
                     path,
                     title,
                     publication_date_from,
@@ -1452,6 +1514,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     row_number() over(order by sort_date desc nulls last) sort_order
                 from(
                     select
+                        distinct
                         case 
         	                when tn.url_path is null then '/node/' || tn.url_id
         	                else '/' || tn.url_path
@@ -1462,7 +1525,8 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         upper(d.published) publication_date_to
                     from node_term nt
                     join term t on t.id = nt.term_id
-                    join tenant_node tn2 on tn2.url_id = @url_id and tn2.tenant_id = @tenant_id and tn2.node_id = t.nameable_id
+                    join node_with_descendants n on n.id = t.nameable_id
+                    join tenant_node tn2 on tn2.node_id = n.id
                     join tenant_node tn on tn.node_id = nt.node_id and tn.tenant_id = @tenant_id
                     join node n2 on n2.Id = tn.node_id
                     join "document" d on d.id = n2.id
