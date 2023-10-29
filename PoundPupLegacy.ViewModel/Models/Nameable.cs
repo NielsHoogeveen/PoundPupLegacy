@@ -23,7 +23,15 @@ public abstract record NameableBase: DocumentableBase, Nameable
             }
         }
     }
-
+    private RelatedCaseType[] cases = Array.Empty<RelatedCaseType>();
+    public RelatedCaseType[] Cases {
+        get => cases;
+        init {
+            if (value is not null) {
+                cases = value;
+            }
+        }
+    }
 }
 public interface Nameable : Documentable
 {
@@ -31,5 +39,6 @@ public interface Nameable : Documentable
 
     BasicLink[] SubTopics { get; }
     BasicLink[] SuperTopics { get; }
+    RelatedCaseType[] Cases { get; }
 
 }

@@ -28,7 +28,7 @@ internal sealed class FetchDisruptedPlacementCasesService(
                 : new DisruptedPlacementCases {
                     TermNames = Array.Empty<SelectionItem>(),
                     Items = new DisruptedPlacementCaseList {
-                        Entries = Array.Empty<CaseListEntry>(),
+                        Entries = Array.Empty<CaseTeaserListEntry>(),
                         NumberOfEntries = 0,
                     }
                 };

@@ -238,7 +238,7 @@ public static class Extensions
             ViewModel.Models.BlogPostJsonContext.Default,
             ViewModel.Models.BlogPostTeaserJsonContext.Default,
             ViewModel.Models.BoundCountryJsonContext.Default,
-            ViewModel.Models.CaseListEntryJsonContext.Default,
+            ViewModel.Models.CaseTeaserListEntryJsonContext.Default,
             ViewModel.Models.CasePartiesJsonContext.Default,
             ViewModel.Models.CasesJsonContext.Default,
             ViewModel.Models.CaseTypeListEntryJsonContext.Default,

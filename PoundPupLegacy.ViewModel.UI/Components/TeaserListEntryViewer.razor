@@ -27,7 +27,7 @@
     @if (ListEntry is NonSpecificCaseListEntry nonSpecificCaseListEntry) {
         <LabeledNonNullableStringViewer Label="Case type" Value="@nonSpecificCaseListEntry.CaseType" />
     }
-    @if (ListEntry is CaseListEntry caseListEntry) {
+    @if (ListEntry is CaseTeaserListEntry caseListEntry) {
         <LabeledNullableFuzzyDateViewer Label="Date" Value="caseListEntry.Date" />
     }
     </div>

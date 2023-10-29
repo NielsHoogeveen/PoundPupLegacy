@@ -26,7 +26,7 @@ internal sealed class FetchAbuseCasesService(
                 ? cases
                 : new AbuseCases {
                     Items = new AbuseCaseList {
-                        Entries = Array.Empty<CaseListEntry>(),
+                        Entries = Array.Empty<CaseTeaserListEntry>(),
                         NumberOfEntries = 0,
                     },
                     TermNames = Array.Empty<SelectionItem>()

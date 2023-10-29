@@ -3,6 +3,6 @@
 [JsonSerializable(typeof(DisruptedPlacementCases))]
 public partial class DisruptedPlacementCasesJsonContext : JsonSerializerContext { }
 
-public sealed record DisruptedPlacementCases : TermedListBase<DisruptedPlacementCaseList, CaseListEntry>
+public sealed record DisruptedPlacementCases : TermedListBase<DisruptedPlacementCaseList, CaseTeaserListEntry>
 {
 }

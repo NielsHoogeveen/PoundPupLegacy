@@ -28,7 +28,7 @@ internal sealed class FetchWrongfulRemovalCasesService(
                 : new WrongfulRemovalCases {
                     TermNames = Array.Empty<SelectionItem>(),
                     Items = new WrongfulRemovalCaseList {
-                        Entries = Array.Empty<CaseListEntry>(),
+                        Entries = Array.Empty<CaseTeaserListEntry>(),
                         NumberOfEntries = 0,
                     }
                 };

@@ -2,6 +2,6 @@
 [JsonSerializable(typeof(WrongfulRemovalCaseList))]
 public partial class WrongfulRemovalCaseListJsonContext : JsonSerializerContext { }
 
-public sealed record WrongfulRemovalCaseList : PagedListBase<CaseListEntry>
+public sealed record WrongfulRemovalCaseList : PagedListBase<CaseTeaserListEntry>
 {
 }

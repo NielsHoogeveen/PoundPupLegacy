@@ -19,7 +19,7 @@ public class FuzzyDateJsonConverter : JsonConverter<FuzzyDate>
         JsonSerializerOptions options) =>
             writer.WriteStringValue(fuzzyDate.ToJson());
 }
-public partial record FuzzyDate
+public partial record FuzzyDate: IComparable<FuzzyDate>
 {
     public FuzzyDate(int year, int? month, int? day)
     {
@@ -166,5 +166,38 @@ public partial record FuzzyDate
             return $"{CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Month.Value)} {Year}";
         return $"{Day} {CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(Month.Value)} {Year}";
 
+    }
+
+    public int CompareTo(FuzzyDate? other)
+    {
+        if(other == null) {
+            return -1 ;
+        }
+        if(other.Year < this.Year) {
+            return 1;
+        }
+        if(other.Year > this.Year) {
+            return -1;
+        }
+        if (!other.Month.HasValue && !this.Month.HasValue) {
+            return 0;
+        }
+        if (other.Month.HasValue && !this.Month.HasValue) {
+            return -1;
+        }
+        if (!other.Month.HasValue && this.Month.HasValue) {
+            return 1;
+        }
+        if (!other.Day.HasValue && !this.Day.HasValue) {
+            return 0;
+        }
+        if (other.Day.HasValue && !this.Day.HasValue) {
+            return -1;
+        }
+        if (!other.Day.HasValue && this.Day.HasValue) {
+            return 1;
+        }
+        return 0;
+        throw new NotImplementedException();
     }
 }

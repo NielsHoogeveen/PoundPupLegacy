@@ -28,7 +28,7 @@ internal sealed class FetchChildTraffickingCasesService(
                 : new ChildTraffickingCases {
                     TermNames = Array.Empty<SelectionItem>(),
                     Items = new ChildTraffickingCaseList {
-                        Entries = Array.Empty<CaseListEntry>(),
+                        Entries = Array.Empty<CaseTeaserListEntry>(),
                         NumberOfEntries = 0,
                     }
                 };

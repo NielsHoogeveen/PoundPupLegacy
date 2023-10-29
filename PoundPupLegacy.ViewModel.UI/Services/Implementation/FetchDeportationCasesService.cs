@@ -28,7 +28,7 @@ internal sealed class FetchDeportationCasesService(
                 : new DeportationCases {
                     TermNames = Array.Empty<SelectionItem>(),
                     Items = new DeportationCaseList {
-                        Entries = Array.Empty<CaseListEntry>(),
+                        Entries = Array.Empty<CaseTeaserListEntry>(),
                         NumberOfEntries = 0,
                     }
                 };

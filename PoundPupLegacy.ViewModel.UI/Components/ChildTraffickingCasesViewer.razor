@@ -1,5 +1,5 @@
 ﻿@inject IFetchChildTraffickingCasesService FetchCasesService
-@inherits PagedTermedViewer<CaseListEntry, ChildTraffickingCaseList>
+@inherits PagedTermedViewer<CaseTeaserListEntry, ChildTraffickingCaseList>
 <HeadContentSetter Title=@Title SiteName=@SiteName Description=@Description />
 <BreadCrumElementViewer Model="BreadCrumElements" />
 <TagSelector TermNames="TermNames" OnSelectTerm="SelectTerm" />
@@ -11,7 +11,7 @@
 
     protected override string Description => "A list of the most recent child trafficking cases";
 
-    protected override async Task<TermedList<ChildTraffickingCaseList, CaseListEntry>> GetTermedList()
+    protected override async Task<TermedList<ChildTraffickingCaseList, CaseTeaserListEntry>> GetTermedList()
     {
 
         return await FetchCasesService.FetchCases(

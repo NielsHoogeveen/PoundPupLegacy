@@ -27,7 +27,7 @@ internal sealed class FetchWrongfulMedicationCasesService(
                 : new WrongfulMedicationCases {
                     TermNames = Array.Empty<SelectionItem>(),
                     Items = new WrongfulMedicationCaseList {
-                        Entries = Array.Empty<CaseListEntry>(),
+                        Entries = Array.Empty<CaseTeaserListEntry>(),
                         NumberOfEntries = 0,
                     }
                 };

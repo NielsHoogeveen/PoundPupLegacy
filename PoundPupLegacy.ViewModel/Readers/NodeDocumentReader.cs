@@ -1,6 +1,7 @@
 ﻿namespace PoundPupLegacy.ViewModel.Readers;
 
 using PoundPupLegacy.ViewModel.Models;
+using System.Dynamic;
 using Request = NodeDocumentReaderRequest;
 
 public sealed class NodeDocumentReaderRequest : IRequest
@@ -21,6 +22,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
     const string SQL = $"""
             WITH 
             {SharedSql.ACCESSIBLE_PUBLICATIONS_STATUS},
+            {NAMEABLE_CASES_DOCUMENT},
             {FILES_DOCUMENT},
             {SEE_ALSO_DOCUMENT},
             {LOCATIONS_DOCUMENT},
@@ -115,45 +117,6 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
         )
         """;
 
-    const string AUTHENTICATED_NODE = """
-        authenticated_node as (
-            select
-            tn.id,
-            n.title,
-            n.node_type_id,
-            tn.tenant_id,
-            tn.node_id,
-            n.publisher_id,
-            n.created_date_time,
-            n.changed_date_time,
-            tn.url_id,
-            case 
-                when tn.url_path is null then '/node/' || tn.url_id
-                else '/' || url_path
-            end url_path,
-            tn.subgroup_id,
-            tn.publication_status_id,
-            case 
-                when tn.publication_status_id = 1 then true 
-                else false 
-            end has_been_published
-            from tenant_node tn
-            join node n on n.id = tn.node_id
-            where tn.tenant_id = @tenant_id 
-            and tn.url_id = @url_id
-            and tn.publication_status_id in 
-            (
-                select 
-                id 
-                from accessible_publication_status 
-                where tenant_id = tn.tenant_id 
-                and (
-                    subgroup_id = tn.subgroup_id 
-                    or subgroup_id is null and tn.subgroup_id is null
-                )
-            )
-        )
-        """;
     const string POLL_OPTIONS_DOCUMENT = """
         poll_options_document as(
             select
@@ -446,6 +409,101 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
             ) x
             group by case_type_name
             ) x        
+        )
+        """;
+
+    const string NAMEABLE_CASES_DOCUMENT = """
+        nameable_cases_document as(
+            select
+            jsonb_agg(
+        	    jsonb_build_object(
+        		    'CaseTypeName',
+        		    name,
+        		    'Cases',
+        		    cases
+        	    )
+        	    order by name
+            ) document
+            from(
+        	    select
+        	    nt2.name,
+        	    jsonb_agg(
+        		    jsonb_build_object(
+        			    'Path',
+        			    case 
+        				    when tn2.url_path is null then '/node/' || tn2.url_id
+        				    else '/' || tn2.url_path
+        			    end,
+        			    'Title',
+        			    n2.title,
+                        'Date',
+                        c.fuzzy_date
+        		    )
+        		    order by n2.title
+        	    ) cases
+        		    from node n
+        	    join tenant_node tn on tn.node_id = n.id
+        	    join(		
+        		    select
+        		    distinct
+        		    *
+        		    from(
+        			    select
+        			    t.nameable_id,
+        			    n2.id,
+        			    n2.node_type_id,
+        			    n2.title
+        			    from term t 
+        			    join node_term nt on nt.term_id = t.id
+        			    join node n2 on n2.id = nt.node_id
+        			    union
+        			    select
+        			    l.subdivision_id nameable_id,
+        			    n2.id,
+        			    n2.node_type_id,
+        			    n2.title
+        			    from "location" l
+        			    join location_locatable ll on ll.location_id = l.id
+        			    join node n2 on n2.id = ll.locatable_id
+        			    union
+        			    select
+        			    l.country_id nameable_id,
+        			    n2.id,
+        			    n2.node_type_id,
+        			    n2.title
+        			    from "location" l
+        			    join location_locatable ll on ll.location_id = l.id
+        			    join node n2 on n2.id = ll.locatable_id
+        		    ) n2
+        	    ) n2 on n2.nameable_id = n.id
+        	    join "case" c on c.id = n2.id
+        	    join node_type nt2 on nt2.id = n2.node_type_id
+        	    join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = tn.tenant_id
+                where tn.tenant_id = @tenant_id and tn.url_id = @url_id
+                and tn.publication_status_id in 
+                (
+                    select 
+                    id 
+                    from accessible_publication_status 
+                    where tenant_id = tn.tenant_id 
+                    and (
+                        subgroup_id = tn.subgroup_id 
+                        or subgroup_id is null and tn.subgroup_id is null
+                    )
+                )
+                and tn2.publication_status_id in 
+                (
+                    select 
+                    id 
+                    from accessible_publication_status 
+                    where tenant_id = tn2.tenant_id 
+                    and (
+                        subgroup_id = tn2.subgroup_id 
+                        or subgroup_id is null and tn2.subgroup_id is null
+                    )
+                )
+        	    group by nt2.name
+            ) x
         )
         """;
     const string PERSON_CASES_DOCUMENT = """
@@ -2374,7 +2432,8 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 'SubdivisionTypes', (SELECT document FROM subdivision_subdivisions_document),
                 'SubTopics', (SELECT document from subtopics_document),
                 'SuperTopics', (SELECT document from supertopics_document),
-                'Files', (SELECT document FROM files_document)
+                'Files', (SELECT document FROM files_document),
+                'Cases', (SELECT document FROM nameable_cases_document)
             ) document
             FROM (
                  SELECT
@@ -2440,7 +2499,8 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 'SubdivisionTypes', (SELECT document FROM subdivision_subdivisions_document),
                 'SubTopics', (SELECT document from subtopics_document),
                 'SuperTopics', (SELECT document from supertopics_document),
-                'Files', (SELECT document FROM files_document)
+                'Files', (SELECT document FROM files_document),
+                'Cases', (SELECT document FROM nameable_cases_document)
             ) document
             FROM (
                  SELECT
@@ -2499,7 +2559,8 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 'Documents', (SELECT document from documents_document),
                 'SubTopics', (SELECT document from subtopics_document),
                 'SuperTopics', (SELECT document from supertopics_document),
-                'Files', (SELECT document FROM files_document)
+                'Files', (SELECT document FROM files_document),
+                'Cases', (SELECT document FROM nameable_cases_document)
             ) document
             FROM (
                  SELECT
@@ -2564,7 +2625,8 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 'SubdivisionTypes', (SELECT document FROM country_subdivisions_document),
                 'SubTopics', (SELECT document from subtopics_document),
                 'SuperTopics', (SELECT document from supertopics_document),
-                'Files', (SELECT document FROM files_document)
+                'Files', (SELECT document FROM files_document),
+                'Cases', (SELECT document FROM nameable_cases_document)
             ) document
             FROM (
                  SELECT
@@ -2636,7 +2698,8 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 'SubdivisionTypes', (SELECT document FROM country_subdivisions_document),
                 'SubTopics', (SELECT document from subtopics_document),
                 'SuperTopics', (SELECT document from supertopics_document),
-                'Files', (SELECT document FROM files_document)
+                'Files', (SELECT document FROM files_document),
+                'Cases', (SELECT document FROM nameable_cases_document)
             ) document
             FROM (
                  SELECT
@@ -2710,7 +2773,8 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 'SubTopics', (SELECT document from subtopics_document),
                 'SuperTopics', (SELECT document from supertopics_document),
                 'Files', (SELECT document FROM files_document),
-                'BoundCountries', null
+                'BoundCountries', null,
+                'Cases', (SELECT document FROM nameable_cases_document)
             ) document
             FROM (
                  SELECT
@@ -2781,7 +2845,8 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 'SubdivisionTypes', (SELECT document FROM country_subdivisions_document),
                 'SubTopics', (SELECT document from subtopics_document),
                 'SuperTopics', (SELECT document from supertopics_document),
-                'Files', (SELECT document FROM files_document)
+                'Files', (SELECT document FROM files_document),
+                'Cases', (SELECT document FROM nameable_cases_document)
             ) document
             FROM (
                  SELECT
@@ -3429,7 +3494,8 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     'SubTopics', (SELECT document from subtopics_document),
                     'SuperTopics', (SELECT document from supertopics_document),
                     'Files', (SELECT document FROM files_document),
-                    'Documents', (SELECT document FROM documents_document)
+                    'Documents', (SELECT document FROM documents_document),
+                    'Cases', (SELECT document FROM nameable_cases_document)
                 ) document
             FROM (
                 SELECT

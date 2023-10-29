@@ -28,7 +28,7 @@ internal sealed class FetchFathersRightsViolationCasesService(
                 : new FathersRightsViolationCases {
                     TermNames = Array.Empty<SelectionItem>(),
                     Items = new FathersRightsViolationCaseList {
-                        Entries = Array.Empty<CaseListEntry>(),
+                        Entries = Array.Empty<CaseTeaserListEntry>(),
                         NumberOfEntries = 0,
                     }
                 };

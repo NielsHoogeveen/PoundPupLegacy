@@ -1,0 +1,28 @@
+﻿@if (Model.Any())
+{
+    <div class="section">
+        @foreach(var caseType in Model)
+        {
+            <h3>@caseType.CaseTypeName.Pluralize().CapitalizeFirstCharacter()</h3>
+            <table style="margin-bottom:1em;width:100%">
+                <tr>
+                    <th>Title</th>
+                    <th>Date</th>
+                </tr>
+                @foreach (var document in caseType.Cases.OrderByDescending(x => x.Date))
+                {
+                    <tr>
+                        <td><LinkViewer Link="document"/></td>
+                        <td>@document.Date?.ToDisplayString()</td>
+                    </tr>
+                }
+            </table>
+        }
+    </div>
+}
+@code {
+
+    [Parameter]
+    [EditorRequired]
+    public IEnumerable<RelatedCaseType> Model { get; set; } = Array.Empty<RelatedCaseType>();
+}

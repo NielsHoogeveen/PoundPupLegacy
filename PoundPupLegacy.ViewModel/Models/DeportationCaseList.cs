@@ -3,6 +3,6 @@
 [JsonSerializable(typeof(DeportationCaseList))]
 public partial class DeportationCaseListJsonContext : JsonSerializerContext { }
 
-public sealed record DeportationCaseList : PagedListBase<CaseListEntry>
+public sealed record DeportationCaseList : PagedListBase<CaseTeaserListEntry>
 {
 }

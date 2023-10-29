@@ -27,7 +27,7 @@ internal sealed class FetchCoercedAdoptionCasesService(
                 : new CoercedAdoptionCases {
                     TermNames = Array.Empty<SelectionItem>(),
                     Items = new CoercedAdoptionCaseList {
-                        Entries = Array.Empty<CaseListEntry>(),
+                        Entries = Array.Empty<CaseTeaserListEntry>(),
                         NumberOfEntries = 0,
                     }
                 };
