@@ -1,14 +1,15 @@
 ﻿using Microsoft.Extensions.Logging;
+using Npgsql;
 using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.UI.Services.Implementation;
 
 internal sealed class FetchDocumentsService(
-    IDbConnection connection,
+    NpgsqlDataSource dataSource,
     ILogger<FetchDocumentsService> logger,
     ISingleItemDatabaseReaderFactory<DocumentsDocumentReaderRequest, Documents> documentsDocumentReaderFactory
-) : DatabaseService(connection, logger), IFetchDocumentsService
+) : DatabaseService(dataSource, logger), IFetchDocumentsService
 {
     public async Task<Documents> GetArticles(int tenantId, int userId, int[] selectedTerms, int pageNumber, int length)
     {

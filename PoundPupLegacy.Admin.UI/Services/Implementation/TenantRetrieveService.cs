@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Npgsql;
 using PoundPupLegacy.Admin.View;
 using PoundPupLegacy.Admin.View.Readers;
 using PoundPupLegacy.Common;
@@ -7,10 +8,10 @@ using System.Data;
 namespace PoundPupLegacy.Admin.UI.Services.Implementation;
 
 internal class TenantRetrieveService(
-    IDbConnection connection,
+    NpgsqlDataSource dataSource,
     ILogger<TenantRetrieveService> logger,
     ISingleItemDatabaseReaderFactory<TenantReaderRequest, Tenant> tenantReaderFactory
-    ) : DatabaseService(connection, logger), ITenantRetrieveService
+    ) : DatabaseService(dataSource, logger), ITenantRetrieveService
 {
 
     public async Task<Tenant?> GetTenant(int tenantId)

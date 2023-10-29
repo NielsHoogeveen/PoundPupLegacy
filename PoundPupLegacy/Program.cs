@@ -14,6 +14,7 @@ using PoundPupLegacy.Areas.Identity;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Build.Execution;
+using System.Runtime.InteropServices;
 
 namespace PoundPupLegacy;
 
@@ -91,10 +92,6 @@ public sealed class Program
                 })
                 .Build();
             return dataSource;
-        });
-        builder.Services.AddTransient<IDbConnection>((sp) => {
-            var dataSource = sp.GetRequiredService<NpgsqlDataSource>();
-            return dataSource.CreateConnection();
         });
         builder.Services.AddApplicationServices();
         builder.Services.AddQuartz(q => {

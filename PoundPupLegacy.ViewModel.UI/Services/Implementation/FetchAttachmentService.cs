@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 using OneOf;
 using OneOf.Types;
 using PoundPupLegacy.ViewModel.Readers;
@@ -8,18 +9,18 @@ using System.Data;
 namespace PoundPupLegacy.ViewModel.UI.Services.Implementation;
 
 internal sealed class FetchAttachmentService(
-    IDbConnection connection,
+    NpgsqlDataSource dataSource,
     IConfiguration configuration,
     ILogger<FetchAttachmentService> logger,
     ISingleItemDatabaseReaderFactory<FileDocumentReaderRequest, Models.File> fileDocumentReaderFactory
-) : DatabaseService(connection, logger), IFetchAttachmentService
+) : DatabaseService(dataSource, logger), IFetchAttachmentService
 {
 
     public async Task<OneOf<FileReturn, None, Error<string>>> GetFileStream(int fileId, int userId, int tenantId)
     {
         var attachementsLocation = configuration["AttachmentsLocation"];
         if (attachementsLocation is null) {
-            _logger.LogError("AttachmentsLocation is not defined in appsettings.json");
+            logger.LogError("AttachmentsLocation is not defined in appsettings.json");
             return new None();
         }
 

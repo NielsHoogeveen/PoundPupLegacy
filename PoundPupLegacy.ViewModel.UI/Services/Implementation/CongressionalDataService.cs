@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Npgsql;
 using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
 using System.Text.RegularExpressions;
@@ -6,11 +7,11 @@ using System.Text.RegularExpressions;
 namespace PoundPupLegacy.ViewModel.UI.Services.Implementation;
 
 internal sealed partial class CongressionalDataService(
-    IDbConnection connection,
+    NpgsqlDataSource dataSource,
     ILogger<CongressionalDataService> logger,
     ISingleItemDatabaseReaderFactory<UnitedStatesMeetingChamberDocumentReaderRequest, CongressionalMeetingChamber> unitedStatesMeetingChamberDocumentReaderFactory,
     ISingleItemDatabaseReaderFactory<UnitedStatesCongresssDocumentReaderRequest, UnitedStatesCongress> unitedStatesCongresssDocumentReaderFactory
-) : DatabaseService(connection, logger), ICongressionalDataService
+) : DatabaseService(dataSource, logger), ICongressionalDataService
 {
 
 

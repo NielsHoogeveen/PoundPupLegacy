@@ -1,13 +1,14 @@
 ﻿using Microsoft.Extensions.Logging;
+using Npgsql;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal sealed class GeographicalEntitySearchService(
-    IDbConnection connection,
+    NpgsqlDataSource dataSource,
     ILogger<GeographicalEntitySearchService> logger,
     IEnumerableDatabaseReaderFactory<GeographicalEntitiesReaderRequest, GeographicalEntityListItem> readerFactory
 ) : SearchService<GeographicalEntityListItem, GeographicalEntitiesReaderRequest>(
-    connection, 
+    dataSource, 
     logger, 
     readerFactory
 )

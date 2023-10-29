@@ -1,13 +1,14 @@
 ﻿using Microsoft.Extensions.Logging;
+using Npgsql;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal sealed class TopicSearchService(
-    IDbConnection connection,
+    NpgsqlDataSource dataSource,
     ILogger<TopicSearchService> logger,
     IDoesRecordExistDatabaseReaderFactory<TopicExistsRequest> doesTopcExistReaderFactory,
     IEnumerableDatabaseReaderFactory<TagDocumentsReaderRequest, NodeTerm.ForCreate> tagDocumentsReaderFactory
-) : DatabaseService(connection, logger), ITopicSearchService
+) : DatabaseService(dataSource, logger), ITopicSearchService
 {
     public async Task<List<NodeTerm.ForCreate>> GetTerms(int tenantId, string searchString, int[] nodeTypeIds)
     {

@@ -1,13 +1,14 @@
 ﻿using Microsoft.Extensions.Logging;
+using Npgsql;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal sealed class PoliticalEntitySearchService(
-    IDbConnection connection,
+    NpgsqlDataSource dataSource,
     ILogger<PoliticalEntitySearchService> logger,
     IEnumerableDatabaseReaderFactory<PoliticalEntitiesReaderRequest, PoliticalEntityListItem> readerFactory
 ) : SearchService<PoliticalEntityListItem, PoliticalEntitiesReaderRequest>(
-    connection, 
+    dataSource, 
     logger, 
     readerFactory
 )

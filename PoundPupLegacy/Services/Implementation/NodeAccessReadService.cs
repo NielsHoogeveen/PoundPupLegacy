@@ -1,4 +1,5 @@
-﻿using PoundPupLegacy.Common;
+﻿using Npgsql;
+using PoundPupLegacy.Common;
 using PoundPupLegacy.Models;
 using PoundPupLegacy.Readers;
 using System.Data;
@@ -6,10 +7,10 @@ using System.Data;
 namespace PoundPupLegacy.Services.Implementation;
 
 public class NodeAccessReadService(
-    IDbConnection dbConnection,
+    NpgsqlDataSource dataSource,
     ILogger<NodeAccessReadService> logger,
     IEnumerableDatabaseReaderFactory<NodeAccessReaderRequest, NodeAccess> nodeAccessDatabaseReaderFactory
-) : DatabaseService(dbConnection, logger), INodeAccessReadService
+) : DatabaseService(dataSource, logger), INodeAccessReadService
 {
     public async Task<List<NodeAccess>> ReadNodeAccess(int nodeId)
     {

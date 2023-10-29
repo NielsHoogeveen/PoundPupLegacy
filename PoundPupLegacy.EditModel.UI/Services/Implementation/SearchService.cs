@@ -1,12 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
+using Npgsql;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal abstract class SearchService<TListItem, TRequest>(
-    IDbConnection connection,
+    NpgsqlDataSource dataSource,
     ILogger logger,
     IEnumerableDatabaseReaderFactory<TRequest, TListItem> readerFactory
-) : DatabaseService(connection, logger), ISearchService<TListItem>
+) : DatabaseService(dataSource, logger), ISearchService<TListItem>
     where TListItem : EditListItem
     where TRequest : IRequest
 {

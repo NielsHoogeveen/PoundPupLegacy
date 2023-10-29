@@ -1,13 +1,14 @@
 ﻿using Microsoft.Extensions.Logging;
+using Npgsql;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal sealed class CountrySearchService(
-    IDbConnection connection,
+    NpgsqlDataSource dataSource,
     ILogger<CountrySearchService> logger,
     IEnumerableDatabaseReaderFactory<CountriesReaderRequest, CountryListItem> readerFactory
 ) : SearchService<CountryListItem, CountriesReaderRequest>(
-    connection, 
+    dataSource, 
     logger, 
     readerFactory
 )

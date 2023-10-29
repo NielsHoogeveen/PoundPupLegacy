@@ -1,4 +1,5 @@
-﻿using PoundPupLegacy.Common;
+﻿using Npgsql;
+using PoundPupLegacy.Common;
 using PoundPupLegacy.DomainModel;
 using Quartz;
 using System.Data;
@@ -18,17 +19,17 @@ public class NodeAccessService : INodeAccessService
     private List<NodeAccessToWrite> nodeAccessesToWrites = new List<NodeAccessToWrite>();
 
     private IDatabaseInserterFactory<NodeAccess> _nodeAccessInserterFactory;
-    private IDbConnection _dbConnection;
+    private NpgsqlDataSource _dataSource;
     private ILogger<NodeAccessService> _logger;
 
     private SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
     public NodeAccessService(
         IDatabaseInserterFactory<NodeAccess> nodeAccessInserterFactory,
         ILogger<NodeAccessService> logger,
-        IDbConnection dbConnection)
+        NpgsqlDataSource dataSource)
     {
         _nodeAccessInserterFactory = nodeAccessInserterFactory;
-        _dbConnection = dbConnection;
+        _dataSource = dataSource;
         _logger = logger;
     }
 
@@ -62,10 +63,11 @@ public class NodeAccessService : INodeAccessService
             semaphore.Release();
         }
         if(lst is not null) {
-            _dbConnection.Open();
+            var connection = _dataSource.CreateConnection();
+            connection.Open();
             try {
                 _logger.LogInformation($"Flushing {lst.Count} entries to node access table");
-                await using var inserter = await _nodeAccessInserterFactory.CreateAsync(_dbConnection);
+                await using var inserter = await _nodeAccessInserterFactory.CreateAsync(connection);
                 foreach (var elem in lst) {
                     await inserter.InsertAsync(new NodeAccess {
                         DateTime = elem.DateTime,
@@ -77,7 +79,7 @@ public class NodeAccessService : INodeAccessService
                 }
             }
             finally {
-                _dbConnection.Close();
+                connection.Close();
             }
         }
     }

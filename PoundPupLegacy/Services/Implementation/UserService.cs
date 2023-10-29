@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity.UI.Services;
+using Npgsql;
 using PoundPupLegacy.Common;
 using PoundPupLegacy.Models;
 using PoundPupLegacy.Readers;
@@ -10,7 +11,7 @@ using System.Security.Claims;
 namespace PoundPupLegacy.Services.Implementation;
 
 internal sealed class UserService(
-    IDbConnection connection,
+    NpgsqlDataSource dataSource,
     ILogger<SiteDataService> logger,
     ISiteDataService siteDataService,
     IEmailSender emailSender,
@@ -19,7 +20,7 @@ internal sealed class UserService(
     ISingleItemDatabaseReaderFactory<UserByNameIdentifierReaderRequest, UserIdByNameIdentifier> userByNameIdentifierReaderFactory,
     ISingleItemDatabaseReaderFactory<UserByEmailReaderRequest, UserIdByEmail> userByEmailReaderFactory,
     IDatabaseUpdaterFactory<UserNameIdentifierUpdaterRequest> userNameIdentifierUpdaterFactory
-) : DatabaseService(connection, logger), IUserService
+) : DatabaseService(dataSource, logger), IUserService
 {
     public async Task AssignUserRoles(UserRolesToAssign userRolesToAssign)
     {
@@ -85,7 +86,7 @@ internal sealed class UserService(
     }
     public async Task<UserRegistrationResponse> RegisterUser(CompletedUserRegistrationData registrationData) 
     {
-        _logger.LogInformation($"Start registration of user {registrationData.UserName}");
+        logger.LogInformation($"Start registration of user {registrationData.UserName}");
         var result = await WithConnection<UserRegistrationResponse>(async (connection) => {
 
             try {
@@ -115,14 +116,14 @@ internal sealed class UserService(
                 statement.Parameters["registration_reason"].Value = registrationData.RegistrationReason;
                 statement.Parameters["tenant_id"].Value = siteDataService.GetTenant().Id;
                 var x = await statement.ExecuteNonQueryAsync();
-                _logger.LogInformation($"User registration of user {registrationData.UserName} succeeded");
+                logger.LogInformation($"User registration of user {registrationData.UserName} succeeded");
                 return new UserRegistrationResponse.RegisteredUser(x);
             }
             catch (Exception e) {
                 if(e.Message.StartsWith("23505")) {
                     return new UserRegistrationResponse.NameInUse();
                 }
-                _logger.LogError($"Error processing registration of {registrationData.UserName} {0}",e);
+                logger.LogError($"Error processing registration of {registrationData.UserName} {0}",e);
                 throw;
             }
         });

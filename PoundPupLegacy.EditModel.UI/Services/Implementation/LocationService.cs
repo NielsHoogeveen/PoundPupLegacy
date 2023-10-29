@@ -1,30 +1,32 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 using System.Net.Http.Json;
 using System.Text;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal sealed class LocationService(
-        IDbConnection connection,
-        ILogger<LocationService> logger,
-        IConfiguration configuration,
-        IEnumerableDatabaseReaderFactory<SubdivisionListItemsReaderRequest, SubdivisionListItem> subdivisionListItemReaderFactory,
-        IEnumerableDatabaseReaderFactory<CountryListItemsReaderRequest, CountryListItem> countryListItemReaderFactory
-        ) : DatabaseService(connection, logger), ILocationService
+    NpgsqlDataSource dataSource,
+    ILogger<LocationService> logger,
+    IConfiguration configuration,
+    IEnumerableDatabaseReaderFactory<SubdivisionListItemsReaderRequest, SubdivisionListItem> subdivisionListItemReaderFactory,
+    IEnumerableDatabaseReaderFactory<CountryListItemsReaderRequest, CountryListItem> countryListItemReaderFactory
+) : DatabaseService(dataSource, logger), ILocationService
 {
     public async IAsyncEnumerable<SubdivisionListItem> SubdivisionsOfCountry(int countryId)
     {
+        var connection = dataSource.CreateConnection();
         try {
-            await _connection.OpenAsync();
-            await using var reader = await subdivisionListItemReaderFactory.CreateAsync(_connection);
+            await connection.OpenAsync();
+            await using var reader = await subdivisionListItemReaderFactory.CreateAsync(connection);
             await foreach (var subdivision in reader.ReadAsync(new SubdivisionListItemsReaderRequest { CountryId = countryId })) {
                 yield return subdivision;
             }
         }
         finally {
-            if (_connection.State == ConnectionState.Open) {
-                await _connection.CloseAsync();
+            if (connection.State == ConnectionState.Open) {
+                await connection.CloseAsync();
             }
 
         }
@@ -32,15 +34,16 @@ internal sealed class LocationService(
     }
     public async IAsyncEnumerable<CountryListItem> Countries()
     {
+        var connection = dataSource.CreateConnection();
         try {
-            await _connection.OpenAsync();
-            await using var reader = await countryListItemReaderFactory.CreateAsync(_connection);
+            await connection.OpenAsync();
+            await using var reader = await countryListItemReaderFactory.CreateAsync(connection);
             await foreach (var country in reader.ReadAsync(new CountryListItemsReaderRequest())) {
                 yield return country;
             }
         }
         finally {
-            await _connection.CloseAsync();
+            await connection.CloseAsync();
         }
     }
 

@@ -1,13 +1,14 @@
 ﻿using Microsoft.Extensions.Logging;
+using Npgsql;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
 internal sealed class DocumentSearchService(
-    IDbConnection connection,
+    NpgsqlDataSource dataSource,
     ILogger<DocumentSearchService> logger,
     IEnumerableDatabaseReaderFactory<DocumentsReaderRequest, DocumentListItem> documentsReaderFactory
 ) : SearchService<DocumentListItem, DocumentsReaderRequest>(
-    connection, 
+    dataSource, 
     logger, 
     documentsReaderFactory
 )

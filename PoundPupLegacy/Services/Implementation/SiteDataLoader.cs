@@ -1,4 +1,5 @@
-﻿using PoundPupLegacy.Common;
+﻿using Npgsql;
+using PoundPupLegacy.Common;
 using PoundPupLegacy.Models;
 using PoundPupLegacy.Readers;
 using System.Data;
@@ -6,12 +7,12 @@ using System.Data;
 namespace PoundPupLegacy.Services.Implementation;
 
 internal sealed class SiteDataLoader(
-    IDbConnection connection,
+    NpgsqlDataSource dataSource,
     ILogger<SiteDataService> logger,
     IConfiguration configuration,
     IMandatorySingleItemDatabaseReaderFactory<TenantReaderRequest, Tenant> tenantReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<UserDocumentReaderRequest, User> userDocumentReaderFactory
-) : DatabaseService(connection, logger), ISiteDataLoader
+) : DatabaseService(dataSource, logger), ISiteDataLoader
 {
 
     public async Task<SiteData> GetSiteData()

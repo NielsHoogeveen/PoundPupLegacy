@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Npgsql;
 using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
 using SearchOption = PoundPupLegacy.Common.SearchOption;
@@ -6,10 +7,10 @@ using SearchOption = PoundPupLegacy.Common.SearchOption;
 namespace PoundPupLegacy.ViewModel.UI.Services.Implementation;
 
 internal sealed class FetchOrganizationsService(
-    IDbConnection connection,
+    NpgsqlDataSource dataSource,
     ILogger<FetchOrganizationsService> logger,
     ISingleItemDatabaseReaderFactory<OrganizationsDocumentReaderRequest, OrganizationSearch> organizationsDocumentReaderFactory
-) : DatabaseService(connection, logger), IFetchOrganizationsService
+) : DatabaseService(dataSource, logger), IFetchOrganizationsService
 {
     public async Task<OrganizationSearch> FetchOrganizations(int userId, int tenantId, int pageSize, int pageNumber, string searchTerm, SearchOption searchOption, int? organizationTypeId, int? countryId)
     {

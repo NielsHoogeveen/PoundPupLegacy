@@ -1,13 +1,14 @@
 ﻿using Microsoft.Extensions.Logging;
+using Npgsql;
 using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.UI.Services.Implementation;
 internal sealed class FetchRecentPostsService(
-    IDbConnection connection,
+    NpgsqlDataSource dataSource,
     ILogger<FetchRecentPostsService> logger,
     ISingleItemDatabaseReaderFactory<RecentPostsDocumentReaderRequest, RecentPosts> casesDocumentReaderFactory
-) : DatabaseService(connection,logger), IFetchRecentPostsService
+) : DatabaseService(dataSource,logger), IFetchRecentPostsService
 {
     public async Task<RecentPosts> FetchRecentPosts(int pageSize, int pageNumber, int tenantId, int userId)
     {

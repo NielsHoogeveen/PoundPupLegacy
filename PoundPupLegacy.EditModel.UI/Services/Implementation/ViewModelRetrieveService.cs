@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 
 namespace PoundPupLegacy.EditModel.UI.Services.Implementation;
 
@@ -16,12 +17,12 @@ public static class ViewModelRetrieveServiceExtension{
     where TViewModelCreate : class, TViewModelEntity, NewNode
     where TViewModelUpdate : class, TViewModelEntity, ExistingNode
     {
-        IDbConnection connection = serviceProvider.GetRequiredService<IDbConnection>();
+        NpgsqlDataSource dataSource = serviceProvider.GetRequiredService<NpgsqlDataSource>();
         ILogger logger = serviceProvider.GetRequiredService<ILogger<TViewModelEntity>>();
         ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, TViewModelCreate> createViewModelReaderFactory = serviceProvider.GetRequiredService<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, TViewModelCreate>>();
         ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, TViewModelUpdate> updateViewModelReaderFactory = serviceProvider.GetRequiredService<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, TViewModelUpdate>>();
         return new ViewModelRetrieveService<TViewModelEntity, TViewModelUpdate, TViewModelCreate>(
-            connection,
+            dataSource,
             logger,
             createViewModelReaderFactory,
             updateViewModelReaderFactory
@@ -30,11 +31,11 @@ public static class ViewModelRetrieveServiceExtension{
 }
 
 internal class ViewModelRetrieveService<TViewModelEntity, TViewModelUpdate, TViewModelCreate>(
-        IDbConnection connection,
-        ILogger logger,
-        ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, TViewModelCreate> createViewModelReaderFactory,
-        ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, TViewModelUpdate> updateViewModelReaderFactory
-    ) : DatabaseService(connection, logger), IViewModelRetrieveService<TViewModelEntity>
+    NpgsqlDataSource dataSource,
+    ILogger logger,
+    ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, TViewModelCreate> createViewModelReaderFactory,
+    ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, TViewModelUpdate> updateViewModelReaderFactory
+) : DatabaseService(dataSource, logger), IViewModelRetrieveService<TViewModelEntity>
     where TViewModelEntity : class, Node
     where TViewModelCreate: class, TViewModelEntity, NewNode
     where TViewModelUpdate: class, TViewModelEntity, ExistingNode

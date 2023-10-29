@@ -1,13 +1,14 @@
 ﻿using Microsoft.Extensions.Logging;
+using Npgsql;
 using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.UI.Services.Implementation;
 internal sealed class FetchAbuseCasesService(
-    IDbConnection connection,
+    NpgsqlDataSource dataSource,
     ILogger<FetchAbuseCasesService> logger,
     ISingleItemDatabaseReaderFactory<AbuseCasesDocumentReaderRequest, AbuseCases> abuseCasesDocumentReaderFactory
-) : DatabaseService(connection, logger), IFetchAbuseCasesService
+) : DatabaseService(dataSource, logger), IFetchAbuseCasesService
 {
     public async Task<AbuseCases> FetchCases(int pageSize, int pageNumber, int tenantId, int userId, int[] selectedTerms)
     {

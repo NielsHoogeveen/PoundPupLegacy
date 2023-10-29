@@ -1,14 +1,15 @@
 ﻿using Microsoft.Extensions.Logging;
+using Npgsql;
 using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.UI.Services.Implementation;
 
 internal sealed class FetchBlogService(
-    IDbConnection connection,
+    NpgsqlDataSource dataSource,
     ILogger<FetchBlogService> logger,
     ISingleItemDatabaseReaderFactory<BlogDocumentReaderRequest, Blog> blogDocumentReaderFactory
-) : DatabaseService(connection, logger), IFetchBlogService
+) : DatabaseService(dataSource, logger), IFetchBlogService
 {
     public async Task<Blog> FetchBlog(int publisherId, int tenantId, int userId, int pageNumber, int pageSize)
     {

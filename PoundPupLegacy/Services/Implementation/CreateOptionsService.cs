@@ -1,4 +1,5 @@
-﻿using PoundPupLegacy.Common;
+﻿using Npgsql;
+using PoundPupLegacy.Common;
 using PoundPupLegacy.Models;
 using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
@@ -6,11 +7,10 @@ using System.Data;
 namespace PoundPupLegacy.Services.Implementation;
 
 internal class CreateOptionsService(
-    IDbConnection connection,
+    NpgsqlDataSource dataSource,
     ILogger<AuthenticationService> logger,
     ISingleItemDatabaseReaderFactory<CreateOptionsReaderRequest, List<CreateOption>> readerFactory
-
-) : DatabaseService(connection, logger), ICreateOptionsService
+) : DatabaseService(dataSource, logger), ICreateOptionsService
 {
     public async Task<List<CreateOption>> GetCreateOptions(int tenantId, int userId)
     {

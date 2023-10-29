@@ -1,14 +1,15 @@
 ﻿using Microsoft.Extensions.Logging;
+using Npgsql;
 using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.UI.Services.Implementation;
 
 internal sealed class FetchPollsService(
-    IDbConnection connection,
+    NpgsqlDataSource dataSource,
     ILogger<FetchPollsService> logger,
     ISingleItemDatabaseReaderFactory<PollsDocumentReaderRequest, Polls> pollsDocumentReaderFactory
-) : DatabaseService(connection, logger), IFetchPollsService
+) : DatabaseService(dataSource, logger), IFetchPollsService
 {
 
     public async Task<Polls> GetPolls(int userId, int tenantId, int pageSize, int pageNumber)

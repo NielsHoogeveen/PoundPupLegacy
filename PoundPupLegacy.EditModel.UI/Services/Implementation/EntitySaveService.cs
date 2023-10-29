@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 using PoundPupLegacy.DomainModel;
 using PoundPupLegacy.DomainModel.Creators;
 using PoundPupLegacy.DomainModel.Updaters;
@@ -26,7 +27,7 @@ public static class EntitySaveServiceExensions
     {
         services.AddTransient<IEntitySaveService<TUpdateModel, TCreateModel>> (serviceProvider => 
         {
-            IDbConnection connection = serviceProvider.GetRequiredService<IDbConnection>();
+            NpgsqlDataSource dataSource = serviceProvider.GetRequiredService<NpgsqlDataSource>();
             ILogger logger = serviceProvider.GetRequiredService<ILogger<TEditModel>>();
             IMapper<TUpdateModel, TDomainModelToUpdate> updateMapper = serviceProvider.GetRequiredService<IMapper<TUpdateModel, TDomainModelToUpdate>>();
             IMapper<TCreateModel, TDomainModelToCreate> createMapper = serviceProvider.GetRequiredService<IMapper<TCreateModel, TDomainModelToCreate>>();
@@ -40,7 +41,7 @@ public static class EntitySaveServiceExensions
                 TDomainModelToUpdate,
                 TDomainModelToCreate
                 >(
-                connection,
+                dataSource,
                     logger,
                     updateMapper,
                     createMapper,
@@ -63,13 +64,13 @@ internal class EntitySaveService<
     TDomainModelToCreate
     >
     (
-        IDbConnection connection,
+        NpgsqlDataSource dataSource,
         ILogger logger,
         IMapper<TUpdateModel, TDomainModelToUpdate> updateMapper,
         IMapper<TCreateModel, TDomainModelToCreate> createMapper,
         IEntityChangerFactory<TDomainModelToUpdate> entityChanger,
         IEntityCreatorFactory<TDomainModelToCreate> entityCreator
-    ) : DatabaseService(connection, logger), IEntitySaveService<TUpdateModel, TCreateModel>
+    ) : DatabaseService(dataSource, logger), IEntitySaveService<TUpdateModel, TCreateModel>
     where TEditModel : class, Node
     where TCreateModel: class, TEditModel, ResolvedNewNode
     where TUpdateModel: class, TEditModel, ExistingNode

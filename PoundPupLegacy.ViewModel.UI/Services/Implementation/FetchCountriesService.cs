@@ -1,14 +1,15 @@
 ﻿using Microsoft.Extensions.Logging;
+using Npgsql;
 using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.UI.Services.Implementation;
 
 internal sealed class FetchCountriesService(
-    IDbConnection connection,
+    NpgsqlDataSource dataSource,
     ILogger<FetchCountriesService> logger,
     ISingleItemDatabaseReaderFactory<CountriesDocumentReaderRequest, FirstLevelRegionListEntry[]> countriesDocumentReaderFactory
-) : DatabaseService(connection, logger), IFetchCountriesService
+) : DatabaseService(dataSource, logger), IFetchCountriesService
 {
     public async Task<FirstLevelRegionListEntry[]> FetchCountries(int tenantId)
     {

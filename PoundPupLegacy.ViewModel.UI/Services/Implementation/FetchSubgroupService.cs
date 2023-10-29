@@ -1,14 +1,15 @@
 ﻿using Microsoft.Extensions.Logging;
+using Npgsql;
 using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.UI.Services.Implementation;
 
 internal sealed class FetchSubgroupService(
-    IDbConnection connection,
+    NpgsqlDataSource dataSource,
     ILogger<FetchSubgroupService> logger,
     ISingleItemDatabaseReaderFactory<SubgroupsDocumentReaderRequest, SubgroupPagedList> subgroupsDocumentReaderFactory
-) : DatabaseService(connection, logger), IFetchSubgroupService
+) : DatabaseService(dataSource, logger), IFetchSubgroupService
 {
     public async Task<SubgroupPagedList> GetSubGroupPagedList(int userId, int subgroupId, int pageSize, int pageNumber)
     {

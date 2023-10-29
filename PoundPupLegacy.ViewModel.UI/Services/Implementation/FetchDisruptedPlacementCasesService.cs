@@ -1,13 +1,14 @@
 ﻿using Microsoft.Extensions.Logging;
+using Npgsql;
 using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
 
 namespace PoundPupLegacy.ViewModel.UI.Services.Implementation;
 internal sealed class FetchDisruptedPlacementCasesService(
-        IDbConnection connection,
-        ILogger<FetchDisruptedPlacementCasesService> logger,
-        ISingleItemDatabaseReaderFactory<DisruptedPlacementCasesDocumentReaderRequest, DisruptedPlacementCases> abuseCasesDocumentReaderFactory
-        ) : DatabaseService(connection, logger), IFetchDisruptedPlacementCasesService
+    NpgsqlDataSource dataSource,
+    ILogger<FetchDisruptedPlacementCasesService> logger,
+    ISingleItemDatabaseReaderFactory<DisruptedPlacementCasesDocumentReaderRequest, DisruptedPlacementCases> abuseCasesDocumentReaderFactory
+): DatabaseService(dataSource, logger), IFetchDisruptedPlacementCasesService
 {
 
     public async Task<DisruptedPlacementCases> FetchCases(int pageSize, int pageNumber, int tenantId, int userId, int[] selectedTerms)

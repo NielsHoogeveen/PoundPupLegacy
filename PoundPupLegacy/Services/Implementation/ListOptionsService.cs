@@ -1,4 +1,5 @@
-﻿using PoundPupLegacy.Common;
+﻿using Npgsql;
+using PoundPupLegacy.Common;
 using PoundPupLegacy.Models;
 using PoundPupLegacy.ViewModel.Readers;
 using System.Data;
@@ -6,11 +7,10 @@ using System.Data;
 namespace PoundPupLegacy.Services.Implementation;
 
 internal class ListOptionsService(
-    IDbConnection connection,
+    NpgsqlDataSource dataSource,
     ILogger<AuthenticationService> logger,
     ISingleItemDatabaseReaderFactory<ListOptionsReaderRequest, List<ListOption>> readerFactory
-
-) : DatabaseService(connection, logger), IListOptionsService
+) : DatabaseService(dataSource, logger), IListOptionsService
 {
     public async Task<List<ListOption>> GetListOptions(int tenantId, int userId)
     {

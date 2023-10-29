@@ -1,13 +1,14 @@
-﻿using PoundPupLegacy.Common;
+﻿using Npgsql;
+using PoundPupLegacy.Common;
 using Quartz;
 using System.Data;
 
 namespace PoundPupLegacy.Services.Implementation;
 
 public class RemoveExpiredRolesService(
-    IDbConnection connection,
+    NpgsqlDataSource dataSource,
     ILogger<RemoveExpiredRolesService> logger
-) : DatabaseService(connection, logger), IRemoveExpiredRolesService
+) : DatabaseService(dataSource, logger), IRemoveExpiredRolesService
 {
 
     public async Task Execute(IJobExecutionContext context)

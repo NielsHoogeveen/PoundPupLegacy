@@ -483,7 +483,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                     tn2.url_id,
                     c.fuzzy_date
         	        from node_with_descendants n
-        	        join tenant_node tn on tn.node_id = n.id
+        	        join tenant_node tn on tn.node_id = n.id and tn.tenant_id = @tenant_id
         	        join(		
         		        select
         		        distinct
@@ -1525,12 +1525,13 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         upper(d.published) publication_date_to
                     from node_term nt
                     join term t on t.id = nt.term_id
-                    join node_with_descendants n on n.id = t.nameable_id
+                    join node n on n.id = t.nameable_id
                     join tenant_node tn2 on tn2.node_id = n.id
                     join tenant_node tn on tn.node_id = nt.node_id and tn.tenant_id = @tenant_id
                     join node n2 on n2.Id = tn.node_id
                     join "document" d on d.id = n2.id
-                    where tn.publication_status_id in 
+                    where tn2.url_id = @url_id and tn2.tenant_id = @tenant_id
+                    and tn.publication_status_id in 
                     (
                         select 
                         id 

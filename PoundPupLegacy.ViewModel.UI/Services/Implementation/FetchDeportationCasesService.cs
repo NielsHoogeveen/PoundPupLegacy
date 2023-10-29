@@ -5,10 +5,10 @@ using System.Data;
 
 namespace PoundPupLegacy.ViewModel.UI.Services.Implementation;
 internal sealed class FetchDeportationCasesService(
-    IDbConnection connection,
+    NpgsqlDataSource dataSource,
     ILogger<FetchDeportationCasesService> logger,
     ISingleItemDatabaseReaderFactory<DeportationCasesDocumentReaderRequest, DeportationCases> abuseCasesDocumentReaderFactory
-) : DatabaseService(connection, logger), IFetchDeportationCasesService
+) : DatabaseService(dataSource, logger), IFetchDeportationCasesService
 {
     public async Task<DeportationCases> FetchCases(int pageSize, int pageNumber, int tenantId, int userId, int[] selectedTerms)
     {

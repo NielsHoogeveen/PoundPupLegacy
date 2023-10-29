@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Npgsql;
 using PoundPupLegacy.Common;
 using PoundPupLegacy.Readers;
 using System.Data;
@@ -8,10 +9,10 @@ using System.Security.Principal;
 namespace PoundPupLegacy.Services.Implementation;
 
 internal sealed class AuthenticationService(
-        IDbConnection connection,
-        ILogger<AuthenticationService> logger,
-        ISingleItemDatabaseReaderFactory<PasswordValidationReaderRequest, PasswordValidationReaderResponse> passwordValidationReaderFactory
-    ) : DatabaseService(connection, logger), IAuthenticationService
+    NpgsqlDataSource dataSource,
+    ILogger<AuthenticationService> logger,
+    ISingleItemDatabaseReaderFactory<PasswordValidationReaderRequest, PasswordValidationReaderResponse> passwordValidationReaderFactory
+) : DatabaseService(dataSource, logger), IAuthenticationService
 {
     public async Task<ClaimsIdentity?> Login(string userName, string password)
     {

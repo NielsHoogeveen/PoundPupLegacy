@@ -6,10 +6,10 @@ using System.Data;
 namespace PoundPupLegacy.ViewModel.UI.Services.Implementation;
 
 internal sealed class FetchSearchService(
-    IDbConnection connection,
+    NpgsqlDataSource dataSource,
     ILogger<FetchSearchService> logger,
     ISingleItemDatabaseReaderFactory<SearchDocumentReaderRequest, SearchResult> searchDocumentReaderFactory
-) : DatabaseService(connection, logger), IFetchSearchService
+) : DatabaseService(dataSource, logger), IFetchSearchService
 {
     public async Task<SearchResult> FetchSearch(int userId, int tenantId, int pageSize, int pageNumber, string searchString)
     {

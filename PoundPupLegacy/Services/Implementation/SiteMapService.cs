@@ -1,4 +1,5 @@
-﻿using PoundPupLegacy.Common;
+﻿using Npgsql;
+using PoundPupLegacy.Common;
 using PoundPupLegacy.Models;
 using PoundPupLegacy.Readers;
 using System.Data;
@@ -7,12 +8,12 @@ using System.Text;
 namespace PoundPupLegacy.Services.Implementation;
 
 internal class SiteMapService(
-    IDbConnection connection,
+    NpgsqlDataSource dataSource,
     ILogger<SiteDataService> logger,
     ISiteDataService siteDataService,
     IEnumerableDatabaseReaderFactory<SiteMapReaderRequest, SiteMapElement> siteMapReaderFactory,
     IMandatorySingleItemDatabaseReaderFactory<SiteMapCountReaderRequest, SiteMapCount> siteMapCountReaderFactory
-) : DatabaseService(connection, logger), ISiteMapService
+) : DatabaseService(dataSource, logger), ISiteMapService
 {
     public async Task<string> GetSiteMapIndex()
     {
