@@ -21,6 +21,7 @@ public static class DependencyInjection
         services.AddTransient<ISingleItemDatabaseReaderFactory<DocumentsDocumentReaderRequest, Documents>, DocumentsDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<FathersRightsViolationCasesDocumentReaderRequest, FathersRightsViolationCases>, FathersRightsViolationCasesDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<FileDocumentReaderRequest, File>, FileDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NameablesDocumentReaderRequest, Nameables>, NameableListDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, Node>, NodeDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<OrganizationsDocumentReaderRequest, OrganizationSearch>, OrganizationsDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<PersonsDocumentReaderRequest, Persons>, PersonsDocumentReaderFactory>();

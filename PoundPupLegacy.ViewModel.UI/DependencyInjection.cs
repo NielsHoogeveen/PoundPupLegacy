@@ -23,6 +23,7 @@ public static class DependencyInjection
         services.AddTransient<IFetchChildTraffickingCasesService, FetchChildTraffickingCasesService>();
         services.AddTransient<IFetchCoercedAdoptionCasesService, FetchCoercedAdoptionCasesService>();
         services.AddTransient<IFetchCountriesService, FetchCountriesService>();
+        services.AddTransient<IFetchNameablesService, FetchNameablesService>();
         services.AddTransient<IFetchDeportationCasesService, FetchDeportationCasesService>();
         services.AddTransient<IFetchDisruptedPlacementCasesService, FetchDisruptedPlacementCasesService>();
         services.AddTransient<IFetchFathersRightsViolationCasesService, FetchFathersRightsViolationCasesService>();

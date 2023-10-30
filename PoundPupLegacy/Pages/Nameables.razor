@@ -1,0 +1,26 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+@using PoundPupLegacy.Components
+@using PoundPupLegacy.Services
+@inject ISiteDataService SiteDataService
+@inherits ViewerBase
+@if(CanCreate.HasValue)
+{
+    <PageViewer>
+    <NameablesViewer NodeTypeId="NodeTypeId" CanCreate="CanCreate.Value"/>
+    </PageViewer>
+}
+
+@code{
+
+    [Parameter]
+    [EditorRequired]
+    public int NodeTypeId { get; set; } 
+
+    private bool? CanCreate = null;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        CanCreate = await SiteDataService.CanCreate(NodeTypeId, UserId);
+        StateHasChanged();
+    }
+}

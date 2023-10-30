@@ -1,0 +1,36 @@
+h3 {
+    margin-left: 0.15em;
+}
+.list-entry {
+    margin-left: 0.15em;
+    padding-left: 0,25em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    background-color: var(--table-row-bg-color);
+    display: grid;
+    grid-template-columns: auto 2em;
+}
+
+.list-entry:nth-of-type(2n+1) {
+    background-color: var(--table-row-bg-color-even);
+}
+.create-button {
+    margin-bottom: 1em;
+    margin-top: 1em;
+    margin-left: 0.15em;
+    padding: 0.5em 1em;
+    border: 0;
+    background-color: var(--button-color);
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 3px 3px 2px 1px rgba(20, 20, 20, .25);
+    width: fit-content;
+}
+.create-button a {
+    color: white;
+}
+.create-button:hover {
+    background-color: var(--button-hover-color);
+}
+

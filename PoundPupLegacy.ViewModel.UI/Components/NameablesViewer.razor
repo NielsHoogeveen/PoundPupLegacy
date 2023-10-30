@@ -1,0 +1,58 @@
+﻿@using PoundPupLegacy.ViewModel.UI.Services
+@inherits Viewer
+@inject IFetchNameablesService FetchNameablesService
+<BreadCrumElementViewer Model="BreadCrumElements" />
+<h3>@Title</h3>
+@if(CanCreate)
+{
+    <div class="create-button">
+        <a href="@CreatePath" class="btn btn-primary">Create new @nodeTypeName</a>
+    </div>
+}
+@if (nameables is not null)
+{
+    @foreach (var listEntry in nameables.NameableListEntries)
+    {
+        <div class="list-entry">
+            <LinkViewer Link="@listEntry" />
+            <div class="tooltip publication-status-@listEntry.PublicationStatusId">
+                ⬤
+                @if (@listEntry.PublicationStatusId == 0) {
+                    <span class="tooltip-text">unpublished</span>
+                }
+                @if (@listEntry.PublicationStatusId == 1) {
+                    <span class="tooltip-text">public</span>
+                }
+                @if (@listEntry.PublicationStatusId == 2) {
+                    <span class="tooltip-text ">private</span>
+                }
+            </div>
+        </div>
+    }
+}
+@code {
+    [Parameter]
+    [EditorRequired]
+    public int NodeTypeId { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public bool CanCreate { get; set; }
+
+    private string nodeTypeName = "";
+
+    private Nameables? nameables = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        nameables = await FetchNameablesService.FetchNameables(TenantId, UserId, NodeTypeId);
+        nodeTypeName = nameables is not null ? nameables.NodeTypeName: "";
+    }
+
+    protected string CreatePath => $"/{nodeTypeName.ToLower().Replace(" ", "_")}/create";
+
+    protected override string Title => nodeTypeName.Pluralize().CapitalizeFirstCharacter();
+
+    protected override string Description => $"Lists all {nodeTypeName.Pluralize()}";
+}

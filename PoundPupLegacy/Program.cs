@@ -292,6 +292,7 @@ public static class Extensions
             ViewModel.Models.MemberOfCongressJsonContext.Default,
             ViewModel.Models.MultiQuestionPollJsonContext.Default,
             ViewModel.Models.NonSpecificCaseListEntryJsonContext.Default,
+            ViewModel.Models.NameablesJsonContext.Default,
             ViewModel.Models.OrganizationJsonContext.Default,
             ViewModel.Models.OrganizationListEntryJsonContext.Default,
             ViewModel.Models.OrganizationPersonRelationJsonContext.Default,

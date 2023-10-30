@@ -20,6 +20,8 @@ public interface ISiteDataService
 
     Task<bool> CanViewNodeAccess(int userId);
 
+    Task<bool> CanCreate(int nodeTypeId, int userId);
+
     Tenant GetTenant();
 
     int? GetIdForUrlPath(string urlPath);
