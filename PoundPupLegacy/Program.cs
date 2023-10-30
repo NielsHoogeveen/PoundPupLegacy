@@ -13,6 +13,7 @@ using PoundPupLegacy.Areas.Identity;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
+using Microsoft.Extensions.Configuration;
 
 namespace PoundPupLegacy;
 
@@ -110,12 +111,12 @@ public sealed class Program
             .WithDescription("Removing expired roles"));
 
         });
-        string defaultRateLimitPolicy = "DefaultRateLimitPolicy";
+        var rateLimiterPolicy = builder.Configuration.GetSection("RateLimiterPolicy").Get<RateLimiterPolicy>()!;
         builder.Services.AddRateLimiter(_ => _
-            .AddConcurrencyLimiter(policyName: defaultRateLimitPolicy, options => {
-                options.PermitLimit = 5;
+            .AddConcurrencyLimiter(policyName: rateLimiterPolicy.Name, options => {
+                options.PermitLimit = rateLimiterPolicy.PermitLimit;
                 options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-                options.QueueLimit = 20;
+                options.QueueLimit = rateLimiterPolicy.QueueLimit;
             }));
 
         builder.Services.AddQuartzServer(options => {
@@ -158,13 +159,13 @@ public sealed class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.MapControllers().RequireRateLimiting(defaultRateLimitPolicy); 
-        app.MapBlazorHub().RequireRateLimiting(defaultRateLimitPolicy);
-        app.MapFallbackToPage("/_Host").RequireRateLimiting(defaultRateLimitPolicy);
+        app.MapControllers().RequireRateLimiting(rateLimiterPolicy.Name); 
+        app.MapBlazorHub().RequireRateLimiting(rateLimiterPolicy.Name);
+        app.MapFallbackToPage("/_Host").RequireRateLimiting(rateLimiterPolicy.Name);
 
         app.MapControllerRoute(
             name: "default",
-            pattern: "{controller=Home}/{action=Index}/{id?}").RequireRateLimiting(defaultRateLimitPolicy); ;
+            pattern: "{controller=Home}/{action=Index}/{id?}").RequireRateLimiting(rateLimiterPolicy.Name); ;
 
         //app.MapControllerRoute(
         //   name: "all-else",

@@ -28,9 +28,7 @@ internal sealed class LocationService(
             if (connection.State == ConnectionState.Open) {
                 await connection.CloseAsync();
             }
-
         }
-
     }
     public async IAsyncEnumerable<CountryListItem> Countries()
     {
@@ -47,8 +45,6 @@ internal sealed class LocationService(
         }
     }
 
-    //private const string GOOGLE_API_ADDRESS = "https://maps.googleapis.com/maps/api/geocode/json?";
-    //private const string GOOGLE_API_KEY = "AIzaSyDz40b_l25vytdmQGVnOFTqHVakmaZ6QCE";
     public async Task<Location> ValidateLocationAsync(Location location)
     {
         HttpClient client = new();
