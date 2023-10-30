@@ -8,13 +8,11 @@ using PoundPupLegacy.Data;
 using PoundPupLegacy.Services;
 using Quartz;
 using Quartz.AspNetCore;
-using System.Data;
 using System.Text.Json.Serialization.Metadata;
 using PoundPupLegacy.Areas.Identity;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.Build.Execution;
-using System.Runtime.InteropServices;
+using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.RateLimiting;
 
 namespace PoundPupLegacy;
 
@@ -103,15 +101,22 @@ public sealed class Program
             q.ScheduleJob<INodeAccessService>(trigger => trigger
             .WithIdentity("1")
             .StartAt(DateBuilder.EvenSecondDate(DateTimeOffset.UtcNow.AddSeconds(7)))
-            .WithDailyTimeIntervalSchedule(x => x.WithInterval(10, IntervalUnit.Second))
+            .WithDailyTimeIntervalSchedule(x => x.WithInterval(1, IntervalUnit.Hour))
             .WithDescription("Flushing node access to database"));
             q.ScheduleJob<IRemoveExpiredRolesService>(trigger => trigger
             .WithIdentity("2")
             .StartAt(DateBuilder.EvenSecondDate(DateTimeOffset.UtcNow.AddSeconds(15)))
-            .WithDailyTimeIntervalSchedule(x => x.WithInterval(1, IntervalUnit.Minute))
+            .WithDailyTimeIntervalSchedule(x => x.WithInterval(12, IntervalUnit.Hour))
             .WithDescription("Removing expired roles"));
 
         });
+        string defaultRateLimitPolicy = "DefaultRateLimitPolicy";
+        builder.Services.AddRateLimiter(_ => _
+            .AddConcurrencyLimiter(policyName: defaultRateLimitPolicy, options => {
+                options.PermitLimit = 5;
+                options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                options.QueueLimit = 20;
+            }));
 
         builder.Services.AddQuartzServer(options => {
             options.WaitForJobsToComplete = true;
@@ -121,13 +126,14 @@ public sealed class Program
 
         var app = builder.Build();
 
-
         if (!app.Environment.IsDevelopment()) {
             app.UseExceptionHandler("/Home/Error");
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
 
         }
+
+        app.UseRateLimiter();
 
         app.Use(async (context, next) => {
             await next();
@@ -152,13 +158,13 @@ public sealed class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.MapControllers();
-        app.MapBlazorHub();
-        app.MapFallbackToPage("/_Host");
+        app.MapControllers().RequireRateLimiting(defaultRateLimitPolicy); 
+        app.MapBlazorHub().RequireRateLimiting(defaultRateLimitPolicy);
+        app.MapFallbackToPage("/_Host").RequireRateLimiting(defaultRateLimitPolicy);
 
         app.MapControllerRoute(
             name: "default",
-            pattern: "{controller=Home}/{action=Index}/{id?}");
+            pattern: "{controller=Home}/{action=Index}/{id?}").RequireRateLimiting(defaultRateLimitPolicy); ;
 
         //app.MapControllerRoute(
         //   name: "all-else",
@@ -239,6 +245,7 @@ public static class Extensions
             ViewModel.Models.CasePartiesJsonContext.Default,
             ViewModel.Models.CasesJsonContext.Default,
             ViewModel.Models.CaseTypeListEntryJsonContext.Default,
+            ViewModel.Models.ChildPlacementTypeJsonContext.Default,
             ViewModel.Models.ChildTraffickingCaseJsonContext.Default,
             ViewModel.Models.ChildTraffickingCaseListJsonContext.Default,
             ViewModel.Models.ChildTraffickingCasesJsonContext.Default,
@@ -254,6 +261,7 @@ public static class Extensions
             ViewModel.Models.CountryAndSubdivisionJsonContext.Default,
             ViewModel.Models.CountryListEntryJsonContext.Default,
             ViewModel.Models.DeportationCaseJsonContext.Default,
+            ViewModel.Models.DenominationJsonContext.Default,
             ViewModel.Models.DeportationCaseListJsonContext.Default,
             ViewModel.Models.DeportationCasesJsonContext.Default,
             ViewModel.Models.DiscussionJsonContext.Default,
@@ -262,6 +270,7 @@ public static class Extensions
             ViewModel.Models.DisruptedPlacementCasesJsonContext.Default,
             ViewModel.Models.DocumentJsonContext.Default,
             ViewModel.Models.DocumentsJsonContext.Default,
+            ViewModel.Models.DocumentTypeJsonContext.Default,
             ViewModel.Models.DocumentListEntryJsonContext.Default,
             ViewModel.Models.ErrorViewModelJsonContext.Default,
             ViewModel.Models.ExecutiveCompensationJsonContext.Default,
@@ -272,10 +281,13 @@ public static class Extensions
             ViewModel.Models.FirstLevelRegionListEntryJsonContext.Default,
             ViewModel.Models.FormalSubdivisionJsonContext.Default,
             ViewModel.Models.GlobalRegionJsonContext.Default,
+            ViewModel.Models.HagueStatusJsonContext.Default,
             ViewModel.Models.ImageJsonContext.Default,
             ViewModel.Models.InformalSubdivisionJsonContext.Default,
             ViewModel.Models.InterOrganizationalRelationJsonContext.Default,
+            ViewModel.Models.InterOrganizationalRelationTypeJsonContext.Default,
             ViewModel.Models.InterPersonalRelationJsonContext.Default,
+            ViewModel.Models.InterPersonalRelationTypeJsonContext.Default,
             ViewModel.Models.LocationJsonContext.Default,
             ViewModel.Models.MemberOfCongressJsonContext.Default,
             ViewModel.Models.MultiQuestionPollJsonContext.Default,
@@ -294,10 +306,13 @@ public static class Extensions
             ViewModel.Models.PartyCaseTypeJsonContext.Default,
             ViewModel.Models.PartyMembershipJsonContext.Default,
             ViewModel.Models.PartyPoliticalEntityRelationJsonContext.Default,
+            ViewModel.Models.PartyPoliticalEntityRelationTypeJsonContext.Default,
             ViewModel.Models.PersonJsonContext.Default,
             ViewModel.Models.PersonListEntryJsonContext.Default,
             ViewModel.Models.PersonOrganizationRelationJsonContext.Default,
+            ViewModel.Models.PersonOrganizationRelationTypeJsonContext.Default,
             ViewModel.Models.PersonsJsonContext.Default,
+            ViewModel.Models.ProfessionJsonContext.Default,
             ViewModel.Models.PollListEntryJsonContext.Default,
             ViewModel.Models.PollOptionJsonContext.Default,
             ViewModel.Models.PollsJsonContext.Default,
@@ -316,6 +331,8 @@ public static class Extensions
             ViewModel.Models.TagListEntryJsonContext.Default,
             ViewModel.Models.TopicListEntryJsonContext.Default,
             ViewModel.Models.TopicsJsonContext.Default,
+            ViewModel.Models.TypeOfAbuseJsonContext.Default,
+            ViewModel.Models.TypeOfAbuserJsonContext.Default,
             ViewModel.Models.UnitedStatesCongressJsonContext.Default,
             ViewModel.Models.WrongfulMedicationCaseJsonContext.Default,
             ViewModel.Models.WrongfulMedicationCaseListJsonContext.Default,
@@ -326,13 +343,16 @@ public static class Extensions
 
             EditModel.AbuseCaseToUpdateJsonContext.Default,
             EditModel.AbuseCaseToCreateJsonContext.Default,
+            EditModel.BasicNameableJsonContext.Default,
             EditModel.BlogPostToUpdateJsonContext.Default,
             EditModel.BlogPostToCreateJsonContext.Default,
+            EditModel.ChildPlacementTypeJsonContext.Default,
             EditModel.ChildTraffickingCaseToUpdateJsonContext.Default,
             EditModel.ChildTraffickingCaseToCreateJsonContext.Default,
             EditModel.CoercedAdoptionCaseJsonToUpdateContext.Default,
             EditModel.CoercedAdoptionCaseToCreateJsonContext.Default,
             EditModel.CountryListItemJsonContext.Default,
+            EditModel.DenominationJsonContext.Default,
             EditModel.DeportationCaseToUpdateJsonContext.Default,
             EditModel.DeportationCaseToCreateJsonContext.Default,
             EditModel.ExistingDiscussionToUpdateJsonContext.Default,
@@ -343,31 +363,39 @@ public static class Extensions
             EditModel.DocumentToCreateJsonContext.Default,
             EditModel.DocumentListItemJsonContext.Default,
             EditModel.DocumentTypeJsonContext.Default,
+            EditModel.DocumentTypeListItemJsonContext.Default,
             EditModel.FathersRightsViolationCaseToUpdateJsonContext.Default,
             EditModel.FathersRightsViolationToCreateCaseJsonContext.Default,
             EditModel.FileJsonContext.Default,
             EditModel.GeographicalEntityListItemJsonContext.Default,
+            EditModel.HagueStatusJsonContext.Default,
+            EditModel.InterOrganizationalRelationTypeJsonContext.Default,
+            EditModel.InterPersonalRelationTypeJsonContext.Default,
             EditModel.LocationJsonContext.Default,
+            EditModel.OrganizationCasePartyJsonContext.Default,
             EditModel.OrganizationTypeJsonContext.Default,
             EditModel.OrganizationToUpdateJsonContext.Default,
             EditModel.OrganizationToCreateJsonContext.Default,
             EditModel.OrganizationListItemJsonContext.Default,
+            EditModel.OrganizationNameJsonContext.Default,
             EditModel.OrganizationTypeListItemJsonContext.Default,
-            EditModel.PersonListItemJsonContext.Default,
             EditModel.OrganizationPoliticalEntityRelationTypeListItemJsonContext.Default,
+            EditModel.PartyPoliticalEntityRelationTypeJsonContext.Default,
+            EditModel.PersonListItemJsonContext.Default,
+            EditModel.PersonOrganizationRelationTypeJsonContext.Default,
             EditModel.PersonPoliticalEntityRelationTypeListItemJsonContext.Default,
             EditModel.PersonToUpdateJsonContext.Default,
             EditModel.PersonToCreateJsonContext.Default,
-            EditModel.OrganizationNameJsonContext.Default,
             EditModel.PersonNameJsonContext.Default,
             EditModel.PersonCasePartyJsonContext.Default,
-            EditModel.OrganizationCasePartyJsonContext.Default,
+            EditModel.ProfessionJsonContext.Default,
             EditModel.PersonOrganizationRelationTypeListItemJsonContext.Default,
             EditModel.PoliticalEntityListItemJsonContext.Default,
             EditModel.SubdivisionListItemJsonContext.Default,
             EditModel.SubgroupJsonContext.Default,
             EditModel.TagNodeTypeJsonContext.Default,
-
+            EditModel.TypeOfAbuseJsonContext.Default,
+            EditModel.TypeOfAbuserJsonContext.Default,
             EditModel.TenantDetailsJsonContext.Default,
             EditModel.ExistingTenantNodeJsonContext.Default,
             EditModel.TermJsonContext.Default,
@@ -375,10 +403,10 @@ public static class Extensions
             EditModel.WrongfulMedicationCaseToCreateJsonContext.Default,
             EditModel.WrongfulRemovalToUpdateCaseJsonContext.Default,
             EditModel.WrongfulRemovalToCreateCaseJsonContext.Default,
-            EditModel.ChildPlacementTypeJsonContext.Default,
+            EditModel.ChildPlacementTypeListItemJsonContext.Default,
             EditModel.FamilySizeJsonContext.Default,
-            EditModel.TypeOfAbuseJsonContext.Default,
-            EditModel.TypeOfAbuserJsonContext.Default,
+            EditModel.TypeOfAbuseListItemJsonContext.Default,
+            EditModel.TypeOfAbuserListItemJsonContext.Default,
             EditModel.OrganizationListItemJsonContext.Default,
             EditModel.PersonListItemJsonContext.Default,
 

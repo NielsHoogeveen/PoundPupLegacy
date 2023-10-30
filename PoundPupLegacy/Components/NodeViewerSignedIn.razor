@@ -45,7 +45,43 @@
         <CascadingValue Value="Model.NodeId" Name="NodeId">
         <div class="tab content2">
             <EditorViewer>
-                @if (Model is ViewModel.Models.BlogPost){
+                @if (Model is ViewModel.Models.BasicNameable) {
+                    <BasicNameableUpdater UrlId="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.ChildPlacementType) {
+                    <ChildPlacementTypeUpdater UrlId="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.Denomination) {
+                    <DenominationUpdater UrlId="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.DocumentType) {
+                    <DocumentTypeUpdater UrlId="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.HagueStatus) {
+                    <HagueStatusUpdater UrlId="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.InterOrganizationalRelationType) {
+                    <InterOrganizationalRelationTypeUpdater UrlId="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.InterPersonalRelationType) {
+                    <InterPersonalRelationTypeUpdater UrlId="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.PartyPoliticalEntityRelationType) {
+                    <PartyPoliticalEntityRelationTypeUpdater UrlId="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.PersonOrganizationRelationType) {
+                    <PersonOrganizationRelationTypeUpdater UrlId="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.Profession) {
+                    <ProfessionUpdater UrlId="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.TypeOfAbuse) {
+                    <TypeOfAbuseUpdater UrlId="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.TypeOfAbuser) {
+                    <TypeOfAbuserUpdater UrlId="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.BlogPost) {
                     <BlogPostUpdater UrlId="Model.UrlId"/>
                 }
                 @if (Model is ViewModel.Models.Discussion) {
@@ -82,7 +118,7 @@
                 <PersonUpdater UrlId="Model.UrlId" />
                 }
                 @if (Model is ViewModel.Models.WrongfulMedicationCase) {
-                <WrongfulMedicationCaseUpdater UrlId="Model.UrlId" />
+                    <WrongfulMedicationCaseUpdater UrlId="Model.UrlId" />
                 }
                 @if (Model is ViewModel.Models.WrongfulRemovalCase) {
                     <WrongfulRemovalCaseUpdater UrlId="Model.UrlId" />

@@ -1,0 +1,37 @@
+﻿@inherits EntityEditorBase<TypeOfAbuse.ToUpdate, TypeOfAbuse.ToCreate, Unit>
+@if (Model is not null) {
+    <NodeEditor TCreateModel="TypeOfAbuse.ToCreate"
+                 TUpdateModel="TypeOfAbuse.ToUpdate"
+                 TResolveData="Unit"
+                 Model="Model"
+                 OnValidationResult="() => Validate()"
+                 Title="Edit type of abuse">
+        <NodeDetailsEditor 
+            Model="TypeOfAbuse.NodeDetails"
+            OnTitleChanged="OnTitleChanged"
+            @ref=nodeDetailsEditor>
+            <Top>
+                <NameableEditor Model="TypeOfAbuse.NameableDetails" @ref=nameableEditor/>
+            </Top>
+            <Middle></Middle>
+            <Bottom></Bottom>
+        </NodeDetailsEditor>
+    </NodeEditor>
+}
+@code {
+    [Parameter]
+    [EditorRequired]
+    public TypeOfAbuse TypeOfAbuse { get; set; } = default!;
+
+    protected override Resolver<TypeOfAbuse.ToUpdate, TypeOfAbuse.ToCreate, Unit> Model => TypeOfAbuse;
+
+    private NodeDetailsEditor? nodeDetailsEditor;
+    private NameableEditor? nameableEditor;
+
+    protected override List<EditorDetailBase?> DetailsEditors => new() {
+        nodeDetailsEditor,
+        nameableEditor,
+    };
+    protected override Unit ResolveData => Unit.Instance;
+
+}

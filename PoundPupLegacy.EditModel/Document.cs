@@ -94,6 +94,6 @@ public sealed record DocumentDetails
         }
     }
 
-    public required DocumentType[] DocumentTypes { get; init; }
+    public required DocumentTypeListItem[] DocumentTypes { get; init; }
 }
 

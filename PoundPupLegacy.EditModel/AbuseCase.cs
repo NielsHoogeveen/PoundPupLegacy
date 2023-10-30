@@ -79,8 +79,8 @@ public sealed record AbuseCaseDetails
     public bool? HomeschoolingInvolved { get; set; }
     public bool? FundamentalFaithInvolved { get; set; }
     public bool? DisabilitiesInvolved { get; set; }
-    public required ChildPlacementType[] ChildPlacementTypesToSelectFrom { get; init; }
+    public required ChildPlacementTypeListItem[] ChildPlacementTypesToSelectFrom { get; init; }
     public required FamilySize[] FamilySizesToSelectFrom { get; init; }
-    public required TypeOfAbuse[] TypesOfAbuse{ get; init; }
-    public required TypeOfAbuser[] TypesOfAbuser{ get; init; }
+    public required TypeOfAbuseListItem[] TypesOfAbuse{ get; init; }
+    public required TypeOfAbuserListItem[] TypesOfAbuser{ get; init; }
 }

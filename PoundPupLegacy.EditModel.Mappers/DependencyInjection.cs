@@ -12,17 +12,26 @@ public static class DependencyInjection
         services.AddTransient<IMapper<AbuseCase.ToCreate, DomainModel.AbuseCase.ToCreate>, AbuseCaseToCreateMapper>();
         services.AddTransient<IMapper<AbuseCaseDetails, DomainModel.AbuseCaseDetails>, AbuseCaseDetailsMapper>();
 
+        services.AddTransient<IMapper<BasicNameable.ToUpdate, DomainModel.BasicNameable.ToUpdate>, BasicNameableToUpdateMapper>();
+        services.AddTransient<IMapper<BasicNameable.ToCreate, DomainModel.BasicNameable.ToCreate>, BasicNameableToCreateMapper>();
+
         services.AddTransient<IMapper<BlogPost.ToUpdate, DomainModel.BlogPost.ToUpdate>, BlogPostToUpdateMapper>();
         services.AddTransient<IMapper<BlogPost.ToCreate, DomainModel.BlogPost.ToCreate>, BlogPostToCreateMapper>();
 
         services.AddTransient<IMapper<CaseDetails, DomainModel.CaseDetails.CaseDetailsForCreate>, CaseDetailsForCreateMapper>();
         services.AddTransient<IMapper<CaseDetails, DomainModel.CaseDetails.CaseDetailsForUpdate>, CaseDetailsForUpdateMapper>();
 
+        services.AddTransient<IMapper<ChildPlacementType.ToUpdate, DomainModel.ChildPlacementType.ToUpdate>, ChildPlacementTypeToUpdateMapper>();
+        services.AddTransient<IMapper<ChildPlacementType.ToCreate, DomainModel.ChildPlacementType.ToCreate>, ChildPlacementTypeToCreateMapper>();
+
         services.AddTransient<IMapper<ChildTraffickingCase.ToUpdate, DomainModel.ChildTraffickingCase.ToUpdate>, ChildTraffickingCaseToUpdateMapper>();
         services.AddTransient<IMapper<ChildTraffickingCase.ToCreate, DomainModel.ChildTraffickingCase.ToCreate>, ChildTraffickingCaseToCreateMapper>();
 
         services.AddTransient<IMapper<CoercedAdoptionCase.ToUpdate, DomainModel.CoercedAdoptionCase.ToUpdate>, CoercedAdoptionCaseToUpdateMapper>();
         services.AddTransient<IMapper<CoercedAdoptionCase.ToCreate, DomainModel.CoercedAdoptionCase.ToCreate>, CoercedAdoptionCaseToCreateMapper>();
+
+        services.AddTransient<IMapper<Denomination.ToUpdate, DomainModel.Denomination.ToUpdate>, DenominationToUpdateMapper>();
+        services.AddTransient<IMapper<Denomination.ToCreate, DomainModel.Denomination.ToCreate>, DenominationToCreateMapper>();
 
         services.AddTransient<IMapper<DeportationCase.ToUpdate, DomainModel.DeportationCase.ToUpdate>, DeportationCaseToUpdateMapper>();
         services.AddTransient<IMapper<DeportationCase.ToCreate, DomainModel.DeportationCase.ToCreate>, DeportationCaseToCreateMapper>();
@@ -36,8 +45,14 @@ public static class DependencyInjection
         services.AddTransient<IMapper<Document.ToUpdate, DomainModel.Document.ToUpdate>, DocumentToUpdateMapper>();
         services.AddTransient<IMapper<Document.ToCreate, DomainModel.Document.ToCreate>, DocumentToCreateMapper>();
 
+        services.AddTransient<IMapper<DocumentType.ToUpdate, DomainModel.DocumentType.ToUpdate>, DocumentTypeToUpdateMapper>();
+        services.AddTransient<IMapper<DocumentType.ToCreate, DomainModel.DocumentType.ToCreate>, DocumentTypeToCreateMapper>();
+
         services.AddTransient<IMapper<FathersRightsViolationCase.ToUpdate, DomainModel.FathersRightsViolationCase.ToUpdate>, FathersRightsViolationCaseToUpdateMapper>();
         services.AddTransient<IMapper<FathersRightsViolationCase.ToCreate, DomainModel.FathersRightsViolationCase.ToCreate>, FathersRightsViolationCaseToCreateMapper>();
+
+        services.AddTransient<IMapper<HagueStatus.ToUpdate, DomainModel.HagueStatus.ToUpdate>, HagueStatusToUpdateMapper>();
+        services.AddTransient<IMapper<HagueStatus.ToCreate, DomainModel.HagueStatus.ToCreate>, HagueStatusToCreateMapper>();
 
         services.AddTransient<IEnumerableMapper<InterOrganizationalRelation.From.Complete.Resolved.ToUpdate, DomainModel.InterOrganizationalRelation.ToUpdate>, InterOrganizationalRelationsFromToUpdateMapper>();
         services.AddTransient<IEnumerableMapper<InterOrganizationalRelation.To.Complete.Resolved.ToUpdate, DomainModel.InterOrganizationalRelation.ToUpdate>, InterOrganizationalRelationsToToUpdateMapper>();
@@ -48,6 +63,9 @@ public static class DependencyInjection
         services.AddTransient<IEnumerableMapper<InterOrganizationalRelation.From.Complete.ToCreateForNewOrganization, DomainModel.InterOrganizationalRelation.ToCreate.ForNewOrganizationFrom>, InterOrganizationalToCreateForNewRelationFromMapper>();
         services.AddTransient<IEnumerableMapper<InterOrganizationalRelation.To.Complete.ToCreateForNewOrganization, DomainModel.InterOrganizationalRelation.ToCreate.ForNewOrganizationTo>, InterOrganizationalToCreateForNewRelationToMapper>();
 
+        services.AddTransient<IMapper<InterOrganizationalRelationType.ToUpdate, DomainModel.InterOrganizationalRelationType.ToUpdate>, InterOrganizationalRelationTypeToUpdateMapper>();
+        services.AddTransient<IMapper<InterOrganizationalRelationType.ToCreate, DomainModel.InterOrganizationalRelationType.ToCreate>, InterOrganizationalRelationTypeToCreateMapper>();
+
         services.AddTransient<IEnumerableMapper<InterPersonalRelation.From.Complete.Resolved.ToUpdate, DomainModel.InterPersonalRelation.ToUpdate>, InterPersonalRelationsFromToUpdateMapper>();
         services.AddTransient<IEnumerableMapper<InterPersonalRelation.To.Complete.Resolved.ToUpdate, DomainModel.InterPersonalRelation.ToUpdate>, InterPersonalRelationsToToUpdateMapper>();
 
@@ -57,6 +75,8 @@ public static class DependencyInjection
         services.AddTransient<IEnumerableMapper<InterPersonalRelation.From.Complete.ToCreateForNewPerson, DomainModel.InterPersonalRelation.ToCreate.ForNewPersonFrom>, InterPersonalToCreateForNewRelationFromMapper>();
         services.AddTransient<IEnumerableMapper<InterPersonalRelation.To.Complete.ToCreateForNewPerson, DomainModel.InterPersonalRelation.ToCreate.ForNewPersonTo>, InterPersonalToCreateForNewRelationToMapper>();
 
+        services.AddTransient<IMapper<InterPersonalRelationType.ToUpdate, DomainModel.InterPersonalRelationType.ToUpdate>, InterPersonalRelationTypeToUpdateMapper>();
+        services.AddTransient<IMapper<InterPersonalRelationType.ToCreate, DomainModel.InterPersonalRelationType.ToCreate>, InterPersonalRelationTypeToCreateMapper>();
 
         services.AddTransient<IMapper<LocatableDetails.ForUpdate, DomainModel.LocatableDetails.ForUpdate>, LocatableDetailsForUpdateMapper>();
         services.AddTransient<IMapper<LocatableDetails.ForCreate, DomainModel.LocatableDetails.ForCreate>, LocatableDetailsForCreateMapper>();
@@ -81,6 +101,9 @@ public static class DependencyInjection
         services.AddTransient<IEnumerableMapper<OrganizationPoliticalEntityRelation.Complete.Resolved.ToCreateForExistingOrganization, PartyPoliticalEntityRelation.ToCreate.ForExistingParty>, OrganizationPoliticalEntityRelationToCreateForExistingOrganization>();
         services.AddTransient<IEnumerableMapper<OrganizationPoliticalEntityRelation.Complete.ToCreateForNewOrganization, PartyPoliticalEntityRelation.ToCreate.ForNewParty>, OrganizationPoliticalEntityRelationToCreateForNewOrganization>();
 
+        services.AddTransient<IMapper<PartyPoliticalEntityRelationType.ToUpdate, DomainModel.PartyPoliticalEntityRelationType.ToUpdate>, PartyPoliticalEntityRelationTypeToUpdateMapper>();
+        services.AddTransient<IMapper<PartyPoliticalEntityRelationType.ToCreate, DomainModel.PartyPoliticalEntityRelationType.ToCreate>, PartyPoliticalEntityRelationTypeToCreateMapper>();
+
         services.AddTransient<IMapper<Person.ToUpdate, DomainModel.Person.ToUpdate>, PersonToUpdateMapper>();
         services.AddTransient<IMapper<Person.ToCreate, DomainModel.Person.ToCreate>, PersonToCreateMapper>();
 
@@ -96,6 +119,12 @@ public static class DependencyInjection
         services.AddTransient<IEnumerableMapper<PersonPoliticalEntityRelation.Complete.Resolved.ToCreateForExistingPerson, PartyPoliticalEntityRelation.ToCreate.ForExistingParty>, PersonPoliticalEntityRelationToCreateForExistingPerson>();
         services.AddTransient<IEnumerableMapper<PersonPoliticalEntityRelation.Complete.ToCreateForNewPerson, PartyPoliticalEntityRelation.ToCreate.ForNewParty>, PersonPoliticalEntityRelationToCreateForNewPerson>();
 
+        services.AddTransient<IMapper<PersonOrganizationRelationType.ToUpdate, DomainModel.PersonOrganizationRelationType.ToUpdate>, PersonOrganizationRelationTypeToUpdateMapper>();
+        services.AddTransient<IMapper<PersonOrganizationRelationType.ToCreate, DomainModel.PersonOrganizationRelationType.ToCreate>, PersonOrganizationRelationTypeToCreateMapper>();
+
+        services.AddTransient<IMapper<Profession.ToUpdate, DomainModel.Profession.ToUpdate>, ProfessionToUpdateMapper>();
+        services.AddTransient<IMapper<Profession.ToCreate, DomainModel.Profession.ToCreate>, ProfessionToCreateMapper>();
+
         services.AddTransient<IEnumerableMapper<Tags.ToUpdate, ResolvedNodeTermToAdd>, NodeTermToAddForUpdateMapper>();
         services.AddTransient<IEnumerableMapper<Tags.ToUpdate, NodeTermToRemove>, NodeTermToRemoveMapper>();
         services.AddTransient<IEnumerableMapper<Tags.ToCreate, int>, NodeTermToAddForCreateMapper>();
@@ -104,6 +133,12 @@ public static class DependencyInjection
         services.AddTransient<IEnumerableMapper<TenantNode.ToUpdate, TenantNodeToDelete>, TenantNodeToRemoveMapper>();
         services.AddTransient<IEnumerableMapper<TenantNode.ToUpdate, DomainModel.TenantNode.ToUpdate>, TenantNodeToUpdateMapper>();
         services.AddTransient<IEnumerableMapper<TenantNode.ToCreateForNewNode, DomainModel.TenantNode.ToCreate.ForNewNode>, TenantNodesToCreateForNewNodeMapper>();
+
+        services.AddTransient<IMapper<TypeOfAbuse.ToUpdate, DomainModel.TypeOfAbuse.ToUpdate>, TypeOfAbuseToUpdateMapper>();
+        services.AddTransient<IMapper<TypeOfAbuse.ToCreate, DomainModel.TypeOfAbuse.ToCreate>, TypeOfAbuseToCreateMapper>();
+
+        services.AddTransient<IMapper<TypeOfAbuser.ToUpdate, DomainModel.TypeOfAbuser.ToUpdate>, TypeOfAbuserToUpdateMapper>();
+        services.AddTransient<IMapper<TypeOfAbuser.ToCreate, DomainModel.TypeOfAbuser.ToCreate>, TypeOfAbuserToCreateMapper>();
 
         services.AddTransient<IMapper<WrongfulMedicationCase.ToUpdate, DomainModel.WrongfulMedicationCase.ToUpdate>, WrongfulMedicationCaseToUpdateMapper>();
         services.AddTransient<IMapper<WrongfulMedicationCase.ToCreate, DomainModel.WrongfulMedicationCase.ToCreate>, WrongfulMedicationCaseToCreateMapper>();

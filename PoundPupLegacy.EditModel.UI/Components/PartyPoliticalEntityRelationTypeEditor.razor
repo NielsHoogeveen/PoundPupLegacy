@@ -1,0 +1,37 @@
+﻿@inherits EntityEditorBase<PartyPoliticalEntityRelationType.ToUpdate, PartyPoliticalEntityRelationType.ToCreate, Unit>
+@if (Model is not null) {
+    <NodeEditor TCreateModel="PartyPoliticalEntityRelationType.ToCreate"
+                 TUpdateModel="PartyPoliticalEntityRelationType.ToUpdate"
+                 TResolveData="Unit"
+                 Model="Model"
+                 OnValidationResult="() => Validate()"
+                 Title="Edit party political entity relation type">
+        <NodeDetailsEditor 
+            Model="PartyPoliticalEntityRelationType.NodeDetails"
+            OnTitleChanged="OnTitleChanged"
+            @ref=nodeDetailsEditor>
+            <Top>
+                <NameableEditor Model="PartyPoliticalEntityRelationType.NameableDetails" @ref=nameableEditor/>
+            </Top>
+            <Middle></Middle>
+            <Bottom></Bottom>
+        </NodeDetailsEditor>
+    </NodeEditor>
+}
+@code {
+    [Parameter]
+    [EditorRequired]
+    public PartyPoliticalEntityRelationType PartyPoliticalEntityRelationType { get; set; } = default!;
+
+    protected override Resolver<PartyPoliticalEntityRelationType.ToUpdate, PartyPoliticalEntityRelationType.ToCreate, Unit> Model => PartyPoliticalEntityRelationType;
+
+    private NodeDetailsEditor? nodeDetailsEditor;
+    private NameableEditor? nameableEditor;
+
+    protected override List<EditorDetailBase?> DetailsEditors => new() {
+        nodeDetailsEditor,
+        nameableEditor,
+    };
+    protected override Unit ResolveData => Unit.Instance;
+
+}

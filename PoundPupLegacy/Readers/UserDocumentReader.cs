@@ -109,7 +109,7 @@ internal sealed class UserDocumentReaderFactory : MandatorySingleItemDatabaseRea
         			distinct
         			ugur.user_id,
         			t.id tenant_id,
-        			'/' || replace(nt.name, ' ', '_') || '/create' "action"
+        			'/' || replace(lower(nt.name), ' ', '_') || '/create' "action"
         		from create_node_action cna
         		join node_type nt on nt.id = cna.node_type_id
         		join access_role_privilege arp on arp.action_id = cna.id
@@ -120,7 +120,7 @@ internal sealed class UserDocumentReaderFactory : MandatorySingleItemDatabaseRea
         			distinct
         			0,
         			t.id tenant_id,
-        			'/' || replace(nt.name, ' ', '_') || '/create' "action"
+        			'/' || replace(lower(nt.name), ' ', '_') || '/create' "action"
         		from create_node_action cna
         		join node_type nt on nt.id = cna.node_type_id
         		join access_role_privilege arp on arp.action_id = cna.id
@@ -133,7 +133,7 @@ internal sealed class UserDocumentReaderFactory : MandatorySingleItemDatabaseRea
         		distinct
         		ugur2.user_id,
         		t.id tenant_id,
-        		'/' || replace(nt.name, ' ', '_') || '/create' "action"
+        		'/' || replace(lower(nt.name), ' ', '_') || '/create' "action"
         		from create_node_action cna
         		join node_type nt on nt.id = cna.node_type_id
         		join tenant_action ta on ta.action_id = cna.id

@@ -146,11 +146,19 @@ public static class Constants
 
     
     public const int ORGANIZATION_TYPE = 1;
+    public const int INTER_ORGANIZATIONAL_RELATION_TYPE = 2;
+    public const int PARTY_POLITICAL_ENTITY_RELATION_TYPE = 3;
+    public const int PERSON_ORGANIZATION_RELATION_TYPE = 4;
+    public const int INTER_PERSONAL_RELATION_TYPE = 5;
+    public const int PROFESSION = 6;
+    public const int DENOMINATION = 7;
+    public const int HAGUE_STATUS = 7;
     public const int DOCUMENT_TYPE = 9;
     public const int DOCUMENT = 10;
     public const int ORGANIZATION = 23;
     public const int PERSON = 24;
     public const int ABUSE_CASE = 26;
+    public const int CHILD_PLACEMENT_TYPE = 27;
     public const int CHILD_TRAFFICKING_CASE = 29;
     public const int COERCED_ADOPTION_CASE = 30;
     public const int DEPORTATION_CASE = 31;
@@ -160,6 +168,9 @@ public static class Constants
     public const int BLOG_POST = 35;
     public const int DISCUSSION = 37;
     public const int VOCABULARY = 38;
+    public const int TYPE_OF_ABUSE = 39;
+    public const int TYPE_OF_ABUSER = 40;
+    public const int BASIC_NAMEABLE = 41;
     public const int DISRUPTED_PLACEMENT_CASE = 44;
 
     public const int UNITED_STATES_HOUSE_OF_REPRESENTATIVES = 12660;

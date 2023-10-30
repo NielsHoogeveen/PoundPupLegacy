@@ -1,0 +1,37 @@
+﻿@inherits EntityEditorBase<ChildPlacementType.ToUpdate, ChildPlacementType.ToCreate, Unit>
+@if (Model is not null) {
+    <NodeEditor TCreateModel="ChildPlacementType.ToCreate"
+                 TUpdateModel="ChildPlacementType.ToUpdate"
+                 TResolveData="Unit"
+                 Model="Model"
+                 OnValidationResult="() => Validate()"
+                 Title="Edit child placement type">
+        <NodeDetailsEditor 
+            Model="ChildPlacementType.NodeDetails"
+            OnTitleChanged="OnTitleChanged"
+            @ref=nodeDetailsEditor>
+            <Top>
+                <NameableEditor Model="ChildPlacementType.NameableDetails" @ref=nameableEditor/>
+            </Top>
+            <Middle></Middle>
+            <Bottom></Bottom>
+        </NodeDetailsEditor>
+    </NodeEditor>
+}
+@code {
+    [Parameter]
+    [EditorRequired]
+    public ChildPlacementType ChildPlacementType { get; set; } = default!;
+
+    protected override Resolver<ChildPlacementType.ToUpdate, ChildPlacementType.ToCreate, Unit> Model => ChildPlacementType;
+
+    private NodeDetailsEditor? nodeDetailsEditor;
+    private NameableEditor? nameableEditor;
+
+    protected override List<EditorDetailBase?> DetailsEditors => new() {
+        nodeDetailsEditor,
+        nameableEditor,
+    };
+    protected override Unit ResolveData => Unit.Instance;
+
+}

@@ -7,32 +7,56 @@ public static class DependencyInjection
     public static void AddEditModelReaders(this IServiceCollection services)
     {
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, AbuseCase.ToCreate>, AbuseCaseCreateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, BasicNameable.ToCreate>, BasicNameableCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, BlogPost.ToCreate>, BlogPostCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, UnresolvedChildTraffickingCase.ToCreate>, ChildTraffickingCaseCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, CoercedAdoptionCase.ToCreate>, CoercedAdoptionCaseCreateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, ChildPlacementType.ToCreate>, ChildPlacementTypeCreateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Denomination.ToCreate>, DenominationCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, DeportationCase.ToCreate>, DeportationCaseCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Discussion.ToCreate>, DiscussionCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, DisruptedPlacementCase.ToCreate>, DisruptedPlacementCaseCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Document.ToCreate>, DocumentCreateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, DocumentType.ToCreate>, DocumentTypeCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, FathersRightsViolationCase.ToCreate>, FathersRightsViolationCaseCreateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, HagueStatus.ToCreate>, HagueStatusCreateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, InterOrganizationalRelationType.ToCreate>, InterOrganizationalRelationTypeCreateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, InterPersonalRelationType.ToCreate>, InterPersonalRelationTypeCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Organization.ToCreate>, OrganizationCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, OrganizationType.ToCreate>, OrganizationTypeCreateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, PartyPoliticalEntityRelationType.ToCreate>, PartyPoliticalEntityRelationTypeCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Person.ToCreate>, PersonCreateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, PersonOrganizationRelationType.ToCreate>, PersonOrganizationRelationTypeCreateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Profession.ToCreate>, ProfessionCreateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, TypeOfAbuse.ToCreate>, TypeOfAbuseCreateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, TypeOfAbuser.ToCreate>, TypeOfAbuserCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, WrongfulMedicationCase.ToCreate>, WrongfulMedicationCaseCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, WrongfulRemovalCase.ToCreate>, WrongfulRemovalCaseCreateDocumentReaderFactory>();
 
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, AbuseCase.ToUpdate>, AbuseCaseUpdateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, BasicNameable.ToUpdate>, BasicNameableUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, BlogPost.ToUpdate>, BlogPostUpdateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, ChildPlacementType.ToUpdate>, ChildPlacementTypeUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, UnresolvedChildTraffickingCase.ToUpdate>, ChildTraffickingCaseUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, CoercedAdoptionCase.ToUpdate>, CoercedAdoptionCaseUpdateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Denomination.ToUpdate>, DenominationUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, DeportationCase.ToUpdate>, DeportationCaseUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Discussion.ToUpdate>, DiscussionUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, DisruptedPlacementCase.ToUpdate>, DisruptedPlacementCaseUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Document.ToUpdate>, DocumentUpdateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, DocumentType.ToUpdate>, DocumentTypeUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, FathersRightsViolationCase.ToUpdate>, FathersRightsViolationCaseUpdateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, HagueStatus.ToUpdate>, HagueStatusUpdateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, InterOrganizationalRelationType.ToUpdate>, InterOrganizationalRelationTypeUpdateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, InterPersonalRelationType.ToUpdate>, InterPersonalRelationTypeUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Organization.ToUpdate>, OrganizationUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, OrganizationType.ToUpdate>, OrganizationTypeUpdateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, PartyPoliticalEntityRelationType.ToUpdate>, PartyPoliticalEntityRelationTypeUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Person.ToUpdate>, PersonUpdateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, PersonOrganizationRelationType.ToUpdate>, PersonOrganizationRelationTypeUpdateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Profession.ToUpdate>, ProfessionUpdateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, TypeOfAbuse.ToUpdate>, TypeOfAbuseUpdateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, TypeOfAbuser.ToUpdate>, TypeOfAbuserUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, WrongfulMedicationCase.ToUpdate>, WrongfulMedicationCaseUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, WrongfulRemovalCase.ToUpdate>, WrongfulRemovalCaseUpdateDocumentReaderFactory>();
 

@@ -1,0 +1,37 @@
+﻿@inherits EntityEditorBase<InterPersonalRelationType.ToUpdate, InterPersonalRelationType.ToCreate, Unit>
+@if (Model is not null) {
+    <NodeEditor TCreateModel="InterPersonalRelationType.ToCreate"
+                 TUpdateModel="InterPersonalRelationType.ToUpdate"
+                 TResolveData="Unit"
+                 Model="Model"
+                 OnValidationResult="() => Validate()"
+                 Title="Edit inter-personal relation type">
+        <NodeDetailsEditor 
+            Model="InterPersonalRelationType.NodeDetails"
+            OnTitleChanged="OnTitleChanged"
+            @ref=nodeDetailsEditor>
+            <Top>
+                <NameableEditor Model="InterPersonalRelationType.NameableDetails" @ref=nameableEditor/>
+            </Top>
+            <Middle></Middle>
+            <Bottom></Bottom>
+        </NodeDetailsEditor>
+    </NodeEditor>
+}
+@code {
+    [Parameter]
+    [EditorRequired]
+    public InterPersonalRelationType InterPersonalRelationType { get; set; } = default!;
+
+    protected override Resolver<InterPersonalRelationType.ToUpdate, InterPersonalRelationType.ToCreate, Unit> Model => InterPersonalRelationType;
+
+    private NodeDetailsEditor? nodeDetailsEditor;
+    private NameableEditor? nameableEditor;
+
+    protected override List<EditorDetailBase?> DetailsEditors => new() {
+        nodeDetailsEditor,
+        nameableEditor,
+    };
+    protected override Unit ResolveData => Unit.Instance;
+
+}

@@ -1,0 +1,37 @@
+﻿@inherits EntityEditorBase<Denomination.ToUpdate, Denomination.ToCreate, Unit>
+@if (Model is not null) {
+    <NodeEditor TCreateModel="Denomination.ToCreate"
+                 TUpdateModel="Denomination.ToUpdate"
+                 TResolveData="Unit"
+                 Model="Model"
+                 OnValidationResult="() => Validate()"
+                 Title="Edit denomination">
+        <NodeDetailsEditor 
+            Model="Denomination.NodeDetails"
+            OnTitleChanged="OnTitleChanged"
+            @ref=nodeDetailsEditor>
+            <Top>
+                <NameableEditor Model="Denomination.NameableDetails" @ref=nameableEditor/>
+            </Top>
+            <Middle></Middle>
+            <Bottom></Bottom>
+        </NodeDetailsEditor>
+    </NodeEditor>
+}
+@code {
+    [Parameter]
+    [EditorRequired]
+    public Denomination Denomination { get; set; } = default!;
+
+    protected override Resolver<Denomination.ToUpdate, Denomination.ToCreate, Unit> Model => Denomination;
+
+    private NodeDetailsEditor? nodeDetailsEditor;
+    private NameableEditor? nameableEditor;
+
+    protected override List<EditorDetailBase?> DetailsEditors => new() {
+        nodeDetailsEditor,
+        nameableEditor,
+    };
+    protected override Unit ResolveData => Unit.Instance;
+
+}
