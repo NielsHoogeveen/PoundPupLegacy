@@ -5,11 +5,11 @@
 
     protected bool CanAccessPage { get; set; } = false;
 
-    [CascadingParameter(Name ="UserId")]
-    public int UserId { get; set; }
+    [CascadingParameter(Name = "User")]
+    public User User { get; set; } = default!;
 
     [CascadingParameter(Name = "TenantId")]
-    public int TenantId { get; set; }
+    public ITenant Tenant { get; set; } = default!;
 
     protected sealed override void OnInitialized()
     {
@@ -21,7 +21,7 @@
         var routeAttribute = this.GetType().GetCustomAttributes(true).OfType<Microsoft.AspNetCore.Components.RouteAttribute>().FirstOrDefault()?.Template;
         if(routeAttribute is not null) {
             CanAccessPage = await SiteDataService.HasAccess(
-                userId: UserId,
+                userId: User.Id,
                 path: routeAttribute);
         }
         if (!CanAccessPage) {

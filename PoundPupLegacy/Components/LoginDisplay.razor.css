@@ -16,7 +16,6 @@
     grid-template-columns: 1fr;
     flex: 1;
     width: 160px;
-    background: var(--header-bg-color);
     color: silver;
 }
 .user-name {
@@ -27,7 +26,8 @@
 .account-menu {
     padding-left: 0.15em;
     padding-bottom: 0.15em;
-    z-index:1000;
+    background: var(--header-bg-color);
+    z-index: 1000;
 }
 .inner {
     background-color: #e8e2d9;

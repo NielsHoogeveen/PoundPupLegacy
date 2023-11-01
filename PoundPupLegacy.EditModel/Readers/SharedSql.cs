@@ -1847,7 +1847,9 @@ internal static class SharedSql
         					'PublicationStatusId',
         					publication_status_id,
                             'HasBeenStored',
-                            true
+                            true,
+                            'CanBeUnchecked',
+                            tn.tenant_id <> @tenant_id
         				)
         			end
         		)
