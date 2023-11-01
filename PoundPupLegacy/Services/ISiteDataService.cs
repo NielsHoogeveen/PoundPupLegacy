@@ -19,7 +19,7 @@ public interface ISiteDataService
 
     Task<bool> CanViewNodeAccess(int userId);
 
-    Task<bool> CanCreate(int nodeTypeId, int userId);
+    Task<bool> CanCreate(int nodeTypeId, int userGroupId, int userId);
 
     Tenant GetTenant();
 
@@ -31,5 +31,7 @@ public interface ISiteDataService
     void RemoveUser(int userId);
 
     Task<UserWithDetails?> GetUser(int userId);
+
+    bool DoesSubgroupExist(int subgroupId);
 
 }

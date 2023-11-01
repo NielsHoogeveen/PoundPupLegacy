@@ -141,11 +141,16 @@ internal sealed class SiteDataService(
         return siteData.Tenant;
     }
 
-    public async Task<bool> CanCreate(int nodeTypeId, int userId)
+    public bool DoesSubgroupExist(int subgroupId)
+    {
+        return siteData.Tenant.Subgroups.Any(x => x.Id == subgroupId);
+    }
+
+    public async Task<bool> CanCreate(int nodeTypeId, int userGroupId, int userId)
     {
         var user = await GetUser(userId);
         if (user is not null) {
-            return user.CreateActions.Where(x => x.NodeTypeId == nodeTypeId).Any();
+            return user.CreateActions.Where(x => x.NodeTypeId == nodeTypeId && x.UserGroupId == userGroupId).Any();
         }
         return false;
     }

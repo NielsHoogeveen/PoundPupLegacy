@@ -15,7 +15,6 @@ internal sealed class UserService(
     ILogger<SiteDataService> logger,
     ISiteDataService siteDataService,
     IEmailSender emailSender,
-    ISiteDataService siteDateService,
     ISingleItemDatabaseReaderFactory<UsersRolesToAsignReaderRequest, List<UserRolesToAssign>> userRolesToAssignFactory,
     ISingleItemDatabaseReaderFactory<UserByNameIdentifierReaderRequest, User> userByNameIdentifierReaderFactory,
     ISingleItemDatabaseReaderFactory<UserByEmailReaderRequest, User> userByEmailReaderFactory,

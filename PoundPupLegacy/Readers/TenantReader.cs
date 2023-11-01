@@ -53,6 +53,33 @@ internal sealed class TenantReaderFactory : MandatorySingleItemDatabaseReaderFac
             t.registration_text,
             'TrackActiveUsers',
             t.track_active_users,
+            'Subgroups',
+            (
+                select
+                jsonb_agg(
+        	        jsonb_build_object(
+                        'Id',
+                        x.id,
+        		        'Name',
+        		        name,
+        		        'Path',
+        		        path,
+        		        'Description',
+        		        description
+        	        )	
+        	        order by name
+                ) document
+                from(
+        	        select
+                    ug.id,
+        	        ug.name,
+        	        ug.description,
+        	        '/group/' || sg.id path
+        	        from subgroup sg
+        	        join user_group ug on ug.id = sg.id
+        	        where tenant_id = @tenant_id
+                ) x
+             ),
             'SmtpConnection',
             jsonb_build_object(
                 'Id',

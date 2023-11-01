@@ -36,6 +36,7 @@ public sealed record Tenant: ITenant
     public required string? GoogleAnalyticsMeasurementId { get; init; }
     public required string? RegistrationText { get; init; }
     public required bool TrackActiveUsers { get; init; }
+    public required Subgroup[] Subgroups { get; init; } 
     public required SmtpConnection SmtpConnection { get; init; }
 
     private List<TenantNode> _tenantNodes = new();

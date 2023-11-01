@@ -20,7 +20,7 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        CanCreate = await SiteDataService.CanCreate(NodeTypeId, User.Id);
+        CanCreate = await SiteDataService.CanCreate(NodeTypeId, Tenant.Id, User.Id);
         StateHasChanged();
     }
 }

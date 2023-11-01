@@ -1,4 +1,9 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-public sealed record PublicationStatusListItem(int Id, string Name, bool IsSelected, bool IsDefault);
+public sealed record PublicationStatusListItem
+{
+    public required int Id { get; init; }
+    public required string Name { get; init; }
+    public required bool IsDefault { get; init; }
+}
 

@@ -153,7 +153,9 @@ internal sealed class UserDocumentReaderFactory : MandatorySingleItemDatabaseRea
         				'NodeTypeId',
         				node_type_id,
         				'NodeTypeName',
-        				node_type_name
+        				node_type_name,
+                        'UserGroupId',
+                        user_group_id
         			)
         		) document,
         		user_id
@@ -163,19 +165,32 @@ internal sealed class UserDocumentReaderFactory : MandatorySingleItemDatabaseRea
         			ugur.user_id,
                     t.id tenant_id,
         			ba.node_type_id,
-        			nt.name node_type_name
+        			nt.name node_type_name,
+                    t.user_group_id
         		from create_node_action ba
         		join node_type nt on nt.id = ba.node_type_id
         		join access_role_privilege arp on arp.action_id = ba.id
         		join user_group_user_role_user ugur on ugur.user_role_id = arp.access_role_id
-        		join tenant t on t.id = ugur.user_group_id
+        		join (
+                    select  
+                    t.id,
+                    t.id user_group_id
+                    from
+                    tenant  t
+                    union
+                    select
+                    s.tenant_id,
+                    s.id user_group_id
+                    from subgroup s
+                ) t on t.user_group_id = ugur.user_group_id
         		union
         		select
         			distinct
         			0,
         			t.id tenant_id,
         			ba.node_type_id,
-        			nt.name node_type_name
+        			nt.name node_type_name,
+                    t.id user_group_id
         		from create_node_action ba
         		join node_type nt on nt.id = ba.node_type_id
         		join access_role_privilege arp on arp.action_id = ba.id
@@ -186,13 +201,14 @@ internal sealed class UserDocumentReaderFactory : MandatorySingleItemDatabaseRea
         		union
         		select
         			uguru.user_id,
-        			tn.id tenant_id,
+        			t.id tenant_id,
         			ba.node_type_id,
-        			nt.name node_type_name
+        			nt.name node_type_name,
+                    t.id user_group_id
         		from create_node_action ba
         		join node_type nt on nt.id = ba.node_type_id
-        		join tenant tn on 1=1
-        		join user_group ug on ug.id = tn.id
+        		join tenant t on 1=1
+                join user_group ug on ug.id = t.id
         		join user_group_user_role_user uguru on uguru.user_group_id = ug.id and uguru.user_role_id = ug.administrator_role_id
         	) x
         	where tenant_id = @tenant_id

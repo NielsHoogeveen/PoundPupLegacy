@@ -7,6 +7,10 @@ public abstract class EditorBase : ViewerBase
 {
     [CascadingParameter(Name = "NodeId")]
     public int? NodeId { get; set; }
+
+    [CascadingParameter(Name = "SubgroupId")]
+    public int? SubgroupId { get; set; }
+
 }
 
 public abstract class EditorDetailBase: EditorBase

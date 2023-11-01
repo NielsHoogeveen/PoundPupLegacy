@@ -3,6 +3,7 @@
 @using PoundPupLegacy.Models
 @using PoundPupLegacy.ViewModel.Models
 @inherits ViewerBase
+@inject NavigationManager NavigationManager
 @inject ISiteDataService siteDataService
 @inject IUserService userService
 @inject INodeAccessReadService nodeAccessReadService
@@ -48,129 +49,129 @@
     @if (canEdit)
     {
         <CascadingValue Value="Model.NodeId" Name="NodeId">
-        <div class="tab content2">
-                @if (displayMode == DisplayMode.Edit)
+            <div class="tab content2">
+            @if (displayMode == DisplayMode.Edit)
+            {
+                <EditorViewer>
+                @if (Model is ViewModel.Models.BasicNameable)
                 {
-                    <EditorViewer>
-                        @if (Model is ViewModel.Models.BasicNameable)
-                        {
-                            <BasicNameableUpdater UrlId="Model.UrlId" />
-                        }
-                        @if (Model is ViewModel.Models.ChildPlacementType)
-                        {
-                            <ChildPlacementTypeUpdater UrlId
-                            ="Model.UrlId" />
-                        }
-                        @if (Model is ViewModel.Models.Denomination)
-                        {
-                            <DenominationUpdater UrlId
-                            ="Model.UrlId" />
-                        }
-                        @if (Model is ViewModel.Models.DocumentType)
-                        {
-                            <DocumentTypeUpdater UrlId
-                            ="Model.UrlId" />
-                        }
-                        @if (Model is ViewModel.Models.HagueStatus)
-                        {
-                            <HagueStatusUpdater UrlId
-                            ="Model.UrlId" />
-                        }
-                        @if (Model is ViewModel.Models.InterOrganizationalRelationType)
-                        {
-                            <InterOrganizationalRelationTypeUpdater UrlId="Model.UrlId" />
-                        }
-                        @if (Model is ViewModel.Models.InterPersonalRelationType)
-                        {
-                            <InterPersonalRelationTypeUpdater UrlId
-                            ="Model.UrlId" />
-                        }
-                        @if (Model is ViewModel.Models.PartyPoliticalEntityRelationType)
-                        {
-                            <PartyPoliticalEntityRelationTypeUpdater UrlId
-                            ="Model.UrlId" />
-                        }
-                        @if (Model is ViewModel.Models.PersonOrganizationRelationType)
-                        {
-                            <PersonOrganizationRelationTypeUpdater UrlId="Model.UrlId" />
-                        }
-                        @if (Model is ViewModel.Models.Profession)
-                        {
-                            <ProfessionUpdater UrlId="Model.UrlId" />
-                        }
-                        @if (Model is ViewModel.Models.TypeOfAbuse)
-                        {
-                            <TypeOfAbuseUpdater UrlId
-                            ="Model.UrlId" />
-                        }
-                        @if (Model is ViewModel.Models.TypeOfAbuser)
-                        {
-                            <TypeOfAbuserUpdater UrlId="Model.UrlId" />
-                        }
-                        @if (Model is ViewModel.Models.BlogPost)
-                        {
-                            <BlogPostUpdater UrlId="Model.UrlId"/>
-                        }
-                        @if (Model is ViewModel.Models.Discussion)
-                        {
-                            <DiscussionUpdater UrlId="Model.UrlId" />
-                        }
-                        @if (Model is ViewModel.Models.AbuseCase)
-                        {
-                            <AbuseCaseUpdater UrlId
-                            ="Model.UrlId" />
-                        }
-                        @if (Model is ViewModel.Models.Document)
-                        {
-                            <DocumentUpdater UrlId
-                            ="Model.UrlId" />
-                        }
-                        @if (Model is ViewModel.Models.ChildTraffickingCase)
-                        {
-                            <ChildTraffickingCaseUpdater UrlId="Model.UrlId" />
-                        }
-                        @if (Model is ViewModel.Models.CoercedAdoptionCase)
-                        {
-                            <CoercedAdoptionCaseUpdater UrlId
-                            ="Model.UrlId" />
-                        }
-                        @if (Model is ViewModel.Models.DeportationCase)
-                        {
-                            <DeportationCaseUpdater UrlId="Model.UrlId" />
-                        }
-                        @if (Model is ViewModel.Models.DisruptedPlacementCase)
-                        {
-                            <DisruptedPlacementCaseUpdater UrlId="Model.UrlId" />
-                        }
-                        @if (Model is ViewModel.Models.FathersRightsViolationCase)
-                        {
-                            <FathersRightsViolationCaseUpdater UrlId="Model.UrlId" />
-                        }
-                        @if (Model is ViewModel.Models.Organization)
-                        {
-                            <OrganizationUpdater UrlId
-                            ="Model.UrlId" />
-                        }
-                        @if (Model is ViewModel.Models.OrganizationType)
-                        {
-                            <OrganizationTypeUpdater UrlId
-                            ="Model.UrlId" />
-                        }
-                        @if (Model is ViewModel.Models.Person)
-                        {
-                            <PersonUpdater UrlId
-                            ="Model.UrlId" />
-                        }
-                        @if (Model is ViewModel.Models.WrongfulMedicationCase)
-                        {
-                            <WrongfulMedicationCaseUpdater UrlId="Model.UrlId" />
-                        }
-                        @if (Model is ViewModel.Models.WrongfulRemovalCase)
-                        {
-                            <WrongfulRemovalCaseUpdater UrlId
-                            ="Model.UrlId" />
-                        }
-                    </EditorViewer>
+                    <BasicNameableUpdater UrlId="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.ChildPlacementType)
+                {
+                    <ChildPlacementTypeUpdater UrlId
+                    ="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.Denomination)
+                {
+                    <DenominationUpdater UrlId
+                    ="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.DocumentType)
+                {
+                    <DocumentTypeUpdater UrlId
+                    ="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.HagueStatus)
+                {
+                    <HagueStatusUpdater UrlId
+                    ="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.InterOrganizationalRelationType)
+                {
+                    <InterOrganizationalRelationTypeUpdater UrlId="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.InterPersonalRelationType)
+                {
+                    <InterPersonalRelationTypeUpdater UrlId
+                    ="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.PartyPoliticalEntityRelationType)
+                {
+                    <PartyPoliticalEntityRelationTypeUpdater UrlId
+                    ="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.PersonOrganizationRelationType)
+                {
+                    <PersonOrganizationRelationTypeUpdater UrlId="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.Profession)
+                {
+                    <ProfessionUpdater UrlId="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.TypeOfAbuse)
+                {
+                    <TypeOfAbuseUpdater UrlId
+                    ="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.TypeOfAbuser)
+                {
+                    <TypeOfAbuserUpdater UrlId="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.BlogPost)
+                {
+                    <BlogPostUpdater UrlId="Model.UrlId"/>
+                }
+                @if (Model is ViewModel.Models.Discussion)
+                {
+                    <DiscussionUpdater UrlId="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.AbuseCase)
+                {
+                    <AbuseCaseUpdater UrlId
+                    ="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.Document)
+                {
+                    <DocumentUpdater UrlId
+                    ="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.ChildTraffickingCase)
+                {
+                    <ChildTraffickingCaseUpdater UrlId="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.CoercedAdoptionCase)
+                {
+                    <CoercedAdoptionCaseUpdater UrlId
+                    ="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.DeportationCase)
+                {
+                    <DeportationCaseUpdater UrlId="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.DisruptedPlacementCase)
+                {
+                    <DisruptedPlacementCaseUpdater UrlId="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.FathersRightsViolationCase)
+                {
+                    <FathersRightsViolationCaseUpdater UrlId="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.Organization)
+                {
+                    <OrganizationUpdater UrlId
+                    ="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.OrganizationType)
+                {
+                    <OrganizationTypeUpdater UrlId
+                    ="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.Person)
+                {
+                    <PersonUpdater UrlId
+                    ="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.WrongfulMedicationCase)
+                {
+                    <WrongfulMedicationCaseUpdater UrlId="Model.UrlId" />
+                }
+                @if (Model is ViewModel.Models.WrongfulRemovalCase)
+                {
+                    <WrongfulRemovalCaseUpdater UrlId
+                    ="Model.UrlId" />
+                }
+                </EditorViewer>
             }
             </div>
         </CascadingValue>
@@ -218,6 +219,8 @@
         StateHasChanged();
     }
     private bool canCreateComment = false;
+
+    
 
     protected override async Task OnInitializedAsync()
     {

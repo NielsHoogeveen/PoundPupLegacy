@@ -1,0 +1,28 @@
+﻿@using Microsoft.AspNetCore.WebUtilities
+@using PoundPupLegacy.Services
+@inject NavigationManager NavigationManager
+@inject ISiteDataService siteDataService
+<CascadingValue Value="_subgroupId" Name="SubgroupId">
+<div class="page">
+    @ChildContent
+</div>
+</CascadingValue>
+@code {
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment ChildContent { get; set; } = default!;
+
+    private int? _subgroupId;
+
+    protected override void OnInitialized()
+    {
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("subgroup", out var subgroup)) {
+            if (int.TryParse(subgroup, out int subgroupId)) {
+                if (siteDataService.DoesSubgroupExist(subgroupId)) {
+                    _subgroupId = subgroupId;
+                }
+            }
+        }
+    }
+}

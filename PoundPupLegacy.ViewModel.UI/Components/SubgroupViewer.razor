@@ -1,9 +1,16 @@
-﻿@inherits PagedViewer<SubgroupListEntry>
+﻿@using PoundPupLegacy.Services
+@inherits PagedViewer<SubgroupListEntry>
 @inject IFetchSubgroupService SubgroupService
+@inject ISubgroupNodeTypeService SubgroupNodeTypeService
 <HeadContentSetter Title=@Title SiteName=@SiteName Description=@Description />
 <BreadCrumElementViewer Model="BreadCrumElements" />
 <h1>@GroupName</h1>
 <div>@GroupDescription</div>
+<div class="create-options">
+    @foreach(var nodeType in NodeTypes) {
+        <a href="@nodeType.GetCreatePath(Id)" >@nodeType.DisplayName</a>
+    }
+</div>
 @if (ListEntries is not null)
 {
     <div class="group-list">
@@ -76,8 +83,11 @@
 
     protected override string Description => "A list of subgroups of this site";
 
+    private List<CreateableNodeTypes> NodeTypes = new List<CreateableNodeTypes>();
+
     protected override async Task<IPagedList<SubgroupListEntry>> GetListEntriesAsync()
     {
+        NodeTypes = await SubgroupNodeTypeService.GetCreateableNodeTypes(Id, User.Id);
         var list =  await SubgroupService.GetSubGroupPagedList(
             userId: User.Id, 
             subgroupId: Id, 

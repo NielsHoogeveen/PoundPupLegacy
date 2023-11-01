@@ -21,6 +21,8 @@ internal sealed class SubgroupsReaderFactory : SingleItemDatabaseReaderFactory<R
         select
         jsonb_agg(
         	jsonb_build_object(
+                'Id',
+                id,
         		'Name',
         		name,
         		'Path',
@@ -32,6 +34,7 @@ internal sealed class SubgroupsReaderFactory : SingleItemDatabaseReaderFactory<R
         ) document
         from(
         	select
+            ug.id,
         	ug.name,
         	ug.description,
         	'/group/' || sg.id path

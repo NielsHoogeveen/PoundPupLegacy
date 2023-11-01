@@ -14,3 +14,13 @@
     background-color: grey;
     color: white;
 }
+.create-options{
+    margin-top: 1em;
+    display:flex;
+    flex-direction:row;
+    width: 100%;
+    flex-wrap:wrap;
+}
+.create-options a{
+    margin-right:1em;
+}
