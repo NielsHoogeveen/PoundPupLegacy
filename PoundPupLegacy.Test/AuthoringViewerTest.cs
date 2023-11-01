@@ -1,4 +1,5 @@
 ﻿using Bunit;
+using PoundPupLegacy.Common;
 using PoundPupLegacy.ViewModel.Models;
 using PoundPupLegacy.ViewModel.UI.Components;
 using Xunit;

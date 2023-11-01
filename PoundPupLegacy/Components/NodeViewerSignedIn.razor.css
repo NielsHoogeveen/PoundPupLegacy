@@ -56,3 +56,9 @@ input.tab-button ~ .tab { /* grey line between tab and contents */
     background-color: grey;
     color: white;
 }
+#create-comment {
+    margin-left: 0.5em;
+    color: var(--link-color);
+    user-select: none;
+    cursor: pointer;
+}

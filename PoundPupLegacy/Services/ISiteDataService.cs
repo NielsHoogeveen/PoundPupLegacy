@@ -30,4 +30,6 @@ public interface ISiteDataService
     Task RefreshTenants();
     void RemoveUser(int userId);
 
+    Task<UserWithDetails?> GetUser(int userId);
+
 }

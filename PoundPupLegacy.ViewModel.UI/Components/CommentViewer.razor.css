@@ -1,3 +1,19 @@
+button {
+    margin-top: 1em;
+    margin-left: 0.25em;
+    padding: 0.5em 1em;
+    border: 0;
+    background-color: var(--button-color);
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 3px 3px 2px 1px rgba(20, 20, 20, .25);
+}
+
+button:hover {
+    background-color: var(--button-hover-color);
+}
+
 .comment {
     margin-left: 2em;
     margin-top: 1em;
@@ -7,24 +23,27 @@
     color: black;
     border: solid 1px var(--comment-border-color);
     border-radius: 5px 0 5px 0;
-    padding: 0.5em;
     background-color: var(--comment-bg-color)
 }
 
+.comment-content, .authoring {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+}
 .comment-content {
-    padding: 0.5em 0.5em 0.5em 0.5em;
+    padding-top: 0.5em;
 }
-
-.title {
-    background-color: white;
+.comment-header {
+    margin: 0;
+    background-color: #f7f0e3;
+    padding-top: 0.5em;
+    border-bottom: solid 1px #c8c0af;
 }
-
 h2 {
     padding-left: 0.5em;
     color: #05072f;
     margin: 0;
     font-size: 110%;
-    background-color: var(--comment-bg-color);
 }
 
 .author {
@@ -38,7 +57,37 @@ h2 {
 .comment-unpublished .comment-body, .comment-unpublished h2{
     background-color: #f4e8e8;
 }
-
+.comment-body{
+    padding-left:0;
+    padding-right:0;
+    padding-bottom: 0;
+}
 .text {
     min-width: 20em;
+}
+.actions {
+    background-color: #f7f0e3;
+    margin-top: 1em;
+    padding-top: 0.5em;
+    padding-left: 0.5em;
+    padding-bottom: 0.5em;
+    border-top: solid 1px #c8c0af;
+    color: var(--link-color);
+    display: flex;
+    flex-direction: row;
+}
+.actions > div{
+    display: inline-block;
+    margin-right: 1em;
+    user-select: none;
+    cursor: pointer;
+}
+.title-editor{
+    margin-left: 0.5em;
+    margin-bottom: 0.25em;
+    width: 100%;
+}
+::deep input[type="text"] {
+    padding-left:0.5em;
+    margin-bottom: 0.5em;
 }

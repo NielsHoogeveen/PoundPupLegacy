@@ -65,10 +65,10 @@
     @if (Model is Locatable locatable) {
         <LocatableViewer Model="locatable" />
     }
+
 </article>
 @code{
     [Parameter]
     [EditorRequired]
     public Node Model { get; set; } = default!;
-
 }

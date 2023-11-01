@@ -1,19 +1,58 @@
-﻿<div class="@ModelClassName">
+﻿@using PoundPupLegacy.Services
+@using Microsoft.AspNetCore.Components.Forms;
+@inject ICommentService CommentService
+@inherits ViewerBase
+<div class="@ModelClassName">
     @if (Model.NodeStatusId == 1)
     {
         <WaterMarkViewer />
     }
     <div class="comment-body">
-        <div class="title">
-            <h2>@Model.Title</h2>
-        </div>
-        <div class="comment-content">
-            <AuthoringViewer Model="Model.Authoring" />
-            <div class="text">
-                @((MarkupString)Format(Model.Text))
+        <EditForm Model="Model" OnSubmit="@Submit">
+            <div class="comment-header">
+                <div class="title">
+                    @if (isEditing) 
+                    {
+                        <div class="title-editor">
+                        <InputText type="text" @bind-Value="Model.Title" />
+                        </div>
+                    }
+                    else
+                    {
+                    <h2>@Model.Title</h2>
+                    }
+                </div>
+                <div class="authoring">
+                    <AuthoringViewer Model="Model.Authoring" />
+                </div>
             </div>
-        </div>
+            <div class="comment-content">
+                @if (isEditing) {
+                        <CKEditor Id="editor" @bind-Value=@Model.Text />
+               
+                }
+                else{
+                    <div class="text">
+                        @((MarkupString)Format(Model.Text))
+                    </div>
+                }
+            </div>
+            <div class="actions">
+                @if (isEditing) {
+                    <button type="submit">Submit</button>
+                }
+                else {
+                    @if (canCreate) {
+                        <div @onclick="Create">Reply</div>
+                    }
+                    @if (canEdit) {
+                        <div @onclick="Edit">Edit</div>
+                    }
+                }
+            </div>
+        </EditForm>
     </div>
+
     @if (Model.Comments is not null)
     {
         <div class="Models">
@@ -27,9 +66,90 @@
 @code{
     [Parameter]
     [EditorRequired]
-    public Comment Model { get; set; } = default!;
+    public ViewModel.Models.Comment Model { get; set; } = default!;
+
+    private bool canEdit = false;
+    private bool canCreate = false;
+
+    private bool isEditing = false;
 
     private string Format(string str) => str.Replace(@"href=""http://poundpuplegacy.org", @"href=""");
 
     private string ModelClassName => Model.NodeStatusId == 1 ? "comment comment-unpublished" : "comment";
+
+    protected override async Task OnInitializedAsync(){
+        await SetEditMode(Model.Id == 0);
+    }
+    private async Task SetEditMode(bool edit)
+    {
+        if (edit)
+        {
+            isEditing = true;
+            canCreate = false;
+            canEdit = false;
+        }
+        else
+        {
+            isEditing = false;
+            canCreate = await CommentService.CanCreateComment(User.Id);
+            canEdit = await CommentService.CanEditComment(User.Id);
+            if (canEdit == false && User.Id == Model.Authoring.Id)
+            {
+                canEdit = await CommentService.CanEditOwnComment(User.Id);
+            }
+        }
+    }
+    private async Task Edit() 
+    {
+        await SetEditMode(true);
+        StateHasChanged();
+    }
+    private void Create()
+    {
+        var newComment = new ViewModel.Models.Comment {
+            Id = 0,
+            CommentIdParent = Model.Id,
+            NodeId = Model.NodeId,
+            NodeStatusId = Model.NodeStatusId,
+            Authoring = new Authoring {
+                Id = User.Id,
+                Name = User.Name!,
+                CreatedDateTime = DateTime.Now,
+                ChangedDateTime = DateTime.Now
+            },
+            Title = "",
+            Text = "",
+            Comments = new List<Models.Comment>()
+        };
+        Model.Comments.Add(newComment);
+        StateHasChanged();
+    }
+    private async Task Submit()
+    {
+        if (Model.Id == 0)
+        {
+            Model.Id = await CommentService.Save(new Common.Comment.ToCreate {
+                    Title = Model.Title,
+                    Text = Model.Text,
+                    NodeStatusId = Model.NodeStatusId,
+                    PublisherId = Model.Authoring.Id,
+                    CommentIdParent = Model.CommentIdParent,
+                    NodeId = Model.NodeId
+                });
+            await SetEditMode(false);
+        }
+        else
+        {
+            await CommentService.Save(new Common.Comment.ToUpdate
+                {
+                    Id = Model.Id,
+                    Title = Model.Title,
+                    Text = Model.Text,
+                    NodeStatusId = Model.NodeStatusId,
+                    PublisherId = Model.Authoring.Id
+                });
+            await SetEditMode(false);
+        }
+        StateHasChanged();
+    }
 }

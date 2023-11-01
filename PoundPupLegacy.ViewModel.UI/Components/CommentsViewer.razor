@@ -1,5 +1,5 @@
 ﻿@if(Model.Any()){
-    <div class="comments">
+    <div class="comments" style="margin-bottom: 2em;">
         @foreach (var comment in @Model)
         {
             <CommentViewer Model="comment" />
@@ -9,5 +9,5 @@
 @code{
     [Parameter]
     [EditorRequired]
-    public IEnumerable<Comment> Model { get; set; } = Array.Empty<Comment>();
+    public IEnumerable<ViewModel.Models.Comment> Model { get; set; } = Array.Empty<ViewModel.Models.Comment>();
 }

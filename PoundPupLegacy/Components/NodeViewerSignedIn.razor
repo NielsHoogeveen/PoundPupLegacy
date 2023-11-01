@@ -1,10 +1,12 @@
 ﻿@using PoundPupLegacy.Services
 @using PoundPupLegacy.Readers
 @using PoundPupLegacy.Models
+@using PoundPupLegacy.ViewModel.Models
 @inherits ViewerBase
 @inject ISiteDataService siteDataService
 @inject IUserService userService
 @inject INodeAccessReadService nodeAccessReadService
+@inject ICommentService CommentService
 
 <NodeContentViewer Model="Model">
 
@@ -38,6 +40,9 @@
     }   
     <div class=" tab content1">
         <NodeDetailsViewer Model="Model" @ref=nodeDetailsViewer/>
+        @if (canCreateComment) {
+            <div id="create-comment" @onclick="Create">Reply</div>
+        }
     </div>
     
     @if (canEdit)
@@ -212,12 +217,35 @@
         displayMode = mode;
         StateHasChanged();
     }
+    private bool canCreateComment = false;
+
     protected override async Task OnInitializedAsync()
     {
+        canCreateComment = await CommentService.CanCreateComment(User.Id);
         nodeAccesses = await nodeAccessReadService.ReadNodeAccess(Model.NodeId);
         canEdit = await siteDataService.CanEdit(node: Model, userId: User.Id);
         canViewNodeAccess = await siteDataService.CanViewNodeAccess(userId: User.Id);
     }
 
     private bool canViewNodeAccess = false;
+    private void Create()
+    {
+        var newComment = new ViewModel.Models.Comment {
+                Id = 0,
+                CommentIdParent = null,
+                NodeId = Model.NodeId,
+                NodeStatusId = 0,
+                Authoring = new Authoring {
+                    Id = User.Id,
+                    Name = User.Name!,
+                    CreatedDateTime = DateTime.Now,
+                    ChangedDateTime = DateTime.Now
+                },
+                Title = "",
+                Text = "",
+                Comments = new List<ViewModel.Models.Comment>()
+            };
+        Model.Comments.Add(newComment);
+        StateHasChanged();
+    }
 }

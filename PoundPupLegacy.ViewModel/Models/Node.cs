@@ -1,38 +1,48 @@
-﻿namespace PoundPupLegacy.ViewModel.Models;
+﻿using System.Net;
+
+namespace PoundPupLegacy.ViewModel.Models;
 
 public static class NodeHelper
 {
-    public static Comment[] GetComments(this Node node)
+    public static List<Comment> GetComments(this Node node)
     {
         var lst = new List<Comment>();
+        var lst2 = new List<Comment>();
         foreach (var elem in node.CommentListItems.OrderBy(x => x.Id)) {
-            if (elem.CommentIdParent == 0) {
-                lst.Add(new Comment {
+            if (!elem.CommentIdParent.HasValue) {
+                var comment = new Comment {
                     Id = elem.Id,
+                    CommentIdParent = null,
+                    NodeId = node.NodeId,
                     Authoring = elem.Authoring,
                     NodeStatusId = elem.NodeStatusId,
                     Text = elem.Text,
                     Title = elem.Title,
                     Comments = new List<Comment>(),
-                });
+                };
+                lst.Add(comment);
+                lst2.Add(comment);
             }
             else {
-                var parentElement = lst.FirstOrDefault(x => x.Id == elem.CommentIdParent);
+                var parentElement = lst2.FirstOrDefault(x => x.Id == elem.CommentIdParent.Value);
                 if (parentElement is not null) {
-                    var comments = parentElement.Comments.ToList();
-                    parentElement.Comments.Add(new Comment {
+                    var comment = new Comment {
                         Id = elem.Id,
+                        CommentIdParent = parentElement.Id,
+                        NodeId = node.NodeId,
                         Authoring = elem.Authoring,
                         NodeStatusId = elem.NodeStatusId,
                         Text = elem.Text,
                         Title = elem.Title,
                         Comments = new List<Comment>(),
-                    });
+                    };
+                    parentElement.Comments.Add(comment);
+                    lst2.Add(comment);
                 }
 
             }
         }
-        return lst.ToArray();
+        return lst.ToList();
     }
 }
 
@@ -67,7 +77,15 @@ public abstract record NodeBase : Node
         }
     }
 
-    public Comment[] Comments => this.GetComments();
+    private List<Comment>? _comments = null;
+    public List<Comment> Comments { 
+        get {
+            if (_comments is null) {
+                _comments = this.GetComments();
+            }
+            return _comments; 
+        } 
+    }
     public required BasicLink[] BreadCrumElements { get; init; }
 
     private File[] _files = Array.Empty<File>();
@@ -92,7 +110,7 @@ public interface Node
     int PublicationStatusId { get; }
     TagListEntry[] Tags { get; }
     CommentListItem[] CommentListItems { get; }
-    Comment[] Comments { get; }
+    List<Comment> Comments { get; }
     BasicLink[] BreadCrumElements { get; }
     File[] Files { get; }
 

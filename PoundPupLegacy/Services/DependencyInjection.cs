@@ -28,15 +28,16 @@ public static class DependencyInjection
         services.AddTransient<ICreateOptionsService, CreateOptionsService>();
         services.AddTransient<IDefaultCountryService, DefaultCountryService>();
         services.AddTransient<IListOptionsService, ListOptionsService>();
-        services.AddSingleton<INodeAccessReadService, NodeAccessReadService>();
+        services.AddTransient<INodeAccessReadService, NodeAccessReadService>();
         services.AddSingleton<INodeAccessService, NodeAccessService>();
-        services.AddSingleton<IRemoveExpiredRolesService, RemoveExpiredRolesService>();
-        services.AddSingleton<ISiteDataLoader, SiteDataLoader>();
+        services.AddTransient<IRemoveExpiredRolesService, RemoveExpiredRolesService>();
+        services.AddTransient<ISiteDataLoader, SiteDataLoader>();
         services.AddSingleton<ISiteDataService, SiteDataService>();
         services.AddSingleton<IActiveUserService, ActiveUserService>();
         services.AddTransient<ISiteMapService, SiteMapService>();
         services.AddTransient<ISubgroupsService, SubgroupsService>();
         services.AddTransient<ITenantRefreshService, TenantRefreshService>();
         services.AddTransient<IUserService, UserService>();
+        services.AddTransient<ICommentService, CommentService>();
     }
 }

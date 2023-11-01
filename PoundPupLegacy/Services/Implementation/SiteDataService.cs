@@ -51,7 +51,7 @@ internal sealed class SiteDataService(
         siteData.Users.Remove(userId);
     }
 
-    private async Task<UserWithDetails?> GetUser(int userId)
+    public async Task<UserWithDetails?> GetUser(int userId)
     {
         if (siteData.Users.TryGetValue(userId, out var user)) {
 

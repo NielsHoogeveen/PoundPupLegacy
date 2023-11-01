@@ -2275,6 +2275,8 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 FROM (
         	        SELECT 
         		        c.id AS "Id", 
+                        c.node_id AS "NodeId",
+                        c.comment_id_parent AS "CommentIdParent",
         		        c.node_status_id AS "NodeStatusId",
         		        jsonb_build_object(
         			        'Id', p.id, 
@@ -2284,10 +2286,7 @@ internal sealed class NodeDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         ) AS "Authoring",
         		        c.title AS "Title", 
         		        c.text AS "Text", 
-                        case 
-                            when c.comment_id_parent is null then 0 
-                            else c.comment_id_parent 
-                        end "CommentIdParent"
+                        c.comment_id_parent AS "CommentIdParent"
         	        FROM comment c
         	        JOIN publisher p on p.id = c.publisher_id
                     JOIN node n on n.id = c.node_id
