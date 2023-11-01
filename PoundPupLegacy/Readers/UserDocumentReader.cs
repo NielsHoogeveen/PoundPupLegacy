@@ -11,12 +11,12 @@ public sealed record UserDocumentReaderRequest : IRequest
     public required int TenantId { get; init; }
 }
 
-internal sealed class UserDocumentReaderFactory : MandatorySingleItemDatabaseReaderFactory<Request, User>
+internal sealed class UserDocumentReaderFactory : MandatorySingleItemDatabaseReaderFactory<Request, UserWithDetails>
 {
     private static readonly NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
     private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
 
-    private static readonly FieldValueReader<User> DocumentReader = new() { Name = "document" };
+    private static readonly FieldValueReader<UserWithDetails> DocumentReader = new() { Name = "document" };
 
     public override string Sql => SQL;
 
@@ -413,6 +413,8 @@ internal sealed class UserDocumentReaderFactory : MandatorySingleItemDatabaseRea
         	jsonb_build_object(
                 'Id',
                 @user_id,
+                'Name',
+                p.name,
                 'NameIdentifier',
                 u.name_identifier,
         		'Actions',
@@ -430,6 +432,7 @@ internal sealed class UserDocumentReaderFactory : MandatorySingleItemDatabaseRea
         	) document
             from tenant t 
             left join "user" u on u.id = @user_id
+            left join publisher p on p.id = u.id
             where t.id = @tenant_id
         """;
 
@@ -441,7 +444,7 @@ internal sealed class UserDocumentReaderFactory : MandatorySingleItemDatabaseRea
         };
     }
 
-    protected override User Read(NpgsqlDataReader reader)
+    protected override UserWithDetails Read(NpgsqlDataReader reader)
     {
         return DocumentReader.GetValue(reader);
     }

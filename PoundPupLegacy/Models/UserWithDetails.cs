@@ -1,14 +1,14 @@
-﻿using System.Text.Json.Serialization;
+﻿using PoundPupLegacy.Common;
+using System.Text.Json.Serialization;
 
 namespace PoundPupLegacy.Models;
 
-[JsonSerializable(typeof(User))]
+[JsonSerializable(typeof(UserWithDetails))]
 internal partial class UserJsonContext : JsonSerializerContext { }
 
 
-public class User
+public record UserWithDetails: User
 {
-    public required int Id { get; init; }
     public required string NameIdentifier { get; init; }
 
     private HashSet<UserAction> _actions = new();

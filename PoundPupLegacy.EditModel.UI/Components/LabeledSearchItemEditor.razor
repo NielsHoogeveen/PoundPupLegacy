@@ -38,7 +38,7 @@
         var searchString = args.Value?.ToString() ?? string.Empty;
         if (!string.IsNullOrEmpty(searchString)) {
             options = (await SearchService.GetItems(
-                tenantId: TenantId,
+                tenantId: Tenant.Id,
                 searchString: searchString
             )).ToArray();
         }

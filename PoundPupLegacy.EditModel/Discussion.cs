@@ -4,7 +4,8 @@
 
 [JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
 
-[JsonSerializable(typeof(TenantNodeDetails.ForUpdate), TypeInfoPropertyName = "TenantNodeDetailsForUpdate")]
+[JsonSerializable(typeof(Tenant.ToUpdate), TypeInfoPropertyName = "TenantToUpdate")]
+[JsonSerializable(typeof(List<Tenant.ToUpdate>), TypeInfoPropertyName = "TenantListToUpdate")]
 
 [JsonSerializable(typeof(Tags.ToUpdate), TypeInfoPropertyName = "TagsToUpdate")]
 [JsonSerializable(typeof(List<Tags.ToUpdate>), TypeInfoPropertyName = "TagsListToUpdate")]
@@ -14,7 +15,8 @@ public partial class ExistingDiscussionToUpdateJsonContext : JsonSerializerConte
 
 [JsonSerializable(typeof(NodeDetails.ForCreate), TypeInfoPropertyName = "NodeDetailsForCreate")]
 
-[JsonSerializable(typeof(TenantNodeDetails.ForCreate), TypeInfoPropertyName = "TenantNodeDetailsForCreate")]
+[JsonSerializable(typeof(Tenant.ToCreate), TypeInfoPropertyName = "TenantToCreate")]
+[JsonSerializable(typeof(List<Tenant.ToCreate>), TypeInfoPropertyName = "TenantListToCreate")]
 
 [JsonSerializable(typeof(Tags.ToCreate), TypeInfoPropertyName = "TagsToCreate")]
 [JsonSerializable(typeof(List<Tags.ToCreate>), TypeInfoPropertyName = "TagsListToCreate")]

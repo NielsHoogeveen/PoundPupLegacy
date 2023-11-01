@@ -1,6 +1,7 @@
 ﻿footer {
     background-color: var(--footer-bg-color);
     flex-grow: 0;
+    height: 3em;
 }
 
 ::deep ul {

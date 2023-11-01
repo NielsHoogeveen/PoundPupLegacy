@@ -33,6 +33,7 @@ public static class DependencyInjection
         services.AddSingleton<IRemoveExpiredRolesService, RemoveExpiredRolesService>();
         services.AddSingleton<ISiteDataLoader, SiteDataLoader>();
         services.AddSingleton<ISiteDataService, SiteDataService>();
+        services.AddSingleton<IActiveUserService, ActiveUserService>();
         services.AddTransient<ISiteMapService, SiteMapService>();
         services.AddTransient<ISubgroupsService, SubgroupsService>();
         services.AddTransient<ITenantRefreshService, TenantRefreshService>();

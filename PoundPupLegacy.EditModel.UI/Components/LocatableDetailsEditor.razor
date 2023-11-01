@@ -52,7 +52,7 @@
     }
     private void AddLocation()
     {
-        (var countryId, var countryName) = DefaultCountryService.GetDefaultCountry(TenantId);
+        (var countryId, var countryName) = DefaultCountryService.GetDefaultCountry(Tenant.Id);
         locationToEdit = new Location.ToCreate {
             Street = null,
             Addition = null,

@@ -54,8 +54,8 @@ else {
         var result = await FetchService.FetchRecentPosts(
             pageSize: PagedListSettings.PageSize, 
             pageNumber: PagedListSettings.PageNumber, 
-            tenantId: TenantId, 
-            userId: UserId);
+            tenantId: Tenant.Id, 
+            userId: User.Id);
         return result;
     }
 }

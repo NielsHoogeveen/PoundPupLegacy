@@ -1,0 +1,55 @@
+﻿@using PoundPupLegacy.Common
+@using PoundPupLegacy.Services
+@inherits ViewerBase
+@inject IActiveUserService ActiveUserService
+@if(User.Id != 0 && Tenant.TrackActiveUsers)
+{
+    @if(Collapsed){
+        <div class="collapsed">
+            <h4 @onclick="ToggleCollapsed">Active users</h4>
+        </div>
+    }
+    else
+    {
+    <div class="active-users">
+        <h4 @onclick="ToggleCollapsed">Active users</h4>
+        <div class="user-list">
+            <div class="inner">
+            @foreach(var user in ActiveUserService.ActiveUsers) {
+                <div>
+                    @user.User.Name
+                </div>
+            }
+        </div>
+        </div>
+    </div>
+    }
+}
+@code {
+
+    private bool Collapsed { get; set; } = true;
+
+    private async Task OnNotify()
+    {
+        await InvokeAsync(() => {
+            StateHasChanged();
+        });
+    }
+
+
+    protected override void OnInitialized()
+    {
+        ActiveUserService.Notify += OnNotify;
+    }
+
+    private TimeSpan GetTimeSpan(DateTime dateTime)
+    {
+        var ts = (DateTime.Now - dateTime);
+        return new TimeSpan(ts.Days, ts.Hours, ts.Minutes, ts.Seconds);
+    }
+    private void ToggleCollapsed()
+    {
+        Collapsed = !Collapsed;
+        StateHasChanged();
+    }
+}

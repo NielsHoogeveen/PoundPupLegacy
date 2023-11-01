@@ -1,7 +1,7 @@
 ﻿using PoundPupLegacy.Models;
 using PoundPupLegacy.ViewModel.Models;
 using System.Data;
-using User = PoundPupLegacy.Models.User;
+using User = PoundPupLegacy.Common.User;
 
 namespace PoundPupLegacy.Services.Implementation;
 
@@ -41,9 +41,9 @@ internal sealed class SiteDataService(
         return null;
     }
 
-    public int? GetUserByNameIdentifier(string id)
+    public User? GetUserByNameIdentifier(string id)
     {
-        return siteData.Users.FirstOrDefault(x => x.Value.NameIdentifier == id).Value?.Id;
+        return siteData.Users.FirstOrDefault(x => x.Value.NameIdentifier == id).Value;
     }
 
     public void RemoveUser(int userId)
@@ -51,7 +51,7 @@ internal sealed class SiteDataService(
         siteData.Users.Remove(userId);
     }
 
-    private async Task<User?> GetUser(int userId)
+    private async Task<UserWithDetails?> GetUser(int userId)
     {
         if (siteData.Users.TryGetValue(userId, out var user)) {
 
@@ -149,4 +149,7 @@ internal sealed class SiteDataService(
         }
         return false;
     }
+
+
 }
+

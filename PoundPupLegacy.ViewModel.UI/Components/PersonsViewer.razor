@@ -27,8 +27,8 @@
     protected override async Task<IPagedList<PersonListEntry>> GetListEntriesAsync()
     {
         return await PersonService.FetchPersons(
-            userId: UserId, 
-            tenantId: TenantId, 
+            userId: User.Id, 
+            tenantId: Tenant.Id, 
             pageSize: PagedListSettings.PageSize, 
             pageNumber: PagedListSettings.PageNumber, 
             searchTerm: PagedListSettings.SearchTerm, 

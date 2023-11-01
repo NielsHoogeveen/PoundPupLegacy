@@ -37,9 +37,6 @@
                             <select @onchange="(e) => OnSelectPublicationStatus(tenant.Id, e)">
                             @foreach(var option in new List<(int, string)> {(0, "unpublished"), (1, "published"), (2, "private") }) 
                             {
-                                if(option.Item1 != tenant.PublicationStatusIdDefault && tenant.PublicationStatusDefaultIsOnlyOption) {
-                                    continue;
-                                }
                                 @if(tenant.TenantNode.PublicationStatusId == option.Item1) 
                                 {
                                     <option selected value="@option.Item1">@option.Item2</option>
@@ -55,11 +52,7 @@
                             @if (tenant.Subgroups.Any()) 
                             {
                                 <select @onchange="(e) => OnSelectSubgroup(tenant.Id, e)">
-                                @if (tenant.AllowAccess) 
-                                {
-                                    <option value=""></option>
-                                }
-                        
+                                <option value=""></option>
                                 @foreach(var subgroup in tenant.Subgroups) 
                                 {
                                     @if(subgroup.Id == tenant.TenantNode!.SubgroupId) 
@@ -90,10 +83,10 @@
 @code {
     [Parameter]
     [EditorRequired]
-    public List<TenantDetails> Model { get; set; } = default!;
+    public List<Tenant> Model { get; set; } = default!;
 
     [Parameter]
-    public EventCallback<List<TenantDetails>> ModelChanged { get; set; } = default!;
+    public EventCallback<List<Tenant>> ModelChanged { get; set; } = default!;
 
     [Parameter]
     [EditorRequired]
@@ -103,7 +96,7 @@
     {
         await Task.CompletedTask;
         if(ForCreate){
-            Check(TenantId);
+            Check(Tenant.Id);
         }
     }
 
@@ -146,7 +139,7 @@
                         {
                             TenantId = tenantId,
                             HasBeenDeleted = false,
-                            PublicationStatusId = tenant.PublicationStatusIdDefault,
+                            PublicationStatusId = tenant.PublicationStatuses.First(x => x.IsDefault).Id,
                             NodeId = newTenantNodeForExistingNode.NodeId,
                             UrlId = newTenantNodeForExistingNode.NodeId,
                             UrlPath = null,
@@ -162,10 +155,10 @@
                             {
                                 TenantId = tenantId,
                                 HasBeenDeleted = false,
-                                PublicationStatusId = tenant.PublicationStatusIdDefault,
+                                PublicationStatusId = tenant.PublicationStatuses.First(x => x.IsDefault).Id,
                                 UrlPath = null,
                                 SubgroupId = null,
-                                CanBeUnchecked = tenantId != TenantId,
+                                CanBeUnchecked = tenantId != Tenant.Id,
                                 HasBeenStored = false
                             };
                         tenant.TenantNode = newTenantNode;
@@ -175,12 +168,12 @@
                         var newTenantNode = new TenantNode.ToCreateForExistingNode {
                                 TenantId = tenantId,
                                 HasBeenDeleted = false,
-                                PublicationStatusId = tenant.PublicationStatusIdDefault,
+                                PublicationStatusId = tenant.PublicationStatuses.First(x => x.IsDefault).Id,
                                 UrlId = nodeId,
                                 NodeId = nodeId,
                                 UrlPath = null,
                                 SubgroupId = null,
-                                CanBeUnchecked = tenantId != TenantId,
+                                CanBeUnchecked = tenantId != Tenant.Id,
                                 HasBeenStored = false
                             };
                         tenant.TenantNode = newTenantNode;
@@ -200,10 +193,10 @@
                 tenant.TenantNode.SubgroupId = subgroupId;
                 if (subgroupId.HasValue) {
                     var subgroup = tenant.Subgroups.First(x => x.Id == subgroupId.Value);
-                    tenant.TenantNode.PublicationStatusId = subgroup.PublicationStatusIdDefault;
+                    tenant.TenantNode.PublicationStatusId = subgroup.PublicationStatuses.First(x => x.IsDefault).Id;
                 }
                 else {
-                    tenant.TenantNode.PublicationStatusId = tenant.PublicationStatusIdDefault;
+                    tenant.TenantNode.PublicationStatusId = tenant.PublicationStatuses.First(x => x.IsDefault).Id;
                 }
 
             }

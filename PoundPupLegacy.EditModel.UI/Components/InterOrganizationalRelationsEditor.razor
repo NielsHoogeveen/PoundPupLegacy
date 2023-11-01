@@ -65,7 +65,7 @@
 
     [Parameter]
     [EditorRequired]
-    public List<TenantDetails> Tenants { get; set; } = default!;
+    public List<Tenant> Tenants { get; set; } = default!;
 
     private RelationContext? relationContext = null;
 
@@ -267,8 +267,8 @@
     private void AddRelationFrom()
     {
         var relationToEdit = OrganizationItem.Match<InterOrganizationalRelation.From.Incomplete>(
-            organizationListItem: li => li.GetNewInterOrganizationalRelationFrom(RelationTypes.First<InterOrganizationalRelationTypeListItem>(), TenantId, UserId, Tenants),
-            organizationName: nm => nm.GetNewInterOrganizationalRelationFrom(RelationTypes.First<InterOrganizationalRelationTypeListItem>(), TenantId, UserId, Tenants)
+            organizationListItem: li => li.GetNewInterOrganizationalRelationFrom(RelationTypes.First<InterOrganizationalRelationTypeListItem>(), Tenant.Id, User.Id, Tenants),
+            organizationName: nm => nm.GetNewInterOrganizationalRelationFrom(RelationTypes.First<InterOrganizationalRelationTypeListItem>(), Tenant.Id, User.Id, Tenants)
         );
         relationContext = new RelationContext.RelationContextFrom.RelationContextFromNew {
             RelationToEdit = relationToEdit
@@ -278,8 +278,8 @@
     private void AddRelationTo()
     {
         var relationToEdit = OrganizationItem.Match<InterOrganizationalRelation.To.Incomplete>(
-            organizationListItem: li => li.GetNewInterOrganizationalRelationTo(RelationTypes.First<InterOrganizationalRelationTypeListItem>(), TenantId, UserId, Tenants),
-            organizationName: nm => nm.GetNewInterOrganizationalRelationTo(RelationTypes.First<InterOrganizationalRelationTypeListItem>(), TenantId, UserId, Tenants)
+            organizationListItem: li => li.GetNewInterOrganizationalRelationTo(RelationTypes.First<InterOrganizationalRelationTypeListItem>(), Tenant.Id, User.Id, Tenants),
+            organizationName: nm => nm.GetNewInterOrganizationalRelationTo(RelationTypes.First<InterOrganizationalRelationTypeListItem>(), Tenant.Id, User.Id, Tenants)
         );
 
         relationContext = new RelationContext.RelationContextTo.RelationContextToNew {

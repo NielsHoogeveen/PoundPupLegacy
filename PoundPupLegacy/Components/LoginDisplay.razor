@@ -1,12 +1,36 @@
-﻿<AuthorizeView>
+﻿@inherits ViewerBase
+<div style="flex:1;"></div>
+<AuthorizeView>
     <Authorized>
-        <span>@context.User.Identity?.Name!</span>
-        <form method="post" action="Identity/Account/Logout">
-            <button type="submit" class="nav-link btn btn-link">Log out</button>
-        </form>
+    <div class="logged-in-user" style="">
+        <div @onclick="ToggleCollapsed">
+            <img src="/img/user-circle-svgrepo-com.svg" />
+        </div>
+        @if (!Collapsed) {
+
+        <div class="account-menu">
+            <div class="inner">
+                <div class="user-name">@User?.Name</div>
+                <form method="post" action="Identity/Account/Logout">
+                    <button type="submit">Log out</button>
+                </form>
+            </div>
+        </div>
+    }
+    </div>
     </Authorized>
     <NotAuthorized>
         <a href="Identity/Account/Register">Register</a>
         <a href="Identity/Account/Login">Log in</a>
     </NotAuthorized>
 </AuthorizeView>
+    
+@code{
+    private bool Collapsed { get; set; } = true;
+
+    private void ToggleCollapsed()
+    {
+        Collapsed = !Collapsed;
+    }
+}
+

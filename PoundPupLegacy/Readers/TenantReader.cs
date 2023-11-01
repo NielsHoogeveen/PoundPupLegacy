@@ -16,27 +16,6 @@ internal sealed class TenantReaderFactory : MandatorySingleItemDatabaseReaderFac
 
     private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
 
-    private static readonly IntValueReader TenantIdReader = new() { Name = "tenant_id" };
-    private static readonly StringValueReader NameReader = new() { Name = "name" };
-    private static readonly StringValueReader TitleReader = new() { Name = "title" };
-    private static readonly StringValueReader DescriptionReader = new() { Name = "description" };
-    private static readonly StringValueReader DomainNameReader = new() { Name = "domain_name" };
-    private static readonly IntValueReader CountryIdDefaultReader = new() { Name = "country_id_default" };
-    private static readonly StringValueReader CountryNameDefault = new() { Name = "country_name" };
-    private static readonly NullableStringValueReader FrontPageText = new() { Name = "front_page_text" };
-    private static readonly NullableStringValueReader Logo = new() { Name = "logo" };
-    private static readonly NullableStringValueReader CssFile = new() { Name = "css_file" };
-    private static readonly NullableStringValueReader SubTitle = new() { Name = "sub_title" };
-    private static readonly NullableStringValueReader FooterText = new() { Name = "footer_text" };
-    private static readonly NullableStringValueReader GoogleAnalyticsMeasurementId = new() { Name = "google_analytics_measurement_id" };
-    private static readonly IntValueReader FrontPageId = new() { Name = "frontpage_id" };
-    private static readonly IntValueReader SmtpConnectionId = new() { Name = "smtp_connection_id" };
-    private static readonly StringValueReader SmptHost = new() { Name = "smtp_host" };
-    private static readonly IntValueReader SmtpPort = new() { Name = "smtp_port" };
-    private static readonly StringValueReader SmptUserName = new() { Name = "smtp_user_name" };
-    private static readonly StringValueReader SmptPassword = new() { Name = "smtp_password" };
-    private static readonly NullableStringValueReader RegistrationText = new() { Name = "registration_text" };
-
     public override string Sql => SQL;
 
     const string SQL = """
@@ -72,6 +51,8 @@ internal sealed class TenantReaderFactory : MandatorySingleItemDatabaseReaderFac
             t.google_analytics_measurement_id,
             'RegistrationText',
             t.registration_text,
+            'TrackActiveUsers',
+            t.track_active_users,
             'SmtpConnection',
             jsonb_build_object(
                 'Id',

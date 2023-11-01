@@ -17,8 +17,8 @@ internal sealed class UserService(
     IEmailSender emailSender,
     ISiteDataService siteDateService,
     ISingleItemDatabaseReaderFactory<UsersRolesToAsignReaderRequest, List<UserRolesToAssign>> userRolesToAssignFactory,
-    ISingleItemDatabaseReaderFactory<UserByNameIdentifierReaderRequest, UserIdByNameIdentifier> userByNameIdentifierReaderFactory,
-    ISingleItemDatabaseReaderFactory<UserByEmailReaderRequest, UserIdByEmail> userByEmailReaderFactory,
+    ISingleItemDatabaseReaderFactory<UserByNameIdentifierReaderRequest, User> userByNameIdentifierReaderFactory,
+    ISingleItemDatabaseReaderFactory<UserByEmailReaderRequest, User> userByEmailReaderFactory,
     IDatabaseUpdaterFactory<UserNameIdentifierUpdaterRequest> userNameIdentifierUpdaterFactory
 ) : DatabaseService(dataSource, logger), IUserService
 {
@@ -170,38 +170,43 @@ internal sealed class UserService(
         if(key is null) {
             return new UserLookupResponse.NoUser();
         }
-        var userIdCached = siteDataService.GetUserByNameIdentifier(key.Value);
-        if(userIdCached is not null) {
+        var user = siteDataService.GetUserByNameIdentifier(key.Value);
+        if(user is not null) {
 
-            return new UserLookupResponse.ExistingUser(userIdCached.Value);
+            return new UserLookupResponse.ExistingUser(user);
         }
-        return await WithConnection<UserLookupResponse>(async (connection) => {
-            var userByNameIdentifierReader = await userByNameIdentifierReaderFactory.CreateAsync(connection);
-            var userId = await userByNameIdentifierReader.ReadAsync(new UserByNameIdentifierReaderRequest {
-                NameIdentifier = key.Value
-            });
-            if(userId is not null) {
-                await siteDataService.GetMenuItemsForUser(userId.UserId);
-                return new UserLookupResponse.ExistingUser(userId.UserId);
-            }
-            var email = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress");
-            if (email is null) {
-                return new UserLookupResponse.NewUser(key.Value);
-
-            }
-            var userByEmailReader = await userByEmailReaderFactory.CreateAsync(connection);
-            var userIdFromEmail = await userByEmailReader.ReadAsync(new UserByEmailReaderRequest { 
-                Email = email.Value 
-            });
-            if(userIdFromEmail is not null) {
-                var userNameIdentifierUpdater = await userNameIdentifierUpdaterFactory.CreateAsync(connection);
-                await userNameIdentifierUpdater.UpdateAsync(new UserNameIdentifierUpdaterRequest {
-                    NameIdentifier = key.Value,
-                    UserId = userIdFromEmail.UserId
+        try {
+            return await WithConnection<UserLookupResponse>(async (connection) => {
+                var userByNameIdentifierReader = await userByNameIdentifierReaderFactory.CreateAsync(connection);
+                var user = await userByNameIdentifierReader.ReadAsync(new UserByNameIdentifierReaderRequest {
+                    NameIdentifier = key.Value
                 });
-                return new UserLookupResponse.ExistingUser(userIdFromEmail.UserId);
-            }
-            return new UserLookupResponse.NewUser(key.Value);
-        });
+                if (user is not null) {
+                    await siteDataService.GetMenuItemsForUser(user.Id);
+                    return new UserLookupResponse.ExistingUser(user);
+                }
+                var email = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress");
+                if (email is null) {
+                    return new UserLookupResponse.NewUser(key.Value);
+
+                }
+                var userByEmailReader = await userByEmailReaderFactory.CreateAsync(connection);
+                var userFromEmail = await userByEmailReader.ReadAsync(new UserByEmailReaderRequest {
+                    Email = email.Value
+                });
+                if (userFromEmail is not null) {
+                    var userNameIdentifierUpdater = await userNameIdentifierUpdaterFactory.CreateAsync(connection);
+                    await userNameIdentifierUpdater.UpdateAsync(new UserNameIdentifierUpdaterRequest {
+                        NameIdentifier = key.Value,
+                        UserId = userFromEmail.Id
+                    });
+                    return new UserLookupResponse.ExistingUser(userFromEmail);
+                }
+                return new UserLookupResponse.NewUser(key.Value);
+            });
+        }catch(Exception e) {
+            Console.WriteLine(e.ToString());
+            throw;
+        }
     }
 }

@@ -1,12 +1,13 @@
-﻿<header>
-    <div class="logo">
+﻿@inherits ViewerBase
+<header>
+    <a href="/" class="logo">
         @if (Logo is not null)
         {
             @((MarkupString)Logo)
         }
-    </div>
+    </a>
     <div class="central-header">
-        <div>
+        <div style="flex:5">
             <div class="subtitle">
             @if (Subtitle is not null)
             {
@@ -14,12 +15,15 @@
             }
             </div>
         </div>
-        <form action="search" id="search-form">
+        <form action="search" id="search-form" style="flex:2">
             <input type="text" name="search_term" />
             <input type="hidden" name="search_option" value="contains" />
             <input type="submit" value="search" />
         </form>
-        <LoginDisplay />
+        @if (User is not null)
+        {
+            <LoginDisplay />
+        }
     </div>
 </header>
 

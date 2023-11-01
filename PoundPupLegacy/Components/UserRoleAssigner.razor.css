@@ -1,11 +1,21 @@
 ﻿h1, .users{
 }
-.users {
+.new-users {
     display: grid;
     width: 100%;
     grid-template-columns: 10em 1fr 5fr 5fr;
 }
-.users > div {
+.new-users > div {
+    border-bottom: 1px solid #b4b4b4;
+    margin-bottom: 1em;
+}
+.active-users {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 1fr 12em 2em;
+}
+
+.active-users > div {
     border-bottom: 1px solid #b4b4b4;
     margin-bottom: 1em;
 }

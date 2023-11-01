@@ -15,8 +15,8 @@
     protected override async Task<IPagedList<PollListEntry>> GetListEntriesAsync()
     {
         return await FetchPollsService.GetPolls(
-            userId: UserId, 
-            tenantId: TenantId, 
+            userId: User.Id, 
+            tenantId: Tenant.Id, 
             pageSize: PagedListSettings.PageSize, 
             pageNumber: PagedListSettings.PageNumber);
     }

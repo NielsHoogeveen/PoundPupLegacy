@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.EditModel;
 public static class InterOrganizationalRelationExtentions
 {
-    public static InterOrganizationalRelation.From.Incomplete.ForExistingOrganization GetNewInterOrganizationalRelationFrom(this OrganizationListItem organizationListItem, InterOrganizationalRelationTypeListItem interOrganizationalRelationType, int ownerId, int publisherId, List<TenantDetails> tenants)
+    public static InterOrganizationalRelation.From.Incomplete.ForExistingOrganization GetNewInterOrganizationalRelationFrom(this OrganizationListItem organizationListItem, InterOrganizationalRelationTypeListItem interOrganizationalRelationType, int ownerId, int publisherId, List<Tenant> tenants)
     {
         return new InterOrganizationalRelation.From.Incomplete.ForExistingOrganization {
             OrganizationFrom = organizationListItem,
@@ -11,7 +11,7 @@ public static class InterOrganizationalRelationExtentions
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }
-    public static InterOrganizationalRelation.From.Incomplete.ForNewOrganization GetNewInterOrganizationalRelationFrom(this OrganizationName organizationName, InterOrganizationalRelationTypeListItem interOrganizationalRelationType, int ownerId, int publisherId, List<TenantDetails> tenants)
+    public static InterOrganizationalRelation.From.Incomplete.ForNewOrganization GetNewInterOrganizationalRelationFrom(this OrganizationName organizationName, InterOrganizationalRelationTypeListItem interOrganizationalRelationType, int ownerId, int publisherId, List<Tenant> tenants)
     {
         return new InterOrganizationalRelation.From.Incomplete.ForNewOrganization {
             OrganizationFrom = organizationName,
@@ -21,7 +21,7 @@ public static class InterOrganizationalRelationExtentions
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }
-    public static InterOrganizationalRelation.To.Incomplete.ForExistingOrganization GetNewInterOrganizationalRelationTo(this OrganizationListItem organizationListItem, InterOrganizationalRelationTypeListItem interOrganizationalRelationType, int ownerId, int publisherId, List<TenantDetails> tenants)
+    public static InterOrganizationalRelation.To.Incomplete.ForExistingOrganization GetNewInterOrganizationalRelationTo(this OrganizationListItem organizationListItem, InterOrganizationalRelationTypeListItem interOrganizationalRelationType, int ownerId, int publisherId, List<Tenant> tenants)
     {
         return new InterOrganizationalRelation.To.Incomplete.ForExistingOrganization {
             OrganizationFrom = null,
@@ -32,7 +32,7 @@ public static class InterOrganizationalRelationExtentions
         };
 
     }
-    public static InterOrganizationalRelation.To.Incomplete.ForNewOrganization GetNewInterOrganizationalRelationTo(this OrganizationName organizationName, InterOrganizationalRelationTypeListItem interOrganizationalRelationType, int ownerId, int publisherId, List<TenantDetails> tenants)
+    public static InterOrganizationalRelation.To.Incomplete.ForNewOrganization GetNewInterOrganizationalRelationTo(this OrganizationName organizationName, InterOrganizationalRelationTypeListItem interOrganizationalRelationType, int ownerId, int publisherId, List<Tenant> tenants)
     {
         return new InterOrganizationalRelation.To.Incomplete.ForNewOrganization {
             OrganizationFrom = null,

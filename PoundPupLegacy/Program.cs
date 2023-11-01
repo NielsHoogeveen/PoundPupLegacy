@@ -11,9 +11,8 @@ using Quartz.AspNetCore;
 using System.Text.Json.Serialization.Metadata;
 using PoundPupLegacy.Areas.Identity;
 using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.RateLimiting;
-using System.Threading.RateLimiting;
-using Microsoft.Extensions.Configuration;
+using AspNetCoreRateLimit;
+using Microsoft.AspNetCore.Components.Server.Circuits;
 
 namespace PoundPupLegacy;
 
@@ -23,6 +22,9 @@ public sealed class Program
     {
         IJsonTypeInfoResolver[] resolvers = Extensions.GetResolvers();
         var builder = WebApplication.CreateBuilder(args);
+
+        builder.Services.AddOptions();
+        builder.Services.AddMemoryCache();
 
         builder.Services.AddHttpContextAccessor();
         var connectionString = builder.Configuration.GetValue<string>("ConnectString")!;
@@ -111,13 +113,12 @@ public sealed class Program
             .WithDescription("Removing expired roles"));
 
         });
-        var rateLimiterPolicy = builder.Configuration.GetSection("RateLimiterPolicy").Get<RateLimiterPolicy>()!;
-        builder.Services.AddRateLimiter(_ => _
-            .AddConcurrencyLimiter(policyName: rateLimiterPolicy.Name, options => {
-                options.PermitLimit = rateLimiterPolicy.PermitLimit;
-                options.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-                options.QueueLimit = rateLimiterPolicy.QueueLimit;
-            }));
+        builder.Services.Configure<IpRateLimitOptions>(builder.Configuration.GetSection("IpRateLimiting"));
+        builder.Services.AddInMemoryRateLimiting();
+
+        builder.Services.AddScoped<CircuitHandler, CircuitHandlerService>();
+
+        builder.Services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
 
         builder.Services.AddQuartzServer(options => {
             options.WaitForJobsToComplete = true;
@@ -134,7 +135,8 @@ public sealed class Program
 
         }
 
-        app.UseRateLimiter();
+        //app.UseRateLimiter();
+        app.UseIpRateLimiting();
 
         app.Use(async (context, next) => {
             await next();
@@ -159,22 +161,22 @@ public sealed class Program
         app.UseAuthentication();
         app.UseAuthorization();
 
-        app.MapControllers().RequireRateLimiting(rateLimiterPolicy.Name); 
-        app.MapBlazorHub().RequireRateLimiting(rateLimiterPolicy.Name);
-        app.MapFallbackToPage("/_Host").RequireRateLimiting(rateLimiterPolicy.Name);
+        app.MapControllers()
+            ; 
+        app.MapBlazorHub()
+            ;
+        app.MapFallbackToPage("/_Host")
+            ;
 
         app.MapControllerRoute(
             name: "default",
-            pattern: "{controller=Home}/{action=Index}/{id?}").RequireRateLimiting(rateLimiterPolicy.Name); ;
+            pattern: "{controller=Home}/{action=Index}/{id?}")
+            ; 
 
         //app.MapControllerRoute(
         //   name: "all-else",
         //   pattern: "{*url}",
         //   defaults: new { controller = "Home", action = "AllElse" });
-
-        //var sdl = app.Services.GetService<ISiteDataLoader>();
-        //await sdl.GetSiteData();
-
 
         var res = app.Services.GetService<ISiteDataService>();
         if (res != null) {
@@ -184,7 +186,6 @@ public sealed class Program
         }
     }
 }
-
 public static class Extensions
 {
     public static AuthenticationBuilder AddProviders(this AuthenticationBuilder builder, List<OAuthProvider> providers)
@@ -398,7 +399,6 @@ public static class Extensions
             EditModel.TagNodeTypeJsonContext.Default,
             EditModel.TypeOfAbuseJsonContext.Default,
             EditModel.TypeOfAbuserJsonContext.Default,
-            EditModel.TenantDetailsJsonContext.Default,
             EditModel.ExistingTenantNodeJsonContext.Default,
             EditModel.TermJsonContext.Default,
             EditModel.WrongfulMedicationCaseToUpdateJsonContext.Default,

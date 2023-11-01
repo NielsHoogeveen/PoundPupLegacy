@@ -1,6 +1,6 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
-[JsonSerializable(typeof(Organization.ToUpdate), TypeInfoPropertyName ="OrganizationToUpdate")]
+[JsonSerializable(typeof(Organization.ToUpdate), TypeInfoPropertyName = "OrganizationToUpdate")]
 
 [JsonSerializable(typeof(LocatableDetails.ForUpdate), TypeInfoPropertyName = "LocatableDetailsForUpdate")]
 [JsonSerializable(typeof(Location.ToUpdate), TypeInfoPropertyName = "LocationDetailsForUpdate")]
@@ -45,17 +45,14 @@
 [JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
 [JsonSerializable(typeof(NodeDetails.ForCreate), TypeInfoPropertyName = "NodeDetailsForCreate")]
 
-[JsonSerializable(typeof(TenantNodeDetails.ForUpdate), TypeInfoPropertyName = "TenantNodeDetailsForUpdate")]
-[JsonSerializable(typeof(TenantNodeDetails.ForCreate), TypeInfoPropertyName = "TenantNodeDetailsForCreate")]
-
-[JsonSerializable(typeof(TenantNodeDetails.ForUpdate), TypeInfoPropertyName = "TenantNodeDetailsForUpdate")]
-
 [JsonSerializable(typeof(OrganizationDetails.ForUpdate), TypeInfoPropertyName = "OrganizationDetailsForUpdate")]
 
 [JsonSerializable(typeof(Tags.ToUpdate), TypeInfoPropertyName = "TagsToUpdate")]
 [JsonSerializable(typeof(Tags.ToCreate), TypeInfoPropertyName = "TagsToCreate")]
 [JsonSerializable(typeof(List<Tags.ToUpdate>), TypeInfoPropertyName = "TagsListToUpdate")]
 
+[JsonSerializable(typeof(Tenant.ToUpdate), TypeInfoPropertyName = "TenantToUpdate")]
+[JsonSerializable(typeof(List<Tenant.ToUpdate>), TypeInfoPropertyName = "TenantListToUpdate")]
 public partial class OrganizationToUpdateJsonContext : JsonSerializerContext { }
 
 [JsonSerializable(typeof(Organization.ToCreate), TypeInfoPropertyName = "OrganizationToCreate")]
@@ -122,8 +119,8 @@ public partial class OrganizationToUpdateJsonContext : JsonSerializerContext { }
 [JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
 [JsonSerializable(typeof(NodeDetails.ForCreate), TypeInfoPropertyName = "NodeDetailsForCreate")]
 
-[JsonSerializable(typeof(TenantNodeDetails.ForUpdate), TypeInfoPropertyName = "TenantNodeDetailsForUpdate")]
-[JsonSerializable(typeof(TenantNodeDetails.ForCreate), TypeInfoPropertyName = "TenantNodeDetailsForCreate")]
+[JsonSerializable(typeof(Tenant.ToCreate), TypeInfoPropertyName = "TenantToCreate")]
+[JsonSerializable(typeof(List<Tenant.ToCreate>), TypeInfoPropertyName = "TenantListToCreate")]
 
 [JsonSerializable(typeof(Tags.ToCreate), TypeInfoPropertyName = "TagsToCreate")]
 [JsonSerializable(typeof(Tags.ToUpdate), TypeInfoPropertyName = "TagsToUpdate")]
@@ -134,7 +131,6 @@ public partial class OrganizationToUpdateJsonContext : JsonSerializerContext { }
 [JsonSerializable(typeof(OrganizationDetails.ForCreate), TypeInfoPropertyName = "OrganizationDetailsForCreate")]
 [JsonSerializable(typeof(OrganizationDetails.ForUpdate), TypeInfoPropertyName = "OrganizationDetailsForUpdate")]
 public partial class OrganizationToCreateJsonContext : JsonSerializerContext { }
-
 
 public abstract record Organization : Locatable, ResolvedNode, Node<Organization.ToUpdate, Organization.ToCreate>, Resolver<Organization.ToUpdate, Organization.ToCreate, Unit>
 {
@@ -191,14 +187,14 @@ public abstract record OrganizationDetails
     public required FuzzyDate? Termination { get; set; }
 
     private List<OrganizationOrganizationType> organizationOrganizationTypes = new List<OrganizationOrganizationType>();
-    public required List<OrganizationOrganizationType> OrganizationOrganizationTypes { 
-        get => organizationOrganizationTypes; 
+    public required List<OrganizationOrganizationType> OrganizationOrganizationTypes {
+        get => organizationOrganizationTypes;
         init {
             if (value is not null)
                 organizationOrganizationTypes = value;
-        } 
+        }
     }
-    public required List<OrganizationTypeListItem> OrganizationTypes { get; init; } 
+    public required List<OrganizationTypeListItem> OrganizationTypes { get; init; }
     public required List<InterOrganizationalRelationTypeListItem> InterOrganizationalRelationTypes { get; init; }
     public abstract OrganizationItem OrganizationItem { get; }
     public abstract List<PersonOrganizationRelation.ForOrganization.Complete> PersonOrganizationRelations { get; set; }
@@ -227,7 +223,7 @@ public abstract record OrganizationDetails
         }
 
         private List<OrganizationPoliticalEntityRelation.Complete>? _organizationPoliticalEntityRelations = null;
-        public override List<OrganizationPoliticalEntityRelation.Complete> OrganizationPoliticalEntityRelations { 
+        public override List<OrganizationPoliticalEntityRelation.Complete> OrganizationPoliticalEntityRelations {
             get {
                 if (_organizationPoliticalEntityRelations is null) {
                     _organizationPoliticalEntityRelations = GetOrganizationPoliticalEntityRelations().ToList();
@@ -235,11 +231,11 @@ public abstract record OrganizationDetails
                 return _organizationPoliticalEntityRelations;
             }
             set {
-                if(value is not null) {
-                       _organizationPoliticalEntityRelations = value;
+                if (value is not null) {
+                    _organizationPoliticalEntityRelations = value;
                 }
             }
-            
+
         }
         private IEnumerable<OrganizationPoliticalEntityRelation.Complete> GetOrganizationPoliticalEntityRelations()
         {
@@ -365,7 +361,7 @@ public abstract record OrganizationDetails
 
     }
 
-    public sealed record ForCreate: OrganizationDetails
+    public sealed record ForCreate : OrganizationDetails
     {
         public required OrganizationName OrganizationName { get; init; }
         public override OrganizationItem OrganizationItem => OrganizationName;

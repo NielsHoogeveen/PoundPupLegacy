@@ -2,11 +2,7 @@
 @using PoundPupLegacy.Services
 @inject ICreateOptionsService CreateOptionsService
 @inherits ViewerBase
-<div class="breadcrum">
-    <span class="breadcrum-element">
-        <a href="/">Home</a>
-    </span>
-</div>
+<BreadCrumElementViewer Model="BreadCrumElements" />
 <h1>Create content</h1>
 @if(_model is not null) {
     <div class="create-options">
@@ -22,6 +18,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _model = await CreateOptionsService.GetCreateOptions(TenantId, UserId);
+        _model = await CreateOptionsService.GetCreateOptions(Tenant.Id, User.Id);
     }
 }

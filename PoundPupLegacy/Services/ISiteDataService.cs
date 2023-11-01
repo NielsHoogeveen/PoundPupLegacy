@@ -1,6 +1,5 @@
 ﻿using PoundPupLegacy.Common;
 using PoundPupLegacy.Models;
-using PoundPupLegacy.ViewModel.Models;
 
 namespace PoundPupLegacy.Services;
 
@@ -10,13 +9,13 @@ public interface ISiteDataService
 
     Task<bool> InitializeAsync();
 
-    int? GetUserByNameIdentifier(string id);
+    User? GetUserByNameIdentifier(string id);
 
     string? GetUrlPathForId(int urlId);
 
     Task<bool> HasAccess(int userId, string path);
 
-    Task<bool> CanEdit(Node node, int userId);
+    Task<bool> CanEdit(ViewModel.Models.Node node, int userId);
 
     Task<bool> CanViewNodeAccess(int userId);
 
@@ -30,4 +29,5 @@ public interface ISiteDataService
 
     Task RefreshTenants();
     void RemoveUser(int userId);
+
 }

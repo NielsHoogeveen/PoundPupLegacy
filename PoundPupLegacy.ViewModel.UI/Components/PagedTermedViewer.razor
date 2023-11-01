@@ -45,7 +45,7 @@
 
     protected sealed override async Task<IPagedList<TEntry>> GetListEntriesAsync()
     {
-        PagedListSettings.SelectedTermIds = (UserId == 0
+        PagedListSettings.SelectedTermIds = (User.Id == 0
         ? GetTermIds()
         : ListEntries is null
             ? GetTermIds()

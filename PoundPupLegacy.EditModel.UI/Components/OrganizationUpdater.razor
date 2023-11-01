@@ -3,30 +3,4 @@
     <OrganizationEditor Organization="Model" />
 }
 @code {
-    protected override void OnParametersSet()
-    {
-        if (Model is not null)
-        {
-            foreach (var tenant in Model.OrganizationDetails.InterOrganizationalRelationsFrom.SelectMany(y => y.NodeDetails.Tenants))
-            {
-                var tenantNode = Model.NodeDetails.TenantNodeDetails.TenantNodes.FirstOrDefault(x => x is not null && x.TenantId == tenant.Id);
-                tenant.TenantNode = tenantNode;
-            }
-            foreach (var tenant in Model.OrganizationDetails.InterOrganizationalRelationsTo.SelectMany(y => y.NodeDetails.Tenants))
-            {
-                var tenantNode = Model.NodeDetails.TenantNodeDetails.TenantNodes.FirstOrDefault(x => x is not null && x.TenantId == tenant.Id);
-                tenant.TenantNode = tenantNode;
-            }
-            foreach (var tenant in Model.OrganizationDetails.OrganizationPoliticalEntityRelations.SelectMany(y => y.NodeDetails.Tenants))
-            {
-                var tenantNode = Model.NodeDetails.TenantNodeDetails.TenantNodes.FirstOrDefault(x => x is not null && x.TenantId == tenant.Id);
-                tenant.TenantNode = tenantNode;
-            }
-            foreach (var tenant in Model.OrganizationDetails.PersonOrganizationRelations.SelectMany(y => y.NodeDetails.Tenants))
-            {
-                var tenantNode = Model.NodeDetails.TenantNodeDetails.TenantNodes.FirstOrDefault(x => x is not null && x.TenantId == tenant.Id);
-                tenant.TenantNode = tenantNode;
-            }
-        }
-    }
 }

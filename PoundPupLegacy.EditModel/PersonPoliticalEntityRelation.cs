@@ -2,7 +2,7 @@
 
 public static class PersonPoliticalEntityRelationExtensions
 {
-    public static PersonPoliticalEntityRelation GetPersonPoliticalEntityRelation(this PersonListItem personListItem, PersonPoliticalEntityRelationTypeListItem relationType, int ownerId, int publisherId, List<TenantDetails> tenants)
+    public static PersonPoliticalEntityRelation GetPersonPoliticalEntityRelation(this PersonListItem personListItem, PersonPoliticalEntityRelationTypeListItem relationType, int ownerId, int publisherId, List<Tenant> tenants)
     {
         return new PersonPoliticalEntityRelation.Incomplete.ToCreateForExistingPerson {
             Person = personListItem,
@@ -12,7 +12,7 @@ public static class PersonPoliticalEntityRelationExtensions
             PoliticalEntity = null
         };
     }
-    public static PersonPoliticalEntityRelation GetPersonPoliticalEntityRelation(this PersonName personName, PersonPoliticalEntityRelationTypeListItem relationType, int ownerId, int publisherId, List<TenantDetails> tenants)
+    public static PersonPoliticalEntityRelation GetPersonPoliticalEntityRelation(this PersonName personName, PersonPoliticalEntityRelationTypeListItem relationType, int ownerId, int publisherId, List<Tenant> tenants)
     {
         return new PersonPoliticalEntityRelation.Incomplete.ToCreateForNewPerson {
             Person = personName,

@@ -77,7 +77,7 @@
 
     [Parameter]
     [EditorRequired]
-    public List<TenantDetails> Tenants { get; set; } = default!;
+    public List<Tenant> Tenants { get; set; } = default!;
 
     public override async Task SetParametersAsync(ParameterView parameters)
     {
@@ -138,8 +138,8 @@
     private void OnAdd()
     {
         _relationToEdit = Person.Match<PersonOrganizationRelation.ForPerson>(
-            personListItem: pli => pli.GetPersonOrganizationRelationForPerson(RelationTypes.First(), TenantId, UserId, Tenants),
-            personName: pn => pn.GetPersonOrganizationRelationForPerson(RelationTypes.First(), TenantId, UserId, Tenants));
+            personListItem: pli => pli.GetPersonOrganizationRelationForPerson(RelationTypes.First(), Tenant.Id, User.Id, Tenants),
+            personName: pn => pn.GetPersonOrganizationRelationForPerson(RelationTypes.First(), Tenant.Id, User.Id, Tenants));
         StateHasChanged();
     }
 

@@ -46,7 +46,7 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        nameables = await FetchNameablesService.FetchNameables(TenantId, UserId, NodeTypeId);
+        nameables = await FetchNameablesService.FetchNameables(Tenant.Id, User.Id, NodeTypeId);
         nodeTypeName = nameables is not null ? nameables.NodeTypeName: "";
     }
 

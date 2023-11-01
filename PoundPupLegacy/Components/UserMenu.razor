@@ -24,6 +24,6 @@
     protected override async Task OnInitializedAsync()
     {
 
-        _menuItems = await SiteDataService.GetMenuItemsForUser(UserId);
+        _menuItems = await SiteDataService.GetMenuItemsForUser(User.Id);
     }
 }

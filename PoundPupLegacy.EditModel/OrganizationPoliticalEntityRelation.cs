@@ -9,7 +9,7 @@
 
 public static class OrganizationPoliticalEntityRelationExtension
 {
-    public static OrganizationPoliticalEntityRelation.Incomplete.ToCreateForExistingOrganization GetNewPoliticalEntityRelationOrganization(this OrganizationListItem organizationListItem, OrganizationPoliticalEntityRelationTypeListItem relationType, int ownerId, int publishedId, List<TenantDetails> tenants)
+    public static OrganizationPoliticalEntityRelation.Incomplete.ToCreateForExistingOrganization GetNewPoliticalEntityRelationOrganization(this OrganizationListItem organizationListItem, OrganizationPoliticalEntityRelationTypeListItem relationType, int ownerId, int publishedId, List<Tenant> tenants)
     {
         return new OrganizationPoliticalEntityRelation.Incomplete.ToCreateForExistingOrganization {
             Organization = organizationListItem,
@@ -19,7 +19,7 @@ public static class OrganizationPoliticalEntityRelationExtension
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }
-    public static OrganizationPoliticalEntityRelation.Incomplete.ToCreateForNewOrganization GetNewPoliticalEntityRelationOrganization(this OrganizationName organizationName, OrganizationPoliticalEntityRelationTypeListItem relationType, int ownerId, int publishedId, List<TenantDetails> tenants)
+    public static OrganizationPoliticalEntityRelation.Incomplete.ToCreateForNewOrganization GetNewPoliticalEntityRelationOrganization(this OrganizationName organizationName, OrganizationPoliticalEntityRelationTypeListItem relationType, int ownerId, int publishedId, List<Tenant> tenants)
     {
         return new OrganizationPoliticalEntityRelation.Incomplete.ToCreateForNewOrganization {
             Organization = organizationName,

@@ -26,7 +26,7 @@ public sealed class AttachmentController : Controller
         var userInfo = await _userService.GetUserInfo(HttpContext.User);
         var userId = 0;
         if(userInfo is UserLookupResponse.ExistingUser existingUser) {
-            userId = existingUser.Id;
+            userId = existingUser.user.Id;
         }
         var tenantId = _siteDataService.GetTenant().Id;
         var res = await _attachmentService.GetFileStream(

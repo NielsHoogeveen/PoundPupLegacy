@@ -4,10 +4,13 @@ internal static class SharedSql
 {
     internal const string NODE_UPDATE_CTE = $"""
         WITH
+        {TENANT_PUBLICATION_STATUS},
+        {SUBGROUP_PUBLICATION_STATUS},
+        {SUBGROUP_PUBLICATION_STATUS_DOCUMENT},
+        {TENANTS},
+        {TENANTS_FOR_UPDATE_DOCUMENT},
         {TAGGING_VOCABULARY},
         {TAGS_DOCUMENT_UPDATE},
-        {TENANT_NODES_DOCUMENT},
-        {TENANTS_DOCUMENT},
         {ATTACHMENTS_DOCUMENT},
         {IDENTIFICATION_FOR_UPDATE_DOCUMENT},
         {NODE_DETAILS_FOR_UPDATE_DOCUMENT}
@@ -15,8 +18,12 @@ internal static class SharedSql
 
     internal const string NODE_CREATE_CTE = $"""
         WITH
+        {TENANT_PUBLICATION_STATUS},
+        {SUBGROUP_PUBLICATION_STATUS},
+        {SUBGROUP_PUBLICATION_STATUS_DOCUMENT},
+        {TENANTS},
+        {TENANTS_FOR_CREATE_DOCUMENT},
         {TAGGING_VOCABULARY},
-        {TENANTS_DOCUMENT},
         {TAGS_DOCUMENT_CREATE},
         {NODE_DETAILS_FOR_CREATE_DOCUMENT}
         """;
@@ -1487,8 +1494,8 @@ internal static class SharedSql
                     @tenant_id,
                     'Title', 
                     '',
-                    'Tenants',
-                    (select document from tenants_document),
+                    'TenantsToCreate',
+                    (select document from tenants_for_create_document),
                     'Files',
                     null,
                     'TagsToCreate',
@@ -1525,13 +1532,8 @@ internal static class SharedSql
                     n.title,
             		'TagsForUpdate', 
                     (select document from tags_for_update_document),
-                    'TenantNodeDetailsForUpdate',
-                    json_build_object(
-                        'TenantNodesToUpdate',
-                        (select document from tenant_nodes_document)
-                    ),
-                    'Tenants',
-                    (select document from tenants_document),
+                    'TenantsToUpdate',
+                    (select document from tenants_for_update_document),
                     'Files',
                     (select document from attachments_document)
                 ) document,
@@ -1590,4 +1592,270 @@ internal static class SharedSql
         from simple_text_node
         """;
 
+    const string TENANT_PUBLICATION_STATUS = """
+        tenant_publication_status as (
+        	select
+        	distinct
+        	pug.id,
+        	pug.publication_status_id_default,
+        	t.domain_name,
+        	ps.id publication_status_id,
+        	ps.name publication_status_name,
+        	ps.id = pug.publication_status_id_default is_default_publication_status,
+        	ps.user_role_id,
+        	ps.user_role_name
+        	from publishing_user_group pug
+        	join user_group ug on ug.id = pug.id
+        	join tenant t on t.id = pug.id
+        	join lateral ( 
+        		select
+        		ps.id,
+        		ps.name,
+        		ur.id user_role_id,
+        		ur.name user_role_name
+        		from publication_status ps
+        		join user_role ur on ur.id = t.administrator_role_id
+        		union
+        		select
+        		ps.id,
+        		ps.name,
+        		ur.id user_role_id,
+        		ur.name user_role_name
+        		from user_role_publication_status urps 
+        		join user_role ur on ur.user_group_id = pug.id
+        		join publication_status ps on ps.id = urps.publication_status_id
+        		where urps.user_role_id = ur.id and ur.id <> t.administrator_role_id
+        	) ps on 1=1
+        )
+        """;
+    const string SUBGROUP_PUBLICATION_STATUS = """
+         subgroup_publication_status as (
+        	select
+        	distinct
+        	pug.id,
+        	tenant_id,
+        	t.domain_name,
+        	s.id subgroup_id,
+        	ug.name subgroup_name,
+        	ps.id publication_status_id,
+        	ps.name publication_status_name,
+        	ps.id = pug.publication_status_id_default is_default_publication_status,
+        	ps.user_role_id,
+        	ps.user_role_name
+        	from publishing_user_group pug
+        	join subgroup s on s.id = pug.id
+        	join user_group ug on ug.id = s.id
+        	join tenant t on t.id = s.tenant_id
+        	join lateral ( 
+        		select
+        		ps.id,
+        		ps.name,
+        		ur.id user_role_id,
+        		ur.name user_role_name
+        		from publication_status ps
+        		join user_role ur on ur.id = t.administrator_role_id
+        		union
+        		select
+        		ps.id,
+        		ps.name,
+        		ur.id user_role_id,
+        		ur.name user_role_name
+        		from user_role_publication_status urps 
+        		join user_role ur on ur.user_group_id = pug.id
+        		join publication_status ps on ps.id = urps.publication_status_id
+        		where urps.user_role_id = ur.id and ur.id <> t.administrator_role_id
+        	) ps on 1=1
+        )
+        """;
+
+    const string SUBGROUP_PUBLICATION_STATUS_DOCUMENT = """
+         subgroup_publication_status_document as(
+        	select
+        	tenant_id,
+        	jsonb_agg(
+        		jsonb_build_object(
+        			'Id',
+        			subgroup_id,
+        			'Name',
+        			subgroup_name,
+                    'IsSelected',
+                    false,
+        			'PublicationStatuses',
+        			publication_statuses
+        		)
+        	) subgroups
+        	from(
+        		select
+        		sps.tenant_id,
+        		sps.subgroup_id,
+        		sps.subgroup_name,
+        		jsonb_agg(
+        			jsonb_build_object(
+        				'Id',
+        				sps.publication_status_id,
+        				'Name',
+        				sps.publication_status_name,
+        				'IsDefault',
+        				sps.is_default_publication_status
+        			)
+        		) publication_statuses
+        		from(
+        			select 
+        			distinct
+        			sps.tenant_id,
+        			sps.subgroup_id,
+        			sps.subgroup_name,
+        			sps.publication_status_id,
+        			sps.publication_status_name,
+        			sps.is_default_publication_status
+        			from 
+        			subgroup_publication_status sps
+        			join user_role_user uru on uru.user_role_id = sps.user_role_id
+        			where uru.user_id = @user_id
+        		) sps
+        		group by 
+        		sps.tenant_id,
+        		sps.subgroup_id,
+        		sps.subgroup_name
+        	) x
+        	group by 
+        	tenant_id
+        )
+        """;
+
+    const string TENANTS = """
+        tenants as(
+    	select
+    		tps.id,
+    		tps.domain_name,
+    		tps.publication_status_id_default,
+    		jsonb_agg(
+    			jsonb_build_object(
+    				'Id',
+    				tps.publication_status_id,
+    				'Name',
+    				tps.publication_status_name,
+    				'IsDefault',
+    				tps.is_default_publication_status
+
+    			)
+    		) publication_statuses,
+    		(select subgroups from subgroup_publication_status_document spstd where spstd.tenant_id = tps.id)
+    	from(
+    		select 
+    		distinct
+    		tps.id,
+    		tps.domain_name,
+    		tps.publication_status_id_default,
+    		tps.publication_status_id,
+    		tps.publication_status_name,
+    		tps.is_default_publication_status
+    		from 
+    		tenant_publication_status tps
+    		join lateral (
+    			select
+    			user_role_id,
+    			user_id
+    			from
+    			user_role_user uru
+    			union
+    			select
+    			pug.access_role_id_not_logged_in,
+    			0
+    			from publishing_user_group pug
+    			where pug.id = tps.id
+    		) uru on uru.user_role_id = tps.user_role_id
+    		where uru.user_id = @user_id
+    	) tps
+    	group by 
+    	tps.id,
+    	tps.domain_name,
+    	tps.publication_status_id_default
+    )
+    """;
+
+    const string TENANTS_FOR_CREATE_DOCUMENT = """
+        tenants_for_create_document as(
+        	select
+        	jsonb_agg(
+        		jsonb_build_object(
+        			'Id',
+        			id,
+        			'DomainName',
+        			domain_name,
+        			'PublicationStatuses',
+        			publication_statuses,
+        			'Subgroups',
+        			subgroups,
+        			'IsSelected',
+        			id = @tenant_id,
+        			'TenantNodeToCreate',
+        			case 
+        				when id <> @tenant_id then null
+        				else jsonb_build_object(
+        					'Id',
+        					null,
+                            'TenantId',
+                            id,
+        					'UrlPath',
+        					null,
+        					'SubgroupId',
+        					null,
+        					'PublicationStatusId',
+        					publication_status_id_default,
+                            'HasBeenStored',
+                            false
+        				)
+        			end
+        		)
+        	) document
+        	from
+        	tenants t
+        )
+        """;
+    const string TENANTS_FOR_UPDATE_DOCUMENT = """
+         tenants_for_update_document as(
+        	select
+        	jsonb_agg(
+        		jsonb_build_object(
+        			'Id',
+        			t.id,
+        			'DomainName',
+        			t.domain_name,
+        			'PublicationStatuses',
+        			t.publication_statuses,
+        			'Subgroups',
+        			t.subgroups,
+        			'IsSelected',
+        			tn.id is not null,
+        			'TenantNodeToUpdate',
+        			case 
+        				when tn.id is null then null
+        				else jsonb_build_object(
+        					'Id',
+        					tn.id,
+                            'TenantId',
+                            tn.tenant_id,
+        					'UrlPath',
+        					url_path,
+        					'UrlId',
+        					url_id,
+        					'NodeId',
+        					node_id,
+        					'SubgroupId',
+        					subgroup_id,
+        					'PublicationStatusId',
+        					publication_status_id,
+                            'HasBeenStored',
+                            true
+        				)
+        			end
+        		)
+        	) document
+        	from tenants t
+        	left join tenant_node tn on tn.tenant_id = t.id and tn.url_id = @url_id
+        )
+        """;
+
 }
+

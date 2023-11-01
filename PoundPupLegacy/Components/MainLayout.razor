@@ -7,40 +7,45 @@
 @inject IUserService UserService
 <PageTitle>@Tenant.Title</PageTitle>
 <CascadingValue Value="HamburgerMenuOpen" Name="HamburgerMenuOpen">
-    <CascadingValue Value="Tenant.Id" Name="TenantId">
+    <CascadingValue Value="Tenant" Name="Tenant">
         <CascadingValue Value="Tenant.Name" Name="SiteName">
-            <Header Logo="@Tenant.Logo" Subtitle="@Tenant.Subtitle" />
-            <main>
-            @if(UserInfo is UserLookupResponse.ExistingUser existingUser) {
-                <CascadingValue Value="existingUser.Id" Name="UserId">
-                    <HamburgerMenu />
-                    @if (notFound) {
-                        <NotFound />
+            @if(UserInfo is not null)
+            {
+                <CascadingValue Value="UserInfo.User" Name="User">
+                    <Header Logo="@Tenant.Logo" Subtitle="@Tenant.Subtitle" />
+                    <main>
+                    @if(UserInfo is UserLookupResponse.ExistingUser existingUser) {
+                
+                            <HamburgerMenu />
+                            @if (notFound) {
+                                <NotFound />
+                            }
+                            else {
+                                <ContentViewer>
+                                    @Body
+                                </ContentViewer>
+                            }
                     }
-                    else {
-                        <ContentViewer>
-                            @Body
-                        </ContentViewer>
+                    @if (UserInfo is UserLookupResponse.NoUser) {
+                        <HamburgerMenu />
+                        @if (notFound) {
+                            <NotFound />
+                        }
+                        else {
+                            <ContentViewer>
+                                @Body
+                            </ContentViewer>
+                        }
                     }
+                    </main>
                 </CascadingValue>
+                @if(UserInfo is UserLookupResponse.NewUser newUser) {
+                    <Header Logo="@Tenant.Logo" Subtitle="@Tenant.Subtitle" />
+                    <main>
+                        <UserRegistration NameIdentifier="@newUser.NameIdentifier" />
+                    </main>
+                }
             }
-            @if (UserInfo is UserLookupResponse.NoUser) {
-                <CascadingValue Value="0" Name="UserId">
-                    <HamburgerMenu />
-                    @if (notFound) {
-                        <NotFound />
-                    }
-                    else {
-                        <ContentViewer>
-                            @Body
-                        </ContentViewer>
-                    }
-                </CascadingValue>
-            }
-            @if(UserInfo is UserLookupResponse.NewUser newUser) {
-                <UserRegistration NameIdentifier="@newUser.NameIdentifier"/>
-            }
-            </main>
             <Footer Text="@Tenant.FooterText" />
         </CascadingValue>
     </CascadingValue>

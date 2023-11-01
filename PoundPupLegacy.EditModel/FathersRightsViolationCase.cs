@@ -8,7 +8,8 @@
 
 [JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
 
-[JsonSerializable(typeof(TenantNodeDetails.ForUpdate), TypeInfoPropertyName = "TenantNodeDetailsForUpdate")]
+[JsonSerializable(typeof(Tenant.ToUpdate), TypeInfoPropertyName = "TenantToUpdate")]
+[JsonSerializable(typeof(List<Tenant.ToUpdate>), TypeInfoPropertyName = "TenantListToUpdate")]
 
 [JsonSerializable(typeof(Tags.ToUpdate), TypeInfoPropertyName = "TagsToUpdate")]
 [JsonSerializable(typeof(List<Tags.ToUpdate>), TypeInfoPropertyName = "TagsListToUpdate")]
@@ -22,7 +23,9 @@ public partial class FathersRightsViolationCaseToUpdateJsonContext : JsonSeriali
 [JsonSerializable(typeof(List<Location.ToCreate>), TypeInfoPropertyName = "LocationDetailsListForCreate")]
 
 [JsonSerializable(typeof(NodeDetails.ForCreate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
-[JsonSerializable(typeof(TenantNodeDetails.ForCreate), TypeInfoPropertyName = "TenantNodeDetailsForCreate")]
+
+[JsonSerializable(typeof(Tenant.ToCreate), TypeInfoPropertyName = "TenantToCreate")]
+[JsonSerializable(typeof(List<Tenant.ToCreate>), TypeInfoPropertyName = "TenantListToCreate")]
 
 [JsonSerializable(typeof(Tags.ToCreate), TypeInfoPropertyName = "TagsToCreate")]
 [JsonSerializable(typeof(List<Tags.ToCreate>), TypeInfoPropertyName = "TagsListToCreate")]

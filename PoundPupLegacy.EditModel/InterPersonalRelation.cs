@@ -1,7 +1,7 @@
 ﻿namespace PoundPupLegacy.EditModel;
 
 public static class InterPersonalRelationExtentions{
-    public static InterPersonalRelation.From.Incomplete.ToCreateForExistingPerson GetNewInterPersonalRelationFrom(this PersonListItem personListItem, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId, List<TenantDetails> tenants)
+    public static InterPersonalRelation.From.Incomplete.ToCreateForExistingPerson GetNewInterPersonalRelationFrom(this PersonListItem personListItem, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId, List<Tenant> tenants)
     {
         return new InterPersonalRelation.From.Incomplete.ToCreateForExistingPerson {
             PersonFrom = personListItem,
@@ -11,7 +11,7 @@ public static class InterPersonalRelationExtentions{
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }
-    public static InterPersonalRelation.To.Incomplete.ToCreateForExistingPerson GetNewInterPersonalRelationTo(this PersonListItem personListItem, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId, List<TenantDetails> tenants)
+    public static InterPersonalRelation.To.Incomplete.ToCreateForExistingPerson GetNewInterPersonalRelationTo(this PersonListItem personListItem, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId, List<Tenant> tenants)
     {
         return new InterPersonalRelation.To.Incomplete.ToCreateForExistingPerson {
             PersonFrom = null,
@@ -22,7 +22,7 @@ public static class InterPersonalRelationExtentions{
         };
 
     }
-    public static InterPersonalRelation.From.Incomplete.ToCreateForNewPerson GetNewInterPersonalRelationFrom(this PersonName personName, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId, List<TenantDetails> tenants)
+    public static InterPersonalRelation.From.Incomplete.ToCreateForNewPerson GetNewInterPersonalRelationFrom(this PersonName personName, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId, List<Tenant> tenants)
     {
         return new InterPersonalRelation.From.Incomplete.ToCreateForNewPerson {
             PersonFrom = personName,
@@ -32,7 +32,7 @@ public static class InterPersonalRelationExtentions{
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }
-    public static InterPersonalRelation.To.Incomplete.ToCreateForNewPerson GetNewInterPersonalRelationTo(this PersonName personName, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId, List<TenantDetails> tenants)
+    public static InterPersonalRelation.To.Incomplete.ToCreateForNewPerson GetNewInterPersonalRelationTo(this PersonName personName, InterPersonalRelationTypeListItem interPersonalRelationType, int ownerId, int publisherId, List<Tenant> tenants)
     {
         return new InterPersonalRelation.To.Incomplete.ToCreateForNewPerson {
             PersonFrom = null,

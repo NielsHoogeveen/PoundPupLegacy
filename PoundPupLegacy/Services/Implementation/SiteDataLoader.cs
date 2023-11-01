@@ -11,7 +11,7 @@ internal sealed class SiteDataLoader(
     ILogger<SiteDataService> logger,
     IConfiguration configuration,
     IMandatorySingleItemDatabaseReaderFactory<TenantReaderRequest, Tenant> tenantReaderFactory,
-    IMandatorySingleItemDatabaseReaderFactory<UserDocumentReaderRequest, User> userDocumentReaderFactory
+    IMandatorySingleItemDatabaseReaderFactory<UserDocumentReaderRequest, UserWithDetails> userDocumentReaderFactory
 ) : DatabaseService(dataSource, logger), ISiteDataLoader
 {
 
@@ -21,12 +21,12 @@ internal sealed class SiteDataLoader(
         var tenant = await LoadTenantAsync();
         var siteData =  new SiteData {
             Tenant = tenant,
-            Users = new Dictionary<int, User> { {0, await LoadUser(tenant.Id, 0)} },
+            Users = new Dictionary<int, UserWithDetails> { {0, await LoadUser(tenant.Id, 0)} },
         };
         return siteData;
     }
 
-    public async Task<User> LoadUser(int tenantId, int userId)
+    public async Task<UserWithDetails> LoadUser(int tenantId, int userId)
     {
         
         try {

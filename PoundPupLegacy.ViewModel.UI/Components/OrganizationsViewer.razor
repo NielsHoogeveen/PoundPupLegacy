@@ -78,8 +78,8 @@
         SetCountryId(uri);
         SetOrganizationTypeId(uri);
         var organizationSearch = await FetchOrganizationsService.FetchOrganizations(
-            userId: UserId, 
-            tenantId: TenantId, 
+            userId: User.Id, 
+            tenantId: Tenant.Id, 
             pageSize: PagedListSettings.PageSize, 
             pageNumber: PagedListSettings.PageNumber, 
             searchTerm: PagedListSettings.SearchTerm, 

@@ -57,10 +57,8 @@
 [JsonSerializable(typeof(NodeDetails.ForUpdate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
 [JsonSerializable(typeof(NodeDetails.ForCreate), TypeInfoPropertyName = "NodeDetailsForCreate")]
 
-[JsonSerializable(typeof(TenantNodeDetails.ForUpdate), TypeInfoPropertyName = "TenantNodeDetailsForUpdate")]
-[JsonSerializable(typeof(TenantNodeDetails.ForCreate), TypeInfoPropertyName = "TenantNodeDetailsForCreate")]
-
-[JsonSerializable(typeof(TenantNodeDetails.ForUpdate), TypeInfoPropertyName = "TenantNodeDetailsForUpdate")]
+[JsonSerializable(typeof(Tenant.ToUpdate), TypeInfoPropertyName = "TenantToUpdate")]
+[JsonSerializable(typeof(List<Tenant.ToUpdate>), TypeInfoPropertyName = "TenantListToUpdate")]
 
 [JsonSerializable(typeof(Tags.ToCreate), TypeInfoPropertyName = "TagsToCreate")]
 [JsonSerializable(typeof(Tags.ToUpdate), TypeInfoPropertyName = "TagsToUpdate")]
@@ -104,13 +102,14 @@ public partial class PersonToUpdateJsonContext : JsonSerializerContext { }
 [JsonSerializable(typeof(List<Location.ToCreate>), TypeInfoPropertyName = "LocationDetailsListForCreate")]
 [JsonSerializable(typeof(NodeDetails.ForCreate), TypeInfoPropertyName = "NodeDetailsForUpdate")]
 
-[JsonSerializable(typeof(TenantNodeDetails.ForCreate), TypeInfoPropertyName = "TenantNodeDetailsForCreate")]
+[JsonSerializable(typeof(Tenant.ToCreate), TypeInfoPropertyName = "TenantToCreate")]
+[JsonSerializable(typeof(List<Tenant.ToCreate>), TypeInfoPropertyName = "TenantListToCreate")]
 
 [JsonSerializable(typeof(Tags.ToCreate), TypeInfoPropertyName = "TagsToCreate")]
 [JsonSerializable(typeof(List<Tags.ToCreate>), TypeInfoPropertyName = "TagsListToCreate")]
 public partial class PersonToCreateJsonContext : JsonSerializerContext { }
 
-public abstract record Person: Locatable, ResolvedNode, Node<Person.ToUpdate, Person.ToCreate>, Resolver<Person.ToUpdate, Person.ToCreate, Unit>
+public abstract record Person : Locatable, ResolvedNode, Node<Person.ToUpdate, Person.ToCreate>, Resolver<Person.ToUpdate, Person.ToCreate, Unit>
 {
     private Person() { }
     public Node<ToUpdate, ToCreate> Resolve(Unit data) => this;
@@ -308,17 +307,17 @@ public abstract record PersonDetails
         private List<InterPersonalRelation>? _interPersonalRelations = null;
         public List<InterPersonalRelation> InterPersonalRelations {
             get {
-                if(_interPersonalRelations is null) {
+                if (_interPersonalRelations is null) {
                     _interPersonalRelations = GetInterPersonalRelations().ToList();
                 }
                 return _interPersonalRelations;
             }
             set {
-                if(value is not null) {
+                if (value is not null) {
                     _interPersonalRelations = value;
                 }
             }
-            
+
         }
         private IEnumerable<InterPersonalRelation> GetInterPersonalRelations()
         {
@@ -332,7 +331,7 @@ public abstract record PersonDetails
 
     }
 
-    public sealed record ForCreate: PersonDetails
+    public sealed record ForCreate : PersonDetails
     {
         public override List<PersonPoliticalEntityRelation.Complete> PersonPoliticalEntityRelations { get; set; } = new();
         public override List<PersonOrganizationRelation.ForPerson.Complete> PersonOrganizationRelations { get; set; } = new();

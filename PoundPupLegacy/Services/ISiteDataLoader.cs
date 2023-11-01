@@ -6,6 +6,6 @@ public interface ISiteDataLoader
 {
     Task<SiteData> GetSiteData();
 
-    Task<User> LoadUser(int tenantId, int userId);
+    Task<UserWithDetails> LoadUser(int tenantId, int userId);
 
 }

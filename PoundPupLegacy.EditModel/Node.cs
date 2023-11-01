@@ -1,4 +1,6 @@
-﻿namespace PoundPupLegacy.EditModel;
+﻿using System.Net;
+
+namespace PoundPupLegacy.EditModel;
 
 public interface Node<TExisting, TNew>: Node
     where TExisting: ExistingNode
@@ -44,21 +46,19 @@ public sealed record NodeIdentification
 public abstract record NodeDetails 
 {
     
-    public static ForCreate EmptyInstance(int nodeTypeId, string nodeTypeName, int ownerId, int publisherId, List<TenantDetails> tenants) => new ForCreate {
+    public static ForCreate EmptyInstance(int nodeTypeId, string nodeTypeName, int ownerId, int publisherId, List<Tenant> tenants) => new ForCreate {
         Files = new List<File>(),
         NodeTypeId = nodeTypeId,
         NodeTypeName = nodeTypeName,
         OwnerId = ownerId,
         PublisherId = publisherId,
         TagsToCreate = new List<Tags.ToCreate>(),
-        Tenants = tenants.Select(x => new TenantDetails { 
-            AllowAccess = x.AllowAccess, 
+        TenantsToCreate = tenants.Select(x => new Tenant.ToCreate { 
             DomainName = x.DomainName, 
             Id = x.Id, 
-            PublicationStatusIdDefault = x.PublicationStatusIdDefault, 
-            PublicationStatusDefaultIsOnlyOption = x.PublicationStatusDefaultIsOnlyOption,
             Subgroups = x.Subgroups, 
-            TenantNode = null
+            TenantNodeToCreate = null,
+            PublicationStatuses = x.PublicationStatuses,
         }).ToList(),
         Title = "",
     };
@@ -69,17 +69,8 @@ public abstract record NodeDetails
     public required string Title { get; set; }
 
     public abstract IEnumerable<Tags> Tags { get; }
-    public abstract TenantNodeDetails TenantNodeDetails { get; }
+    public abstract List<Tenant> Tenants { get; set; }
 
-    private List<TenantDetails> tenants = new();
-    public List<TenantDetails> Tenants {
-        get => tenants;
-        set {
-            if (value is not null) {
-                tenants = value;
-            }
-        }
-    }
     private List<File> files = new();
     public required List<File> Files {
         get => files;
@@ -94,6 +85,25 @@ public abstract record NodeDetails
         private List<Tags.ToCreate> tags = new();
 
         public override IEnumerable<Tags> Tags => TagsToCreate;
+
+        public required List<Tenant.ToCreate> TenantsToCreate { get; init; }
+
+        private List<Tenant>? tenants = null;
+        public override List<Tenant> Tenants {
+            get { 
+                if(tenants is null) {
+                    tenants = TenantsToCreate.Select(x => (Tenant)x).ToList();
+                }
+                return tenants;
+            }
+            set {
+                if(value is not null) 
+                { 
+                    tenants = value;
+                }
+            }
+        }
+
         public List<Tags.ToCreate> TagsToCreate {
             get => tags;
             init {
@@ -102,13 +112,36 @@ public abstract record NodeDetails
                 }
             }
         }
-        public override TenantNodeDetails TenantNodeDetails => new TenantNodeDetails.ForCreate { };
     }
     public sealed record ForUpdate : NodeDetails
     {
         public required int Id { get; init; }
 
         public required string PublisherName { get; set; }
+
+        public required List<Tenant.ToUpdate> TenantsToUpdate { get; init; }
+
+        private List<Tenant>? tenants = null;
+
+        public override List<Tenant> Tenants {
+            get {
+                if (tenants is null) {
+                    foreach(var tenant in TenantsToUpdate.Where(x => x.TenantNode is not null && x.TenantNode.SubgroupId is not null)) {
+                        var subgroup = tenant.Subgroups.FirstOrDefault(x => x.Id == tenant.TenantNode!.SubgroupId!.Value);
+                        if (subgroup is not null) {
+                            subgroup.IsSelected = true;
+                        }
+                    }
+                    tenants = TenantsToUpdate.Select(x => (Tenant)x).ToList();
+                }
+                return tenants;
+            }
+            set {
+                if (value is not null) {
+                    tenants = value;
+                }
+            }
+        }
 
         private List<Tags.ToUpdate> tags = new();
         public override IEnumerable<Tags> Tags => TagsForUpdate;
@@ -120,8 +153,6 @@ public abstract record NodeDetails
                 }
             }
         }
-        public override TenantNodeDetails TenantNodeDetails => TenantNodeDetailsForUpdate;
-        public required TenantNodeDetails.ForUpdate TenantNodeDetailsForUpdate { get; init; }
     }
 }
 

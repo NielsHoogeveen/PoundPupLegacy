@@ -28,8 +28,8 @@
     protected override async Task<IPagedList<TopicListEntry>> GetListEntriesAsync()
     {
         return await TopicService.FetchTopics(
-            userId: UserId, 
-            tenantId: TenantId, 
+            userId: User.Id, 
+            tenantId: Tenant.Id, 
             pageSize: PagedListSettings.PageSize, 
             pageNumber: PagedListSettings.PageNumber, 
             searchTerm: PagedListSettings.SearchTerm, 

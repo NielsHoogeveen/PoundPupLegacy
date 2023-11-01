@@ -39,8 +39,8 @@
     {
         var result =  await FetchBlogService.FetchBlog(
             publisherId: Id, 
-            tenantId: TenantId, 
-            userId: UserId,
+            tenantId: Tenant.Id, 
+            userId: User.Id,
             pageNumber: PagedListSettings.PageNumber, 
             pageSize: PagedListSettings.PageSize);
         Name = result.Name;

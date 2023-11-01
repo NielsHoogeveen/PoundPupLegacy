@@ -4,11 +4,11 @@ namespace PoundPupLegacy.Common.UI.Components;
 
 public abstract class ViewerBase: ComponentBase
 {
-    [CascadingParameter(Name = "UserId")]
-    public int UserId { get; set; }
+    [CascadingParameter(Name = "User")]
+    public User User { get; set; } = default!;
 
-    [CascadingParameter(Name = "TenantId")]
-    public int TenantId { get; set; }
+    [CascadingParameter(Name = "Tenant")]
+    public ITenant Tenant { get; set; } = default!;
 
     [CascadingParameter(Name = "SiteName")]
     public string? SiteName { get; set; }

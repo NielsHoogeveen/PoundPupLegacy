@@ -37,7 +37,7 @@
     [Parameter]
     public Action<string> OnTitleChanged { get; set; } = default!;
 
-    private List<TenantDetails> tenantDetails = new List<TenantDetails>();
+    private List<Tenant> tenantDetails = new List<Tenant>();
 
     public void OnTitleChange(ChangeEventArgs args)
     {

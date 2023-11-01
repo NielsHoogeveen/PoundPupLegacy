@@ -1,5 +1,6 @@
 ﻿using Npgsql;
 using PoundPupLegacy.Common;
+using PoundPupLegacy.Models;
 
 namespace PoundPupLegacy.Readers;
 
@@ -9,24 +10,22 @@ public sealed record UserByNameIdentifierReaderRequest : IRequest
 {
     public required string NameIdentifier { get; init; }
 }
-public sealed record UserIdByNameIdentifier
-{
-    public required int UserId { get; init; }
-}
-
-internal sealed class UserByNameIdentifierReaderFactory : SingleItemDatabaseReaderFactory<Request, UserIdByNameIdentifier>
+internal sealed class UserByNameIdentifierReaderFactory : SingleItemDatabaseReaderFactory<Request, User>
 {
 
     private static readonly NonNullableStringDatabaseParameter NameIdentifier = new() { Name = "name_identifier" };
 
     private static readonly IntValueReader UserIdReader = new() { Name = "user_id" };
+    private static readonly StringValueReader UserNameReader = new() { Name = "user_name" };
 
     public override string Sql => SQL;
 
     const string SQL = """
         select
-        u.id user_id
+        u.id user_id,
+        p.name user_name
         from "user" u
+        join publisher p on p.id = u.id
         where u.name_identifier = @name_identifier
         """;
 
@@ -37,10 +36,11 @@ internal sealed class UserByNameIdentifierReaderFactory : SingleItemDatabaseRead
         };
     }
 
-    protected override UserIdByNameIdentifier Read(NpgsqlDataReader reader)
+    protected override User Read(NpgsqlDataReader reader)
     {
-        return new UserIdByNameIdentifier {
-            UserId = UserIdReader.GetValue(reader),
+        return new User {
+            Id = UserIdReader.GetValue(reader),
+            Name = UserNameReader.GetValue(reader),
         };
     }
 }

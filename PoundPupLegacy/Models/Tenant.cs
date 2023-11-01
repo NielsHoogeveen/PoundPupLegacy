@@ -1,11 +1,12 @@
-﻿using System.Text.Json.Serialization;
+﻿using PoundPupLegacy.Common;
+using System.Text.Json.Serialization;
 
 namespace PoundPupLegacy.Models;
 
 [JsonSerializable(typeof(Tenant))]
 internal partial class TenantJsonContext : JsonSerializerContext { }
 
-public sealed record Tenant
+public sealed record Tenant: ITenant
 {
     public int Id { get; init; }
     public required string Name { get; init; }
@@ -34,7 +35,7 @@ public sealed record Tenant
 
     public required string? GoogleAnalyticsMeasurementId { get; init; }
     public required string? RegistrationText { get; init; }
-
+    public required bool TrackActiveUsers { get; init; }
     public required SmtpConnection SmtpConnection { get; init; }
 
     private List<TenantNode> _tenantNodes = new();

@@ -33,8 +33,8 @@
         var result = await FetchCasesService.FetchCases(
             pageSize: PagedListSettings.PageSize, 
             pageNumber: PagedListSettings.PageNumber, 
-            tenantId: TenantId, 
-            userId: UserId);
+            tenantId: Tenant.Id, 
+            userId: User.Id);
         CaseTypeListEntries = result.CaseTypes;
         return result;
     }

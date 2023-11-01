@@ -3,43 +3,43 @@
 @inherits ViewerBase
 @inject ITenantRetrieveService tenantRetrieveService
 
-@if(Tenant is not null) {
+@if(TenantWithDetails is not null) {
     <div class="editor-form">
     <h1>Site administration</h1>
     <EditForm EditContext="@editContext" OnSubmit="@Submit">
 
         <div class="form-group">
             <label for="domain-name">Domain name</label>
-            <InputText @bind-Value="Tenant.DomainName" id="domain-name" type="text" maxlength="255" />
+            <InputText @bind-Value="TenantWithDetails.DomainName" id="domain-name" type="text" maxlength="255" />
         </div>
         <div class="form-group">
             <label for="css-file">CSS file</label>
-            <InputText @bind-Value="Tenant.CssFile" id="css-file" type="text" maxlength="255" />
+                <InputText @bind-Value="TenantWithDetails.CssFile" id="css-file" type="text" maxlength="255" />
         </div>
         <div class="form-group">
             <label for="subtitle">Subtitle</label>
-            <InputText @bind-Value="Tenant.Subtitle" id="subtitle" type="text" maxlength="255" />
+                <InputText @bind-Value="TenantWithDetails.Subtitle" id="subtitle" type="text" maxlength="255" />
         </div>
         <div class="form-group">
             <label for="logo">Logo</label>
-            <InputText @bind-Value="Tenant.Logo" id="logo" type="text" maxlength="255" />
+                <InputText @bind-Value="TenantWithDetails.Logo" id="logo" type="text" maxlength="255" />
         </div>
         <div class="form-group">
             <label for="footer-editor">Text</label>
-            <CKEditor Id="footer-editor" @bind-Value="@Tenant.FooterText" />
+                <CKEditor Id="footer-editor" @bind-Value="@TenantWithDetails.FooterText" />
         </div>
         <div class="form-group">
             <label for="header-editor">Text</label>
-            <CKEditor Id="header-editor" @bind-Value="@Tenant.FrontPageText" />
+                <CKEditor Id="header-editor" @bind-Value="@TenantWithDetails.FrontPageText" />
         </div>
 
-    <UserRoleEditor UserRoles="Tenant.UserRoles" />
+    <UserRoleEditor UserRoles="TenantWithDetails.UserRoles" />
         </EditForm>
     </div>
 }
 
 @code {
-    private Tenant? Tenant { get; set; } 
+    private Tenant? TenantWithDetails { get; set; } 
 
     private EditContext? editContext;
     private ValidationMessageStore? validationMessageStore;
@@ -47,7 +47,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Tenant = await tenantRetrieveService.GetTenant(TenantId);
+        TenantWithDetails = await tenantRetrieveService.GetTenant(Tenant.Id);
         editContext = new EditContext(Tenant!);
         validationMessageStore = new ValidationMessageStore(editContext);
 

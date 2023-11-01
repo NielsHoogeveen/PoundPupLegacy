@@ -83,7 +83,7 @@
         if (!string.IsNullOrEmpty(searchString))
         {
             termOptions = await topicSearchService.GetTerms(
-                tenantId: TenantId, 
+                tenantId: Tenant.Id, 
                 searchString: searchString,
                 nodeTypeIds: NodeTypeTags.TagNodeType.NodeTypeIds
             );

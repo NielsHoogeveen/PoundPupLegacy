@@ -34,7 +34,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Model = await fetchBlogsService.FetchBlogs(TenantId);
+        Model = await fetchBlogsService.FetchBlogs(Tenant.Id);
     }
 
 }

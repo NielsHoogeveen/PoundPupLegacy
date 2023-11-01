@@ -8,7 +8,7 @@
 @if (Node is not null) {
     <CascadingValue Value="@Id" Name="NodeId">
         <CascadingValue Value="@Node.UrlId" Name="UrlId">
-            @if (UserId == 0) {
+            @if (User.Id == 0) {
                 <NodeViewerNotSignedIn Model="@Node" />
             }
             else {
@@ -44,10 +44,10 @@
     {
         Node = await NodeDataService.FetchNode(
             id: Id, 
-            userId: UserId, 
-            tenantId: TenantId);
-        if(UserId != 0 && Node is not null) {
-            await NodeAccessService.Log(UserId, TenantId, Node.NodeId);
+            userId: User.Id, 
+            tenantId: Tenant.Id);
+        if(User.Id != 0 && Node is not null) {
+            await NodeAccessService.Log(User.Id, Tenant.Id, Node.NodeId);
         }
     }
 }

@@ -17,8 +17,8 @@
     protected override async Task<TermedList<ArticleList, ArticleListEntry>> GetTermedList()
     {
         return await FetchArticlesService.GetArticles(
-            tenantId: TenantId, 
-            userId: UserId,
+            tenantId: Tenant.Id, 
+            userId: User.Id,
             selectedTerms: PagedListSettings.SelectedTermIds, 
             pageNumber: PagedListSettings.PageNumber, 
             pageSize: PagedListSettings.PageSize);

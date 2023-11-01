@@ -63,7 +63,7 @@
 
     [Parameter]
     [EditorRequired]
-    public List<TenantDetails> Tenants { get; set; } = default!;
+    public List<Tenant> Tenants { get; set; } = default!;
 
     public override async Task SetParametersAsync(ParameterView parameters)
     {
@@ -264,8 +264,8 @@
     private void AddRelationFrom()
     {
         var relationToEdit = PersonItem.Match<InterPersonalRelation.From.Incomplete>(
-            personListItem: li => li.GetNewInterPersonalRelationFrom(RelationTypes.First<InterPersonalRelationTypeListItem>(), TenantId, UserId, Tenants),
-            personName: nm => nm.GetNewInterPersonalRelationFrom(RelationTypes.First<InterPersonalRelationTypeListItem>(), TenantId, UserId, Tenants)
+            personListItem: li => li.GetNewInterPersonalRelationFrom(RelationTypes.First<InterPersonalRelationTypeListItem>(), Tenant.Id, User.Id, Tenants),
+            personName: nm => nm.GetNewInterPersonalRelationFrom(RelationTypes.First<InterPersonalRelationTypeListItem>(), Tenant.Id, User.Id, Tenants)
         );
         relationContext = new RelationContext.RelationContextFrom.RelationContextFromNew {
                 RelationToEdit = relationToEdit
@@ -275,8 +275,8 @@
     private void AddRelationTo()
     {
         var relationToEdit = PersonItem.Match<InterPersonalRelation.To.Incomplete>(
-            personListItem: li => li.GetNewInterPersonalRelationTo(RelationTypes.First<InterPersonalRelationTypeListItem>(), TenantId, UserId, Tenants),
-            personName: nm => nm.GetNewInterPersonalRelationTo(RelationTypes.First<InterPersonalRelationTypeListItem>(), TenantId, UserId, Tenants)
+            personListItem: li => li.GetNewInterPersonalRelationTo(RelationTypes.First<InterPersonalRelationTypeListItem>(), Tenant.Id, User.Id, Tenants),
+            personName: nm => nm.GetNewInterPersonalRelationTo(RelationTypes.First<InterPersonalRelationTypeListItem>(), Tenant.Id, User.Id, Tenants)
         );
 
         relationContext = new RelationContext.RelationContextTo.RelationContextToNew {

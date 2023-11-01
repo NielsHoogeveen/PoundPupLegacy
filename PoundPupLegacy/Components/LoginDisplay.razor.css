@@ -1,0 +1,37 @@
+﻿button{
+    background-color: #2e9932;
+    border: none;
+    color: white;
+    padding: 0.5em 1em;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: 0.3s;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.2);
+}
+.logged-in-user {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    flex: 1;
+    width: 160px;
+    background: var(--header-bg-color);
+    color: silver;
+}
+.user-name {
+    color: #1a1a1a;
+    padding-left: 0.25em;
+    padding-bottom:0.5em;
+}
+.account-menu {
+    padding-left: 0.15em;
+    padding-bottom: 0.15em;
+    z-index:1000;
+}
+.inner {
+    background-color: #e8e2d9;
+    padding-right: 1em;
+    padding-top: 0.375em;
+    padding-bottom: 0.5em;
+}

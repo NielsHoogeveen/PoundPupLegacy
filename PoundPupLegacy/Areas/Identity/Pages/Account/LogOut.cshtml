@@ -1,12 +1,27 @@
 ﻿@page
 @using Microsoft.AspNetCore.Identity
 @attribute [IgnoreAntiforgeryToken]
+@using PoundPupLegacy.Services
 @inject SignInManager<IdentityUser> SignInManager
+@inject IUserService UserService
+@inject IActiveUserService ActiveUserService
 @functions {
     public async Task<IActionResult> OnPost()
     {
         if (SignInManager.IsSignedIn(User))
         {
+            var user = HttpContext?.User;
+            if (user != null)
+            {
+                var userInfo = user.Identity is not null
+                    ? await UserService.GetUserInfo(user)
+                    : new UserLookupResponse.NoUser();
+                if (userInfo is UserLookupResponse.ExistingUser existingUser)
+                {
+                    await ActiveUserService.UnRegisterActiveUser(existingUser.user, true);
+                }
+            }
+
             await SignInManager.SignOutAsync();
         }
 
