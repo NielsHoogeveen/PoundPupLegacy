@@ -32,6 +32,7 @@ public static class DependencyInjection
         services.AddTransient<IFetchPersonService, FetchPersonsService>();
         services.AddTransient<IFetchPollsService, FetchPollsService>();
         services.AddTransient<IFetchRecentPostsService, FetchRecentPostsService>();
+        services.AddTransient<IFetchRecentUserPostsService, FetchRecentUserPostsService>();
         services.AddTransient<IFetchSearchService, FetchSearchService>();
         services.AddTransient<IFetchSubgroupService, FetchSubgroupService>();
         services.AddTransient<IFetchTopicsService, FetchTopicsService>();

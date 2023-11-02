@@ -1,4 +1,4 @@
-﻿@inject IFetchRecentPostsService FetchService
+﻿@inject IFetchRecentUserPostsService FetchService
 @inherits PagedViewer<RecentPostListEntry>
 <HeadContentSetter Title=@Title SiteName=@SiteName Description=@Description />
 <BreadCrumElementViewer Model="BreadCrumElements" />
@@ -20,7 +20,7 @@
             <div>@listEntry.CreatedDateTime.ToString("yyyy MMM dd, h:mm:ss tt")</div>
             <div>@listEntry.LastChangedDateTime.ToString("yyyy MMM dd, h:mm:ss tt")</div>
             <div>@listEntry.NodeType</div>
-            <div>@listEntry.Subgroup</div>            
+            <div>@listEntry.Subgroup</div>
             <div class="tooltip publication-status-@listEntry.PublicationStatusId">
                 ⬤
                 @if (@listEntry.PublicationStatusId == 0)
@@ -45,19 +45,24 @@ else {
 
 @code {
 
+    [Parameter]
+    [EditorRequired]
+    public int UserIdPublisher { get; set; }
+
     protected override int PageSize => 100;
 
-    protected override string Title => $"Recent Posts";
+    protected override string Title => $"Recent User Posts";
 
-    protected override string Description => "List of the most recent entries added to this site";
+    protected override string Description => "List of the most recent entries added by this user";
 
     protected override async Task<IPagedList<RecentPostListEntry>> GetListEntriesAsync()
     {
-        var result = await FetchService.FetchRecentPosts(
+        var result = await FetchService.FetchRecentUserPosts(
             pageSize: PagedListSettings.PageSize, 
             pageNumber: PagedListSettings.PageNumber, 
             tenantId: Tenant.Id, 
-            userId: User.Id);
+            userId: User.Id,
+            userIdPublisher: UserIdPublisher);
         return result;
     }
 }

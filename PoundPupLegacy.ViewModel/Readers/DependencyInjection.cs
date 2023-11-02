@@ -27,6 +27,7 @@ public static class DependencyInjection
         services.AddTransient<ISingleItemDatabaseReaderFactory<PersonsDocumentReaderRequest, Persons>, PersonsDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<PollsDocumentReaderRequest, Polls>, PollsDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<RecentPostsDocumentReaderRequest, RecentPosts>, RecentPostsDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<RecentUserPostsDocumentReaderRequest, RecentPosts>, RecentUserPostsDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<SearchDocumentReaderRequest, SearchResult>, SearchDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<SubgroupsDocumentReaderRequest, SubgroupPagedList>, SubgroupsDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<TopicsDocumentReaderRequest, Topics>, TopicsDocumentReaderFactory>();

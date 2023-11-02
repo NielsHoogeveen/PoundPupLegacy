@@ -2,19 +2,21 @@
 
 namespace PoundPupLegacy.ViewModel.Readers;
 
-using Request = RecentPostsDocumentReaderRequest;
-public sealed record RecentPostsDocumentReaderRequest : IRequest
+using Request = RecentUserPostsDocumentReaderRequest;
+public sealed record RecentUserPostsDocumentReaderRequest : IRequest
 {
     public required int TenantId { get; init; }
     public required int UserId { get; init; }
+    public required int UserIdPublisher { get; init; }
     public required int Limit { get; init; }
     public required int Offset { get; init; }
 }
-internal sealed class RecentPostsDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, RecentPosts>
+internal sealed class RecentUserPostsDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, RecentPosts>
 {
 
     private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     private static readonly NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
+    private static readonly NonNullableIntegerDatabaseParameter UserIdPublisherParameter = new() { Name = "user_id_publisher" };
     private static readonly NonNullableIntegerDatabaseParameter LimitParameter = new() { Name = "limit" };
     private static readonly NonNullableIntegerDatabaseParameter OffsetParameter = new() { Name = "offset" };
 
@@ -85,6 +87,8 @@ internal sealed class RecentPostsDocumentReaderFactory : SingleItemDatabaseReade
         	        join publisher p on p.id = n.publisher_id
         	        join node_type nt on nt.id = n.node_type_id
                     where tn.tenant_id = @tenant_id
+                    and p.id = @user_id_publisher
+                    and nt.author_specific
                     and tn.publication_status_id in 
                     (
                         select 
@@ -111,6 +115,7 @@ internal sealed class RecentPostsDocumentReaderFactory : SingleItemDatabaseReade
         return new ParameterValue[] {
             ParameterValue.Create(TenantIdParameter, request.TenantId),
             ParameterValue.Create(UserIdParameter, request.UserId),
+            ParameterValue.Create(UserIdPublisherParameter, request.UserIdPublisher),
             ParameterValue.Create(LimitParameter, request.Limit),
             ParameterValue.Create(OffsetParameter, request.Offset),
         };

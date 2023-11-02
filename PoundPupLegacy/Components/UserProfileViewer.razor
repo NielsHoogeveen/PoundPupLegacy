@@ -26,6 +26,7 @@
     <h3>Relation to Child Placement</h3>        
     <div>@UserProfile.RelationsToChildPlacement.FirstOrDefault(x => x.Id == UserProfile.RelationToChildPlacementId)?.Name</div>
     </div>
+    <RecentUserPostsViewer UserIdPublisher="Id"/>
 }
 
 @code {
