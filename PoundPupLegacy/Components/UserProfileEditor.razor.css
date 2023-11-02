@@ -1,0 +1,33 @@
+﻿button {
+    margin-top: 1em;
+    margin-left: 0.25em;
+    padding: 0.5em 1em;
+    border: 0;
+    background-color: var(--button-color);
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 3px 3px 2px 1px rgba(20, 20, 20, .25);
+}
+
+button:hover {
+    background-color: var(--button-hover-color);
+}
+.user-profile{
+    padding:0.5em;
+}
+
+.avatar-upload{
+    margin-top: 1em;
+}
+.explanation {
+    font-size: 90%;
+    color: #808080;
+}
+.message{
+    background-color: aliceblue;
+    border: solid 1px black;
+    padding: 0.5em;
+    margin-left: 2em;
+    font-size: 90%;
+}

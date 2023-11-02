@@ -1,0 +1,11 @@
+﻿@page "/user/{Id:int}"
+@using PoundPupLegacy.Components
+@inherits Page
+<PageViewer>
+<UserProfileViewer Id="@Id" />
+</PageViewer>
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+}

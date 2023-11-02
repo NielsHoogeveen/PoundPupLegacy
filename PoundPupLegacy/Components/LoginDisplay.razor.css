@@ -18,10 +18,13 @@
     width: 160px;
     color: silver;
 }
-.user-name {
+.user-name, .user-profile {
     color: #1a1a1a;
     padding-left: 0.25em;
     padding-bottom:0.5em;
+}
+.user-profile a {
+    color: #6d5824;
 }
 .account-menu {
     padding-left: 0.15em;

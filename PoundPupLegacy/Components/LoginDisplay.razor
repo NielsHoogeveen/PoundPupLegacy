@@ -11,6 +11,7 @@
         <div class="account-menu">
             <div class="inner">
                 <div class="user-name">@User?.Name</div>
+                <div class="user-profile"><a href="/user" @onclick="OnClick">My Profile</a></div>
                 <form method="post" action="Identity/Account/Logout">
                     <button type="submit">Log out</button>
                 </form>
@@ -31,6 +32,10 @@
     private void ToggleCollapsed()
     {
         Collapsed = !Collapsed;
+    }
+    private void OnClick()
+    {
+        Collapsed = true;
     }
 }
 

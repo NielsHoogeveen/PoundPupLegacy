@@ -225,6 +225,7 @@ public static class Extensions
             Models.TenantNodeJsonContext.Default,
             Models.UserJsonContext.Default,
             Models.UserRolesToAssignJsonContext.Default,
+            Models.UserProfileJsonContext.Default,
 
             ViewModel.Models.AbuseCaseJsonContext.Default,
             ViewModel.Models.AbuseCaseListJsonContext.Default,

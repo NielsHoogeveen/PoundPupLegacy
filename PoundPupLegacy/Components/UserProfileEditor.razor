@@ -1,0 +1,185 @@
+﻿@using PoundPupLegacy.Models
+@using PoundPupLegacy.Services
+@using System.Drawing
+@using System.Drawing.Imaging
+@inject IUserProfileService UserProfileService
+@inject IConfiguration Configuration
+@inherits ViewerBase
+@inject ILogger<UserProfileEditor> Logger
+<BreadCrumElementViewer Model="BreadCrumElements"/>
+
+@if(UserProfile is not null) {
+    <div class="user-profile">
+        <EditForm EditContext="EditContext" OnSubmit="@Submit">
+        @if(UserProfile.Avatar is not null){
+            <img src="/@UserProfile.Avatar" />
+        }
+        <div>
+            <div class="avatar-upload">
+                <label class="file-upload" for="file-upload">Upload files</label>
+                <InputFile OnChange="OnLoadFile" id="file-upload" accept="image/png, image/jpeg" />
+                <div class="explanation">
+                    Please select a small image file of type jpg or png. Images will be resized to have a height of 80 pixels. Images larger than 512KB will be rejected.
+                </div>
+                <ValidationSummary />
+            </div>
+        </div>
+        <h3>Name</h3>
+        <div>@UserProfile.Name</div>
+        @if(UserProfile.AnimalWithin is not null){
+            <h3>The animal within</h3>
+            <CKEditor Id="animal-within" @bind-Value=@UserProfile.AnimalWithin />
+        }
+        @if(UserProfile.AboutMe is not null) {
+            <h3>About me</h3>
+                <CKEditor Id="about-me" @bind-Value=@UserProfile.AboutMe />
+        }
+        <h3>Relation to Child Placement</h3>        
+        <select @onchange="OnChange">
+            <option></option>
+            @foreach (var rel in UserProfile.RelationsToChildPlacement)
+            {
+                @if(rel.Id == UserProfile.RelationToChildPlacementId)
+                {
+                    <option value="@rel.Id" selected>@rel.Name</option>
+                }
+                else
+                {
+                    <option value="@rel.Id">@rel.Name</option>
+                }
+            }
+        </select>
+        <div>
+            <button type="submit">Submit</button>
+            @if(_afterSubmit) {
+                <span class="message">Your profile has been updated</span>
+            }
+        </div>
+        </EditForm>
+    </div>
+}
+
+@code {
+    private UserProfile? UserProfile { get; set; }
+
+    private EditContext? EditContext { get; set; }
+
+    private ValidationMessageStore? ValidationMessageStore { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        UserProfile = await UserProfileService.GetUserProfile(User.Id);
+        if(UserProfile is not null) {
+            EditContext = new EditContext(UserProfile);
+            ValidationMessageStore = new ValidationMessageStore(EditContext);
+        }
+    }
+    private bool _afterSubmit = false;
+
+    private async Task Submit()
+    {
+        if (UserProfile is not null)
+        {
+            await UserProfileService.Store(UserProfile);
+            _afterSubmit = true;
+            StateHasChanged();
+            await Task.Delay(1000);
+            _afterSubmit = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task OnLoadFile(InputFileChangeEventArgs args)
+    {
+        if(UserProfile is null) {
+            return;
+        }
+        if (EditContext is null) {
+            return;
+        }
+        if (ValidationMessageStore is null) {
+            return;
+        }
+        ValidationMessageStore.Clear();
+        EditContext.NotifyValidationStateChanged();
+        if (args.File.ContentType == "image/png" || args.File.ContentType == "image/jpeg") {
+            if (args.File.Size > 1024L * 512) {
+                ValidationMessageStore.Add(() => UserProfile.Avatar, "File size exceeds 512KB");
+                EditContext.NotifyValidationStateChanged();
+                return;
+            }
+            try
+            {
+                using var fileStream = new MemoryStream();
+                await args.File.OpenReadStream().CopyToAsync(fileStream);
+                var image = Image.FromStream(fileStream);
+                var size = image.Size;
+                size.Width = Convert.ToInt32(Convert.ToDouble(size.Width) / Convert.ToDouble(size.Height) * 80);
+                size.Height = 80;
+                var resized = new Bitmap(image, size);
+                using var imageStream = new MemoryStream();
+                resized.Save(imageStream, ImageFormat.Png);
+                imageStream.Position = 0;
+                try {
+                    UserProfile.Avatar = await WriteFileToDisk(imageStream);
+                    StateHasChanged();
+                }
+                catch (Exception e) {
+                    Logger.LogError(e, "Error writing image");
+                    throw;
+                }
+            }catch(Exception e) {
+                ValidationMessageStore.Add(() => UserProfile.Avatar, "Image file cannot be recognized, please select another image");
+                EditContext.NotifyValidationStateChanged();
+                return;
+            }
+        }
+        else {
+            ValidationMessageStore.Add(() => UserProfile.Avatar, "Only files of type jpg or png are allowed");
+            EditContext.NotifyValidationStateChanged();
+        }
+    }
+
+
+    private async Task<string?> WriteFileToDisk(Stream stream)
+    {
+        var basePath = Configuration.GetValue<string>("FilesLocation");
+        if (basePath is not null) {
+            try
+            {
+                var directoryPath = $"{basePath}{Path.DirectorySeparatorChar}profile-pictures{Path.DirectorySeparatorChar}";
+                var fileName = $"{User.Id}-{Guid.NewGuid()}.png";
+                if (!Directory.Exists(directoryPath)) {
+                    Directory.CreateDirectory(directoryPath);
+                }
+                var path = $"{directoryPath}/{fileName}";
+                await using FileStream fs = new(path, FileMode.Create);
+                await stream.CopyToAsync(fs);
+                await fs.FlushAsync();
+                return $"files/profile-pictures/{fileName}";
+            }catch(Exception e) {
+                Logger.LogError(e, "Error writing file to disk");
+                throw;
+            }
+        }
+        return null;
+    }
+    private void OnChange(ChangeEventArgs e)
+    {
+        if (UserProfile is null)
+        {
+            return;
+        }
+        if (e.Value is null)
+        {
+            UserProfile.RelationToChildPlacementId = null;
+            return;
+        }
+        if (int.TryParse(e.Value.ToString(), out var value))
+        {
+            UserProfile.RelationToChildPlacementId = value;
+            return;
+        }
+        UserProfile.RelationToChildPlacementId = null;
+    }
+}
