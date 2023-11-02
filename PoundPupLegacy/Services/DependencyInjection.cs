@@ -41,5 +41,6 @@ public static class DependencyInjection
         services.AddTransient<ICommentService, CommentService>();
         services.AddTransient<ISubgroupNodeTypeService, SubgroupNodeTypeService>();
         services.AddTransient<IUserProfileService, UserProfileService>();
+        services.AddTransient<IImagingService, ImagingService>();
     }
 }

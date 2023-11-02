@@ -48,7 +48,7 @@ public class UserProfileService(
             else {
                 command.Parameters["avatar"].Value = DBNull.Value;
             }
-            if (userProfile.Avatar is not null) {
+            if (userProfile.AnimalWithin is not null) {
                 command.Parameters["animal_within"].Value = userProfile.AnimalWithin;
             }
             else {

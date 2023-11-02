@@ -1,11 +1,10 @@
 ﻿@using PoundPupLegacy.Models
 @using PoundPupLegacy.Services
-@using System.Drawing
-@using System.Drawing.Imaging
 @inject IUserProfileService UserProfileService
 @inject IConfiguration Configuration
 @inherits ViewerBase
 @inject ILogger<UserProfileEditor> Logger
+@inject IImagingService ImagingService
 <BreadCrumElementViewer Model="BreadCrumElements"/>
 
 @if(UserProfile is not null) {
@@ -117,14 +116,8 @@
             {
                 using var fileStream = new MemoryStream();
                 await args.File.OpenReadStream().CopyToAsync(fileStream);
-                var image = Image.FromStream(fileStream);
-                var size = image.Size;
-                size.Width = Convert.ToInt32(Convert.ToDouble(size.Width) / Convert.ToDouble(size.Height) * 80);
-                size.Height = 80;
-                var resized = new Bitmap(image, size);
-                using var imageStream = new MemoryStream();
-                resized.Save(imageStream, ImageFormat.Png);
-                imageStream.Position = 0;
+                var bytes = ImagingService.Resize(fileStream, 80);
+                using var imageStream = new MemoryStream(bytes);
                 try {
                     UserProfile.Avatar = await WriteFileToDisk(imageStream);
                     StateHasChanged();
@@ -134,6 +127,7 @@
                     throw;
                 }
             }catch(Exception e) {
+                Logger.LogError(e, "Error resizing image");
                 ValidationMessageStore.Add(() => UserProfile.Avatar, "Image file cannot be recognized, please select another image");
                 EditContext.NotifyValidationStateChanged();
                 return;
