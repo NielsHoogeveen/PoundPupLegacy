@@ -12,11 +12,14 @@
     <div class="user-profile">
         <EditForm EditContext="EditContext" OnSubmit="@Submit">
         @if(UserProfile.Avatar is not null){
-            <img src="/@UserProfile.Avatar" />
+            <div class="avatar">
+                <img src="/@UserProfile.Avatar" />
+                <button @onclick="RemoveAvatar">Remove</button>
+            </div>
         }
         <div>
             <div class="avatar-upload">
-                <label class="file-upload" for="file-upload">Upload files</label>
+                <label class="file-upload" for="file-upload">Upload file</label>
                 <InputFile OnChange="OnLoadFile" id="file-upload" accept="image/png, image/jpeg" />
                 <div class="explanation">
                     Please select a small image file of type jpg or png. Images will be resized to have a height of 80 pixels. Images larger than 512KB will be rejected.
@@ -26,14 +29,16 @@
         </div>
         <h3>Name</h3>
         <div>@UserProfile.Name</div>
-        @if(UserProfile.AnimalWithin is not null){
-            <h3>The animal within</h3>
-            <CKEditor Id="animal-within" @bind-Value=@UserProfile.AnimalWithin />
-        }
-        @if(UserProfile.AboutMe is not null) {
-            <h3>About me</h3>
-                <CKEditor Id="about-me" @bind-Value=@UserProfile.AboutMe />
-        }
+        <h3>The animal within</h3>
+        <div class="explanation">
+            What sort of animal do you associate youself with, and how does that reflect in your behaviour?
+        </div>
+        <CKEditor Id="animal-within" @bind-Value=@UserProfile.AnimalWithin />
+        <h3>About me</h3>
+        <div class="explanation">
+            Please tell us something about yourself.
+        </div>
+        <CKEditor Id="about-me" @bind-Value=@UserProfile.AboutMe />
         <h3>Relation to Child Placement</h3>        
         <select @onchange="OnChange">
             <option></option>
@@ -181,5 +186,12 @@
             return;
         }
         UserProfile.RelationToChildPlacementId = null;
+    }
+    private void RemoveAvatar()
+    {
+        if(UserProfile is not null) {
+            UserProfile.Avatar = null;
+            StateHasChanged();
+        }
     }
 }

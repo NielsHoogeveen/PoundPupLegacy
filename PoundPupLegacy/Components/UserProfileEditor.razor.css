@@ -1,4 +1,4 @@
-﻿button {
+﻿button, .avatar-upload label {
     margin-top: 1em;
     margin-left: 0.25em;
     padding: 0.5em 1em;
@@ -30,4 +30,26 @@ button:hover {
     padding: 0.5em;
     margin-left: 2em;
     font-size: 90%;
+}
+.avatar {
+    display:grid;
+    width: 10em;
+    grid-template-columns: 1fr 1fr;
+}
+.avatar button {
+    font-size: 70%;
+    margin-top: 0em;
+    height: 2em;
+    padding: 0.5em;
+    margin-left: 1em;
+    background-color: peru;
+}
+.avatar-upload{
+    margin-top: 1em;
+}
+.avatar-upload label {
+    margin-left: 0;
+}
+.avatar-upload .explanation{
+    margin-top: 1em;
 }
