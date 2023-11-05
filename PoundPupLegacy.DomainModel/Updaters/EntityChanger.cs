@@ -111,8 +111,9 @@ public class CaseChanger<T>(
     IDatabaseUpdater<LocationUpdaterRequest> locationUpdater,
     IDatabaseInserter<Location.ToCreate> locationInserter,
     IDatabaseInserter<LocationLocatable> locationLocatableInserter,
-    IDatabaseUpdater<Term.ToUpdate> termUpdater
-) : LocatableChanger<T>(databaseUpdater, nodeDetailsChanger, locationUpdater, locationInserter, locationLocatableInserter, termUpdater)
+    IDatabaseUpdater<Term.ToUpdate> termUpdater,
+    DatabaseMaterializedViewRefresher termViewRefresher
+) : LocatableChanger<T>(databaseUpdater, nodeDetailsChanger, locationUpdater, locationInserter, locationLocatableInserter, termUpdater, termViewRefresher)
 where T : CaseToUpdate
 {
     protected override async Task Process(T request)
@@ -127,8 +128,9 @@ public class LocatableChanger<T>(
     IDatabaseUpdater<LocationUpdaterRequest> locationUpdater,
     IDatabaseInserter<Location.ToCreate> locationInserter,
     IDatabaseInserter<LocationLocatable> locationLocatableInserter,
-    IDatabaseUpdater<Term.ToUpdate> termUpdater
-) : NameableChanger<T>(databaseUpdater, nodeDetailsChanger, termUpdater)
+    IDatabaseUpdater<Term.ToUpdate> termUpdater,
+    DatabaseMaterializedViewRefresher termViewRefresher
+) : NameableChanger<T>(databaseUpdater, nodeDetailsChanger, termUpdater, termViewRefresher)
 where T : LocatableToUpdate
 {
     protected override async Task Process(T request)
@@ -166,19 +168,31 @@ where T : LocatableToUpdate
 public class NameableChanger<T>(
     IDatabaseUpdater<T> databaseUpdater,
     NodeDetailsChanger nodeDetailsChanger,
-    IDatabaseUpdater<Term.ToUpdate> termUpdater
+    IDatabaseUpdater<Term.ToUpdate> termUpdater,
+    DatabaseMaterializedViewRefresher termViewRefresher
 ) : NodeChanger<T>(databaseUpdater, nodeDetailsChanger)
 where T : NameableToUpdate
 {
     protected override async Task Process(T request)
     {
         await base.Process(request);
-        await termUpdater.UpdateAsync(request.NameableDetails.TermToUpdate);
+        foreach (var term in request.NameableDetails.TermsToUpdate) {
+            await termUpdater.UpdateAsync(term);
+        }
+        if(
+            request.NameableDetails.TermsToRemove.Any() || 
+            request.NameableDetails.TermsToUpdate.Any() ||
+            request.NameableDetails.TermsToAdd.Any()
+            ) {
+            await termViewRefresher.Execute();
+        }
+
     }
     public override async ValueTask DisposeAsync()
     {
         await base.DisposeAsync();
         await termUpdater.DisposeAsync();
+        await termViewRefresher.DisposeAsync();
     }
 }
 

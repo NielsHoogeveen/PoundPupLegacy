@@ -1407,6 +1407,8 @@ internal static class SharedSql
                     nt.name,
                     'NodeTypeId',
                     nt.id,
+                    'NodeTypeViewerPath',
+                    nt.viewer_path.
                     'PublisherId', 
                     @user_id,
                     'PublisherName',
@@ -1441,6 +1443,8 @@ internal static class SharedSql
                     n.id,
                    'NodeTypeName',
                     nt.name,
+                    'NodeTypeViewerPath',
+                    nt.viewer_path,
                     'NodeTypeId',
                     nt.id,
                     'PublisherId', 
@@ -1476,7 +1480,80 @@ internal static class SharedSql
                     'Name',
                     n.title, 
             		'VocabularyId',
-                    nt.vocabulary_id
+                    nt.vocabulary_id,
+                    'TermsWithHierarchy',
+                    (
+                        select 
+                        jsonb_agg
+                        (
+                            jsonb_build_object
+                            (
+                                'Id',
+                                t2.id,
+                                'NodeId',
+                                nm.id,
+                                'Name',
+                                t2.name,
+                                'VocabularyId',
+                                t2.vocabulary_id,
+                                'IsMainTerm',
+                                t2.id = t.id,
+                                'ParentIds',
+                                (
+                                    select 
+                                    jsonb_agg(
+                                        th.term_id_parent 
+                                    )
+                                    from term_hierarchy th where th.term_id_child = t2.id
+                                )
+                            )
+                        )
+                        from term t2
+                        join nameable nm2 on nm2.id = t2.nameable_id
+                        join vocabulary v on v.id = t2.vocabulary_id
+                        where t2.nameable_id = n.id and v.supports_term_hierarchy = true
+                    ),
+                    'TermsWithoutHierarchy',
+                    (
+                        select 
+                        jsonb_agg
+                        (
+                            jsonb_build_object
+                            (
+                                'Id',
+                                t2.id,
+                                'NodeId',
+                                nm.id,
+                                'Name',
+                                t2.name,
+                                'VocabularyId',
+                                t2.vocabulary_id,
+                                'IsMainTerm',
+                                t2.id = t.id
+                            )
+                        )
+                        from term t2
+                        join nameable nm2 on nm2.id = t2.nameable_id
+                        join vocabulary v on v.id = t2.vocabulary_id
+                        where t2.nameable_id = n.id and v.supports_term_hierarchy = false
+                    ),
+                    'Vocabularies',
+                    (
+                        select
+                        jsonb_agg
+                        (
+                            jsonb_build_object
+                            (
+                                'Id',
+                                v.id,
+                                'Name',
+                                v.name,
+                                'SupportsTermHierarchy',
+                                v.supports_term_hierarchy
+                            )
+                        )
+                        from vocabulary v
+                    )
                 ) document,
                 nm.id
             from nameable nm
@@ -1496,10 +1573,73 @@ internal static class SharedSql
                     'Name',
                     '',
             		'VocabularyId',
-                    nt.vocabulary_id
+                    nt.vocabulary_id,
+                    'TermsWithHierarchy',
+                    case 
+                        when v.supports_term_hierarchy = true then
+                        (
+                            select 
+                            jsonb_agg
+                            (
+                                jsonb_build_object
+                                (
+                                    'Id',
+                                    null,
+                                    'Name',
+                                    '',
+                                    'VocabularyId',
+                                    v.id,
+                                    'IsMainTerm',
+                                    true
+                                )
+                            )
+                        )
+                        else null 
+                    end,
+                    'TermsWithoutHierarchy',
+                    case 
+                        when v.supports_term_hierarchy = false then
+                        (
+                            select 
+                            jsonb_agg
+                            (
+                                jsonb_build_object
+                                (
+                                    'Id',
+                                    null,
+                                    'Name',
+                                    '',
+                                    'VocabularyId',
+                                    v.id,
+                                    'IsMainTerm',
+                                    true
+                                )
+                            )
+                        )
+                        else null
+                     end,
+                    'Vocabularies',
+                    (
+                        select
+                        jsonb_agg
+                        (
+                            jsonb_build_object
+                            (
+                                'Id',
+                                v.id,
+                                'Name',
+                                v.name,
+                                'SupportsTermHierarchy',
+                                v.supports_term_hierarchy
+                            )
+                        )
+                        from vocabulary v
+                    )
                 ) document
                 from nameable_type nt
+                join vocabulary v on v.id = nt.vocabulary_id
                 where nt.id = @node_type_id
+                group by nt.vocabulary_id, v.supports_term_hierarchy
         )
         """;
 

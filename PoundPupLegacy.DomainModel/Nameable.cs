@@ -22,7 +22,8 @@ public abstract record NameableDetails: IRequest
     }
     public sealed record ForUpdate : NameableDetails
     {
-        public required Term.ToUpdate TermToUpdate { get; init; }
+        public required List<int> TermsToRemove { get; init; }
+        public required List<Term.ToUpdate> TermsToUpdate { get; init; }
         public required List<Term.ToCreateForExistingNameable> TermsToAdd { get; init; }
     }
 }

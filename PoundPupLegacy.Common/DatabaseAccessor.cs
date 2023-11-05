@@ -1,4 +1,5 @@
 ﻿using Npgsql;
+using System.Data;
 
 namespace PoundPupLegacy.Common;
 
@@ -35,6 +36,7 @@ public interface IDatabaseAccessor : IAsyncDisposable
 {
     string Sql { get; }
     bool HasBeenPrepared { get; }
+
 }
 
 public abstract class DatabaseAccessor<TRequest> : IDatabaseAccessor

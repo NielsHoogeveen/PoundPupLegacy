@@ -9,7 +9,7 @@ public abstract class PagedViewerBase<TPagedListSettings, TListEntry> : PageView
 
     [Inject]
     public required NavigationManager NavigationManager { get; init; }
-    protected TListEntry[] ListEntries { get; set; } = Array.Empty<TListEntry>();
+    protected TListEntry[]? ListEntries { get; set; } 
 
     protected abstract Task<IPagedList<TListEntry>> GetListEntriesAsync();
 

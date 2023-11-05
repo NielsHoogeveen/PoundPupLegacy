@@ -57,6 +57,7 @@ internal sealed class UserService(
                     update "user"
                     set user_status_id = 1
                     where id = @user_id;
+                    REFRESH MATERIALIZED VIEW user_publication_status;
                 """;
                 updateUserStatement.Parameters.Add("user_id", NpgsqlTypes.NpgsqlDbType.Integer);
                 await updateUserStatement.PrepareAsync();

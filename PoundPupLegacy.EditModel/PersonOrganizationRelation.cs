@@ -29,7 +29,7 @@ public static class PersonOrganizationRelationExtensions
             PersonOrganizationRelationType = relationType,
             GeographicalEntity = null,
             RelationDetails = RelationDetails.EmptyInstance,
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(48, "person organization relation", ownerId, publisherId, tenants)
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(48, "person organization relation", "person_organization_relation", ownerId, publisherId, tenants)
         };
     }
     public static PersonOrganizationRelation.ForOrganization GetPersonOrganizationRelationForOrganization(this OrganizationName organizationName, PersonOrganizationRelationTypeListItem relationType, int ownerId, int publisherId, List<Tenant> tenants)
@@ -40,7 +40,7 @@ public static class PersonOrganizationRelationExtensions
             PersonOrganizationRelationType = relationType,
             GeographicalEntity = null,
             RelationDetails = RelationDetails.EmptyInstance,
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(48, "person organization relation", ownerId, publisherId, tenants)
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(48, "person organization relation", "person_organization_relation", ownerId, publisherId, tenants)
         };
     }
     public static PersonOrganizationRelation.ForPerson GetPersonOrganizationRelationForPerson(this PersonListItem personListItem, PersonOrganizationRelationTypeListItem relationType, int ownerId, int publisherId, List<Tenant> tenants)
@@ -51,7 +51,7 @@ public static class PersonOrganizationRelationExtensions
             PersonOrganizationRelationType = relationType,
             GeographicalEntity = null,
             RelationDetails = RelationDetails.EmptyInstance,
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(48,"person organization relation", ownerId, publisherId, tenants)
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(48,"person organization relation", "person_organization_relation", ownerId, publisherId, tenants)
         };
     }
     public static PersonOrganizationRelation.ForPerson GetPersonOrganizationRelationForPerson(this PersonName personName, PersonOrganizationRelationTypeListItem relationType, int ownerId, int publisherId, List<Tenant> tenants)
@@ -62,7 +62,7 @@ public static class PersonOrganizationRelationExtensions
             PersonOrganizationRelationType = relationType,
             GeographicalEntity = null,
             RelationDetails = RelationDetails.EmptyInstance,
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(48, "person organization relation", ownerId, publisherId, tenants)
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(48, "person organization relation", "person_organization_relation", ownerId, publisherId, tenants)
         };
     }
 }

@@ -3,7 +3,10 @@
 <HeadContentSetter Title=@Title SiteName=@SiteName Description=@Description />
 <BreadCrumElementViewer Model="BreadCrumElements" />
 <h1>Recent posts</h1>
-@if (ListEntries.Any()) {
+@if(ListEntries is null) {
+    <div>Loading recent posts...</div>
+}
+else{
     <div class="list-entries">
         <div class="header">Title</div>
         <div class="header">Publisher</div>
@@ -37,10 +40,6 @@
         }
     </div>
     <Pager Model="PagedListSettings" SelectPage="SelectPage" />
-}
-else {
-    <p>Loading recent posts...</p>
-
 }
 
 @code {

@@ -7,7 +7,7 @@ public static class InterOrganizationalRelationExtentions
             OrganizationFrom = organizationListItem,
             OrganizationTo = null,
             InterOrganizationalRelationDetails = InterOrganizationalRelationDetails.EmptyInstance(interOrganizationalRelationType),
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(47, "inter organizational relation", ownerId, publisherId, tenants),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(47, "inter organizational relation", "inter_organizational_relation", ownerId, publisherId, tenants),
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }
@@ -17,7 +17,7 @@ public static class InterOrganizationalRelationExtentions
             OrganizationFrom = organizationName,
             OrganizationTo = null,
             InterOrganizationalRelationDetails = InterOrganizationalRelationDetails.EmptyInstance(interOrganizationalRelationType),
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(47, "inter organizational relation", ownerId, publisherId, tenants),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(47, "inter organizational relation", "inter_organizational_relation", ownerId, publisherId, tenants),
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }
@@ -27,7 +27,7 @@ public static class InterOrganizationalRelationExtentions
             OrganizationFrom = null,
             OrganizationTo = organizationListItem,
             InterOrganizationalRelationDetails = InterOrganizationalRelationDetails.EmptyInstance(interOrganizationalRelationType),
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(47, "inter organizational relation", ownerId, publisherId, tenants),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(47, "inter organizational relation", "inter_organizational_relation", ownerId, publisherId, tenants),
             RelationDetails = RelationDetails.EmptyInstance,
         };
 
@@ -38,7 +38,7 @@ public static class InterOrganizationalRelationExtentions
             OrganizationFrom = null,
             OrganizationTo = organizationName,
             InterOrganizationalRelationDetails = InterOrganizationalRelationDetails.EmptyInstance(interOrganizationalRelationType),
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(47, "inter organizational relation", ownerId, publisherId, tenants),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(47, "inter organizational relation", "inter_organizational_relation", ownerId, publisherId, tenants),
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }

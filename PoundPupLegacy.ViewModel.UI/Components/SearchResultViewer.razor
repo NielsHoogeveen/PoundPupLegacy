@@ -2,7 +2,12 @@
 @inherits PagedSearchViewer<SearchResultListEntry>
 @inject IFetchSearchService FetchSearchService
 <HeadContentSetter Title=@Title SiteName=@SiteName Description=@Description />
-<TeaserListViewer ListEntries="ListEntries" PagedListSettings="PagedListSettings" SelectPage="SelectPage"/>
+@if (ListEntries is null) {
+    <div>Loading search results...</div>
+}
+else{
+    <TeaserListViewer ListEntries="ListEntries" PagedListSettings="PagedListSettings" SelectPage="SelectPage"/>
+}
 @code {
 
     protected override int PageSize => 25;

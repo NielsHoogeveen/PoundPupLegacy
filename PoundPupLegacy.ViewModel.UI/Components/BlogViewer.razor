@@ -2,12 +2,17 @@
 @inject IFetchBlogService FetchBlogService;
 <HeadContentSetter Title=@Title SiteName=@SiteName Description=@Description />
 <BreadCrumElementViewer Model="BreadCrumElements" />
-<TeaserListViewer ListEntries="ListEntries" PagedListSettings="PagedListSettings" SelectPage="SelectPage">
+@if (ListEntries is null) {
+    <div>Loading blog...</div>
+}
+else
+{
+    <TeaserListViewer ListEntries="ListEntries" PagedListSettings="PagedListSettings" SelectPage="SelectPage">
     <h1>
         @Name
     </h1>
 </TeaserListViewer>
-
+}
 @code{
     [Parameter]
     [EditorRequired]

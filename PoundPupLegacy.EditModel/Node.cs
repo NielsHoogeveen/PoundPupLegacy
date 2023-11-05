@@ -45,10 +45,11 @@ public sealed record NodeIdentification
 public abstract record NodeDetails 
 {
     
-    public static ForCreate EmptyInstance(int nodeTypeId, string nodeTypeName, int ownerId, int publisherId, List<Tenant> tenants) => new ForCreate {
+    public static ForCreate EmptyInstance(int nodeTypeId, string nodeTypeName, string nodeTypeViewerPath, int ownerId, int publisherId, List<Tenant> tenants) => new ForCreate {
         Files = new List<File>(),
         NodeTypeId = nodeTypeId,
         NodeTypeName = nodeTypeName,
+        NodeTypeViewerPath = nodeTypeViewerPath,
         OwnerId = ownerId,
         PublisherId = publisherId,
         TagsToCreate = new List<Tags.ToCreate>(),
@@ -62,6 +63,7 @@ public abstract record NodeDetails
         Title = "",
     };
     public required string NodeTypeName { get; set; }
+    public required string NodeTypeViewerPath { get; set; }
     public required int NodeTypeId { get; init; }
     public required int PublisherId { get; set; }
     public required int OwnerId { get; set; }

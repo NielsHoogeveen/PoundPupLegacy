@@ -6,14 +6,17 @@ using Request = DocumentType.ToUpdate;
 internal sealed class DocumentTypeChangerFactory(
     IDatabaseUpdaterFactory<Request> databaseUpdaterFactory,
     NodeDetailsChangerFactory nodeDetailsChangerFactory,
-    IDatabaseUpdaterFactory<Term.ToUpdate> termUpdaterFactory) : IEntityChangerFactory<Request>
+    IDatabaseUpdaterFactory<Term.ToUpdate> termUpdaterFactory,
+    DatabaseMaterializedViewRefresherFactory termViewRefresherFactory
+) : IEntityChangerFactory<Request>
 {
     public async Task<IEntityChanger<Request>> CreateAsync(IDbConnection connection)
     {
         return new NameableChanger<Request>(
             await databaseUpdaterFactory.CreateAsync(connection),
             await nodeDetailsChangerFactory.CreateAsync(connection),
-            await termUpdaterFactory.CreateAsync(connection)
+            await termUpdaterFactory.CreateAsync(connection),
+            await termViewRefresherFactory.CreateAsync(connection, "nameable_descendency")
         );
     }
 }

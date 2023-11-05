@@ -36,6 +36,23 @@ public abstract record Term
         public required string Name { get; init; }
         public required int NameableId { get; init; }
         public required List<int> ParentTermIds { get; init; }
+        public required List<int> NewParentTermIds { get; init; }
+
+        public List<TermHierarchy> TermHierarchiesToAdd => 
+            NewParentTermIds
+            .Except(ParentTermIds)
+            .Select(x => new TermHierarchy { 
+                TermIdChild = Identification.Id, TermIdParent = x
+            })
+            .ToList();
+        public List<TermHierarchy> TermHierarchiesToRemove =>
+            NewParentTermIds
+            .Except(ParentTermIds)
+            .Select(x => new TermHierarchy {
+                TermIdChild = Identification.Id,
+                TermIdParent = x
+            })
+            .ToList();
     }
 
 }

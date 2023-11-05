@@ -15,7 +15,7 @@ public static class OrganizationPoliticalEntityRelationExtension
             Organization = organizationListItem,
             PartyPoliticalEntityRelationType = relationType,
             PoliticalEntity = null,
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(49, "organization political entity relation", ownerId, publishedId, tenants),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(49, "organization political entity relation", "organization_political_entity_relation", ownerId, publishedId, tenants),
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }
@@ -25,7 +25,7 @@ public static class OrganizationPoliticalEntityRelationExtension
             Organization = organizationName,
             PartyPoliticalEntityRelationType = relationType,
             PoliticalEntity = null,
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(49, "organization political entity relation", ownerId, publishedId, tenants),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(49, "organization political entity relation", "organization_political_entity_relation", ownerId, publishedId, tenants),
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }

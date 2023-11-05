@@ -19,7 +19,6 @@ internal static class DependencyInjection
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByIso3166CodeRequest, int>, SubdivisionIdReaderByIso3166CodeFactory>();
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<SubdivisionIdReaderByNameRequest, int>, SubdivisionIdReaderByNameFactory>();
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<TenantNodeIdReaderByUrlIdRequest, int>, TenantNodeIdReaderByUrlIdFactory>();
-        services.AddTransient<ISingleItemDatabaseReaderFactory<TenantNodeReaderByUrlIdRequest, TenantNode.ToCreate.ForExistingNode>, TenantNodeReaderByUrlIdFactory>();
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<NameableIdReaderByTermNameRequest, int>, NameableIdReaderByTermNameFactory>();
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameRequest, int>, TermIdReaderByNameFactory>();
         services.AddTransient<IMandatorySingleItemDatabaseReaderFactory<TermIdReaderByNameableIdRequest, int>, TermIdReaderByNameableIdFactory>();

@@ -4,12 +4,16 @@
 <HeadContentSetter Title=@Title SiteName=@SiteName Description=@Description />
 <BreadCrumElementViewer Model="BreadCrumElements" />
 <SearchForm PagedSearchListSettings="PagedListSettings" OnSearch="OnSearch" />
-<EntityListEntriesViewer 
-    ListEntries="ListEntries" 
-    PagedListSettings="PagedListSettings" 
-    SelectPage="SelectPage"
-    ElementsName="topics"/>
-
+@if (ListEntries is null) {
+    <div>Loading topic...</div>
+}
+else{
+    <EntityListEntriesViewer 
+        ListEntries="ListEntries" 
+        PagedListSettings="PagedListSettings" 
+        SelectPage="SelectPage"
+        ElementsName="topics"/>
+}
 @code {
 
     protected override int PageSize => 50;

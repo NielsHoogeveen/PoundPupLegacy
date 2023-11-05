@@ -25,7 +25,8 @@ public class LocatableDetailsCreatorFactory(
 }
 public class TermCreatorFactory(
     IDatabaseInserterFactory<Term.ToCreateForExistingNameable> termInserterFactory,
-    IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory
+    IDatabaseInserterFactory<TermHierarchy> termHierarchyInserterFactory,
+    DatabaseMaterializedViewRefresherFactory materializedViewRefresherFactory
 )
 {
     public async Task<TermCreator> CreateAsync(IDbConnection connection)
@@ -34,7 +35,8 @@ public class TermCreatorFactory(
             new() {
                 await termInserterFactory.CreateAsync(connection),
             },
-            await termHierarchyInserterFactory.CreateAsync(connection)
+            await termHierarchyInserterFactory.CreateAsync(connection),
+            await materializedViewRefresherFactory.CreateAsync(connection, "nameable_descendency")
         );
     }
 }
@@ -62,7 +64,8 @@ public class LocatableDetailsCreator(
 }
 public class TermCreator(
     List<IDatabaseInserter<Term.ToCreateForExistingNameable>> inserters,
-    IDatabaseInserter<TermHierarchy> termHierarchyInserter
+    IDatabaseInserter<TermHierarchy> termHierarchyInserter,
+    DatabaseMaterializedViewRefresher termViewRefresher
 ) : InsertingEntityCreator<Term.ToCreateForExistingNameable>(inserters)
 {
     public override async Task ProcessAsync(Term.ToCreateForExistingNameable element)
@@ -70,15 +73,19 @@ public class TermCreator(
         await base.ProcessAsync(element);
         foreach (var parent in element.ParentTermIds) {
             await termHierarchyInserter.InsertAsync(new TermHierarchy {
-                TermIdPartent = parent,
+                TermIdParent = parent,
                 TermIdChild = element.Identification.Id!.Value
             });
+        }
+        if (element.ParentTermIds.Any()) {
+            await termViewRefresher.Execute();
         }
     }
     public override async ValueTask DisposeAsync()
     {
         await base.DisposeAsync();
         await termHierarchyInserter.DisposeAsync();
+        await termViewRefresher.DisposeAsync();
     }
 }
 public class CaseCreator<T>(

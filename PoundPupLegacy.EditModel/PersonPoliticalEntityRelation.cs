@@ -8,7 +8,7 @@ public static class PersonPoliticalEntityRelationExtensions
             Person = personListItem,
             PartyPoliticalEntityRelationType = relationType,        
             RelationDetails = RelationDetails.EmptyInstance,
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(49, "person political entity relation", ownerId, publisherId, tenants),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(49, "person political entity relation", "person_political_entity_relation", ownerId, publisherId, tenants),
             PoliticalEntity = null
         };
     }
@@ -18,7 +18,7 @@ public static class PersonPoliticalEntityRelationExtensions
             Person = personName,
             PartyPoliticalEntityRelationType = relationType,        
             RelationDetails = RelationDetails.EmptyInstance,
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(49, "person political entity relation", ownerId, publisherId, tenants),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(49, "person political entity relation", "person_political_entity_relation", ownerId, publisherId, tenants),
             PoliticalEntity = null
         };
     }

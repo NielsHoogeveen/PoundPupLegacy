@@ -7,7 +7,7 @@ public static class InterPersonalRelationExtentions{
             PersonFrom = personListItem,
             PersonTo = null,
             InterPersonalRelationType = interPersonalRelationType,
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(46, "inter personal relation", ownerId, publisherId, tenants),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(46, "inter personal relation", "inter_personal_relation", ownerId, publisherId, tenants),
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }
@@ -17,7 +17,7 @@ public static class InterPersonalRelationExtentions{
             PersonFrom = null,
             PersonTo = personListItem,
             InterPersonalRelationType = interPersonalRelationType,
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(46, "inter personal relation", ownerId, publisherId, tenants),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(46, "inter personal relation", "inter_personal_relation", ownerId, publisherId, tenants),
             RelationDetails = RelationDetails.EmptyInstance,
         };
 
@@ -28,7 +28,7 @@ public static class InterPersonalRelationExtentions{
             PersonFrom = personName,
             PersonTo = null,
             InterPersonalRelationType = interPersonalRelationType,
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(46, "inter personal relation", ownerId, publisherId, tenants),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(46, "inter personal relation", "inter_personal_relation", ownerId, publisherId, tenants),
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }
@@ -38,7 +38,7 @@ public static class InterPersonalRelationExtentions{
             PersonFrom = null,
             PersonTo = personName,
             InterPersonalRelationType = interPersonalRelationType,
-            NodeDetailsForCreate = NodeDetails.EmptyInstance(46, "inter personal relation", ownerId, publisherId, tenants),
+            NodeDetailsForCreate = NodeDetails.EmptyInstance(46, "inter personal relation", "inter_personal_relation", ownerId, publisherId, tenants),
             RelationDetails = RelationDetails.EmptyInstance,
         };
     }

@@ -13,7 +13,7 @@ internal sealed class TermHierarchyInserterFactory : BasicDatabaseInserterFactor
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(TermIdParent, request.TermIdPartent),
+            ParameterValue.Create(TermIdParent, request.TermIdParent),
             ParameterValue.Create(TermIdChild, request.TermIdChild),
         };
     }

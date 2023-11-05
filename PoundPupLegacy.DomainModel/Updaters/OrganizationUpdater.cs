@@ -18,8 +18,9 @@ internal sealed class OrganizationChangerFactory(
     IDatabaseDeleterFactory<OrganizationOrganizationTypeDeleterRequest> organizationOrganizationTypeDeleterFactory,
     IDatabaseInserterFactory<Location.ToCreate> locationInserterFactory,
     IDatabaseInserterFactory<LocationLocatable> locationLocatableInserterFactory,
-    IDatabaseUpdaterFactory<Term.ToUpdate> termUpdaterFactory
-    ) : IEntityChangerFactory<Request>
+    IDatabaseUpdaterFactory<Term.ToUpdate> termUpdaterFactory,
+    DatabaseMaterializedViewRefresherFactory termViewRefresherFactory
+) : IEntityChangerFactory<Request>
 {
     public async Task<IEntityChanger<Request>> CreateAsync(IDbConnection connection)
     {
@@ -37,7 +38,8 @@ internal sealed class OrganizationChangerFactory(
             await organizationOrganizationTypeDeleterFactory.CreateAsync(connection),
             await locationInserterFactory.CreateAsync(connection),
             await locationLocatableInserterFactory.CreateAsync(connection),
-            await termUpdaterFactory.CreateAsync(connection)
+            await termUpdaterFactory.CreateAsync(connection),
+            await termViewRefresherFactory.CreateAsync(connection, "nameable_descendency")
         );
     }
 }
@@ -55,8 +57,9 @@ public sealed class OrganizationChanger(
     IDatabaseDeleter<OrganizationOrganizationTypeDeleterRequest> organizationOrganizationTypeDeleter,
     IDatabaseInserter<Location.ToCreate> locationInserter,
     IDatabaseInserter<LocationLocatable> locationLocatableInserter,
-    IDatabaseUpdater<Term.ToUpdate> termUpdater
-) : LocatableChanger<Request>(databaseUpdater, nodeDetailsChanger, locationUpdater, locationInserter, locationLocatableInserter, termUpdater)
+    IDatabaseUpdater<Term.ToUpdate> termUpdater,
+    DatabaseMaterializedViewRefresher termViewRefresher
+) : LocatableChanger<Request>(databaseUpdater, nodeDetailsChanger, locationUpdater, locationInserter, locationLocatableInserter, termUpdater, termViewRefresher)
 {
     protected override async Task Process(Request request)
     {

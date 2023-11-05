@@ -53,7 +53,8 @@
             async update => await editService.SaveAsync(update),
             async create => await editService.SaveAsync(create)
         );
-        NavigationManager.NavigateTo($"/node/{nodeId}", true);
+        var path = $"/{success.Node.NodeDetails.NodeTypeViewerPath}/{nodeId}";
+        NavigationManager.NavigateTo(path, true);
     }
     private async Task HandleErrors(ValidationResult<TUpdateModel, TCreateModel>.Error error)
     {

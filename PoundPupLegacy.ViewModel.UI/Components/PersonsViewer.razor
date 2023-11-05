@@ -5,12 +5,16 @@
 <BreadCrumElementViewer Model="BreadCrumElements" />
 <SearchForm PagedSearchListSettings="PagedListSettings"
             OnSearch="OnSearch" />
+@if (ListEntries is null) {
+    <div>Loading persons...</div>
+}
+else{
 <EntityListEntriesViewer 
     ListEntries="ListEntries" 
     PagedListSettings="PagedListSettings" 
     ElementsName="persons" 
     SelectPage="SelectPage" />
-
+}
 @code {
     protected override int PageSize => 50;
 

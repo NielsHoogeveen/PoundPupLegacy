@@ -2,22 +2,26 @@
 @inherits PagedViewer<NonSpecificCaseListEntry>
 <HeadContentSetter Title=@Title SiteName=@SiteName Description=@Description />
 <BreadCrumElementViewer Model="BreadCrumElements" />
-<TeaserListViewer ListEntries="ListEntries" PagedListSettings="PagedListSettings" SelectPage="SelectPage">
-    <div class="case-types">
-    <h1>Cases</h1>
-    <div>
-    @foreach(var caseType in CaseTypeListEntries.OrderBy(x => x.Title)) {
-        <div class="case-type @caseType.Title.Replace(" ", "-").Replace("'", "")">
-            <a href="@caseType.Path">@caseType.Title</a>
-            <div>
-                @((MarkupString)caseType.Text)
+@if (ListEntries is null) {
+    <div>Loading cases...</div>
+}
+else{
+    <TeaserListViewer ListEntries="ListEntries" PagedListSettings="PagedListSettings" SelectPage="SelectPage">
+        <div class="case-types">
+        <h1>Cases</h1>
+        <div>
+        @foreach(var caseType in CaseTypeListEntries.OrderBy(x => x.Title)) {
+            <div class="case-type @caseType.Title.Replace(" ", "-").Replace("'", "")">
+                <a href="@caseType.Path">@caseType.Title</a>
+                <div>
+                    @((MarkupString)caseType.Text)
+                </div>
             </div>
+        }
         </div>
-    }
-    </div>
-    </div>
-</TeaserListViewer>
-
+        </div>
+    </TeaserListViewer>
+}
 @code {
 
     protected override int PageSize => 10;

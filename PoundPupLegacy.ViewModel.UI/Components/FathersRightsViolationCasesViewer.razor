@@ -2,8 +2,13 @@
 @inherits PagedTermedViewer<CaseTeaserListEntry, FathersRightsViolationCaseList>
 <HeadContentSetter Title=@Title SiteName=@SiteName Description=@Description />
 <BreadCrumElementViewer Model="BreadCrumElements" />
-<TagSelector TermNames="TermNames" OnSelectTerm="SelectTerm" />
-<TeaserListViewer ListEntries="ListEntries" PagedListSettings="PagedListSettings" SelectPage="SelectPage" />
+@if (ListEntries is null) {
+    <div>Loading cases...</div>
+}
+else{
+    <TagSelector TermNames="TermNames" OnSelectTerm="SelectTerm" />
+    <TeaserListViewer ListEntries="ListEntries" PagedListSettings="PagedListSettings" SelectPage="SelectPage" />
+}
 @code {
     protected override int PageSize => 10;
 

@@ -214,6 +214,7 @@ internal sealed class DocumentsDocumentReaderFactory : SingleItemDatabaseReaderF
         			    join node_term ntm on ntm.term_id = t.id
         			    join node n2 on n2.id = ntm.node_id
                         join simple_text_node stn on stn.id = n2.id
+                        join document d on d.id = stn.id
         			    join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = @tenant_id
         			    where tn.publication_status_id in 
                         (

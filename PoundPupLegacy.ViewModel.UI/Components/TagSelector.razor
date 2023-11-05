@@ -4,10 +4,10 @@
             @foreach (var termName in TermNames) {
                 <div class="term-name">
                     @if (termName.Selected) {
-                        <input type="checkbox" name="term-name-@termName.Id" id="term-name-@termName.Id" checked="checked" />
+                        <input type="checkbox" name="term-name-@termName.Id" id="term-name-@termName.Id" checked="checked" @onchange="() => OnSelectTerm(termName.Id)" />
                     }
                     else {
-                        <input type="checkbox" name="term-name-@termName.Id" id="term-name-@termName.Id" />
+                        <input type="checkbox" name="term-name-@termName.Id" id="term-name-@termName.Id" @onchange="() => OnSelectTerm(termName.Id)" />
                     }
                     <label title="@termName.Name" class="term-name-label" for="term-name-@termName.Id">@termName.Name</label>
                 </div>

@@ -4,6 +4,7 @@
 @inject ISubgroupNodeTypeService SubgroupNodeTypeService
 <HeadContentSetter Title=@Title SiteName=@SiteName Description=@Description />
 <BreadCrumElementViewer Model="BreadCrumElements" />
+
 <h1>@GroupName</h1>
 <div>@GroupDescription</div>
 <div class="create-options">
@@ -11,8 +12,10 @@
         <a href="@nodeType.GetCreatePath(Id)" >@nodeType.DisplayName</a>
     }
 </div>
-@if (ListEntries is not null)
-{
+@if (ListEntries is null) {
+    <div>Loading blog...</div>
+}
+else {
     <div class="group-list">
         <div class="header">
             Title

@@ -2,8 +2,12 @@
 @inject IFetchPollsService FetchPollsService
 <HeadContentSetter Title=@Title SiteName=@SiteName Description=@Description />
 <BreadCrumElementViewer Model="BreadCrumElements" />
-<TeaserListViewer ListEntries="ListEntries" PagedListSettings="PagedListSettings" SelectPage="SelectPage"/>
-
+@if (ListEntries is null) {
+    <div>Loading polls...</div>
+}
+else{
+    <TeaserListViewer ListEntries="ListEntries" PagedListSettings="PagedListSettings" SelectPage="SelectPage"/>
+}
 @code {
 
     protected override int PageSize => 25;

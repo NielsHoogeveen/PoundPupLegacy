@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using Npgsql;
 using PoundPupLegacy.DomainModel;
-using PoundPupLegacy.DomainModel.Creators;
 using PoundPupLegacy.DomainModel.Updaters;
 using PoundPupLegacy.EditModel.Mappers;
 

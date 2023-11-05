@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using PoundPupLegacy.DomainModel;
 
 namespace PoundPupLegacy.DomainModel.Deleters;
 
@@ -10,6 +9,7 @@ public static class DependencyInjection
         services.AddTransient<IDatabaseDeleterFactory<FileDeleterRequest>, FileDeleterFactory>();
         services.AddTransient<IDatabaseDeleterFactory<NodeTermToRemove>, NodeTermDeleterFactory>();
         services.AddTransient<IDatabaseDeleterFactory<TenantNodeToDelete>, TenantNodeDeleterFactory>();
+        services.AddTransient<IDatabaseDeleterFactory<TermHierarchyToRemoveRequest>, TermHierarchyDeleterFactory>();
         services.AddTransient<IDatabaseDeleterFactory<LocationToDelete>, LocationDeleterFactory>();
         services.AddTransient<IDatabaseDeleterFactory<OrganizationOrganizationTypeDeleterRequest>, OrganizationOrganizationTypeDeleterFactory>();
         services.AddTransient<IDatabaseDeleterFactory<CasePartiesOrganizationDeleterRequest>, CasePartiesOrganizationDeleterFactory>();

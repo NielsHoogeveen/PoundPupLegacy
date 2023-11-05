@@ -4,15 +4,19 @@
 <HeadContentSetter Title=@Title SiteName=@SiteName Description=@Description />
 <BreadCrumElementViewer Model="BreadCrumElements" />
 <SearchForm PagedSearchListSettings="PagedListSettings" OnSearch="OnSearch">
-    <OptionalSelectionItemSelector SelectionItems="Countries" OnSelect="OnSelectCountry" Name="country"/>
+    <OptionalSelectionItemSelector SelectionItems="Countries" OnSelect="OnSelectCountry" Name="country" />
     <OptionalSelectionItemSelector SelectionItems="OrganizationTypes" OnSelect="OnSelectOrganizationType" Name="organization_type" />
 </SearchForm>
-<EntityListEntriesViewer 
-    ListEntries="ListEntries" 
-    PagedListSettings="PagedListSettings" 
-    SelectPage="SelectPage"
-    ElementsName="organizations"/>
-
+@if(ListEntries is null) {
+    <div>Loading organizations...</div>
+}
+else{
+    <EntityListEntriesViewer 
+        ListEntries="ListEntries" 
+        PagedListSettings="PagedListSettings" 
+        SelectPage="SelectPage"
+        ElementsName="organizations"/>
+}
 @code {
 
     protected override int PageSize => 50;

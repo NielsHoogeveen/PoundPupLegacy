@@ -9,6 +9,7 @@ public static class DependencyInjection
 {
     public static void AddDomainModelAccessors(this IServiceCollection services)
     {
+        services.AddTransient<DatabaseMaterializedViewRefresherFactory>();
         services.AddDomainModelInserters();
         services.AddDomainModelCreators();
         services.AddDomainModelReaders();

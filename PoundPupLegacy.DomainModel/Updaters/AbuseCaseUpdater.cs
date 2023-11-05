@@ -12,7 +12,8 @@ internal sealed class AbuseCaseChangerFactory(
     IDatabaseUpdaterFactory<LocationUpdaterRequest> locationUpdaterFactory,
     IDatabaseInserterFactory<Location.ToCreate> locationInserterFactory,
     IDatabaseInserterFactory<LocationLocatable> locationLocatableInserterFactory,
-    IDatabaseUpdaterFactory<Term.ToUpdate> termUpdaterFactory
+    IDatabaseUpdaterFactory<Term.ToUpdate> termUpdaterFactory,
+    DatabaseMaterializedViewRefresherFactory termViewRefresherFactory
 ) : IEntityChangerFactory<Request>
 {
     public async Task<IEntityChanger<Request>> CreateAsync(IDbConnection connection)
@@ -24,7 +25,8 @@ internal sealed class AbuseCaseChangerFactory(
             await locationUpdaterFactory.CreateAsync(connection),
             await locationInserterFactory.CreateAsync(connection),
             await locationLocatableInserterFactory.CreateAsync(connection),
-            await termUpdaterFactory.CreateAsync(connection)
+            await termUpdaterFactory.CreateAsync(connection),
+            await termViewRefresherFactory.CreateAsync(connection, "nameable_descendency")
         );
     }
 }
