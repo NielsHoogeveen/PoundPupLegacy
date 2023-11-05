@@ -30,7 +30,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components" Version="8.0.0-rc.2.23480.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0-rc.2.23479.6" />
     <PackageReference Include="Microsoft.Extensions.Logging.ApplicationInsights" Version="2.22.0-beta4" />
-    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.3.0-beta">
+    <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.3.1-rc">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
