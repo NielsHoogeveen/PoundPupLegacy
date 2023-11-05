@@ -31,10 +31,7 @@ internal sealed class BlogDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 SELECT 
                     jsonb_build_object(
                     'Path',
-                    case 
-                        when url_path is null then '/node/' || n.id
-                        else '/path/' || url_path
-                    end,
+                    '/' || viewer_path || '/' || n.id,
                     'Title', 
                     n.title, 
                     'Text', 
@@ -58,13 +55,13 @@ internal sealed class BlogDocumentReaderFactory : SingleItemDatabaseReaderFactor
                 FROM (
                     SELECT
                         id,
-                        url_path,
                         title,
                         created_date_time,
                         changed_date_time,
                         teaser,
                         publisher_id,
                         publisher_name,
+                        viewer_path,
                         case 
             			    when publication_status_id = 0 then false
             				else true
@@ -72,16 +69,17 @@ internal sealed class BlogDocumentReaderFactory : SingleItemDatabaseReaderFactor
                         publication_status_id
                     FROM(
                         SELECT
-                            tn.url_id id, 
-                            tn.url_path url_path,
+                            n.id,
                             tn.publication_status_id,
                             n.title, 
                             n.created_date_time, 
                             n.changed_date_time, 
                             stn.teaser,
                             n.publisher_id, 
-                            p.name publisher_name
+                            p.name publisher_name,
+                            nt.viewer_path
                         FROM node n
+                        join node_type nt on n.node_type_id = nt.id
                         JOIN blog_post bp on bp.id = n.id
                         JOIN simple_text_node stn on stn.id = n.id
                         JOIN publisher p on p.id = n.publisher_id

@@ -1,0 +1,17 @@
+﻿@page "/informal_subdivision/{Id:int}"
+@using PoundPupLegacy.Components
+@inherits NodeViewerPage<ViewModel.Models.InformalSubdivision>
+<NodePageViewer Model="Model">
+    <NodeHandler Model="@Model">
+        <Viewer>
+            <InformalSubdivisionViewer Model="@Model" />
+        </Viewer>
+        <Editor>
+        </Editor>
+    </NodeHandler>
+</NodePageViewer>
+@code {
+    [Parameter]
+    public override int Id { get; set; }
+
+}

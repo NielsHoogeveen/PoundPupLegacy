@@ -54,7 +54,7 @@ internal sealed class CasesDocumentReaderFactory : SingleItemDatabaseReaderFacto
             				'Title', 
                             title,
                             'Path', 
-                            url_path,
+                            path,
             				'Text', 
                             description,
                             'Date',
@@ -74,21 +74,20 @@ internal sealed class CasesDocumentReaderFactory : SingleItemDatabaseReaderFacto
                                 (
                                     jsonb_build_object(
                                         'Path',
-                                        case when tn.url_path is null then '/node/' || tn.url_id
-                                            else '/' || url_path
-                                        end,
+                                        '/' || nt.viewer_path || '/'  || tn.node_id,
                                         'Title',
                                         n.title,
                                         'NodeTypeName',
                                         nty.tag_label_name
                                     )
                                 )
-                                from node_term nt
-                                join term t on t.id = nt.term_id
+                                from node_term ntm
+                                join term t on t.id = ntm.term_id
                                 join node n on n.id = t.nameable_id
+                                join node_type nt on n.node_type_id = nt.id
                                 left join nameable_type nty on nty.id = n.node_type_id and nty.tag_label_name is not null
                                 join tenant_node tn on tn.node_id = n.id and tn.tenant_id = @tenant_id
-                                where nt.node_id = an.id
+                                where ntm.node_id = an.id
                                 and tn.publication_status_id in 
                                 (
                                     select 
@@ -116,17 +115,14 @@ internal sealed class CasesDocumentReaderFactory : SingleItemDatabaseReaderFacto
             		n.node_type_id,
                     tn.publication_status_id,
             		COUNT(*) OVER() number_of_entries,
-            		case 
-            			when tn.url_path is null then '/node/' || tn.url_id
-            			else '/' || url_path
-            		end url_path,
+            		'/' || nt.viewer_path || '/' || tn.node_id path,
             		c.fuzzy_date
             		from
             		tenant_node tn
             		join node n on n.id = tn.node_id
+                    join node_type nt on n.node_type_id = nt.id
                     join nameable nm on nm.id = n.id
             		join "case" c on c.id = n.id
-            		join node_type nt on nt.id = n.node_type_id
             		WHERE tn.tenant_id = @tenant_id
                     AND tn.publication_status_id in 
                     (

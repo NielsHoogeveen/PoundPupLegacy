@@ -1,8 +1,26 @@
-﻿<LargeTextWithSeeAlsoBox Text="@Model.Text" Links="@Model.SeeAlsoBoxElements" />
+﻿@using PoundPupLegacy.ViewModel.Models
+@typeparam TModel where TModel: class, SimpleTextNode
+@inherits ViewerBase
+<NodeViewer Model="Model" Description="@Description">
+    <Top>
+    <LargeTextWithSeeAlsoBox Text="@Model.Text" Links="@Model.SeeAlsoBoxElements" />
+    @ChildContent
+    </Top>
+    <Bottom></Bottom>
+</NodeViewer>
+
 @code {
 
     [Parameter]
     [EditorRequired]
-    public SimpleTextNode Model { get; set; } = default!;
-  
+    public TModel Model { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment ChildContent { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public string Description { get; set; } = default!;
+
 }

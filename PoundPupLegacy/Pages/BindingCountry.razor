@@ -1,0 +1,17 @@
+﻿@page "/binding_country/{Id:int}"
+@using PoundPupLegacy.Components
+@inherits NodeViewerPage<ViewModel.Models.BindingCountry>
+<NodePageViewer Model="Model">
+    <NodeHandler Model="@Model">
+        <Viewer>
+            <BindingCountryViewer Model="@Model" />
+        </Viewer>
+        <Editor>
+        </Editor>
+    </NodeHandler>
+</NodePageViewer>
+@code {
+    [Parameter]
+    public override int Id { get; set; }
+
+}

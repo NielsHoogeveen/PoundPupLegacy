@@ -50,10 +50,6 @@ internal sealed class SiteDataLoader(
             try {
                 var tenant = await tenantReader.ReadAsync(new TenantReaderRequest { TenantId = tenantId });
                 await tenantReader.DisposeAsync();
-                foreach (var tenantNode in tenant.TenantNodes) {
-                    tenant.UrlToId.Add(tenantNode.UrlPath, tenantNode.UrlId);
-                    tenant.IdToUrl.Add(tenantNode.UrlId, tenantNode.UrlPath);
-                }
                 return tenant;
             }catch(Exception ex) {
                 logger.LogError($"Unknown tenant id {tenantId} in appsettings.json");

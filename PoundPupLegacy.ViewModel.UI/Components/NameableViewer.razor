@@ -1,10 +1,33 @@
-﻿<RelatedCasesViewer Model="@Model.Cases" />
-<LabeledLinkListViewer Links="Model.SubTopics" Label="Child topics" />
-<LabeledLinkListViewer Links="Model.SuperTopics" Label="Parent topics" />
+﻿@using PoundPupLegacy.ViewModel.Models
+@typeparam TModel where TModel: class, Nameable
+@inherits ViewerBase
+<DocumentableViewer Model="Model" Description="@Description">
+    <Top>
+        @Top
+        <RelatedCasesViewer Model="@Model.Cases" />
+        <LabeledLinkListViewer Links="Model.SubTopics" Label="Child topics" />
+        <LabeledLinkListViewer Links="Model.SuperTopics" Label="Parent topics" />
+    </Top>
+    <Bottom>
+        @Bottom
+    </Bottom>
+</DocumentableViewer>
 
 @code {
     [Parameter]
     [EditorRequired]
-    public Nameable Model { get; set; } = default!;
+    public TModel Model { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment Top { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment Bottom { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public string Description { get; set; } = default!;
 
 }

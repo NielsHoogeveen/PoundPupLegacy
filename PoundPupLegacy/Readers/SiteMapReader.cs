@@ -37,10 +37,7 @@ internal sealed class SiteMapReaderFactory : EnumerableDatabaseReaderFactory<Req
         	and ba.path not ilike '%{%'
         union
         select
-        case 
-        	when tn.url_path is not null then 'http://' || t.domain_name || '/' || url_path
-        	else 'http://' || t.domain_name || '/node/' || tn.url_id
-        end path,
+        'https://' || t.domain_name || '/' || nt.viewer_path ||'/' || tn.node_id as path,
         n.changed_date_time last_changed,
         null change_frequency
         from tenant_node tn

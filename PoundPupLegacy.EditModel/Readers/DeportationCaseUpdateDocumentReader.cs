@@ -51,7 +51,7 @@ internal sealed class DeportationCaseUpdateDocumentReaderFactory : NodeUpdateDoc
             join tenant_node tn on tn.node_id = n.id
             left join node n1 on n1.id = dc.country_id_to
             left join node n2 on n2.id = dc.subdivision_id_from
-            where tn.tenant_id = @tenant_id and tn.url_id = @url_id 
+            where tn.tenant_id = @tenant_id and tn.node_id = @node_id 
         """;
 
 }

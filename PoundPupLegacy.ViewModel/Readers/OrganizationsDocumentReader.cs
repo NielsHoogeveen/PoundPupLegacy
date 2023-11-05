@@ -40,15 +40,17 @@ internal sealed class OrganizationsDocumentReaderFactory : SingleItemDatabaseRea
                     select
                         jsonb_agg(
                             jsonb_build_object(
-            	                'Name', "name",
-            	                'Id', "url_id"
+            	                'Name', 
+                                "name",
+            	                'Id', 
+                                "node_id"
                             )
                         ) "document"
                         from(
                             select
                             distinct
                             n.title "name",
-                            tn.url_id,
+                            tn.node_id,
                             tn.publication_status_id,
                             case
                                 when tn.publication_status_id = 0 then false
@@ -92,7 +94,7 @@ internal sealed class OrganizationsDocumentReaderFactory : SingleItemDatabaseRea
                             jsonb_agg(
             	                jsonb_build_object(
             	                    'Path', 
-                                    url_path,
+                                    path,
             	                    'Title', 
                                     title,
             	                    'HasBeenPublished', 
@@ -114,24 +116,21 @@ internal sealed class OrganizationsDocumentReaderFactory : SingleItemDatabaseRea
             	                n.node_type_id,
             	                tn.tenant_id,
                                 tn.publication_status_id,
-            	                tn.node_id,
             	                n.publisher_id,
             	                n.created_date_time,
             	                n.changed_date_time,
-            	                tn.url_id,
+            	                tn.node_id,
             	                count(tn.id) over() number_of_entries,
-            	                case 
-            		                when tn.url_path is null then '/node/' || tn.url_id
-            		                else '/' || url_path
-            	                end url_path,
+            	                '/' || nt.viewer_path || '/' || tn.node_id path,
             	                tn.subgroup_id
             	            from tenant_node tn
             	            join node n on n.id = tn.node_id
+                            join node_type nt on n.node_type_id = nt.id
             	            join organization o on o.id = n.id
                             left join (
                                 select 
                                 ll.locatable_id,
-                                tn.url_id
+                                tn.node_id
                                 from location_locatable ll 
                                 join location l on l.id = ll.location_id
                                 join tenant_node tn on tn.node_id = l.country_id
@@ -150,7 +149,7 @@ internal sealed class OrganizationsDocumentReaderFactory : SingleItemDatabaseRea
                                     or subgroup_id is null and tn.subgroup_id is null
                                 )
                             )
-                            AND (@country_id is null or ll.url_id = @country_id)
+                            AND (@country_id is null or ll.node_id = @country_id)
                             AND (@organization_type_id is null or oot.organization_type_id = @organization_type_id)
             	            ORDER BY n.title
                             LIMIT @limit OFFSET @offset

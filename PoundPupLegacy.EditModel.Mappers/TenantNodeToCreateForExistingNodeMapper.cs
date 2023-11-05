@@ -11,9 +11,8 @@ internal class TenantNodeToCreateForExistingNodeMapper : IEnumerableMapper<Tenan
                 },
                 PublicationStatusId = tenantNode.PublicationStatusId,
                 TenantId = tenantNode.TenantId,
-                UrlId = tenantNode.UrlId,
+                UrlId = tenantNode.NodeId,
                 NodeId = tenantNode.NodeId,
-                UrlPath = tenantNode.UrlPath,
                 SubgroupId = tenantNode.SubgroupId,
             };
         }

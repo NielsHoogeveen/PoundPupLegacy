@@ -52,7 +52,7 @@ internal sealed class AbuseCaseUpdateDocumentReaderFactory : NodeUpdateDocumentR
             join "case" c on c.id = n.id
             join abuse_case ac on ac.id = c.id
             join tenant_node tn on tn.node_id = n.id
-            where tn.tenant_id = @tenant_id and tn.url_id = @url_id
+            where tn.tenant_id = @tenant_id and tn.node_id = @node_id
         """;
 
     const string TYPE_OF_ABUSE_DOCUMENT = """
@@ -71,7 +71,7 @@ internal sealed class AbuseCaseUpdateDocumentReaderFactory : NodeUpdateDocumentR
             from abuse_case_type_of_abuse actoa
             join node toa on toa.id = actoa.type_of_abuse_id
             join tenant_node tn on tn.node_id = actoa.abuse_case_id
-            where tn.tenant_id = @tenant_id and tn.url_id = @url_id
+            where tn.tenant_id = @tenant_id and tn.node_id = @node_id
         )
         """;
     const string TYPE_OF_ABUSER_DOCUMENT = """
@@ -90,7 +90,7 @@ internal sealed class AbuseCaseUpdateDocumentReaderFactory : NodeUpdateDocumentR
             from abuse_case_type_of_abuser actoa
             join node toa on toa.id = actoa.type_of_abuser_id
             join tenant_node tn on tn.node_id = actoa.abuse_case_id
-            where tn.tenant_id = @tenant_id and tn.url_id = @url_id
+            where tn.tenant_id = @tenant_id and tn.node_id = @node_id
         )
         """;
 

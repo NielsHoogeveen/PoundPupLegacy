@@ -7,7 +7,7 @@ public static class NodeUpdateDocumentReaderFactory
 public abstract class NodeUpdateDocumentReaderFactory<TResponse> : NodeEditDocumentReaderFactory<NodeUpdateDocumentRequest, TResponse>
 where TResponse : class, ExistingNode
 {
-    private static readonly NonNullableIntegerDatabaseParameter UrlIdParameter = new() { Name = "url_id" };
+    private static readonly NonNullableIntegerDatabaseParameter NodeIdParameter = new() { Name = "node_id" };
     private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     private static readonly NonNullableIntegerDatabaseParameter NodeTypeIdParameter = new() { Name = "node_type_id" };
     private static readonly NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
@@ -19,7 +19,7 @@ where TResponse : class, ExistingNode
     protected override IEnumerable<ParameterValue> GetParameterValues(NodeUpdateDocumentRequest request)
     {
         return new ParameterValue[] {
-            ParameterValue.Create(UrlIdParameter, request.UrlId),
+            ParameterValue.Create(NodeIdParameter, request.NodeId),
             ParameterValue.Create(TenantIdParameter, request.TenantId),
             ParameterValue.Create(NodeTypeIdParameter, NodeTypeId),
             ParameterValue.Create(UserIdParameter, request.UserId)

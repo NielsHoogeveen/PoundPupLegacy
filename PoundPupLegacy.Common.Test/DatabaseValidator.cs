@@ -84,6 +84,7 @@ public abstract class DatabaseValidatorBase
         var types = creatorAssembly!.GetTypes().Where(x => x.IsAssignableTo(typeof(IDatabaseAccessorFactory)) && !x.IsInterface && !x.IsAbstract && !x.IsGenericType);
         bool foundTypes = false;
         foreach (var type in types) {
+
             _testOutputHelper.WriteLine(type.FullName);
             foundTypes = true;
             var factory = (IDatabaseAccessorFactory)Activator.CreateInstance(type)!;

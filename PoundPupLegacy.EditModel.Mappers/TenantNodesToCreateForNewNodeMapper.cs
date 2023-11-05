@@ -13,7 +13,6 @@ internal class TenantNodesToCreateForNewNodeMapper : IEnumerableMapper<TenantNod
                 SubgroupId = item.SubgroupId,
                 TenantId = item.TenantId,
                 UrlId = null,
-                UrlPath = item.UrlPath,
             };
         }
     }

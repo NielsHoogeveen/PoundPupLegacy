@@ -52,7 +52,6 @@ internal sealed class TenantNodeReaderByUrlIdFactory : SingleItemDatabaseReaderF
             TenantId = TenantIdReader.GetValue(reader),
             UrlId = UrlIdReader.GetValue(reader),
             NodeId = NodeIdReader.GetValue(reader),
-            UrlPath = UrlPathReader.GetValue(reader),
             PublicationStatusId = PublicationStatusIdReader.GetValue(reader),
             SubgroupId = SubgroupIdReader.GetValue(reader),
         };

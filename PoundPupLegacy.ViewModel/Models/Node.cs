@@ -50,7 +50,6 @@ public static class NodeHelper
 public abstract record NodeBase : Node
 {
     public required int NodeId { get; init; }
-    public required int UrlId { get; init; }
     public required int NodeTypeId { get; init; }
     public required string Title { get; init; }
     public required Authoring Authoring { get; init; }
@@ -101,7 +100,6 @@ public abstract record NodeBase : Node
 
 public interface Node
 {
-    int UrlId { get; }
     int NodeId { get; }
     int NodeTypeId { get; }
     string Title { get; }

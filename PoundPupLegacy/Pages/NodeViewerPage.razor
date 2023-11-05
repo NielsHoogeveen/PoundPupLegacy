@@ -1,0 +1,20 @@
+﻿@using PoundPupLegacy.ViewModel.UI.Services 
+@inherits Page
+@typeparam TModel where TModel : class, ViewModel.Models.Node
+@inject IFetchNodeService<TModel> NodeDataService
+
+@code {
+
+    protected TModel? Model { get; set; }
+
+    protected override async Task OnAfterInitializedAsync()
+    {
+
+        Model = await NodeDataService.FetchNode(
+            nodeId: Id,
+            userId: User.Id,
+            tenantId: Tenant.Id);
+        StateHasChanged();
+    }
+    
+}

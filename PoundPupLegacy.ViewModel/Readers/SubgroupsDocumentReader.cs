@@ -42,10 +42,14 @@ internal sealed class SubgroupsDocumentReaderFactory : SingleItemDatabaseReaderF
             		path,
             		'Authoring', 
             		jsonb_build_object(
-            			'Id', publisher_id, 
-            			'Name', publisher_name,
-            			'CreatedDateTime', created_date_time,
-            			'ChangedDateTime', changed_date_time
+            			'Id', 
+                        publisher_id, 
+            			'Name', 
+                        publisher_name,
+            			'CreatedDateTime', 
+                        created_date_time,
+            			'ChangedDateTime', 
+                        changed_date_time
             		),
             		'HasBeenPublished',
             		case 
@@ -68,13 +72,12 @@ internal sealed class SubgroupsDocumentReaderFactory : SingleItemDatabaseReaderF
             node_id,
             created_date_time,
             changed_date_time,
-            url_id,
+            node_id,
             publisher_id,
             publisher_name,
             group_name,
             group_description,
             count(id) over() number_of_entries,
-            url_path,
             subgroup_id,
             publication_status_id
         from(
@@ -82,30 +85,23 @@ internal sealed class SubgroupsDocumentReaderFactory : SingleItemDatabaseReaderF
             	tn.id,
             	n.title,
             	n.node_type_id,
-            	case 
-            		when tn.url_path is null then '/node/' || tn.url_id
-            		else '/' || tn.url_path
-            	end path,
             	tn.tenant_id,
             	tn.node_id,
             	n.created_date_time,
             	n.publisher_id,
             	n.changed_date_time,
-            	tn.url_id,
             	p.name publisher_name,
             	count(tn.id) over() number_of_entries,
                 ug.name group_name,
                 ug.description group_description,
-            	case 
-            		when tn.url_path is null then '/node/' || tn.url_id
-            		else '/' || url_path
-            	end url_path,
+            	'/' || nt.viewer_path || '/' || tn.node_id path,
             	tn.subgroup_id,
             	tn.publication_status_id
             	from tenant_node tn
             	join subgroup s on s.id = tn.subgroup_id
                 join user_group ug on ug.id = s.id
             	join node n on n.id = tn.node_id
+                join node_type nt on nt.id = n.node_type_id
             	JOIN publisher p on p.id = n.publisher_id
             	WHERE s.id = @subgroup_id
                 AND tn.publication_status_id in 

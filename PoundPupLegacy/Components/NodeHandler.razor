@@ -1,0 +1,162 @@
+﻿@using PoundPupLegacy.Models
+@using PoundPupLegacy.ViewModel.Models
+@using PoundPupLegacy.ViewModel.UI.Services
+@using PoundPupLegacy.Services
+@typeparam TModel where TModel : class, Node
+@inherits ViewerBase
+@inject IFetchNodeService<TModel> NodeDataService
+@inject INodeAccessService NodeAccessService
+@inject ISiteDataService siteDataService
+@inject IUserService userService
+@inject INodeAccessReadService nodeAccessReadService
+@inject ICommentService CommentService
+
+@if (Model is not null) {
+    <CascadingValue Value="@Model.NodeId" Name="NodeId">
+        @if (User.Id == 0) {
+            @Viewer
+        }
+        else {
+            if (canEdit) {
+                if (displayMode == DisplayMode.View) {
+                    <input class="tab-button" type="radio" name="tabs" id="tab1" checked />
+                }
+                else {
+                    <input class="tab-button" type="radio" name="tabs" id="tab1" @onclick="() => SwitchDisplayMode(DisplayMode.View)" />
+                }
+                <label for="tab1">View</label>
+                if (displayMode == DisplayMode.Edit) {
+                    <input class="tab-button" type="radio" name="tabs" id="tab2" checked />
+                }
+                else {
+                    <input class="tab-button" type="radio" name="tabs" id="tab2" @onclick="() => SwitchDisplayMode(DisplayMode.Edit)" />
+                }
+                <label for="tab2">Edit</label>
+                if (canViewNodeAccess) {
+                    if (displayMode == DisplayMode.NodeAccess) {
+                        <input class="tab-button" type="radio" name="tabs" id="tab3" checked />
+                    }
+                    else {
+                        <input class="tab-button" type="radio" name="tabs" id="tab3" @onclick="() => SwitchDisplayMode(DisplayMode.NodeAccess)" />
+                    }
+                    <label for="tab3">Access</label>
+                }
+            }
+            <div class=" tab content1">
+                @Viewer
+                @if (canCreateComment) {
+                    <div id="create-comment" @onclick="CreateComment">Reply</div>
+                }
+            </div>
+            @if (canEdit) {
+                <CascadingValue Value="Model.NodeId" Name="NodeId">
+                    <div class="tab content2">
+                        @if (displayMode == DisplayMode.Edit) {
+                        <EditorViewer>
+                            @Editor        
+                        </EditorViewer>
+                        }
+                    </div>
+                </CascadingValue>
+            }
+            @if (canViewNodeAccess) {
+                <div class="tab content3">
+                    <div class="node-access">
+                        <div class="header">
+                            User
+                        </div>
+                        <div class="header">
+                            Date/time
+                        </div>
+                        @foreach (var nodeAccess in nodeAccesses) {
+                            <div>
+                                @nodeAccess.Name
+                            </div>
+                            <div>
+                                @nodeAccess.DateTime.ToString("MMM dd, yyyy HH:mm:ss tt \"GMT\"zzz")
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+            <CommentsViewer Model="Model.Comments" />
+        }
+    </CascadingValue>
+}
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public TModel? Model { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment Viewer { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment Editor { get; set; } = default!;
+
+    private IDictionary<string, object> Parameters { get; set; } = default!;
+    private bool canEdit = false;
+
+    private bool canViewNodeAccess = false;
+
+    private bool canCreateComment = false;
+
+    private List<NodeAccess> nodeAccesses = new List<NodeAccess>();
+
+    private DisplayMode displayMode = DisplayMode.View;
+
+    private enum DisplayMode { View, Edit, NodeAccess }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await Task.CompletedTask;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Model is not null)
+        {
+            if (User.Id != 0) {
+                await NodeAccessService.Log(User.Id, Tenant.Id, Model.NodeId);
+            }
+            canCreateComment = await CommentService.CanCreateComment(User.Id);
+            nodeAccesses = await nodeAccessReadService.ReadNodeAccess(Model.NodeId);
+            canEdit = await siteDataService.CanEdit(node: Model, userId: User.Id);
+            canViewNodeAccess = await siteDataService.CanViewNodeAccess(userId: User.Id);
+            Parameters = new Dictionary<string, object> { { "Model", Model } };
+        }
+    }
+    private void SwitchDisplayMode(DisplayMode mode)
+    {
+        displayMode = mode;
+        StateHasChanged();
+    }
+    private void CreateComment()
+    {
+        if (Model is not null)
+        {
+            var newComment = new ViewModel.Models.Comment
+                {
+                    Id = 0,
+                    CommentIdParent = null,
+                    NodeId = Model.NodeId,
+                    NodeStatusId = 0,
+                    Authoring = new Authoring
+                    {
+                        Id = User.Id,
+                        Name = User.Name!,
+                        CreatedDateTime = DateTime.Now,
+                        ChangedDateTime = DateTime.Now
+                    },
+                    Title = "",
+                    Text = "",
+                    Comments = new List<ViewModel.Models.Comment>()
+                };
+            Model.Comments.Add(newComment);
+            StateHasChanged();
+        }
+    }
+}

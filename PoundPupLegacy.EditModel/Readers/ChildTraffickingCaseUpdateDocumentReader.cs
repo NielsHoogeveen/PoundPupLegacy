@@ -40,7 +40,7 @@ internal sealed class ChildTraffickingCaseUpdateDocumentReaderFactory : NodeUpda
             join node n3 on n3.id = ctc.country_id_from
             join tenant_node tn on tn.node_id = n.id
             join node n2 on n2.id = ctc.country_id_from
-            where tn.tenant_id = @tenant_id and tn.url_id = @url_id
+            where tn.tenant_id = @tenant_id and tn.node_id = @node_id
         """;
 
 }

@@ -1,7 +1,5 @@
 ﻿@inject IFetchRecentUserPostsService FetchService
 @inherits PagedViewer<RecentPostListEntry>
-<HeadContentSetter Title=@Title SiteName=@SiteName Description=@Description />
-<BreadCrumElementViewer Model="BreadCrumElements" />
 <h1>Recent posts</h1>
 @if (ListEntries.Any()) {
     <div class="list-entries">

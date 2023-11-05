@@ -40,12 +40,12 @@ internal class ViewModelRetrieveService<TViewModelEntity, TViewModelUpdate, TVie
     where TViewModelCreate: class, TViewModelEntity, NewNode
     where TViewModelUpdate: class, TViewModelEntity, ExistingNode
 {
-    public async Task<TViewModelEntity?> GetViewModelAsync(int urlId, int userId, int tenantId)
+    public async Task<TViewModelEntity?> GetViewModelAsync(int nodeId, int userId, int tenantId)
     {
         return await WithConnection(async (connection) => {
             await using var reader = await updateViewModelReaderFactory.CreateAsync(connection);
             return await reader.ReadAsync(new NodeUpdateDocumentRequest {
-                UrlId = urlId,
+                NodeId = nodeId,
                 UserId = userId,
                 TenantId = tenantId
             });

@@ -1,0 +1,16 @@
+﻿@if (Model is not null)
+{
+    <PageViewer>
+        @ChildContent
+    </PageViewer>
+}
+@code {
+    [Parameter]
+    [EditorRequired]
+    public object Model { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment ChildContent { get; set; } = default!;
+
+}

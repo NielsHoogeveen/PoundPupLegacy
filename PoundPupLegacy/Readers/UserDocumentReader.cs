@@ -57,7 +57,7 @@ internal sealed class UserDocumentReaderFactory : MandatorySingleItemDatabaseRea
         		join access_role_privilege arp on arp.access_role_id = uar.access_role_id
         	) x
         ),
-        actions_document as(
+        basic_actions_document as(
         	select
         		jsonb_agg(
         			jsonb_build_object(
@@ -71,77 +71,38 @@ internal sealed class UserDocumentReaderFactory : MandatorySingleItemDatabaseRea
         		distinct
         		*
         		from(
-        		select
-        			distinct
-        			ugur.user_id,
-        			t.id tenant_id,
-        			ba.path
-        		from basic_action ba
-        		join access_role_privilege arp on arp.action_id = ba.id
-        		join user_group_user_role_user ugur on ugur.user_role_id = arp.access_role_id
-        		join tenant t on t.id = ugur.user_group_id
-        		union
-        		select
-        			distinct
-        			0,
-        			t.id tenant_id,
-        			ba.path
-        		from basic_action ba
-        		join access_role_privilege arp on arp.action_id = ba.id
-        		join user_role ur on ur.id = arp.access_role_id
-        		join tenant t on t.id = ur.user_group_id
-                join publishing_user_group pug on pug.id = t.id
-        		where arp.access_role_id = pug.access_role_id_not_logged_in
-        		union
-        		select
-        		distinct
-        		ugur2.user_id,
-        		t.id tenant_id,
-        		ba.path
-        		from basic_action ba
-        		join tenant_action ta on ta.action_id = ba.id
-        		join user_group_user_role_user ugur on ugur.user_group_id = ta.tenant_id
-        		join user_group ug on ug.id = ugur.user_group_id
-        		join tenant t on t.id = ug.id
-        		join user_group_user_role_user ugur2 on ugur2.user_group_id = ug.id and ugur2.user_role_id = ug.administrator_role_id
-        		union
-        		select
-        			distinct
-        			ugur.user_id,
-        			t.id tenant_id,
-        			'/' || replace(lower(nt.name), ' ', '_') || '/create' "action"
-        		from create_node_action cna
-        		join node_type nt on nt.id = cna.node_type_id
-        		join access_role_privilege arp on arp.action_id = cna.id
-        		join user_group_user_role_user ugur on ugur.user_role_id = arp.access_role_id
-        		join tenant t on t.id = ugur.user_group_id
-        		union
-        		select
-        			distinct
-        			0,
-        			t.id tenant_id,
-        			'/' || replace(lower(nt.name), ' ', '_') || '/create' "action"
-        		from create_node_action cna
-        		join node_type nt on nt.id = cna.node_type_id
-        		join access_role_privilege arp on arp.action_id = cna.id
-        		join user_group_user_role_user ugur on ugur.user_role_id = arp.access_role_id
-        		join tenant t on t.id = ugur.user_group_id
-                join publishing_user_group pug on pug.id = t.id
-        		where arp.access_role_id = pug.access_role_id_not_logged_in
-        		union
-        		select
-        		distinct
-        		ugur2.user_id,
-        		t.id tenant_id,
-        		'/' || replace(lower(nt.name), ' ', '_') || '/create' "action"
-        		from create_node_action cna
-        		join node_type nt on nt.id = cna.node_type_id
-        		join tenant_action ta on ta.action_id = cna.id
-        		join user_group_user_role_user ugur on ugur.user_group_id = ta.tenant_id
-        		join user_group ug on ug.id = ugur.user_group_id
-        		join tenant t on t.id = ug.id
-        		join user_group_user_role_user ugur2 on ugur2.user_group_id = ug.id and ugur2.user_role_id = ug.administrator_role_id
-        		) x
+        		    select
+        			    distinct
+        			    ugur.user_id,
+        			    t.id tenant_id,
+        			    ba.path
+        		    from basic_action ba
+        		    join access_role_privilege arp on arp.action_id = ba.id
+        		    join user_group_user_role_user ugur on ugur.user_role_id = arp.access_role_id
+        		    join tenant t on t.id = ugur.user_group_id
+        		    union
+        		    select
+        			    distinct
+        			    0,
+        			    t.id tenant_id,
+        			    ba.path
+        		    from basic_action ba
+        		    join access_role_privilege arp on arp.action_id = ba.id
+        		    join user_role ur on ur.id = arp.access_role_id
+        		    join tenant t on t.id = ur.user_group_id
+                    join publishing_user_group pug on pug.id = t.id
+        		    where arp.access_role_id = pug.access_role_id_not_logged_in
+        		    union
+        		    select
+                        distinct
+        			    uguru.user_id,
+        			    t.id tenant_id,
+                        ba.path
+        		    from basic_action ba
+        		    join tenant t on 1=1
+                    join user_group ug on ug.id = t.id
+        		    join user_group_user_role_user uguru on uguru.user_group_id = ug.id and uguru.user_role_id = ug.administrator_role_id
+                ) x
         	) x 
         	where tenant_id = @tenant_id
         	group by user_id
@@ -209,6 +170,63 @@ internal sealed class UserDocumentReaderFactory : MandatorySingleItemDatabaseRea
         		join node_type nt on nt.id = ba.node_type_id
         		join tenant t on 1=1
                 join user_group ug on ug.id = t.id
+        		join user_group_user_role_user uguru on uguru.user_group_id = ug.id and uguru.user_role_id = ug.administrator_role_id
+        	) x
+        	where tenant_id = @tenant_id
+        	group by user_id
+        ),
+        view_actions_document as(
+        	select
+        		jsonb_agg(
+        			jsonb_build_object(
+        				'NodeTypeId',
+        				node_type_id,
+        				'NodeTypeName',
+        				node_type_name,
+                        'ViewerPath',
+                        viewer_path
+        			)
+        		) document,
+        		user_id
+        	from(
+        		select
+        			distinct
+        			ugur.user_id,
+        			t.id tenant_id,
+        			ba.node_type_id,
+        			nt.name node_type_name,
+                    nt.viewer_path
+        		from view_node_action ba
+        		join node_type nt on nt.id = ba.node_type_id
+        		join access_role_privilege arp on arp.action_id = ba.id
+        		join user_group_user_role_user ugur on ugur.user_role_id = arp.access_role_id
+        		join tenant t on t.id = ugur.user_group_id
+        		union
+        		select
+        			distinct
+        			0,
+        			t.id tenant_id,
+        			ba.node_type_id,
+        			nt.name node_type_name,
+                    nt.viewer_path
+        		from view_node_action ba
+        		join node_type nt on nt.id = ba.node_type_id
+        		join access_role_privilege arp on arp.action_id = ba.id
+        		join user_group_user_role_user ugur on ugur.user_role_id = arp.access_role_id
+        		join tenant t on t.id = ugur.user_group_id
+                join publishing_user_group pug on pug.id = t.id
+        		where arp.access_role_id = pug.access_role_id_not_logged_in
+        		union
+        		select
+        			uguru.user_id,
+        			tn.id tenant_id,
+        			ba.node_type_id,
+        			nt.name node_type_name,
+                    nt.viewer_path
+        		from view_node_action ba
+        		join node_type nt on nt.id = ba.node_type_id
+        		join tenant tn on 1=1
+        		join user_group ug on ug.id = tn.id
         		join user_group_user_role_user uguru on uguru.user_group_id = ug.id and uguru.user_role_id = ug.administrator_role_id
         	) x
         	where tenant_id = @tenant_id
@@ -394,13 +412,12 @@ internal sealed class UserDocumentReaderFactory : MandatorySingleItemDatabaseRea
         		null::integer action_id,
         		mi.id menu_item_id,
         		weight,
-        		case 
-        			when tn.url_path is  null then '/node/' || tn.url_id
-        			else '/' || tn.url_path
-        		end	path,
+        		'/' || nt.viewer_path ||'/' || tn.node_id as path,
         		tmi.name
         		from user_group_user_role_user ug 
         		join tenant_node tn on tn.tenant_id = ug.user_group_id
+                join node n on n.id = tn.node_id
+                join node_type nt on nt.id = n.node_type_id
         		join tenant_node_menu_item tmi on tmi.tenant_node_id = tn.id
         		join menu_item mi on mi.id = tmi.id
         		union
@@ -411,12 +428,11 @@ internal sealed class UserDocumentReaderFactory : MandatorySingleItemDatabaseRea
         		null::integer action_id,
         		mi.id menu_item_id,
         		weight,
-        		case 
-        			when tn.url_path is  null then '/node/' || tn.url_id
-        			else '/' || tn.url_path
-        		end	path,
+        		'/' || nt.viewer_path ||'/' || tn.node_id as path,
         		tmi.name
         		from tenant_node tn 
+                join node n on n.id = tn.node_id
+                join node_type nt on nt.id = n.node_type_id
         		join tenant_node_menu_item tmi on tmi.tenant_node_id = tn.id
         		join menu_item mi on mi.id = tmi.id
         		) a
@@ -433,11 +449,13 @@ internal sealed class UserDocumentReaderFactory : MandatorySingleItemDatabaseRea
                 p.name,
                 'NameIdentifier',
                 u.name_identifier,
-        		'Actions',
-        		(select document from actions_document where user_id = @user_id),
+        		'BasicActions',
+        		(select document from basic_actions_document where user_id = @user_id),
         		'CreateActions',
         		(select document from create_actions_document where user_id = @user_id),
-        		'EditActions',
+        		'ViewActions',
+        		(select document from view_actions_document where user_id = @user_id),
+                'EditActions',
         		(select document from edit_actions_document where user_id = @user_id),
         		'EditOwnActions',
         		(select document from edit_own_actions_document where user_id = @user_id),

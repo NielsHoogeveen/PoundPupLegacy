@@ -1,19 +1,21 @@
-﻿@inherits SpecificNodeType
-<HeadContentSetter Title=@Model.Title SiteName=@SiteName Description=@Description />
-<LargeTextViewer Value="@Model.Description" />
-<LabeledNullableStringViewer Value="@Model.WebsiteUrl" Label="Website"/>
-<LabeledNullableStringViewer Value="@Model.EmailAddress" Label="Email" />
-<LabeledNullableFuzzyDateViewer Value="Model.Establishment" Label="Established" />
-<LabeledNullableFuzzyDateViewer Value="Model.Termination" Label="Terminated" />
-<LabeledLinkListViewer Links="@Model.OrganizationTypes" Label="Organization types"/>
-<PartyCaseTypeViewer Model="@Model.PartyCaseTypes" />
-<PersonOrganizationRelationsViewer Model="@Model.PersonOrganizationRelations" />
-<InterOrganizationalRelationsViewer Model="@Model.InterOrganizationalRelations" />
-<PartyPoliticalEntityRelationsViewer Model="@Model.PartyPoliticalEntityRelations" />
+﻿@using PoundPupLegacy.ViewModel.Models
+@inherits NodeViewerBase<Organization>
+<LocatableViewer Model="Model" Description="@Description">
+    <LabeledNullableStringViewer Value="@Model.WebsiteUrl" Label="Website"/>
+    <LabeledNullableStringViewer Value="@Model.EmailAddress" Label="Email" />
+    <LabeledNullableFuzzyDateViewer Value="Model.Establishment" Label="Established" />
+    <LabeledNullableFuzzyDateViewer Value="Model.Termination" Label="Terminated" />
+    <LabeledLinkListViewer Links="@Model.OrganizationTypes" Label="Organization types"/>
+    <PartyCaseTypeViewer Model="@Model.PartyCaseTypes" />
+    <PersonOrganizationRelationsViewer Model="@Model.PersonOrganizationRelations" />
+    <InterOrganizationalRelationsViewer Model="@Model.InterOrganizationalRelations" />
+    <PartyPoliticalEntityRelationsViewer Model="@Model.PartyPoliticalEntityRelations" />
+</LocatableViewer>
 @code{
     [Parameter]
     [EditorRequired]
-    public Organization Model { get; set; } = default!;
+    public override Organization Model { get; set; } = default!;
 
     protected override string? Description => $"Detailed information about the orgization {Model.Title}";
+    protected override string? ItemDescription => "";
 }

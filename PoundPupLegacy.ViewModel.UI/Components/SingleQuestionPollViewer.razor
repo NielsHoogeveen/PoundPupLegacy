@@ -1,4 +1,7 @@
-﻿@if (Model is not null)
+﻿@using PoundPupLegacy.ViewModel.Models
+@inherits SimpleTextNodeViewerBase<SingleQuestionPoll>
+<SimpleTextNodeViewer Model="Model" Description="Description">
+@if (Model is not null)
 {
     @if (Model.PollStatusId == 0)
     {
@@ -24,8 +27,11 @@
     <label>Question: </label>@Model.Question
     <PollOptionsViewer Model="Model.PollOptions" />
 }
+</SimpleTextNodeViewer>
 @code{
     [Parameter]
     [EditorRequired]
-    public SingleQuestionPoll? Model{ get; set; }
+    public override SingleQuestionPoll Model { get; set; } = default!;
+
+    protected override string ItemDescription => $"Poll";
 }

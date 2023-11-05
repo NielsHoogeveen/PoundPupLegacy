@@ -1,7 +1,15 @@
-﻿<LabeledNullableLinkViewer Value="Model.CountryFrom" Label="Country"/>
-<LabeledNullableIntViewer Value="Model.NumberOfChildrenInvolved" Label="number of children involved" />
+﻿@inherits NodeViewerBase<ChildTraffickingCase>
+
+<CaseViewer Model="@Model" Description="@Description" >
+    <LabeledNullableLinkViewer Value="Model.CountryFrom" Label="Country"/>
+    <LabeledNullableIntViewer Value="Model.NumberOfChildrenInvolved" Label="number of children involved" />
+</CaseViewer>
 @code {
     [Parameter]
     [EditorRequired]
-    public ChildTraffickingCase Model { get; set; } = default!;
+    public override ChildTraffickingCase Model { get; set; } = default!;
+
+    protected override string ItemDescription => Model.CountryFrom is not null
+        ? $"child trafficking case from {Model.CountryFrom.Title}"
+        : "";
 }

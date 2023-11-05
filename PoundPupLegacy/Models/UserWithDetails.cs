@@ -11,15 +11,28 @@ public record UserWithDetails: User
 {
     public required string NameIdentifier { get; init; }
 
-    private HashSet<UserAction> _actions = new();
-    public required HashSet<UserAction> Actions {
-        get => _actions;
+    private HashSet<UserBasicAction> _basicActions = new();
+    public required HashSet<UserBasicAction> BasicActions {
+        get => _basicActions;
 
         init {
             if(value is not null) {
-                _actions = value;
+                _basicActions = value;
             }
         }
+    }
+    private HashSet<IUserAction>? _actions = null;
+    public HashSet<IUserAction> Actions {
+        get {
+            if(_actions is null) {
+                _actions = new HashSet<IUserAction>();
+                _actions.UnionWith(BasicActions);
+                _actions.UnionWith(CreateActions);
+                _actions.UnionWith(ViewActions);
+            }
+            return _actions;
+        }
+
     }
     private HashSet<UserCreateAction> _createActions = new();
     public required HashSet<UserCreateAction> CreateActions {
@@ -28,6 +41,16 @@ public record UserWithDetails: User
         init {
             if (value is not null) {
                 _createActions = value;
+            }
+        }
+    }
+    private HashSet<UserViewAction> _viewActions = new();
+    public required HashSet<UserViewAction> ViewActions {
+        get => _viewActions;
+
+        init {
+            if (value is not null) {
+                _viewActions = value;
             }
         }
     }

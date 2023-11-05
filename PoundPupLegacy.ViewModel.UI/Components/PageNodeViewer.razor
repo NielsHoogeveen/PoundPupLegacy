@@ -1,0 +1,13 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+@inherits SimpleTextNodeViewerBase<Page>
+<SimpleTextNodeViewer Model="Model" Description="Description">
+    <AuthoringViewer Model="Model.Authoring" />
+</SimpleTextNodeViewer>
+@code {
+    [Parameter]
+    [EditorRequired]
+    public override Page Model { get; set; } = default!;
+
+    protected override string ItemDescription => $"Page";
+
+}

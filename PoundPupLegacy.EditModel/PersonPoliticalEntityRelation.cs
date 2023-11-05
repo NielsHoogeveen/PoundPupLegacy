@@ -125,7 +125,6 @@ public abstract record PersonPoliticalEntityRelation : Relation
                 public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
                 public required NodeIdentification NodeIdentification { get; init; }
                 public int NodeId { get; init; }
-                public int UrlId { get; set; }
                 public required PersonListItem Party { get; set; }
                 public required PoliticalEntityListItem PoliticalEntity { get; set; }
                 public override string PersonName => Party.Name;

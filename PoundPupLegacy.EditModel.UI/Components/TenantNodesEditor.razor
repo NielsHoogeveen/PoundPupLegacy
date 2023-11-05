@@ -10,9 +10,6 @@
                     Tenant
                 </div>
                 <div class="grid-header">
-                    Path
-                </div>
-                <div class="grid-header">
                     Publication status
                 </div>
                 <div class="grid-header">
@@ -32,9 +29,6 @@
                             <input class="item" type="checkbox" name="tenant-@tenant.Id" checked disabled />
                         }
                         <div class="item domain-name">@tenant.DomainName</div>
-                        <div class="item">
-                            <input type="text" value="@tenant.TenantNode!.UrlPath"/>
-                        </div>
                         <div class="item">
                             <select @onchange="(e) => OnSelectPublicationStatus(tenant.Id, e)">
                             @foreach(var option in publicationStatuses) 
@@ -143,8 +137,6 @@
                             HasBeenDeleted = false,
                             PublicationStatusId = tenant.PublicationStatuses.First(x => x.IsDefault).Id,
                             NodeId = newTenantNodeForExistingNode.NodeId,
-                            UrlId = newTenantNodeForExistingNode.NodeId,
-                            UrlPath = null,
                             SubgroupId = null,
                             CanBeUnchecked = true,
                             HasBeenStored = false
@@ -164,7 +156,6 @@
                                 TenantId = tenantId,
                                 HasBeenDeleted = false,
                                 PublicationStatusId = publicationStatuses.First(x => x.IsDefault).Id,
-                                UrlPath = null,
                                 SubgroupId = SubgroupId,
                                 CanBeUnchecked = tenantId != Tenant.Id,
                                 HasBeenStored = false
@@ -177,9 +168,7 @@
                                 TenantId = tenantId,
                                 HasBeenDeleted = false,
                                 PublicationStatusId = tenant.PublicationStatuses.First(x => x.IsDefault).Id,
-                                UrlId = nodeId,
                                 NodeId = nodeId,
-                                UrlPath = null,
                                 SubgroupId = null,
                                 CanBeUnchecked = tenantId != Tenant.Id,
                                 HasBeenStored = false

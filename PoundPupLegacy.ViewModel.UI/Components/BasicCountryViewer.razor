@@ -1,0 +1,19 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+@inherits CountryViewerBase<BasicCountry>
+<CountryViewer Model="Model" Description="@Description">
+    <div>
+        <label>ISO 3166-1 code</label>
+        @Model.ISO3166_1_Code
+    </div>  
+    <div>
+        <label>Region</label>
+        <a href="@Model.GlobalRegion.Path">@Model.GlobalRegion.Title</a>
+    </div>
+</CountryViewer>
+@code{
+    [Parameter]
+    [EditorRequired]
+    public override BasicCountry Model { get; set; } = default!;
+
+}
+

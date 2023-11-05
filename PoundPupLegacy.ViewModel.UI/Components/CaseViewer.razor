@@ -1,23 +1,24 @@
-﻿@inherits SpecificNodeType
-<HeadContentSetter Title=@Model.Title SiteName=@SiteName Description=@Description />
-<LargeTextViewer Value="@Model.Description" />
-<div class="details">
-    <LabeledNullableFuzzyDateViewer Value="@Model.Date" Label="Incident date" />
-    @if(Model is AbuseCase abuseCase) {
-        <AbuseCaseViewer Model="@abuseCase" />
-    }
-    @if (Model is ChildTraffickingCase childTraffickingCase) {
-        <ChildTraffickingCaseViewer Model="@childTraffickingCase" />
-    }
-    @if (Model is DeportationCase deportationCase) {
-        <DeportationCaseViewer Model="@deportationCase" />
-    }
-</div>
-<CasePartiesViewer Model="@Model.CaseParties" />
-@code{
+﻿@using PoundPupLegacy.ViewModel.Models
+@typeparam TModel where TModel: class, Case
+@inherits ViewerBase
+<LocatableViewer Model="Model" Description="@Description">
+    <div class="details">
+        <LabeledNullableFuzzyDateViewer Value="@Model.Date" Label="Incident date" />
+        @ChildContent
+    </div>
+    <CasePartiesViewer Model="@Model.CaseParties" />
+</LocatableViewer>
+
+@code {
     [Parameter]
     [EditorRequired]
-    public Case Model { get; set; } = default!;
+    public TModel Model { get; set; } = default!;
 
-    protected override string? Description => $"Detailed information about the case of {Model?.Title}";
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment ChildContent { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public string Description { get; set; } = default!;
 }

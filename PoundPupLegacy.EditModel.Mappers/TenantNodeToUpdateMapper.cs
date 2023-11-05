@@ -13,7 +13,6 @@ internal class TenantNodeToUpdateMapper : IEnumerableMapper<TenantNode.ToUpdate,
                 },
                 TenantId = tenantNode.Id,
                 PublicationStatusId = tenantNode.PublicationStatusId,
-                UrlPath = tenantNode.UrlPath,
                 SubgroupId = tenantNode.SubgroupId,
             };
         }

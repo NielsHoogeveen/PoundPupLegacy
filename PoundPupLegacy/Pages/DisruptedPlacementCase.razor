@@ -1,0 +1,18 @@
+﻿@page "/disrupted_placement_case/{Id:int}"
+@using PoundPupLegacy.Components
+@inherits NodeViewerPage<ViewModel.Models.DisruptedPlacementCase>
+<NodePageViewer Model="Model">
+    <NodeHandler Model="@Model">
+        <Viewer>
+            <DisruptedPlacementCaseViewer Model="@Model" />
+        </Viewer>
+        <Editor>
+           <DisruptedPlacementCaseUpdater NodeId="@Id"/>
+        </Editor>
+    </NodeHandler>
+</NodePageViewer>
+@code {
+    [Parameter]
+    public override int Id { get; set; }
+
+}

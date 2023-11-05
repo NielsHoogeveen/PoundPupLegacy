@@ -1,9 +1,11 @@
-::deep label{
+::deep label {
     font-weight: bold;
 }
-::deep .labeled-value{
+
+::deep .labeled-value {
     margin-bottom: 0.25em;
 }
+
 ::deep .large-text-viewer {
     margin-bottom: 0.75em;
 }
@@ -12,10 +14,12 @@ article {
     padding-left: 0.5em;
     padding-right: 0.5em;
 }
+
 .title {
     display: grid;
     grid-template-columns: calc(100% - 2rem) 2rem;
 }
+
 .tooltip {
-    padding-top: 1.65em;
+    padding-top: 1.25em;
 }

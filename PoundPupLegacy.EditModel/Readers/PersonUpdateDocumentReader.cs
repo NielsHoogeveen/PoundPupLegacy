@@ -53,7 +53,7 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
             join person p on p.id = n.id
             join nameable nm on nm.id = n.id
             join tenant_node tn on tn.node_id = n.id
-            where tn.tenant_id = @tenant_id and tn.url_id = @url_id and n.node_type_id = @node_type_id
+            where tn.tenant_id = @tenant_id and tn.node_id = @node_id and n.node_type_id = @node_type_id
         """;
     const string INTER_PERSONAL_RELATIONS_FROM_DOCUMENT = """
         inter_personal_relations_from_document as(
@@ -63,9 +63,7 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                         'NodeIdentification',
                         jsonb_build_object(
                             'NodeId', 
-                            node_id,
-                            'UrlId', 
-                            url_id
+                            node_id
                         ),
                         'NodeDetailsForUpdate',
                         jsonb_build_object(
@@ -146,7 +144,6 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                     owner_id,
                     node_type_name,
                     node_type_id,
-                    url_id,
                     person_id_from,
                     person_name_from,
                     person_id_to,
@@ -172,7 +169,6 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                         n.owner_id,
                         nt.name node_type_name,
                         nt.id node_type_id,
-                        tn2.url_id,
                         r.person_id_from,
                         n1.title person_name_from,
                         r.person_id_to,
@@ -261,7 +257,7 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                     join tenant_node tn on tn.node_id = n1.id
                     join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = tn.tenant_id
                     join tenant_node tn3 on tn3.node_id = r.id and tn3.tenant_id = tn.tenant_id
-                    where tn.tenant_id = @tenant_id and tn.url_id = @url_id
+                    where tn.tenant_id = @tenant_id and tn.node_id = @node_id
         	    ) x
                 where status_other_person > -1 and status_relation > -1
         	) x
@@ -276,9 +272,7 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                         'NodeIdentification',
                         jsonb_build_object(
                             'NodeId', 
-                            node_id,
-                            'UrlId', 
-                            url_id
+                            node_id
                         ),
                         'NodeDetailsForUpdate',
                         jsonb_build_object(
@@ -359,7 +353,6 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                     owner_id,
                     node_type_name,
                     node_type_id,
-                    url_id,
                     person_id_from,
                     person_name_from,
                     person_id_to,
@@ -385,7 +378,6 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                         n.owner_id,
                         nt.name node_type_name,
                         nt.id node_type_id,
-                        tn2.url_id,
                         r.person_id_from,
                         n1.title person_name_from,
                         r.person_id_to,
@@ -474,7 +466,7 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                     join tenant_node tn on tn.node_id = n2.id
                     join tenant_node tn2 on tn2.node_id = n1.id and tn2.tenant_id = tn.tenant_id
                     join tenant_node tn3 on tn3.node_id = r.id and tn3.tenant_id = tn.tenant_id
-                    where tn.tenant_id = @tenant_id and tn.url_id = @url_id
+                    where tn.tenant_id = @tenant_id and tn.node_id = @node_id
         	    ) x
                 where status_other_person > -1 and status_relation > -1
         	) x

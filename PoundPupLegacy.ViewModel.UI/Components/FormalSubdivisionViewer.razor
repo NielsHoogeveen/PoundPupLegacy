@@ -1,0 +1,15 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+@inherits SubdivisionViewerBase<FormalSubdivision>
+<SubdivisionViewer Model="Model" Description="@Description">
+    <div>
+        <label>ISO3166_2 code</label>
+        @Model.ISO3166_2_Code
+    </div>
+</SubdivisionViewer>
+@code{
+    [Parameter]
+    [EditorRequired]
+    public override FormalSubdivision Model { get; set; } = default!;
+
+}
+

@@ -26,7 +26,7 @@ internal sealed class WrongfulMedicationCaseUpdateDocumentReaderFactory : NodeUp
             join "case" c on c.id = n.id
             join wrongful_medication_case wmc on wmc.id = c.id
             join tenant_node tn on tn.node_id = n.id
-            where tn.tenant_id = @tenant_id and tn.url_id = @url_id
+            where tn.tenant_id = @tenant_id and tn.node_id = @node_id
         """;
 
 }

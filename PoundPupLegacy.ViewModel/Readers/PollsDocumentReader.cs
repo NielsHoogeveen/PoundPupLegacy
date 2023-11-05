@@ -31,7 +31,7 @@ internal sealed class PollsDocumentReaderFactory : SingleItemDatabaseReaderFacto
                 'Entries', jsonb_agg(
                     jsonb_build_object(
                         'Path', 
-                        url_path,
+                        path,
                         'Title', 
                         title,
                         'Text', 
@@ -57,16 +57,13 @@ internal sealed class PollsDocumentReaderFactory : SingleItemDatabaseReaderFacto
                 n.publisher_id,
                 n.created_date_time,
                 n.changed_date_time,
-                tn.url_id,
                 count(tn.id) over() number_of_entries,
-                case 
-                    when tn.url_path is null then '/node/' || tn.url_id
-                    else '/' || url_path
-                end url_path,
+                '/' || nt.viewer_path || '/' || tn.node_id path,
                 tn.subgroup_id,
                 tn.publication_status_id
             from tenant_node tn
             join node n on n.id = tn.node_id
+            join node_type nt on nt.id = n.node_type_id
             join poll o on o.id = n.id
             join simple_text_node stn on stn.id = n.id
             left join organization_organization_type oot on oot.organization_id = o.id

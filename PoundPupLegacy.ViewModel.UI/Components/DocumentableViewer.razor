@@ -1,8 +1,32 @@
-﻿<DocumentsViewer Model="@Model.Documents" />
+﻿@using PoundPupLegacy.ViewModel.Models
+@typeparam TModel where TModel: class, Documentable
+@inherits ViewerBase
+<NodeViewer Model="Model" Description="@Description">
+    <Top>
+        @Top
+    <DocumentsViewer Model="@Model.Documents" />
+    </Top>
+    <Bottom>
+        @Bottom
+    </Bottom>
+</NodeViewer>
 
 @code {
+
     [Parameter]
     [EditorRequired]
-    public Documentable Model { get; set; } = default!;
+    public TModel Model { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment Top { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment Bottom { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public string Description { get; set; } = default!;
 
 }

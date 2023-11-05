@@ -1,0 +1,18 @@
+﻿@page "/person/{Id:int}"
+@using PoundPupLegacy.Components
+@inherits NodeViewerPage<ViewModel.Models.Person>
+<NodePageViewer Model="Model">
+    <NodeHandler Model="@Model">
+        <Viewer>
+            <PersonViewer Model="@Model" />
+        </Viewer>
+        <Editor>
+            <PersonUpdater NodeId="Id" />
+        </Editor>
+    </NodeHandler>
+</NodePageViewer>
+@code {
+    [Parameter]
+    public override int Id { get; set; }
+
+}

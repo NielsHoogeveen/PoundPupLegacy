@@ -1,24 +1,31 @@
-﻿@using PoundPupLegacy.Services
+﻿@inherits ViewerBase
+@using PoundPupLegacy.Services
 @using PoundPupLegacy.ViewModel.Models
 @using PoundPupLegacy.ViewModel.UI.Services
-@inject ISiteDataService SiteDataService
+@inject INodeService NodeService
 @inject NavigationManager NavigationManager
-
-
-@if(_nodeId is not null)
-{
-    <NodeViewer Id="@_nodeId.Value" />
+@if (notFound) {
+    <NotFound />
 }
 
 @code {
 
 
-    private int? _nodeId;
+    private bool notFound = false;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         var urlPath = new Uri(NavigationManager.Uri).AbsolutePath;
-        var tenantId = SiteDataService.GetTenant().Id;
-        _nodeId = SiteDataService.GetIdForUrlPath(urlPath);
+        if(urlPath[1..].Contains('/')){ // if the url contains a slash, it's not a node url
+            notFound = true;
+            return;
+        }
+        var path = await NodeService.GetRedirectPath(urlPath, Tenant.Id);
+        if(path != null)
+        {
+            NavigationManager.NavigateTo(path, true);
+            return;
+        }
+        notFound = true;
     }
 }

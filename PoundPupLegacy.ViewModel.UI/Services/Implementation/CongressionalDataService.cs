@@ -43,7 +43,7 @@ internal sealed partial class CongressionalDataService(
         };
 
     }
-    public async Task<CongressionalMeetingChamber?> GetCongressionalMeetingChamber(ChamberType chamberType, int number)
+    public async Task<CongressionalMeetingChamber?> GetCongressionalMeetingChamber(ChamberType chamberType, int number, int tenantId)
     {
 
         return await WithConnection(async (connection) => 
@@ -51,18 +51,19 @@ internal sealed partial class CongressionalDataService(
             await using var reader = await unitedStatesMeetingChamberDocumentReaderFactory.CreateAsync(connection);
             return await reader.ReadAsync(new UnitedStatesMeetingChamberDocumentReaderRequest {
                 Type = (int)chamberType,
-                Number = number
+                Number = number,
+                TenantId = tenantId
             });
         });
     }
 
-    public async Task<CongressionalMeetingChamber?> GetCongressionalMeetingChamber(string path)
+    public async Task<CongressionalMeetingChamber?> GetCongressionalMeetingChamber(string path, int tenantId)
     {
         var congressionalMeetingChamber = GetChamberTypeAndMeetingNumber(path);
         if (congressionalMeetingChamber is null) {
             return null;
         }
-        return await GetCongressionalMeetingChamber(congressionalMeetingChamber.ChamberType, congressionalMeetingChamber.Number);
+        return await GetCongressionalMeetingChamber(congressionalMeetingChamber.ChamberType, congressionalMeetingChamber.Number, tenantId);
     }
 
     public async Task<UnitedStatesCongress?> GetUnitedStatesCongress()

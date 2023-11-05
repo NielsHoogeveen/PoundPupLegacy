@@ -12,7 +12,6 @@ internal sealed class TenantNodeUpdaterFactory : DatabaseUpdaterFactory<Request>
     public override string Sql => $"""
         update tenant_node 
         set 
-        url_path = @url_path, 
         subgroup_id = @subgroup_id, 
         publication_status_id = @publication_status_id
         where id = @id
@@ -21,7 +20,6 @@ internal sealed class TenantNodeUpdaterFactory : DatabaseUpdaterFactory<Request>
     {
         return new List<ParameterValue> {
             ParameterValue.Create(Id, request.Identification.Id),
-            ParameterValue.Create(UrlPath, request.UrlPath),
             ParameterValue.Create(SubgroupId, request.SubgroupId),
             ParameterValue.Create(PublicationStatusId, request.PublicationStatusId)
         };

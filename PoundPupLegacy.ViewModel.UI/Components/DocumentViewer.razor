@@ -1,43 +1,17 @@
-﻿@inherits SpecificNodeType
-<HeadContentSetter Title=@Model.Title SiteName=@SiteName Description=@Description />
-<LabeledNullableLinkViewer Value="Model.DocumentType" Label="Document type"/>
-<LabeledNullableUriViewer Value="Uri" Label="Source" />
-<LabeledNullableFuzzyDateViewer Value="Model.Published" Label="Publication date" />
+﻿@using PoundPupLegacy.ViewModel.Models
+@inherits SimpleTextNodeViewerBase<Document>
+<SimpleTextNodeViewer Model="Model" Description="Description">
+    <LabeledNullableLinkViewer Value="Model.DocumentType" Label="Document type" />
+    <LabeledNullableUriViewer Value="Model.Uri" Label="Source" />
+    <LabeledNullableFuzzyDateViewer Value="Model.Published" Label="Publication date" />
+</SimpleTextNodeViewer>
 @code{
     [Parameter]
     [EditorRequired]
-    public Document Model { get; set; } = default!;
+    public override Document Model { get; set; } = default!;
 
-    private string Format(string str) => str.Replace(@"href=""http://poundpuplegacy.org", @"href=""");
-
-    private Uri? Uri => MakeUri(Model.SourceUrl);
-
-    private List<string> Keywords => Model.Tags.Select(x => x.Title).ToList();
-
-    private string topicsDecription => Keywords.Any()
-        ? Keywords.Count > 1
-            ? $"about {string.Join(',', Keywords.Take(Keywords.Count - 1)).Replace(",", ", ")} and {Keywords.TakeLast(1).ToList()[0]}"
-            : $"about {Keywords[0]}"
+    protected override string ItemDescription => Model.DocumentType is not null
+        ? Model.DocumentType.Title
         : "";
-
-    protected override string? Description => $"{Model.DocumentType?.Title} {topicsDecription}";
-
-    private Uri? MakeUri(string? str)
-    {
-        if (str is null)
-            return null;
-        if (Uri.TryCreate(str, UriKind.Absolute, out var uri))
-        {
-            return uri;
-        }
-        else if(!str.Contains(":"))
-        {
-            if(Uri.TryCreate($"http://{str}", UriKind.Absolute, out var uri2))
-            {
-                return uri2;                    
-            }
-            return null;
-        }
-        return null;
-    }
 }
+

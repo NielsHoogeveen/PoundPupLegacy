@@ -1,0 +1,18 @@
+﻿@page "/blog_post/{Id:int}"
+@using PoundPupLegacy.Components
+@inherits NodeViewerPage<ViewModel.Models.BlogPost>
+<NodePageViewer Model="Model">
+    <NodeHandler Model="@Model">
+        <Viewer>
+            <BlogPostViewer Model="@Model" />
+        </Viewer>
+        <Editor>
+           <BlogPostUpdater NodeId="@Id"/>
+        </Editor>
+    </NodeHandler>
+</NodePageViewer>
+@code {
+    [Parameter]
+    public override int Id { get; set; }
+
+}

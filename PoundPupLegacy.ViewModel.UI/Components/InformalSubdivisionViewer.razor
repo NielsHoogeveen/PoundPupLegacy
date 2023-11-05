@@ -1,0 +1,13 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+@inherits SubdivisionViewerBase<InformalSubdivision>
+<SubdivisionViewer Model="Model" Description="@Description">
+    <div>
+    </div>
+</SubdivisionViewer>
+@code{
+    [Parameter]
+    [EditorRequired]
+    public override InformalSubdivision Model { get; set; } = default!;
+
+}
+

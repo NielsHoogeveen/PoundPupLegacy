@@ -31,18 +31,17 @@ internal sealed class BlogsDocumentReaderFactory : SingleItemDatabaseReaderFacto
                             'Title', 
                             n2.title,
                             'Path', 
-                            case 
-                                when tn2.url_path is null then '/node/' || tn2.url_id 
-                                else '/' || tn2.url_path 
-                            end
+                            '/' || nt2.viewer_path || '/' || tn2.node_id 
                         )
                         from node n2 
+                        join node_type nt2 on n2.node_type_id = nt2.id
                         JOIN tenant_node tn2 on tn2.node_id = n2.id AND tn2.tenant_id = @tenant_id
-                        where tn2.url_id = max( tn.url_id)
+                        where tn2.node_id = max( tn.node_id)
                     ) "LatestEntry"
                 from publisher p
                 left join "user" u on u.id = p.id
                 join node n on n.publisher_id = p.id 
+                join node_type nt on n.node_type_id = nt.id
                 join tenant_node tn on tn.node_id = n.id and tn.publication_status_id = 1 and tn.tenant_id = @tenant_id
                 join blog_post b on b.id = n.id
                 group by p.name,

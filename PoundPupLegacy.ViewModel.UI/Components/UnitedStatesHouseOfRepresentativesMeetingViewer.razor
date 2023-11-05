@@ -1,4 +1,5 @@
-﻿@inject ICongressionalDataService CongressionalDataService;
+﻿@inherits ViewerBase
+@inject ICongressionalDataService CongressionalDataService;
 @if(Model is not null) {
     <CongressionalMeetingChamberViewer Model="Model" />
 }
@@ -11,7 +12,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Model = await CongressionalDataService.GetCongressionalMeetingChamber(ChamberType.House, Number);
+        Model = await CongressionalDataService.GetCongressionalMeetingChamber(ChamberType.House, Number, Tenant.Id);
     }
 
 }

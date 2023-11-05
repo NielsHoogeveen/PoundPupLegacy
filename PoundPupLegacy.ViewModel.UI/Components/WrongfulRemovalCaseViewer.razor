@@ -1,0 +1,12 @@
+﻿@inherits NodeViewerBase<WrongfulRemovalCase>
+
+<CaseViewer Model="@Model" Description="@Description" >
+    &nbsp;
+</CaseViewer>
+@code {
+    [Parameter]
+    [EditorRequired]
+    public override WrongfulRemovalCase Model { get; set; } = default!;
+
+    protected override string ItemDescription => "wrongful removal case";
+}

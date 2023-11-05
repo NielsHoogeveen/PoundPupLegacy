@@ -1,0 +1,12 @@
+﻿@inherits NodeViewerBase<DisruptedPlacementCase>
+
+<CaseViewer Model="@Model" Description="@Description" >
+    &nbsp;
+</CaseViewer>
+@code {
+    [Parameter]
+    [EditorRequired]
+    public override DisruptedPlacementCase Model { get; set; } = default!;
+
+    protected override string ItemDescription => "disrupted placement case";
+}

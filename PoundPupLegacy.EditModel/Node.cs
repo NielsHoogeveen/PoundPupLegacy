@@ -40,7 +40,6 @@ public interface ExistingNode : ResolvedNode
 public sealed record NodeIdentification
 {
     public required int NodeId { get; init; }
-    public required int UrlId { get; init; }
 }
 
 public abstract record NodeDetails 

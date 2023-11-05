@@ -115,36 +115,32 @@ internal sealed class DisruptedPlacementCasesDocumentReaderFactory : SingleItemD
         			        from(
         				        select 
         				        t.id term_id,
-        				        nt.node_id,
+        				        ntm.node_id,
         				        n.title,
                                 tn.publication_status_id,
                                 n.changed_date_time,
         				        nm.description teaser,
                                 cs.fuzzy_date,
-        				        case
-        					        when tn.url_path is null then '/node/' || tn.url_id
-        					        else '/' || tn.url_path
-        				        end path,
+        				        '/' || nt.viewer_path || '/' || tn.node_id path,
                                 t.name term_name,
-                                case 
-                                    when tn2.url_path is null then '/node/' || tn2.url_id
-                                    else '/' || tn2.url_path
-                                end term_path,
-                                nt2.tag_label_name term_type_name,
+                                '/' || nt2.viewer_path || '/' || tn2.node_id term_path,
+                                nmt2.tag_label_name term_type_name,
         				        case 
         					        when n.node_type_id = 41 then 1
         					        when n.node_type_id = 23 then 1
         					        else 1
         				        end weight
         				        from node n
+                                join node_type nt on n.node_type_id = nt.id
                                 join nameable nm on nm.id = n.id
                                 join "case" cs on cs.id = n.id
                                 join disrupted_placement_case ac on ac.id = n.id
         				        join tenant_node tn on tn.node_id = n.id and tn.tenant_id = @tenant_id
-        				        join node_term nt on nt.node_id = n.id 
-        				        join term t on t.id = nt.term_id
+        				        join node_term ntm on ntm.node_id = n.id 
+        				        join term t on t.id = ntm.term_id
                                 join node n2 on n2.id = t.nameable_id
-                                left join nameable_type nt2 on nt2.id = n2.node_type_id and nt2.tag_label_name is not null
+                                join node_type nt2 on n2.node_type_id = nt2.id
+                                left join nameable_type nmt2 on nmt2.id = n2.node_type_id and nmt2.tag_label_name is not null
                                 join tenant_node tn2 on tn2.node_id = t.nameable_id and tn2.tenant_id = @tenant_id
                                 where tn.publication_status_id in 
                                 (
@@ -173,10 +169,10 @@ internal sealed class DisruptedPlacementCasesDocumentReaderFactory : SingleItemD
                                     node_id
                                     from (
                                         select
-                                        nt.node_id,
+                                        ntm.node_id,
                                         count(*) over() c
                                         from term t
-                                        left join node_term nt on nt.term_id = t.id and nt.node_id = n.id
+                                        left join node_term ntm on ntm.term_id = t.id and ntm.node_id = n.id
                                         where t.id = ANY(@terms)
                                     ) x
                                     group by node_id, c
@@ -227,8 +223,8 @@ internal sealed class DisruptedPlacementCasesDocumentReaderFactory : SingleItemD
         			    join term t on t.nameable_id = n.id 
         			    join tenant_node tn on tn.node_id = n.id and tn.tenant_id = @tenant_id
         			    join vocabulary v on v.id = t.vocabulary_id
-        			    join node_term nt on nt.term_id = t.id
-        			    join node n2 on n2.id = nt.node_id
+        			    join node_term ntm on ntm.term_id = t.id
+        			    join node n2 on n2.id = ntm.node_id
                         join disrupted_placement_case ac on ac.id = n2.id
         			    join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = @tenant_id
         			    where v.name = 'Topics'
@@ -259,10 +255,10 @@ internal sealed class DisruptedPlacementCasesDocumentReaderFactory : SingleItemD
                             node_id
                             from (
                                 select
-                                nt.node_id,
+                                ntm.node_id,
                                 count(*) over() c
                                 from term t
-                                left join node_term nt on nt.term_id = t.id and nt.node_id = n2.id
+                                left join node_term ntm on ntm.term_id = t.id and ntm.node_id = n2.id
                                 where t.id = ANY(@terms)
                             ) x
                             group by node_id, c

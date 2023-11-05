@@ -1,0 +1,50 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+@inherits ViewerBase
+@typeparam TModel where TModel : class, Node
+<BreadCrumElementViewer Model="@Model.BreadCrumElements" />
+@if (!Model.HasBeenPublished) {
+    <WaterMarkViewer />
+}
+<HeadContentSetter Title=@Model.Title SiteName=@SiteName Description=@Description />
+<article>
+    <div class="title">
+        <h1>@Model.Title</h1>
+        <div class="tooltip publication-status-@Model.PublicationStatusId">
+            ⬤
+            @if (@Model.PublicationStatusId == 0) {
+                <span class="tooltip-text">unpublished</span>
+            }
+            @if (@Model.PublicationStatusId == 1) {
+                <span class="tooltip-text">public</span>
+            }
+            @if (@Model.PublicationStatusId == 2) {
+                <span class="tooltip-text ">private</span>
+            }
+        </div>
+    </div>
+    @Top
+    <TagsViewer Tags="Model.Tags" />
+    <FilesViewer Model="Model.Files" />
+    @Bottom
+</article>
+<CommentsViewer Model="Model.Comments" />
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public TModel Model { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment Top { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment Bottom { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public string Description { get; set; } = default!;
+
+}
+

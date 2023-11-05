@@ -9,7 +9,7 @@ public sealed record Document : SimpleTextNodeBase
     public BasicLink? DocumentType { get; init; }
     public string? SourceUrl { get; init; }
     public string? SourceUrlHost => MakeUri(SourceUrl)?.Host;
-
+    public Uri? Uri => MakeUri(SourceUrl);
     private Uri? MakeUri(string? str)
     {
         if (str is null)

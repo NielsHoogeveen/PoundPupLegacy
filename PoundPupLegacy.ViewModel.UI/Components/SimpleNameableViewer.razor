@@ -1,0 +1,25 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+@typeparam TModel where TModel: class, Nameable
+@inherits ViewerBase
+<NameableViewer Model="Model" Description="@Description">
+    <Top>
+        @ChildContent
+    </Top>
+    <Bottom>
+    </Bottom>
+</NameableViewer>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public TModel Model { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment ChildContent { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public string Description { get; set; } = default!;
+
+}

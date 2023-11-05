@@ -38,18 +38,4 @@ public sealed record Tenant: ITenant
     public required bool TrackActiveUsers { get; init; }
     public required Subgroup[] Subgroups { get; init; } 
     public required SmtpConnection SmtpConnection { get; init; }
-
-    private List<TenantNode> _tenantNodes = new();
-    public required List<TenantNode> TenantNodes {
-        get => _tenantNodes;
-        init { 
-            if(value is not null) {
-                _tenantNodes = value;
-            }
-        }
-    }
-
-    public Dictionary<string, int> UrlToId { get; set; } = new Dictionary<string, int>();
-
-    public Dictionary<int, string> IdToUrl { get; set; } = new Dictionary<int, string>();
 }

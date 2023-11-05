@@ -1,15 +1,30 @@
-﻿@inherits SpecificNodeType
-<HeadContentSetter Title=@Model.Title SiteName=@SiteName Description=@Description />
+﻿@using PoundPupLegacy.ViewModel.Models
+@inherits ViewerBase
+@typeparam TModel where TModel: class, Subdivision
+<NameableViewer Model="Model" Description="@Description">
+    <Top>
+
 @if (Model is FormalSubdivision formalSubdivision)
 {
     <LabeledNonNullableStringViewer Label="ISO 3166-2 code" Value="@formalSubdivision.ISO3166_2_Code" />
 }
-<SubdivisionTypesViewer Model="Model.SubdivisionTypes" />
-<OrganizationTypesWithOrganizationsViewer Model="Model.OrganizationTypes" />
-@code{
+        <SubdivisionTypesViewer Model="Model.SubdivisionTypes" />
+        <OrganizationTypesWithOrganizationsViewer Model="Model.OrganizationTypes" />
+    </Top>
+    <Bottom></Bottom>
+</NameableViewer>
+@code {
     [Parameter]
     [EditorRequired]
-    public Subdivision Model { get; set; } = default!;
+    public TModel Model { get; set; } = default!;
 
-    protected override string? Description => $"Detailed information about the subdivision {Model?.Title}";
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment ChildContent { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public string Description { get; set; } = default!;
+
 }
+

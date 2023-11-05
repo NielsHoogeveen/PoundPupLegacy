@@ -1,19 +1,18 @@
 ﻿@using PoundPupLegacy.Services
+@inherits ViewerBase
 @inject ISiteDataService SiteDataService
 @inject NotFoundListener NotFoundListener;
 @code {
 
     protected bool CanAccessPage { get; set; } = false;
 
-    [CascadingParameter(Name = "User")]
-    public User User { get; set; } = default!;
-
-    [CascadingParameter(Name = "TenantId")]
-    public ITenant Tenant { get; set; } = default!;
-
     protected sealed override void OnInitialized()
     {
         base.OnInitialized();
+    }
+    protected virtual async Task OnAfterInitializedAsync()
+    {
+        await Task.CompletedTask;
     }
     protected sealed override async Task OnInitializedAsync()
     {
@@ -27,5 +26,6 @@
         if (!CanAccessPage) {
             NotFoundListener.NotifyNotFound();            
         }
+        await OnAfterInitializedAsync();
     }
 }

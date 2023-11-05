@@ -226,7 +226,7 @@ internal static class SharedSql
                 from abuse_case_type_of_abuse actoa
                 join node toa on toa.id = actoa.type_of_abuse_id
                 join tenant_node tn on tn.node_id = actoa.abuse_case_id
-                where tn.tenant_id = @tenant_id and tn.url_id = @url_id
+                where tn.tenant_id = @tenant_id and tn.node_id = @node_id
             ) s on s.type_of_abuse_id = t.id
         )
         """;
@@ -259,7 +259,7 @@ internal static class SharedSql
                 from abuse_case_type_of_abuser actoa
                 join node toa on toa.id = actoa.type_of_abuser_id
                 join tenant_node tn on tn.node_id = actoa.abuse_case_id
-                where tn.tenant_id = @tenant_id and tn.url_id = @url_id
+                where tn.tenant_id = @tenant_id and tn.node_id = @node_id
             ) s on s.type_of_abuser_id = t.id
         )
         """;
@@ -287,40 +287,9 @@ internal static class SharedSql
                 jsonb_agg(
                     jsonb_build_object(
                         'NodeIdentification',
-                        jsonb_build_object(
-                            'NodeId', 
-                            node_id,
-                            'UrlId', 
-                            url_id
-                        ),
+                        (select document from identification_for_update_document where id = node_id),
                         'NodeDetailsForUpdate',
-                        jsonb_build_object(
-                           'Id',
-                           node_id,
-                           'NodeTypeName',
-                            node_type_name,
-                            'NodeTypeId',
-                            node_type_id,
-                            'PublisherId', 
-                            publisher_id,
-                            'PublisherName',
-                            publisher_name,
-                            'OwnerId', 
-                            owner_id,
-                            'Title', 
-                            title,
-            		        'TagsForUpdate', 
-                            null,
-                            'TenantNodeDetailsForUpdate',
-                            json_build_object(
-                                'TenantNodesToUpdate',
-                                null
-                            ),
-                            'Tenants',
-                            null,
-                            'Files',
-                            null
-                        ),
+                        (select document from node_details_for_update_document where id = node_id),                        
                         'Party',
                         jsonb_build_object(
                             'Id',
@@ -372,7 +341,6 @@ internal static class SharedSql
                     owner_id,
                     node_type_name,
                     node_type_id,
-                    url_id,
                     party_id,
                     party_name,
                     political_entity_id,
@@ -398,7 +366,6 @@ internal static class SharedSql
                         n.owner_id,
                         nt.name node_type_name,
                         nt.id node_type_id,
-                        tn2.url_id,
                         r.party_id,
                         n1.title party_name,
                         r.political_entity_id,
@@ -488,7 +455,7 @@ internal static class SharedSql
                     join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = tn.tenant_id
         		    join tenant_node tn3 on tn3.node_id = r.id and tn3.tenant_id = tn.tenant_id
                     where tn.tenant_id = @tenant_id
-                    and tn.url_id = @url_id
+                    and tn.node_id = @node_id
                 ) x
                 where status_political_entity > -1 and status_relation > -1
             ) x
@@ -501,40 +468,9 @@ internal static class SharedSql
                 jsonb_agg(
                     jsonb_build_object(
                         'NodeIdentification',
-                        jsonb_build_object(
-                            'NodeId', 
-                            node_id,
-                            'UrlId', 
-                            url_id
-                        ),
+                        (select document from identification_for_update_document where id = node_id),
                         'NodeDetailsForUpdate',
-                        jsonb_build_object(
-                           'Id',
-                           node_id,
-                           'NodeTypeName',
-                            node_type_name,
-                            'NodeTypeId',
-                            node_type_id,
-                            'PublisherId', 
-                            publisher_id,
-                            'PublisherName', 
-                            publisher_name,
-                            'OwnerId', 
-                            owner_id,
-                            'Title', 
-                            title,
-            		        'TagsForUpdate', 
-                            null,
-                            'TenantNodeDetailsForUpdate',
-                            json_build_object(
-                                'TenantNodesToUpdate',
-                                null
-                            ),
-                            'Tenants',
-                            null,
-                            'Files',
-                            null
-                        ),
+                        (select document from node_details_for_update_document where id = node_id),                        
                         'Person',
                         jsonb_build_object(
                             'Id',
@@ -596,7 +532,6 @@ internal static class SharedSql
                     owner_id,
                     node_type_name,
                     node_type_id,
-                    url_id,
                     person_id,
                     person_name,
                     organization_id,
@@ -624,7 +559,6 @@ internal static class SharedSql
                         n.owner_id,
                         nt.name node_type_name,
                         nt.id node_type_id,
-                        tn2.url_id,
                         r.person_id,
                         n1.title person_name,
                         r.organization_id,
@@ -717,7 +651,7 @@ internal static class SharedSql
                     join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = tn.tenant_id
                     join tenant_node tn3 on tn3.node_id = r.id and tn3.tenant_id = tn.tenant_id
                     where tn.tenant_id = @tenant_id
-        		    and {0}.url_id = @url_id
+        		    and {0}.node_id = @node_id
                 ) x
                 where status_other_organization > -1 and status_relation > -1
             ) x
@@ -776,8 +710,7 @@ internal static class SharedSql
             ) "document"
             from organization_type ot
             join term t on t.nameable_id = ot.id
-            join tenant_node tn on tn.node_id = t.vocabulary_id
-            where tn.tenant_id = 1 and tn.url_id = 12622
+            where t.vocabulary_id = 100023
         )
         """;
 
@@ -837,7 +770,7 @@ internal static class SharedSql
             from case_type_case_party_type ctpt 
             join case_party_type cpt on cpt.id = ctpt.case_party_type_id
             join node n on n.id = cpt.id
-            join tenant_node tn on tn.tenant_id = @tenant_id and tn.url_id = @url_id
+            join tenant_node tn on tn.tenant_id = @tenant_id and tn.node_id = @node_id
             join "case" c on c.id = tn.node_id
             join node n2 on n2.id = c.id
             left join (
@@ -943,7 +876,7 @@ internal static class SharedSql
             from case_type_case_party_type ctpt 
             join case_party_type cpt on cpt.id = ctpt.case_party_type_id
             join node n on n.id = cpt.id
-            join tenant_node tn on tn.tenant_id = @tenant_id and tn.url_id = @url_id
+            join tenant_node tn on tn.tenant_id = @tenant_id and tn.node_id = @node_id
             where ctpt.case_type_id = @node_type_id
         )
         """;
@@ -1029,8 +962,7 @@ internal static class SharedSql
                 ) document
             from country c
             join term t on t.nameable_id = c.id
-            join tenant_node tn on tn.node_id = t.vocabulary_id
-            where tn.tenant_id = 1 and tn.url_id = 4126
+            where t.vocabulary_id = 100000
         )
         """;
 
@@ -1129,7 +1061,7 @@ internal static class SharedSql
         		    join term t on t.id = nt2.term_id
         		    join node n on n.id = t.nameable_id
         		    where tn.tenant_id = @tenant_id
-        		    AND tn.url_id = @url_id
+        		    AND tn.node_id = @node_id
         		    AND n.node_type_id = ANY(ARRAY_AGG(nt.id))
         	    ) tags 
         	    from nameable_type nt
@@ -1148,9 +1080,8 @@ internal static class SharedSql
                 case when n.title = 'News paper article' then true else false end is_selected
             from document_type dt
             join term t on t.nameable_id = dt.id
-            join tenant_node tn on tn.node_id = t.vocabulary_id
             join node n on n.id = dt.id 
-            where tn.url_id = 42416 and tn.tenant_id = 1
+            where t.vocabulary_id = 100029
         )
         """;
 
@@ -1186,16 +1117,15 @@ internal static class SharedSql
                 ) document
             from document_type dt
             join term t on t.nameable_id = dt.id
-            join tenant_node tn on tn.node_id = t.vocabulary_id
             join node n on n.id = dt.id 
             left join (
                 select 
                 d.document_type_id
                 from document d
                 join tenant_node tn2 on tn2.node_id = d.id
-                where tn2.url_id = @url_id and tn2.tenant_id = @tenant_id
+                where tn2.node_id = @node_id and tn2.tenant_id = @tenant_id
             ) d on d.document_type_id = dt.id
-            where tn.url_id = 42416 and tn.tenant_id = 1
+            where t.vocabulary_id = 100029
         )
         """;
 
@@ -1223,7 +1153,7 @@ internal static class SharedSql
             from file f
             join node_file nf on nf.file_id = f.id
             join tenant_node tn on tn.node_id = nf.node_id
-            where tn.url_id = @url_id and tn.tenant_id = @tenant_id
+            where tn.node_id = @node_id and tn.tenant_id = @tenant_id
         )
         """;
 
@@ -1242,8 +1172,7 @@ internal static class SharedSql
             from subdivision c
             join bottom_level_subdivision b on b.id = c.id
             join term t on t.nameable_id = c.id
-            join tenant_node tn on tn.node_id = t.vocabulary_id
-            where tn.tenant_id = 1 and tn.url_id = 4126
+            where t.vocabulary_id = 100000
             group by c.country_id
         )
         """;
@@ -1257,10 +1186,6 @@ internal static class SharedSql
                     id,
                     'TenantId',
                     tenant_id,
-                    'UrlId',
-                    url_id,
-                    'UrlPath',
-                    url_path,
                     'NodeId',
                     node_id,
                     'SubgroupId',
@@ -1279,8 +1204,6 @@ internal static class SharedSql
             select
         		tn2.id,
         		tn2.tenant_id,
-        		tn2.url_id,
-        		tn2.url_path,
         		tn2.node_id,
         		tn2.subgroup_id,
         		tn2.publication_status_id,
@@ -1313,7 +1236,7 @@ internal static class SharedSql
                 ) allow_access
                 from tenant_node tn
                 join tenant_node tn2 on tn2.node_id = tn.node_id
-                where tn.url_id = @url_id and tn.tenant_id = @tenant_id
+                where tn.node_id = @node_id and tn.tenant_id = @tenant_id
         ) x 
         where allow_access = true
         )
@@ -1469,9 +1392,7 @@ internal static class SharedSql
             select 
                 jsonb_build_object(
                     'NodeId', 
-                    n.id,
-                    'UrlId', 
-                    @url_id
+                    n.id
                 ) document,
                 n.id
             from node n
@@ -1797,8 +1718,6 @@ internal static class SharedSql
         					null,
                             'TenantId',
                             id,
-        					'UrlPath',
-        					null,
         					'SubgroupId',
         					null,
         					'PublicationStatusId',
@@ -1836,10 +1755,6 @@ internal static class SharedSql
         					tn.id,
                             'TenantId',
                             tn.tenant_id,
-        					'UrlPath',
-        					url_path,
-        					'UrlId',
-        					url_id,
         					'NodeId',
         					node_id,
         					'SubgroupId',
@@ -1855,7 +1770,7 @@ internal static class SharedSql
         		)
         	) document
         	from tenants t
-        	left join tenant_node tn on tn.tenant_id = t.id and tn.url_id = @url_id
+        	left join tenant_node tn on tn.tenant_id = t.id and tn.node_id = @node_id
         )
         """;
 

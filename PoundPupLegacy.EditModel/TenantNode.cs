@@ -6,7 +6,6 @@ public partial class ExistingTenantNodeJsonContext : JsonSerializerContext { }
 public abstract record TenantNode
 {
     public required int TenantId { get; set; }
-    public required string? UrlPath { get; set; }
     public int? SubgroupId { get; set; }
     public required int PublicationStatusId { get; set; }
     public required bool HasBeenStored { get; set; }
@@ -22,7 +21,6 @@ public abstract record TenantNode
     public sealed record ToUpdate: TenantNode
     {
         public int Id { get; set; }
-        public int UrlId { get; set; }
         public int NodeId { get; set; }
         public override void Match(
             Action<ToUpdate> existingTenantNode,
@@ -47,7 +45,6 @@ public abstract record TenantNode
     }
     public sealed record ToCreateForExistingNode: TenantNode
     {
-        public int UrlId { get; set; }
         public int NodeId { get; set; }
         public override void Match(
             Action<ToUpdate> existingTenantNode,

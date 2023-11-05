@@ -96,7 +96,7 @@ internal class EntitySaveService<
             await using var updater = await entityChanger.CreateAsync(connection);
             var nodeToUpdate = updateMapper.Map(node);
             await updater.UpdateAsync(nodeToUpdate);
-            return node.NodeIdentification.UrlId;
+            return node.NodeIdentification.NodeId;
         });
     }
 }

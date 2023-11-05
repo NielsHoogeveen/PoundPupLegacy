@@ -1,0 +1,18 @@
+﻿@page "/coerced_adoption_case/{Id:int}"
+@using PoundPupLegacy.Components
+@inherits NodeViewerPage<ViewModel.Models.CoercedAdoptionCase>
+<NodePageViewer Model="Model">
+    <NodeHandler Model="@Model">
+        <Viewer>
+            <CoercedAdoptionCaseViewer Model="@Model" />
+        </Viewer>
+        <Editor>
+           <CoercedAdoptionCaseUpdater NodeId="@Id"/>
+        </Editor>
+    </NodeHandler>
+</NodePageViewer>
+@code {
+    [Parameter]
+    public override int Id { get; set; }
+
+}

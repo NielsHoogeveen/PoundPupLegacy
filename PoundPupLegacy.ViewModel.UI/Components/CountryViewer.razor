@@ -1,27 +1,28 @@
-﻿@inherits SpecificNodeType
-<HeadContentSetter Title=@Model.Title SiteName=@SiteName Description=@Description />
-<ImageViewer Model="@Model.FlagImage" Class="country-flag" />
-    
-@if (Model is TopLevelCountry topLevelCountry)
-{
-    <div>
-        <label>ISO 3166-1 code</label>
-        @topLevelCountry.ISO3166_1_Code
-    </div>  <div>
-        <label>Region</label>
-        <a href="@topLevelCountry.GlobalRegion.Path">@topLevelCountry.GlobalRegion.Title</a>
-    </div>
-}
-
-
-<SubdivisionTypesViewer Model="@Model.SubdivisionTypes" />
-<OrganizationTypesWithOrganizationsViewer Model="@Model.OrganizationTypes" />
-<AdoptionImportsViewer Model="@Model.AdoptionImports" />
+﻿@using PoundPupLegacy.ViewModel.Models
+@inherits ViewerBase
+@typeparam TModel where TModel: class, Country
+<NameableViewer Model="Model" Description="@Description">
+    <Top>
+        <ImageViewer Model="@Model.FlagImage" Class="country-flag" />
+        @ChildContent
+        <SubdivisionTypesViewer Model="@Model.SubdivisionTypes" />
+        <OrganizationTypesWithOrganizationsViewer Model="@Model.OrganizationTypes" />
+        <AdoptionImportsViewer Model="@Model.AdoptionImports" />
+    </Top>
+    <Bottom></Bottom>
+</NameableViewer>
 @code{
     [Parameter]
     [EditorRequired]
-    public Country Model { get; set; } = default!;
+    public TModel Model { get; set; } = default!;
 
-    protected override string? Description => $"Detailed information about the country {Model.Title}";
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment ChildContent { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public string Description { get; set; } = default!;
+
 }
 

@@ -13,13 +13,13 @@ public enum ProfessionType
 public sealed record ProfessionIdReaderRequest : IRequest
 {
     public required int TenantId { get; init; }
-    public required int UrlId { get; init; }
+    public required int NodeId { get; init; }
     public required ProfessionType ProfessionType { get; init; }
 }
 internal sealed class ProfessionIdReaderFactory : IntDatabaseReaderFactory<Request>
 {
     private static readonly NonNullableIntegerDatabaseParameter TenantId = new() { Name = "tenant_id" };
-    private static readonly NonNullableIntegerDatabaseParameter UrlId = new() { Name = "url_id" };
+    private static readonly NonNullableIntegerDatabaseParameter NodeId = new() { Name = "node_id" };
     private static readonly NonNullableStringDatabaseParameter ProfessionName = new() { Name = "profession_name" };
 
     private static readonly IntValueReader IdReader = new() { Name = "id" };
@@ -34,7 +34,7 @@ internal sealed class ProfessionIdReaderFactory : IntDatabaseReaderFactory<Reque
         join professional_role pr on pr.person_id = p.id
         left join profession prt on prt.id = pr.profession_id
         left join node n on n.id = prt.id
-        where tn.tenant_id = @tenant_id and tn.url_id = @url_id and n.title = @profession_name
+        where tn.tenant_id = @tenant_id and tn.node_id = @node_id and n.title = @profession_name
         """;
     private string GetProfessionName(ProfessionType type)
     {
@@ -51,7 +51,7 @@ internal sealed class ProfessionIdReaderFactory : IntDatabaseReaderFactory<Reque
     {
         return new ParameterValue[] {
             ParameterValue.Create(TenantId, request.TenantId),
-            ParameterValue.Create(UrlId, request.UrlId),
+            ParameterValue.Create(NodeId, request.NodeId),
             ParameterValue.Create(ProfessionName, GetProfessionName(request.ProfessionType))
         };
     }

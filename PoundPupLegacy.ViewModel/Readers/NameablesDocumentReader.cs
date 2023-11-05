@@ -33,10 +33,7 @@ internal sealed class NameableListDocumentReaderFactory : SingleItemDatabaseRead
                     'Title', 
                     n.title,
                     'Path', 
-                    case 
-                        when tn.url_path is null then '/node/' || tn.url_id
-                        else tn.url_path 
-                    end,
+                    '/' || nt.viewer_path || '/' || tn.node_id,
                     'HasBeenPublished', 
                     tn.publication_status_id <> 0,
                     'PublicationStatusId',
@@ -48,7 +45,7 @@ internal sealed class NameableListDocumentReaderFactory : SingleItemDatabaseRead
         join node_type nt on nt.id = n.node_type_id
         join tenant_node tn on tn.node_id = n.id 
         where tn.tenant_id = @tenant_id 
-        and tn.url_id = @url_id
+        and tn.node_id = @node_id
         and n.node_type_id = @node_type_id
         and tn.publication_status_id in 
         (

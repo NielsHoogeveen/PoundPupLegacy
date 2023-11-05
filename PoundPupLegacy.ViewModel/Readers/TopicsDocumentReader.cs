@@ -59,16 +59,14 @@ internal sealed class TopicsDocumentReaderFactory : SingleItemDatabaseReaderFact
                 count(*) over () number_of_entries
             from(
                 select
-            	    case 
-            		    when tn.url_path is null then '/node/' || tn.url_id
-            		    else '/' || url_path
-            	    end path,
+            	    '/' || nt.viewer_path || '/' || tn.node_id path,
             	    tm.name,
                     tn.publication_status_id
                 from tenant tt
                 join system_group sg on sg.id = 0
                 join term tm on tm.vocabulary_id = sg.vocabulary_id_tagging
                 join node n on n.id = tm.nameable_id
+                join node_type nt on nt.id = n.node_type_id
                 join tenant_node tn on tn.node_id = n.id and tn.tenant_id = tt.id
                 where tt.id = @tenant_id
                 and tn.publication_status_id in 

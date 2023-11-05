@@ -24,8 +24,6 @@ internal sealed class DocumentsDocumentReaderFactory : SingleItemDatabaseReaderF
     public override string Sql => SQL;
 
     const string SQL = $"""
-        with
-        {SharedSql.ACCESSIBLE_PUBLICATIONS_STATUS}
         select
             jsonb_build_object(
                 'TermNames',
@@ -102,42 +100,39 @@ internal sealed class DocumentsDocumentReaderFactory : SingleItemDatabaseReaderF
         				    select 
                             count(*) over() number_of_elements,
         				    t.id term_id,
-        				    nt.node_id,
+        				    ntm.node_id,
         				    n.title,
                             n.changed_date_time,
                             tn.publication_status_id,
                             lower(d.published) publication_date,
         				    stn.teaser,
-        				    case
-        					    when tn.url_path is null then '/node/' || tn.url_id
-        					    else '/' || tn.url_path
-        				    end path,
+        				    '/' || nt.viewer_path || '/' || tn.node_id path,
                             t.name term_name,
-                            case 
-                                when tn2.url_path is null then '/node/' || tn2.url_id
-                                else '/' || tn2.url_path
-                            end term_path,
-                            nt2.tag_label_name term_type_name,
+                            '/' || nt2.viewer_path || '/' || tn2.node_id term_path,
+                            nmt2.tag_label_name term_type_name,
         				    case 
         					    when n.node_type_id = 41 then 5
         					    when n.node_type_id = 23 then 2
         					    else 1
         				    end weight
         				    from node n
+                            join node_type nt on n.node_type_id = nt.id
                             join simple_text_node stn on stn.id = n.id
                             join document d on d.id = n.id
         				    join tenant_node tn on tn.node_id = n.id and tn.tenant_id = @tenant_id
-        				    join node_term nt on nt.node_id = n.id 
-        				    join term t on t.id = nt.term_id
+        				    join node_term ntm on ntm.node_id = n.id 
+        				    join term t on t.id = ntm.term_id
                             join node n2 on n2.id = t.nameable_id
-                            left join nameable_type nt2 on nt2.id = n2.node_type_id and nt2.tag_label_name is not null
+                            join node_type nt2 on n2.node_type_id = nt2.id
+                            left join nameable_type nmt2 on nmt2.id = n2.node_type_id and nmt2.tag_label_name is not null
                             join tenant_node tn2 on tn2.node_id = t.nameable_id and tn2.tenant_id = @tenant_id
         				    where tn.publication_status_id in 
                             (
                                 select 
-                                id 
-                                from accessible_publication_status 
+                                publication_status_id  
+                                from user_publication_status 
                                 where tenant_id = tn.tenant_id 
+                                and user_id = @user_id
                                 and (
                                     subgroup_id = tn.subgroup_id 
                                     or subgroup_id is null and tn.subgroup_id is null
@@ -146,9 +141,10 @@ internal sealed class DocumentsDocumentReaderFactory : SingleItemDatabaseReaderF
                             and tn2.publication_status_id in 
                             (
                                 select 
-                                id 
-                                from accessible_publication_status 
+                                publication_status_id 
+                                from user_publication_status 
                                 where tenant_id = tn2.tenant_id 
+                                and user_id = @user_id
                                 and (
                                     subgroup_id = tn2.subgroup_id 
                                     or subgroup_id is null and tn2.subgroup_id is null
@@ -159,10 +155,10 @@ internal sealed class DocumentsDocumentReaderFactory : SingleItemDatabaseReaderF
                                 node_id
                                 from (
                                     select
-                                    nt.node_id,
+                                    ntm.node_id,
                                     count(*) over() c
                                     from term t
-                                    left join node_term nt on nt.term_id = t.id and nt.node_id = n.id
+                                    left join node_term ntm on ntm.term_id = t.id and ntm.node_id = n.id
                                     where t.id = ANY(@terms)
                                 ) x
                                 group by node_id, c
@@ -215,16 +211,17 @@ internal sealed class DocumentsDocumentReaderFactory : SingleItemDatabaseReaderF
         			    join term t on t.nameable_id = n.id 
         			    join tenant_node tn on tn.node_id = n.id and tn.tenant_id = @tenant_id
         			    join vocabulary v on v.id = t.vocabulary_id
-        			    join node_term nt on nt.term_id = t.id
-        			    join node n2 on n2.id = nt.node_id
+        			    join node_term ntm on ntm.term_id = t.id
+        			    join node n2 on n2.id = ntm.node_id
                         join simple_text_node stn on stn.id = n2.id
         			    join tenant_node tn2 on tn2.node_id = n2.id and tn2.tenant_id = @tenant_id
         			    where tn.publication_status_id in 
                         (
                             select 
-                            id 
-                            from accessible_publication_status 
+                            publication_status_id 
+                            from user_publication_status 
                             where tenant_id = tn.tenant_id 
+                            and user_id = @user_id
                             and (
                                 subgroup_id = tn.subgroup_id 
                                 or subgroup_id is null and tn.subgroup_id is null
@@ -233,9 +230,10 @@ internal sealed class DocumentsDocumentReaderFactory : SingleItemDatabaseReaderF
                         and tn2.publication_status_id in 
                         (
                             select 
-                            id 
-                            from accessible_publication_status 
+                            publication_status_id  
+                            from user_publication_status 
                             where tenant_id = tn2.tenant_id 
+                            and user_id = @user_id
                             and (
                                 subgroup_id = tn2.subgroup_id 
                                 or subgroup_id is null and tn2.subgroup_id is null
@@ -247,10 +245,10 @@ internal sealed class DocumentsDocumentReaderFactory : SingleItemDatabaseReaderF
                             node_id
                             from (
                                 select
-                                nt.node_id,
+                                ntm.node_id,
                                 count(*) over() c
                                 from term t
-                                left join node_term nt on nt.term_id = t.id and nt.node_id = n2.id
+                                left join node_term ntm on ntm.term_id = t.id and ntm.node_id = n2.id
                                 where t.id = ANY(@terms)
                             ) x
                             group by node_id, c

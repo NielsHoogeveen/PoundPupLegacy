@@ -33,14 +33,6 @@ internal sealed class SiteDataService(
 
     }
 
-    public string? GetUrlPathForId(int urlId)
-    {
-        if (siteData.Tenant.IdToUrl.TryGetValue(urlId, out var urlPath)) {
-            return urlPath;
-        }
-        return null;
-    }
-
     public User? GetUserByNameIdentifier(string id)
     {
         return siteData.Users.FirstOrDefault(x => x.Value.NameIdentifier == id).Value;
@@ -77,10 +69,7 @@ internal sealed class SiteDataService(
         var user = await GetUser(userId);
         if (user is not null) {
 
-            return user!.Actions.Contains(new UserAction { Path = path });
-        }
-        else {
-
+            return user!.Actions.Any(x => x.Path == path );
         }
         return false;
     }
@@ -95,24 +84,6 @@ internal sealed class SiteDataService(
         return false;
 
     }
-
-    public int? GetIdForUrlPath(string urlPath)
-    {
-        if (siteData.Tenant.UrlToId.TryGetValue(urlPath[1..], out var urlId)) {
-            return urlId;
-        }
-        return null;
-    }
- 
-    public int? GetIdForUrlPath(HttpRequest httpRequest)
-    {
-        var urlPath = httpRequest.Path.Value![1..];
-        if (siteData.Tenant.UrlToId.TryGetValue(urlPath, out var urlId)) {
-            return urlId;
-        }
-        return null;
-    }
-
 
     public async Task<List<MenuItem>> GetMenuItemsForUser(int userId)
     {

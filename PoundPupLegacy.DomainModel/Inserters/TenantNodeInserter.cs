@@ -17,7 +17,7 @@ public sealed class TenantNodeInserterFactory : AutoGenerateIdDatabaseInserterFa
         return new ParameterValue[] {
             ParameterValue.Create(TenantId, request.TenantId),
             ParameterValue.Create(UrlId, request.UrlId),
-            ParameterValue.Create(UrlPath, request.UrlPath),
+            ParameterValue.Create(UrlPath, null),
             ParameterValue.Create(NodeId, request.NodeId),
             ParameterValue.Create(SubgroupId, request.SubgroupId),
             ParameterValue.Create(PublicationStatusId, request.PublicationStatusId)

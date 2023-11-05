@@ -1,26 +1,32 @@
-﻿@inherits SpecificNodeType
-@if (Model is not null) {
-    <HeadContentSetter Title=@Model.Title SiteName=@SiteName Description=@Description />
-    <ImageViewer Model="@Model.Portrait" />
-    <LabeledNullableStringViewer Value="@Model.FirstName" Label="First name"/>
-    <LabeledNullableStringViewer Value="@Model.MiddleName" Label="Middle name" />
-    <LabeledNullableStringViewer Value="@Model.LastName" Label="Last name" />
-    <LabeledNullableStringViewer Value="@Model.Suffix" Label="Suffix" />
-    <LabeledNullableStringViewer Value="@Model.FullName" Label="Full name" />
-    <LabeledNullableDateTimeViewer Value="@Model.DateOfBirth" Label="Date of birth" Format="DateTimeFormat.YearMonthAsTextDay"/>
-    <LabeledNullableDateTimeViewer Value="@Model.DateOfDeath" Label="Date of death" Format="DateTimeFormat.YearMonthAsTextDay" />
-    <LargeTextViewer Value="@Model.Description" />
-    <ProfessionsViewer Model="@Model.Professions" />
-    <PartyCaseTypeViewer Model="@Model.PartyCaseTypes" />
-    <OrganizationPersonRelationsViewer Model="@Model.OrganizationPersonRelations" />
-    <InterPersonalRelationsViewer Model="@Model.InterPersonalRelations" />
-    <PartyPoliticalEntityRelationsViewer Model="@Model.PartyPoliticalEntityRelations" />
-    <BillActionsViewer Model="@Model.BillActions" />
-}
+﻿@using PoundPupLegacy.ViewModel.Models
+@inherits NodeViewerBase<Person>
+<NameableViewer Model="Model" Description="@Description">
+    <Top>
+        <ImageViewer Model="@Model.Portrait" />
+        <LabeledNullableStringViewer Value="@Model.FirstName" Label="First name"/>
+        <LabeledNullableStringViewer Value="@Model.MiddleName" Label="Middle name" />
+        <LabeledNullableStringViewer Value="@Model.LastName" Label="Last name" />
+        <LabeledNullableStringViewer Value="@Model.Suffix" Label="Suffix" />
+        <LabeledNullableStringViewer Value="@Model.FullName" Label="Full name" />
+        <LabeledNullableDateTimeViewer Value="@Model.DateOfBirth" Label="Date of birth" Format="DateTimeFormat.YearMonthAsTextDay"/>
+        <LabeledNullableDateTimeViewer Value="@Model.DateOfDeath" Label="Date of death" Format="DateTimeFormat.YearMonthAsTextDay" />
+        <LargeTextViewer Value="@Model.Description" />
+        <ProfessionsViewer Model="@Model.Professions" />
+        <PartyCaseTypeViewer Model="@Model.PartyCaseTypes" />
+        <OrganizationPersonRelationsViewer Model="@Model.OrganizationPersonRelations" />
+        <InterPersonalRelationsViewer Model="@Model.InterPersonalRelations" />
+        <PartyPoliticalEntityRelationsViewer Model="@Model.PartyPoliticalEntityRelations" />
+        <BillActionsViewer Model="@Model.BillActions" />
+    </Top>
+    <Bottom>
+        <div></div>
+    </Bottom>
+</NameableViewer>
 @code{
     [Parameter]
     [EditorRequired]
-    public Person? Model { get; set; } 
+    public override Person Model { get; set; } = default!;
 
-    protected override string? Description => $"Detailed information about the person {Model?.Title}";
+    protected override string? Description => $"Detailed information about the person {Model.Title}";
+    protected override string? ItemDescription => "";
 }

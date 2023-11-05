@@ -309,7 +309,6 @@ public abstract record PersonOrganizationRelation : Relation
                     public required NodeDetails.ForUpdate NodeDetailsForUpdate { get; init; }
                     public required NodeIdentification NodeIdentification { get; init; }
                     public int NodeId { get; init; }
-                    public int UrlId { get; set; }
                     public required PersonListItem Person { get; set; }
                     public required OrganizationListItem Organization { get; set; }
                     public override PersonItem PersonItem => Person;

@@ -26,7 +26,7 @@ internal sealed class FathersRightsViolationCaseUpdateDocumentReaderFactory : No
             join "case" c on c.id = n.id
             join fathers_rights_violation_case frc on frc.id = c.id
             join tenant_node tn on tn.node_id = n.id
-            where tn.tenant_id = @tenant_id and tn.url_id = @url_id
+            where tn.tenant_id = @tenant_id and tn.node_id = @node_id
         """;
 
 }

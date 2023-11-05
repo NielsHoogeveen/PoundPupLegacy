@@ -1,26 +1,31 @@
 ﻿using Microsoft.Extensions.Logging;
 using Npgsql;
 using PoundPupLegacy.ViewModel.Readers;
-using System.Data;
+using System.Diagnostics;
 
 namespace PoundPupLegacy.ViewModel.UI.Services.Implementation;
 
-internal sealed class FetchNodeService(
+internal sealed class FetchNodeService<T>(
     NpgsqlDataSource dataSource,
-    ILogger<FetchNodeService> logger,
-    ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, Node> nodeDocumentReaderFactory
-) : DatabaseService(dataSource, logger), IFetchNodeService
+    ILogger<FetchNodeService<T>> logger,
+    ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, T> nodeDocumentReaderFactory
+) : DatabaseService(dataSource, logger), IFetchNodeService<T>
+    where T: class, Node
 {
-    public async Task<Node?> FetchNode(int urlId, int userId, int tenantId)
+    public async Task<T?> FetchNode(int nodeId, int userId, int tenantId)
     {
-        logger.LogInformation($"Fetching node {urlId}");
+
         return await WithConnection(async (connection) => {
+            var sw = new Stopwatch();
+            sw.Start();
             await using var reader = await nodeDocumentReaderFactory.CreateAsync(connection);
-            return await reader.ReadAsync(new NodeDocumentReaderRequest {
-                UrlId = urlId,
+            var result = await reader.ReadAsync(new NodeDocumentReaderRequest {
+                NodeId = nodeId,
                 UserId = userId,
                 TenantId = tenantId
             });
+            logger.LogInformation($"Fetching {typeof(T).Name} {nodeId} in {sw.ElapsedMilliseconds} ms");
+            return result;
         });
     }
 }

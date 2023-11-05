@@ -11,8 +11,6 @@ public interface ISiteDataService
 
     User? GetUserByNameIdentifier(string id);
 
-    string? GetUrlPathForId(int urlId);
-
     Task<bool> HasAccess(int userId, string path);
 
     Task<bool> CanEdit(ViewModel.Models.Node node, int userId);
@@ -22,8 +20,6 @@ public interface ISiteDataService
     Task<bool> CanCreate(int nodeTypeId, int userGroupId, int userId);
 
     Tenant GetTenant();
-
-    int? GetIdForUrlPath(string urlPath);
 
     Task<List<MenuItem>> GetMenuItemsForUser(int userId);
 

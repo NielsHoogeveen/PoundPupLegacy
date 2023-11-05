@@ -59,15 +59,13 @@ internal sealed class PersonsDocumentReaderFactory : SingleItemDatabaseReaderFac
                 count(*) over () number_of_entries
             from(
                 select
-            	    case 
-            		    when tn.url_path is null then '/node/' || tn.url_id
-            		    else '/' || url_path
-            	    end path,
+            	    '/' || nt.viewer_path || '/' || tn.node_id path,
             	    n.title,
                     tn.publication_status_id
                 from tenant_node tn
                 join person p on p.id = tn.node_id
                 join node n on n.id = p.id
+                join node_type nt on nt.id = n.node_type_id
                 where tn.tenant_id = @tenant_id
                 and tn.publication_status_id in 
                 (

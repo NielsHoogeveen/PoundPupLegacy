@@ -4,7 +4,6 @@ public abstract record TenantNode : IRequest
 {
     private TenantNode() { }
     public required int TenantId { get; init; }
-    public required string? UrlPath { get; init; }
     public required int? SubgroupId { get; init; }
     public required int PublicationStatusId { get; init; }
     public sealed record ToUpdate : TenantNode, CertainlyIdentifiable
@@ -23,7 +22,6 @@ public abstract record TenantNode : IRequest
             {
                 return new ForExistingNode {
                     TenantId = TenantId,
-                    UrlPath = UrlPath,
                     SubgroupId = SubgroupId,
                     PublicationStatusId = PublicationStatusId,
                     UrlId = UrlId ?? nodeId,

@@ -72,10 +72,7 @@ internal sealed class RecentUserPostsDocumentReaderFactory : SingleItemDatabaseR
         	        select
         	        n.title,
         	        p.name publisher_name,
-        	        case 
-        		        when tn.url_path is null then '/node/' || tn.url_id
-        		        else '/' || tn.url_path
-        	        end path,
+        	        '/' || nt.viewer_path || '/' || tn.node_id path,
                     n.created_date_time,
         	        n.changed_date_time,
         	        nt.name node_type,

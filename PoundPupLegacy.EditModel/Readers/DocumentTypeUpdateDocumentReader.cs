@@ -21,6 +21,6 @@ internal sealed class DocumentTypeUpdateDocumentReaderFactory : NodeUpdateDocume
             join node_type nt on nt.id = n.node_type_id
             join nameable nm on nm.id = n.id
             join tenant_node tn on tn.node_id = n.id
-            where tn.tenant_id = @tenant_id and tn.url_id = @url_id and n.node_type_id = @node_type_id
+            where tn.tenant_id = @tenant_id and tn.node_id = @node_id and n.node_type_id = @node_type_id
         """;
 }

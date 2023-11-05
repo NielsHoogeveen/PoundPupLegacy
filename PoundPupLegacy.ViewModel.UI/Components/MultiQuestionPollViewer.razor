@@ -1,29 +1,34 @@
-﻿@if (Model.PollStatusId == 0)
-{
-    <div>
-        <label>Status: </label>
-        Closed
-    </div>
-}
-@if (Model.PollStatusId == 1)
-{
-    <div>
-        <label>Status: </label>
-        Open
-    </div>
-}
-@if (Model.DateTimeClosure > DateTime.Now)
-{
-    <div>
-        <label>Closes: </label>
-        @Model.DateTimeClosure.Value.ToString("yyyy MMM dd")
-    </div>
-}
+﻿@using PoundPupLegacy.ViewModel.Models
+@inherits SimpleTextNodeViewerBase<MultiQuestionPoll>
+<SimpleTextNodeViewer Model="Model" Description="Description">
+    @if (Model.PollStatusId == 0)
+    {
+        <div>
+            <label>Status: </label>
+            Closed
+        </div>
+    }
+    @if (Model.PollStatusId == 1)
+    {
+        <div>
+            <label>Status: </label>
+            Open
+        </div>
+    }
+    @if (Model.DateTimeClosure > DateTime.Now)
+    {
+        <div>
+            <label>Closes: </label>
+            @Model.DateTimeClosure.Value.ToString("yyyy MMM dd")
+        </div>
+    }
 
-<PollQuestionsViewer Model="@Model.PollQuestions" />
-
+    <PollQuestionsViewer Model="@Model.PollQuestions" />
+</SimpleTextNodeViewer>
 @code{
     [Parameter]
     [EditorRequired]
-    public MultiQuestionPoll Model { get; set; } = default!;
+    public override MultiQuestionPoll Model { get; set; } = default!;
+
+    protected override string ItemDescription => $"Poll";
 }

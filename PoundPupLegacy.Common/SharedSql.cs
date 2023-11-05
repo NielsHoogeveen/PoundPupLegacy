@@ -2,7 +2,19 @@
 
 public class SharedSql
 {
+
     public const string ACCESSIBLE_PUBLICATIONS_STATUS = """
+        accessible_publication_status as(
+            select 
+        	    publication_status_id id,
+        	    tenant_id,
+        	    subgroup_id
+            from user_publication_status
+            where user_id = @user_id
+        )
+        """;
+
+    public const string ACCESSIBLE_PUBLICATIONS_STATUS_OLD = """
         accessible_publication_status as(
             select 
         	    distinct

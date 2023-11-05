@@ -14,7 +14,7 @@ input ~ .tab {
 /* show contents only for selected tab */
 #tab1:checked ~ .tab.content1,
 #tab2:checked ~ .tab.content2,
-#tab3:checked ~ .tab.content3{
+#tab3:checked ~ .tab.content3 {
     display: block;
     padding: 0;
 }
@@ -37,6 +37,7 @@ input.tab-button ~ .tab { /* grey line between tab and contents */
     border-top: 1px solid #999;
     padding: 12px;
 }
+
 ::deep .title-editor {
     width: 100%;
     font-size: 1.5em;
@@ -44,18 +45,20 @@ input.tab-button ~ .tab { /* grey line between tab and contents */
     border: none;
     padding: 0.5em;
     margin-bottom: 1em;
-    margin-top:0.5em;
+    margin-top: 0.5em;
 }
-.node-access{
+
+.node-access {
     width: 50%;
     display: grid;
     grid-template-columns: 1fr 1fr;
 }
 
-.node-access .header {
-    background-color: grey;
-    color: white;
-}
+    .node-access .header {
+        background-color: grey;
+        color: white;
+    }
+
 #create-comment {
     margin-left: 0.5em;
     color: var(--link-color);

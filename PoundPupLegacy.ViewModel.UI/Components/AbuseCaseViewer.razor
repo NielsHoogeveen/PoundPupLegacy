@@ -1,13 +1,21 @@
-﻿<LabeledNullableLinkViewer Value="Model.ChildPlacementType" Label="Child placement type"/>
-<LabeledNullableLinkViewer Value="Model.FamilySize" Label="Family size" />
-<LabeledNullableBooleanViewer Value="Model.HomeSchoolingInvolved" Label="Homeschooling involved" />
-<LabeledNullableBooleanViewer Value="Model.FundamentalFaithInvolved" Label="Fundamental faith involved" />
-<LabeledNullableBooleanViewer Value="Model.DisabilitiesInvolved" Label="Disabilities involved" />
-<LabeledCommaSeparatedLinkListViewer Links="Model.TypesOfAbuse" Label="Type of abuse" />
-<LabeledCommaSeparatedLinkListViewer Links="Model.TypesOfAbuser" Label="Type of abuser" />
+﻿@inherits NodeViewerBase<AbuseCase>
+
+<CaseViewer Model="@Model" Description="@Description" >
+    <LabeledNullableLinkViewer Value="Model.ChildPlacementType" Label="Child placement type"/>
+    <LabeledNullableLinkViewer Value="Model.FamilySize" Label="Family size" />
+    <LabeledNullableBooleanViewer Value="Model.HomeSchoolingInvolved" Label="Homeschooling involved" />
+    <LabeledNullableBooleanViewer Value="Model.FundamentalFaithInvolved" Label="Fundamental faith involved" />
+    <LabeledNullableBooleanViewer Value="Model.DisabilitiesInvolved" Label="Disabilities involved" />
+    <LabeledCommaSeparatedLinkListViewer Links="Model.TypesOfAbuse" Label="Type of abuse" />
+    <LabeledCommaSeparatedLinkListViewer Links="Model.TypesOfAbuser" Label="Type of abuser" />
+</CaseViewer>
 
 @code{
     [Parameter]
     [EditorRequired]
-    public AbuseCase Model { get; set; } = default!;
+    public override AbuseCase Model { get; set; } = default!;
+
+    protected override string ItemDescription => Model.ChildPlacementType is not null
+        ? $"abuse in {Model.ChildPlacementType.Title} case"
+        : "";
 }
