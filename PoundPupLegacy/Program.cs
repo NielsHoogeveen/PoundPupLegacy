@@ -13,6 +13,7 @@ using PoundPupLegacy.Areas.Identity;
 using Microsoft.AspNetCore.Components.Authorization;
 using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Components.Server.Circuits;
+using System.Diagnostics;
 
 namespace PoundPupLegacy;
 
@@ -137,6 +138,11 @@ public sealed class Program
 
         //app.UseRateLimiter();
         app.UseIpRateLimiting();
+        app.Use(async (context, next) => {
+            Console.WriteLine($"{context.Request.Path} {context.Response.StatusCode}");
+            await next();
+            Console.WriteLine($"{context.Request.Path} {context.Response.StatusCode}");
+        });
 
         app.Use(async (context, next) => {
             await next();

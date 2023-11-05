@@ -12,8 +12,8 @@ public abstract record CountryBase: NameableBase, Country{
             }
         }
     }
-    private SubdivisionType[] subdivisionTypes = Array.Empty<SubdivisionType>();
-    public required SubdivisionType[] SubdivisionTypes {
+    private CountrySubdivisionType[] subdivisionTypes = Array.Empty<CountrySubdivisionType>();
+    public required CountrySubdivisionType[] SubdivisionTypes {
         get => subdivisionTypes;
         init {
             if (value is not null) {
@@ -30,7 +30,7 @@ public interface Country : PoliticalEntity
 
     OrganizationTypeWithOrganizations[] OrganizationTypes { get; }
 
-    SubdivisionType[] SubdivisionTypes { get; }
+    CountrySubdivisionType[] SubdivisionTypes { get; }
 
     Image FlagImage { get; }
 

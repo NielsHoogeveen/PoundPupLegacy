@@ -1408,7 +1408,7 @@ internal static class SharedSql
                     'NodeTypeId',
                     nt.id,
                     'NodeTypeViewerPath',
-                    nt.viewer_path.
+                    nt.viewer_path,
                     'PublisherId', 
                     @user_id,
                     'PublisherName',

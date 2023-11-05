@@ -819,15 +819,20 @@ internal class SharedViewerSql
                 FROM(
         	        select
         		        distinct
-        		        n.title subdivision_type_name, 
+                        n.title country_name,
+                        n.id country_id,
+                        nt2.viewer_path country_viewer_path,
+        		        n3.title subdivision_type_name, 
         		        s.name subdivision_name,
         		        tn2.node_id,
                         nt2.viewer_path
         	        from country c
+                    join node n on n.id = c.id
+                    join node_type nt on nt.id = n.node_type_id
         	        join tenant_node tn on tn.node_id = c.id and tn.tenant_id = @tenant_id and tn.node_id = @node_id
         	        join tenant t on t.id = tn.tenant_id
         	        join subdivision s on s.country_id = c.id
-        	        join node n on n.id = s.subdivision_type_id
+        	        join node n3 on n3.id = s.subdivision_type_id
                     join node n2 on n2.id = s.id
                     join node_type nt2 on nt2.id = n2.node_type_id
         	        join tenant_node tn2 on tn2.node_id = s.id and tn2.tenant_id = t.id

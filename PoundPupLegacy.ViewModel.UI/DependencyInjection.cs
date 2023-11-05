@@ -47,6 +47,7 @@ public static class DependencyInjection
         services.AddFetchService<PersonOrganizationRelationType>();
         services.AddFetchService<Profession>();
         services.AddFetchService<SingleQuestionPoll>();
+        services.AddFetchService<SubdivisionType>();
         services.AddFetchService<TypeOfAbuse>();
         services.AddFetchService<TypeOfAbuser>();
         services.AddFetchService<WrongfulMedicationCase>();

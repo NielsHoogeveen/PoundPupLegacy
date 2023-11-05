@@ -1,14 +1,14 @@
 ﻿namespace PoundPupLegacy.ViewModel.Models;
 
-[JsonSerializable(typeof(SubdivisionType))]
-public partial class SubdivisionTypeJsonContext : JsonSerializerContext { }
+[JsonSerializable(typeof(CountrySubdivisionType))]
+public partial class CountrySubdivisionTypeJsonContext : JsonSerializerContext { }
 
-public sealed record SubdivisionType: NameableBase
+public sealed record CountrySubdivisionType
 {
     public required string Name { get; init; }
 
-    private SubdivisionListEntry[] subdivisions = Array.Empty<SubdivisionListEntry>();
-    public required SubdivisionListEntry[] Subdivisions {
+    private CountrySubdivisionListEntry[] subdivisions = Array.Empty<CountrySubdivisionListEntry>();
+    public required CountrySubdivisionListEntry[] Subdivisions {
         get => subdivisions;
         init {
             if (value is not null) {
