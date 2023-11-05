@@ -1,0 +1,11 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+@inherits SimpleNameableViewerBase<SubdivisionType>
+<SimpleNameableViewer Model="Model" Description="Description">
+    &nbsp;
+</SimpleNameableViewer>
+@code{
+    [Parameter]
+    [EditorRequired]
+    public override SubdivisionType Model { get; set; } = default!;
+
+}

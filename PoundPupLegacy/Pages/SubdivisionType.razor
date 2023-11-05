@@ -1,0 +1,17 @@
+﻿@page "/subdivision_type/{Id:int}"
+@using PoundPupLegacy.Components
+@inherits NodeViewerPage<ViewModel.Models.SubdivisionType>
+<NodePageViewer Model="Model">
+    <NodeHandler Model="@Model">
+        <Viewer>
+            <SubdivisionTypeViewer Model="@Model" />
+        </Viewer>
+        <Editor>
+        </Editor>
+    </NodeHandler>
+</NodePageViewer>
+@code {
+    [Parameter]
+    public override int Id { get; set; }
+
+}

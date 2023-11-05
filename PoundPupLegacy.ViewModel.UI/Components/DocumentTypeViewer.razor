@@ -1,0 +1,11 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+@inherits SimpleNameableViewerBase<DocumentType>
+<SimpleNameableViewer Model="Model" Description="Description">
+    &nbsp;
+</SimpleNameableViewer>
+@code{
+    [Parameter]
+    [EditorRequired]
+    public override DocumentType Model { get; set; } = default!;
+
+}

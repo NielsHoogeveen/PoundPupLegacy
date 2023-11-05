@@ -11,5 +11,5 @@ public sealed record UserCreateAction: IUserAction
     public required string NodeTypeName { get; init; }
     public required int UserGroupId { get; init; }
 
-    public string Path => $"/create/{NodeTypeName}";
+    public string Path => $"/{NodeTypeName.Replace(" ", "_").Replace("-", "_").ToLower()}/create";
 }

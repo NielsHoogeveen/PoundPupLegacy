@@ -1,0 +1,11 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+@inherits SimpleNameableViewerBase<TypeOfAbuser>
+<SimpleNameableViewer Model="Model" Description="Description">
+    &nbsp;
+</SimpleNameableViewer>
+@code{
+    [Parameter]
+    [EditorRequired]
+    public override TypeOfAbuser Model { get; set; } = default!;
+
+}

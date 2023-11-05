@@ -1,0 +1,18 @@
+﻿@page "/inter_personal_relation_type/{Id:int}"
+@using PoundPupLegacy.Components
+@inherits NodeViewerPage<ViewModel.Models.InterPersonalRelationType>
+<NodePageViewer Model="Model">
+    <NodeHandler Model="@Model">
+        <Viewer>
+            <InterPersonalRelationTypeViewer Model="@Model" />
+        </Viewer>
+        <Editor>
+            <InterPersonalRelationTypeUpdater NodeId="@Id" />
+        </Editor>
+    </NodeHandler>
+</NodePageViewer>
+@code {
+    [Parameter]
+    public override int Id { get; set; }
+
+}

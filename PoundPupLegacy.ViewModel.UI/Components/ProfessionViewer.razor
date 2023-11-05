@@ -1,0 +1,11 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+@inherits SimpleNameableViewerBase<Profession>
+<SimpleNameableViewer Model="Model" Description="Description">
+    &nbsp;
+</SimpleNameableViewer>
+@code{
+    [Parameter]
+    [EditorRequired]
+    public override Profession Model { get; set; } = default!;
+
+}

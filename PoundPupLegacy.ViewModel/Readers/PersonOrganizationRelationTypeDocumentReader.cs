@@ -3,7 +3,7 @@
 using PoundPupLegacy.ViewModel.Models;
 using Request = NodeDocumentReaderRequest;
 
-internal sealed class BasicNameableDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, BasicNameable>
+internal sealed class PersonOrganizationRelationTypeDocumentReaderFactory : SingleItemDatabaseReaderFactory<Request, PersonOrganizationRelationType>
 {
     private static readonly NonNullableIntegerDatabaseParameter TenantIdParameter = new() { Name = "tenant_id" };
     private static readonly NonNullableIntegerDatabaseParameter UserIdParameter = new() { Name = "user_id" };
@@ -64,7 +64,7 @@ internal sealed class BasicNameableDocumentReaderFactory : SingleItemDatabaseRea
                 FROM node n
                 join tenant_node tn on tn.node_id = n.id
                 join nameable nm on nm.id = n.id 
-                join basic_nameable bn on bn.id = n.id
+                join person_organization_relation_type bn on bn.id = n.id
                 JOIN publisher p on p.id = n.publisher_id
                 where tn.tenant_id = @tenant_id and tn.node_id = @node_id
                 and tn.publication_status_id in 
@@ -122,8 +122,8 @@ internal sealed class BasicNameableDocumentReaderFactory : SingleItemDatabaseRea
         };
     }
 
-    protected override BasicNameable? Read(NpgsqlDataReader reader)
+    protected override PersonOrganizationRelationType? Read(NpgsqlDataReader reader)
     {
-        return reader.GetFieldValue<BasicNameable>(0);
+        return reader.GetFieldValue<PersonOrganizationRelationType>(0);
     }
 }

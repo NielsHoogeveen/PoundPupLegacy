@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(SubdivisionType))]
 public partial class SubdivisionTypeJsonContext : JsonSerializerContext { }
 
-public sealed record SubdivisionType
+public sealed record SubdivisionType: NameableBase
 {
     public required string Name { get; init; }
 

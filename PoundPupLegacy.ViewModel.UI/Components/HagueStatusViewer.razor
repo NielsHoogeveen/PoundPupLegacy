@@ -1,0 +1,11 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+@inherits SimpleNameableViewerBase<HagueStatus>
+<SimpleNameableViewer Model="Model" Description="Description">
+    &nbsp;
+</SimpleNameableViewer>
+@code{
+    [Parameter]
+    [EditorRequired]
+    public override HagueStatus Model { get; set; } = default!;
+
+}

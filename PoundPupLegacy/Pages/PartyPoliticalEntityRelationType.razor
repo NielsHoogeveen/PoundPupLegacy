@@ -1,0 +1,18 @@
+﻿@page "/party_political_entity_relation_type/{Id:int}"
+@using PoundPupLegacy.Components
+@inherits NodeViewerPage<ViewModel.Models.PartyPoliticalEntityRelationType>
+<NodePageViewer Model="Model">
+    <NodeHandler Model="@Model">
+        <Viewer>
+            <PartyPoliticalEntityRelationTypeViewer Model="@Model" />
+        </Viewer>
+        <Editor>
+            <PartyPoliticalEntityRelationTypeUpdater NodeId="@Id" />
+        </Editor>
+    </NodeHandler>
+</NodePageViewer>
+@code {
+    [Parameter]
+    public override int Id { get; set; }
+
+}

@@ -1,0 +1,18 @@
+﻿@page "/hague_status/{Id:int}"
+@using PoundPupLegacy.Components
+@inherits NodeViewerPage<ViewModel.Models.HagueStatus>
+<NodePageViewer Model="Model">
+    <NodeHandler Model="@Model">
+        <Viewer>
+            <HagueStatusViewer Model="@Model" />
+        </Viewer>
+        <Editor>
+            <HagueStatusUpdater NodeId="@Id" />
+        </Editor>
+    </NodeHandler>
+</NodePageViewer>
+@code {
+    [Parameter]
+    public override int Id { get; set; }
+
+}
