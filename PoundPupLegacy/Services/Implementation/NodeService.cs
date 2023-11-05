@@ -28,7 +28,11 @@ public class NodeService(
 
             var reader = await command.ExecuteReaderAsync();
             if(await reader.ReadAsync()) {
-                return reader.GetString(0);
+                if (!reader.IsDBNull(0)) {
+                    return reader.GetString(0);
+                }
+                logger.LogInformation($"path is null for url_id {urlId}");
+                return null;
             }
             return null;
         });
