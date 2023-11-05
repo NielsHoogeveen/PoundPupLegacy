@@ -1585,12 +1585,16 @@ internal static class SharedSql
                                 (
                                     'Id',
                                     null,
+                                    'NodeId',
+                                    null,
                                     'Name',
                                     '',
                                     'VocabularyId',
                                     v.id,
                                     'IsMainTerm',
-                                    true
+                                    true,
+                                    'ParentIds',
+                                    null
                                 )
                             )
                         )
@@ -1606,6 +1610,8 @@ internal static class SharedSql
                                 jsonb_build_object
                                 (
                                     'Id',
+                                    null,
+                                    'NodeId',
                                     null,
                                     'Name',
                                     '',
