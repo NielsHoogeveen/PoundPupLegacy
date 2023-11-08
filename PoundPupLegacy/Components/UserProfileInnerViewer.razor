@@ -1,0 +1,35 @@
+﻿@using PoundPupLegacy.Models
+@using PoundPupLegacy.Services
+@inject IUserProfileService UserProfileService
+@inherits ViewerBase
+
+@if(UserProfile is not null) {
+    <div class="user-profile">
+    @if(UserProfile.Avatar is not null){
+        <img src="@UserProfile.Avatar" />
+    }
+    <h3>Name</h3>
+    <div>@UserProfile.Name</div>
+    @if(UserProfile.AnimalWithin is not null){
+        <h3>The animal within</h3>
+        <div class="large-text-viewer">
+            @((MarkupString)@UserProfile.AnimalWithin)
+        </div>
+    }
+    @if(UserProfile.AboutMe is not null) {
+            <h3>About me</h3>
+        <div class="large-text-viewer">
+            @((MarkupString)@UserProfile.AboutMe)
+        </div>
+    }
+    <h3>Relation to Child Placement</h3>        
+    <div>@UserProfile.RelationsToChildPlacement.FirstOrDefault(x => x.Id == UserProfile.RelationToChildPlacementId)?.Name</div>
+    </div>
+    <RecentUserPostsViewer UserIdPublisher="UserProfile.Id"/>
+}
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public UserProfile UserProfile { get; set; } = default!;
+}

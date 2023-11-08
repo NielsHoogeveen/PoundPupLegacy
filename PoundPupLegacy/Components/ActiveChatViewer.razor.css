@@ -1,0 +1,101 @@
+﻿.chat {
+    background: var(--header-bg-color);
+    color: silver;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-top: 1px solid #ccc;
+    border-radius: 5px 5px 0 0;
+    padding: 0.5em;
+    margin: 0.5em;
+    width: 14em;
+}
+.filler{
+    height: 19em;
+}
+.chat.collapsed{
+    height:3em;
+}
+.header{
+    display: grid;
+    grid-template-columns: 1fr 1em;
+    margin-bottom:1em;
+}
+.messages {
+    height: 10.25em;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column-reverse;
+}
+.message-text {
+    background-color: #f7ece4;
+    color: #111;
+    min-height: 3em;
+    border: solid 3px #e4ba86;
+    border-radius: 5px;
+    margin-bottom: 0.5em;
+    margin-right: 0.25em;
+}
+::-webkit-scrollbar {
+    width: 7px;
+}
+
+::-webkit-scrollbar-track {
+    background: #555;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #999;
+    border-radius: 10px;
+}
+
+    /* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
+.message .timestamp{
+    margin-top:0.25em;
+    margin-bottom: 0.25em;
+}
+.message:first-of-type .timestamp {
+    margin-top: 0;
+}
+
+.message > div {
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+    padding-left: 0.25em;
+    padding-right: 0.25em;
+}
+.message:last-of-type > div {
+    padding-bottom: 0;
+}
+    :: deep p {
+    margin:0;
+}
+.close {
+    font-size: 80%;
+    user-select: none;
+    cursor: pointer;
+}
+.chat-name {
+    user-select: none;
+    cursor: pointer;
+}
+.editor{
+    margin-top: 1em;
+    width: 100%;
+}
+::deep .editor textarea {
+        font-family: "Yanone Kaffeesatz", sans-serif;
+        font-weight: 300;
+        font-size: 1em;
+        background-color: #f7ece4;
+        color: #111;
+        width: 100%;
+        height: 5em;
+        border: solid 3px #e4ba86;
+        border-radius: 5px;
+        margin-bottom: 0.5em;
+    }

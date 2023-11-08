@@ -43,5 +43,7 @@ public static class DependencyInjection
         services.AddTransient<IUserProfileService, UserProfileService>();
         services.AddTransient<IImagingService, ImagingService>();
         services.AddTransient<INodeService, NodeService>();
+        services.AddSingleton<IChatService, ChatService>();
+        services.AddScoped<ISessionChatService, SessionChatService>();
     }
 }

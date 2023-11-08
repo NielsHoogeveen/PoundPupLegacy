@@ -1,0 +1,35 @@
+﻿@using PoundPupLegacy.Services
+@inherits PoundPupLegacy.Common.UI.Components.ViewerBase
+@inject ISiteDataService SiteDataService
+@inject ISessionChatService ChatService
+<div class="active-chats">
+@foreach(var chat in Chats.OrderByDescending(x => x.LatestMessage?.Timestamp)) 
+{
+    <ActiveChatViewer Chat="chat" NotifyParent="() => StateHasChanged()"/>
+}
+</div>
+@code {
+    private List<Models.Chat> Chats { get; set; } = default!;
+    protected override async Task OnInitializedAsync()
+    {
+        await ChatService.RegisterForAfterActivation(OnActivate);
+        var activeChatIds = ChatService.ActiveChatIds.ToArray();
+        Chats = (await SiteDataService.GetChats(User.Id)).Where(x => activeChatIds.Contains(x.Id)).ToList();
+
+    }
+
+    private async Task OnActivate()
+    {
+        await InvokeAsync(async () => {
+            var activeChatIds = ChatService.ActiveChatIds.ToArray();
+            var allChats = await SiteDataService.GetChats(User.Id);
+            Chats = allChats.Where(x => activeChatIds.Contains(x.Id)).ToList();
+            foreach(var chat in Chats) {
+                if (chat.HasUnreadMessages) {
+                    await ChatService.Activate(chat);
+                }
+            }
+            StateHasChanged();
+        });
+    }
+}

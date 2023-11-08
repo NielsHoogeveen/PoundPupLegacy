@@ -1,24 +1,28 @@
 ﻿@inherits ViewerBase
+@inject ISiteDataService SiteDataService
+@inject ISessionChatService ChatService
 <div style="flex:1;"></div>
 <AuthorizeView>
     <Authorized>
-    <div class="logged-in-user" style="">
-        <div @onclick="ToggleCollapsed">
-            <img src="/img/user-circle-svgrepo-com.svg" />
+    <div class="user-options">
+        <div class="chats" @onclick="() => ChatsCollapsed = !ChatsCollapsed">
+            <img src="/img/chat-svgrepo-com.svg" />
         </div>
-        @if (!Collapsed) {
-
-        <div class="account-menu">
-            <div class="inner">
-                <div class="user-name">@User?.Name</div>
-                <div class="user-profile"><a href="/user" @onclick="OnClick">My Profile</a></div>
-                <form method="post" action="Identity/Account/Logout">
-                    <button type="submit">Log out</button>
-                </form>
+         @if (HasUnreadMessages)
+         {
+             <div class="unread-indicator">⬤</div>
+         }
+         <div class="logged-in-user" style="">
+            <div @onclick="() => UserMenuCollapsed = !UserMenuCollapsed">
+                <img src="/img/user-circle-svgrepo-com.svg" />
             </div>
-        </div>
-    }
+         </div>
     </div>
+    @if (!ChatsCollapsed)
+    {
+        <MostRecentChatMessagesViewer Collapsed="ChatsCollapsed" SetCollapsed=SetChatsCollapsed @ref="viewer"/>
+    }
+    <AccountMenu Collapsed="UserMenuCollapsed" SetCollapsed=SetUserMenuCollapsed />
     </Authorized>
     <NotAuthorized>
         <a href="Identity/Account/Register">Register</a>
@@ -27,15 +31,63 @@
 </AuthorizeView>
     
 @code{
-    private bool Collapsed { get; set; } = true;
+    public bool UserMenuCollapsed { get; set; } = true;
 
-    private void ToggleCollapsed()
+    public bool ChatsCollapsed { get; set; } = true;
+
+    public bool HasUnreadMessages { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
     {
-        Collapsed = !Collapsed;
+        await SetUnreadMessagesIndicator();
+
     }
-    private void OnClick()
+    public MostRecentChatMessagesViewer viewer { get; set; } = default!;
+
+    public async Task SetUnreadMessagesIndicator()
     {
-        Collapsed = true;
+        HasUnreadMessages = (await SiteDataService.GetChats(User.Id)).Any(x => x.HasUnreadMessages);
+        await ChatService.RegisterForActivation(OnActivate);
+        await ChatService.RegisterForNewMessage(OnNewMessage);
+    }
+
+    public async Task OnActivate()
+    {
+        await InvokeAsync(async () => {
+            
+            if(viewer is not null){
+                await viewer.Refresh();
+            }
+            await SetUnreadMessagesIndicator();
+            ChatsCollapsed = true;
+            StateHasChanged();
+        });
+    }
+
+    public async Task OnNewMessage()
+    {
+        await InvokeAsync(async () =>
+        {
+            await SiteDataService.RemoveUser(User.Id);
+            if (viewer is not null) {
+                await viewer.Refresh();
+            }
+            await SetUnreadMessagesIndicator();
+            await ChatService.RefreshActiveChats();
+            StateHasChanged();
+        });
+    }
+
+    public void SetUserMenuCollapsed()
+    {
+        UserMenuCollapsed = true;
+        StateHasChanged();
+    }
+
+    public void SetChatsCollapsed()
+    {
+        ChatsCollapsed = true;
+        StateHasChanged();
     }
 }
 

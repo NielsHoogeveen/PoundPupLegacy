@@ -2,7 +2,7 @@
 
 namespace PoundPupLegacy.Services.Implementation;
 
-public class ActiveUserService: IActiveUserService
+internal class ActiveUserService: IActiveUserService
 {
     private SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 

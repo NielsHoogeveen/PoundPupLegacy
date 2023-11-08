@@ -13,7 +13,6 @@ using PoundPupLegacy.Areas.Identity;
 using Microsoft.AspNetCore.Components.Authorization;
 using AspNetCoreRateLimit;
 using Microsoft.AspNetCore.Components.Server.Circuits;
-using System.Diagnostics;
 
 namespace PoundPupLegacy;
 

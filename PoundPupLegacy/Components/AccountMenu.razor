@@ -1,0 +1,24 @@
+﻿@if (!Collapsed) {
+    @inherits ViewerBase
+    <div class="account-menu">
+        <div class="inner">
+            <div class="user-name">@User?.Name</div>
+            <div class="user-profile"><a href="/user" @onclick="OnClick">My Profile</a></div>
+            <form method="post" action="Identity/Account/Logout">
+                <button type="submit">Log out</button>
+            </form>
+        </div>
+</div>
+}
+@code {
+    [Parameter]
+    public bool Collapsed { get; set; } = default!;
+
+    [Parameter]
+    public Action SetCollapsed { get; set; } = default!;
+
+    private void OnClick()
+    {
+        SetCollapsed();
+    }
+}

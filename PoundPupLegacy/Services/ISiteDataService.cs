@@ -22,9 +22,11 @@ public interface ISiteDataService
     Tenant GetTenant();
 
     Task<List<MenuItem>> GetMenuItemsForUser(int userId);
+    
+    Task<List<Chat>> GetChats(int userId);
 
     Task RefreshTenants();
-    void RemoveUser(int userId);
+    Task RemoveUser(int userId);
 
     Task<UserWithDetails?> GetUser(int userId);
 

@@ -1,0 +1,111 @@
+﻿@using PoundPupLegacy.Services
+@inherits PoundPupLegacy.Common.UI.Components.ViewerBase
+@inject ISiteDataService SiteDataService
+@inject ISessionChatService ChatService
+    <div>
+        @if (ActivationStatus == Models.ActivationStatus.OpenCollaped) {
+            <div class="filler"></div>
+        }
+        <div class="@ChatClassName(Chat)">
+            <div class="header">
+                <div class="chat-name" @onclick="() => ToggleCollapse(Chat)">@Chat.Description</div>
+                <div class="close" @onclick="() => Close(Chat)">❌</div>
+            </div>
+            @if (Chat.Name is not null) {
+                <div class="participants">
+                    @foreach (var participant in Chat.Participants.Where(x => !x.IsCurrentUser)) {
+                        <div class="participant">
+                            @participant.Name
+                        </div>
+                    }
+                </div>
+            }
+            @if (ActivationStatus == Models.ActivationStatus.Open) {
+                <div class="messages">
+                    @foreach (var message in Chat.Messages.OrderByDescending(x => x.Timestamp)) {
+                        <div class="message">
+                            <div>
+                                <div class="sender">@GetNameOfParicipant(Chat, message.ParticipantId)</div>
+                                <div class="timestamp">@message.Timestamp.ToString("yyyy-MM-dd/ hh:mm:ss tt")</div>
+                            </div>
+                            <div class="message-text">
+                                <LargeTextViewer Value="@message.Text" />
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="editor">
+                    <InputTextArea @bind-Value="@Message" />
+                    <button @onclick="Send">Send</button>
+                </div>
+            }
+        </div>
+    </div>
+@code {
+    [Parameter]
+    [EditorRequired]
+    public Models.Chat Chat { get; set; } = default!;
+
+    [Parameter]
+    [EditorRequired]
+    public Action NotifyParent { get; set; } = default!;
+
+    private string Message { get; set; } = default!;
+
+    private void OnChange(ChangeEventArgs e)
+    {
+        Message = e.Value?.ToString() ?? "";
+    }
+    private Models.ActivationStatus ActivationStatus { get; set; } = Models.ActivationStatus.Open;
+
+    private void Close(Models.Chat chat)
+    {
+        ActivationStatus = Models.ActivationStatus.Closed;
+        ChatService.Deactivate(Chat);
+    }
+    private void ToggleCollapse(Models.Chat chat)
+    {
+        if (ActivationStatus == Models.ActivationStatus.Open) {
+            ActivationStatus = Models.ActivationStatus.OpenCollaped;
+        }
+        else if (ActivationStatus == Models.ActivationStatus.OpenCollaped) {
+            ActivationStatus = Models.ActivationStatus.Open;
+        }
+        NotifyParent();
+    }
+    private string ChatClassName(Models.Chat chat)
+    {
+        if (ActivationStatus == Models.ActivationStatus.Open) {
+            return "chat";
+        }
+        return "chat collapsed";
+    }
+    private async Task Send()
+    {
+        if (!string.IsNullOrEmpty(Message))
+        {
+            Chat.Messages.Add(new Models.ChatMessage {
+                ParticipantId = User.Id,
+                Text = Message,
+                Timestamp = DateTime.Now,
+                Id = 0
+            });
+            Chat.Participants.Find(x => x.Id == User.Id)!.TimestampLastRead = DateTime.Now;
+            await ChatService.SendMessage(Chat, Message);
+            Message = "";
+            StateHasChanged();
+        }
+    }
+
+    private string GetNameOfParicipant(Models.Chat chat, int participantId)
+    {
+        var participant = chat.Participants.Find(x => x.Id == participantId)!;
+        if(participant.IsCurrentUser){
+            return "me";
+        }
+        else {
+            return participant.Name;
+        }
+
+    }
+}

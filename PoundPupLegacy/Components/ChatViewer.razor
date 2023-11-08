@@ -1,0 +1,29 @@
+﻿@using PoundPupLegacy.Services
+@using PoundPupLegacy.Models
+@inherits PoundPupLegacy.Common.UI.Components.ViewerBase
+@inject ISiteDataService SiteDataService
+<div class="chats">
+@foreach(var chat in Chats.OrderByDescending(x => x.LatestMessage.Timestamp)) {
+    <div class="chat">
+        <div class="chat-name">@chat.Description</div>
+            <div class="last-message">@chat.LatestMessage.Timestamp.ToString("yyyy MMM dd, h:mm:ss tt")</div>
+        <div class="participants">
+            @foreach(var participant in chat.Participants) {
+                <div class="participant">
+                    @participant.Name
+                </div>
+            }
+        </div>
+        <ChatMessageViewer Model="@chat.Messages.OrderByDescending(x => x.Timestamp).First()" />"
+    </div>
+}
+</div>
+@code {
+
+    private List<Models.Chat> Chats { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Chats = await SiteDataService.GetChats(User.Id);
+    }
+}

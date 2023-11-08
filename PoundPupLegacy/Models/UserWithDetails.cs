@@ -98,4 +98,14 @@ public record UserWithDetails: User
             }
         }
     }
+    private List<Chat> _chats = new();
+    public required List<Chat> Chats {
+        get => _chats;
+
+        init {
+            if (value is not null) {
+                _chats = value;
+            }
+        }
+    }
 }

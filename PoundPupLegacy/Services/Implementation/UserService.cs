@@ -64,7 +64,7 @@ internal sealed class UserService(
                 updateUserStatement.Parameters["user_id"].Value = userRolesToAssign.UserId;
                 await updateUserStatement.ExecuteNonQueryAsync();
                 await tx.CommitAsync();
-                siteDataService.RemoveUser(userRolesToAssign.UserId);
+                await siteDataService.RemoveUser(userRolesToAssign.UserId);
                 return Unit.Instance;
             }
             catch (Exception e) {

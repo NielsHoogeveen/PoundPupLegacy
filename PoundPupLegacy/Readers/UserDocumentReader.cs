@@ -440,6 +440,57 @@ internal sealed class UserDocumentReaderFactory : MandatorySingleItemDatabaseRea
         		order by user_id, weight 
         	) m
         	group by user_id
+        ),
+        chats as (
+            select
+            jsonb_agg(
+                jsonb_build_object(
+                    'Id',
+                    c.id,
+                    'Name',
+                    c.name,
+                    'Participants',
+                    (
+                        select
+                        jsonb_agg(
+                            jsonb_build_object(
+                                'Id',
+                                cp.publisher_id,
+                                'Name',
+                                p.name,
+                                'TimestampLastRead',
+                                cp.timestamp_last_read,
+                                'IsCurrentUser',
+                                cp.publisher_id = @user_id
+                            )
+                        )
+                        from chat_participant cp
+                        join publisher p on p.id = cp.publisher_id
+                        where cp.chat_id = c.id
+                    ),
+                    'Messages',
+                    (
+                        select
+                        jsonb_agg(
+                            jsonb_build_object(
+                                'Id',
+                                cm.id,
+                                'ParticipantId',
+                                cm.publisher_id,
+                                'Timestamp',
+                                cm.timestamp,
+                                'Text',
+                                cm.text
+                            )
+                        )
+                        from chat_message cm
+                        where cm.chat_id = c.id
+                    )
+                )
+            ) document
+            from chat_participant cp
+            join chat c on c.id = cp.chat_id
+            where cp.publisher_id = @user_id
         )
         select
         	jsonb_build_object(
@@ -462,7 +513,9 @@ internal sealed class UserDocumentReaderFactory : MandatorySingleItemDatabaseRea
         		'NamedActions',
         		(select document from named_actions_document where user_id = @user_id),
         		'MenuItems',
-        		(select document from menu_items_document where user_id = @user_id)
+        		(select document from menu_items_document where user_id = @user_id),
+                'Chats',
+                (select document from chats)
         	) document
             from tenant t 
             left join "user" u on u.id = @user_id

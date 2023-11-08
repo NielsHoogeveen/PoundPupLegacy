@@ -1,6 +1,7 @@
 ﻿using PoundPupLegacy.Models;
 using PoundPupLegacy.ViewModel.Models;
 using System.Data;
+using System.Runtime.CompilerServices;
 using User = PoundPupLegacy.Common.User;
 
 namespace PoundPupLegacy.Services.Implementation;
@@ -38,27 +39,42 @@ internal sealed class SiteDataService(
         return siteData.Users.FirstOrDefault(x => x.Value.NameIdentifier == id).Value;
     }
 
-    public void RemoveUser(int userId)
+    private SemaphoreSlim userSemaphore = new SemaphoreSlim(1, 1);
+
+    public async Task RemoveUser(int userId)
     {
-        siteData.Users.Remove(userId);
+        await userSemaphore.WaitAsync();
+        try {
+            siteData.Users.Remove(userId);
+        }
+        finally {
+            userSemaphore.Release();
+        }
     }
 
     public async Task<UserWithDetails?> GetUser(int userId)
     {
-        if (siteData.Users.TryGetValue(userId, out var user)) {
+        await userSemaphore.WaitAsync();
+        try {
+            if (siteData.Users.TryGetValue(userId, out var user)) {
 
-            return user;
-        }
-        else {
-            try {
-                var loadedUser = await siteDataLoader.LoadUser(siteData.Tenant.Id, userId);
-                siteData.Users.Add(userId, loadedUser);
-                return loadedUser;
+                return user;
             }
-            catch (LoadException) {
-                return null;
+            else {
+                try {
+                    var loadedUser = await siteDataLoader.LoadUser(siteData.Tenant.Id, userId);
+                    siteData.Users.Add(userId, loadedUser);
+                    return loadedUser;
+                }
+                catch (LoadException) {
+                    return null;
+                }
             }
         }
+        finally {
+            userSemaphore.Release();
+        }
+
     }
 
     public async Task<bool> HasAccess(int userId, string path)
@@ -93,6 +109,15 @@ internal sealed class SiteDataService(
         }
         return new();
     }
+    public async Task<List<Chat>> GetChats(int userId)
+    {
+        var user = await GetUser(userId);
+        if (user is not null) {
+            return user.Chats;
+        }
+        return new();
+    }
+
     public async Task<bool> CanEdit(Node node, int userId)
     {
         var user = await GetUser(userId);

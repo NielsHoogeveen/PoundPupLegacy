@@ -1,40 +1,22 @@
-﻿button{
-    background-color: #2e9932;
-    border: none;
-    color: white;
-    padding: 0.5em 1em;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: 0.3s;
-    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.2);
-}
-.logged-in-user {
-    position: absolute;
-    top: 0;
-    right: 0;
-    display: grid;
-    grid-template-columns: 1fr;
-    flex: 1;
-    width: 160px;
+﻿.user-options img {
+    height: 38px;
+    width: auto;
     color: silver;
 }
-.user-name, .user-profile {
-    color: #1a1a1a;
-    padding-left: 0.25em;
-    padding-bottom:0.5em;
+.user-options {
+    display: flex;
 }
-.user-profile a {
-    color: #6d5824;
+.chats img{
 }
-.account-menu {
-    padding-left: 0.15em;
-    padding-bottom: 0.15em;
-    background: var(--header-bg-color);
-    z-index: 1000;
+
+.user-options > div {
+    margin-right: 1em;
+    cursor:pointer;
 }
-.inner {
-    background-color: #e8e2d9;
-    padding-right: 1em;
-    padding-top: 0.375em;
-    padding-bottom: 0.5em;
+.unread-indicator {
+    color: red;
+    position: relative;
+    font-size: 125%;
+    top:-7px;
+    right:35px;
 }

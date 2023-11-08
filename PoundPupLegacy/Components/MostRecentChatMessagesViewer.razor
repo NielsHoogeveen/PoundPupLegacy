@@ -1,0 +1,134 @@
+﻿@inherits ViewerBase
+@inject ISiteDataService SiteDataService
+@inject ISessionChatService ChatService
+@if (!Collapsed)
+{
+    <div class="chats">
+        <h3>Chats</h3>
+        <div class="add-chat">
+            <div class="user-selector">
+                <input type="text" class="item-search" @bind="@userSearchString" @oninput="OnSetItemSearch" />
+                @if (UserToChatTo is not null) {
+                    <div class="start-chat-button">
+                        <div>@UserToChatTo.Name</div>
+                        <button type="button" @onclick="StartChat">Chat</button>
+                    </div>
+                }
+            </div>
+            @if (options.Any()) {
+                <div class="options">
+                    @foreach (var elem in options) {
+                        <div class="option" @onclick="() => SelectUser(elem.Id)">@elem.Name</div>
+                    }
+                </div>
+            }
+        </div>
+
+        @foreach (var chat in Chats.Where(x => x.LatestMessage is not null).OrderByDescending(x => x.LatestMessage!.Timestamp)) {
+            <div class="chat" @onclick="() => Activate(chat)">
+                <div class="chat-name">
+                    <span>@chat.Description</span>
+                    @if (chat.HasUnreadMessages) {
+                        <span class="unread-indicator">⬤</span>
+                    }
+                </div>
+                <div class="latest-message">
+                    <div class="latest-message-text">@FormatMessage(chat.LatestMessage!)</div>
+                    <div class="latest-message-timestamp">@FormatTime(chat.LatestMessage!)</div>
+                </div>
+            </div>
+        }
+    </div>
+}
+@code {
+    [Parameter]
+    public bool Collapsed { get; set; } = default!;
+
+    [Parameter]
+    public Action SetCollapsed { get; set; } = default!;
+
+    private void OnClick()
+    {
+        SetCollapsed();
+    }
+    private string userSearchString { get; set; } = "";
+    private List<Models.Chat> Chats { get; set; } = default!;
+    protected override async Task OnInitializedAsync()
+    {
+        Chats = await SiteDataService.GetChats(User.Id);
+    }
+    const int MaxMessageLength = 100;
+    private string FormatMessage(Models.ChatMessage message)
+    {
+        var text = message.Text.Trim();
+        var position = message.Text.IndexOf("</p>");
+        if (position > 0)
+        {
+            text = message.Text.Substring(0, position).Replace("<p>","");
+        }
+        return text.Substring(0, Math.Min(text.Length, MaxMessageLength));
+    }
+    private string FormatTime(Models.ChatMessage message)
+    {
+        var diff = DateTime.Now - message.Timestamp;
+        if(diff.Days < 31) {
+            return diff.Days + "d";
+        }
+        else if(diff.Days < 365){
+            return diff.Days / 12 + "m";
+        }
+        else{
+            return diff.Days / 365 +"y";
+        }
+    }
+    private async void Activate(Models.Chat chat)
+    {
+        await ChatService.Activate(chat);
+        Collapsed = true;
+        StateHasChanged();
+    }
+    Common.User[] options = Array.Empty<Common.User>();
+
+
+    private async Task OnSetItemSearch(ChangeEventArgs args)
+    {
+        options = Array.Empty<Common.User>();
+        var searchString = args.Value?.ToString() ?? string.Empty;
+        if (!string.IsNullOrEmpty(searchString)) {
+            options = (await ChatService.GetUsers(searchString)).ToArray();
+        }
+        StateHasChanged();
+    }
+
+    private Common.User? UserToChatTo { get; set; } = null;
+
+    private void SelectUser(int userId)
+    {
+        UserToChatTo = options.First(x => x.Id == userId);
+        userSearchString = "";
+        options = Array.Empty<Common.User>();
+    }
+    private async Task StartChat()
+    {
+        var chatId = await ChatService.GetChat(UserToChatTo!.Id);
+        Collapsed = true;
+        userSearchString = "";
+        options = Array.Empty<Common.User>();
+        if (chatId is not null) {
+            var chats = await SiteDataService.GetChats(User.Id);
+            await ChatService.Activate(chats.First(x => x.Id == chatId));
+            Collapsed = true;
+            options = Array.Empty<Common.User>();
+            StateHasChanged();
+            return;
+        }
+        await ChatService.AddChat(UserToChatTo.Id);
+        UserToChatTo = null;
+    }
+
+    public async Task Refresh()
+    {
+        Chats = await SiteDataService.GetChats(User.Id);
+        StateHasChanged();
+    }
+}
