@@ -14,17 +14,19 @@ public abstract record Term
 
     public required int VocabularyId { get; set; }
 
+    public required string VocabularyName { get; set; }
+
     public required bool IsMainTerm { get; set; }
 
     public sealed record WithHierarchy: Term
     {
-        public required List<int> ParentIds { get; init; }
+        public required List<ParentTermListItem> ParentTerms { get; init; }
 
         private List<int>? newParentIds = null;
         public List<int> NewParentIds {
             get {
                 if(newParentIds == null) {
-                    newParentIds = ParentIds;
+                    newParentIds = ParentTerms.Select(x => x.Id).ToList();
                 }
                 return newParentIds;
             }
@@ -36,3 +38,7 @@ public abstract record Term
     }
 }
 
+public record ParentTermListItem: ListEditElement
+{
+
+}

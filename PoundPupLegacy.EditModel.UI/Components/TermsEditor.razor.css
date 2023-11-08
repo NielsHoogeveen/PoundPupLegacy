@@ -1,0 +1,27 @@
+.terms-editor {
+    background-color: var(--editor-element-background);
+    margin-top: 1em;
+    border-top: solid thin #ccc;
+    border: solid 2px var(--editor-header-background);
+    border-radius: 5px;
+    box-shadow: var(--input-shadow);
+}
+
+h4 {
+    background-color: var(--editor-header-background);
+    padding: 0.25em 0 0.25em 0.25em;
+    margin: 0;
+}
+
+.terms{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+.header {
+    background-color: var(--editor-secondary-header-background);
+    padding: 0.25em;
+}
+
+::deep .terms > div {
+    padding: 0.25em;
+}

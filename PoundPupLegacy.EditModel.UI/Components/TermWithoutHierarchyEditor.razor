@@ -1,0 +1,12 @@
+﻿<div>
+    @Term.Name
+</div>
+<div>
+    @Term.VocabularyName
+</div>
+<div>&npsp;</div>
+@code {
+    [Parameter]
+    [EditorRequired]
+    public Term.WithoutHierarchy Term { get; set; } = default!;
+}

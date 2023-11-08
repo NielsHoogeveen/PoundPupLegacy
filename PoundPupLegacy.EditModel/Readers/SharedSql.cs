@@ -1476,11 +1476,13 @@ internal static class SharedSql
                     'TopicId',
                     t.id,
                     'Description', 
-                    description,
+                    nm.description,
                     'Name',
                     n.title, 
             		'VocabularyId',
                     nt.vocabulary_id,
+                    'VocabularyName',
+                    v.name,
                     'TermsWithHierarchy',
                     (
                         select 
@@ -1496,15 +1498,24 @@ internal static class SharedSql
                                 t2.name,
                                 'VocabularyId',
                                 t2.vocabulary_id,
+                                'VocabularyName',
+                                v.name,
                                 'IsMainTerm',
                                 t2.id = t.id,
-                                'ParentIds',
+                                'ParentTerms',
                                 (
                                     select 
                                     jsonb_agg(
-                                        th.term_id_parent 
+                                        jsonb_build_object(
+                                            'Id',
+                                            th.term_id_parent,
+                                            'Name',
+                                            t3.name
+                                        )
                                     )
-                                    from term_hierarchy th where th.term_id_child = t2.id
+                                    from term_hierarchy th 
+                                    join term t3 on t3.id = th.term_id_parent
+                                    where th.term_id_child = t2.id
                                 )
                             )
                         )
@@ -1528,6 +1539,8 @@ internal static class SharedSql
                                 t2.name,
                                 'VocabularyId',
                                 t2.vocabulary_id,
+                                'VocabularyName',
+                                v.name,
                                 'IsMainTerm',
                                 t2.id = t.id
                             )
@@ -1560,6 +1573,7 @@ internal static class SharedSql
             join node n on n.id = nm.id
             join nameable_type nt on nt.id = n.node_type_id
             join term t on t.nameable_id = nm.id and t.vocabulary_id = nt.vocabulary_id
+            join vocabulary v on v.id = nt.vocabulary_id
         )
         """;
     const string NAMEABLE_DETAILS_DOCUMENT_FOR_CREATE = """
@@ -1574,6 +1588,8 @@ internal static class SharedSql
                     '',
             		'VocabularyId',
                     nt.vocabulary_id,
+                    'VocabularyName',
+                    v.name,
                     'TermsWithHierarchy',
                     case 
                         when v.supports_term_hierarchy = true then
@@ -1645,6 +1661,7 @@ internal static class SharedSql
                 from nameable_type nt
                 join vocabulary v on v.id = nt.vocabulary_id
                 where nt.id = @node_type_id
+                join vocabulary v on v.id = nt.vocabulary_id
                 group by nt.vocabulary_id, v.supports_term_hierarchy
         )
         """;

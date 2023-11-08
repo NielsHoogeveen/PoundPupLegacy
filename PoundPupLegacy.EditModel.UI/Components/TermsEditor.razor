@@ -1,0 +1,28 @@
+﻿<div class="terms-editor">
+    <h4>Terms</h4>
+    <div class="terms">
+        <div class="header">
+            Term
+        </div>
+        <div class="header">
+            Vocabulary
+        </div>
+        <div class="header">
+            Parents
+        </div>
+        @foreach(var term in Model.Terms) {
+            if(term is Term.WithHierarchy termWithHierarchy) {
+                <TermWithHierarchyEditor Term=termWithHierarchy />
+            } else if(term is Term.WithoutHierarchy termWithoutHierarchy) {
+                <TermWithoutHierarchyEditor Term=termWithoutHierarchy />
+            }
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public NameableDetails Model { get; set; } = default!;
+
+}

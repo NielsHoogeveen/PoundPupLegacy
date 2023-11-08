@@ -1,0 +1,18 @@
+﻿<div>
+    @Term.Name
+</div>
+<div>
+    @Term.VocabularyName
+</div>
+<div>
+    @foreach(var parent in Term.ParentTerms) {
+        <div>@parent.Name</div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public Term.WithHierarchy Term { get; set; } = default!;
+
+}
