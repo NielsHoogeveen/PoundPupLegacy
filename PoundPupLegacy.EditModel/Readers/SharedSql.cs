@@ -1607,9 +1607,11 @@ internal static class SharedSql
                                     '',
                                     'VocabularyId',
                                     v.id,
+                                    'VocabularyName',
+                                    v.name,
                                     'IsMainTerm',
                                     true,
-                                    'ParentIds',
+                                    'ParentTerms',
                                     null
                                 )
                             )
@@ -1633,6 +1635,8 @@ internal static class SharedSql
                                     '',
                                     'VocabularyId',
                                     v.id,
+                                    'VocabularyName',
+                                    v.name,
                                     'IsMainTerm',
                                     true
                                 )
@@ -1661,8 +1665,7 @@ internal static class SharedSql
                 from nameable_type nt
                 join vocabulary v on v.id = nt.vocabulary_id
                 where nt.id = @node_type_id
-                join vocabulary v on v.id = nt.vocabulary_id
-                group by nt.vocabulary_id, v.supports_term_hierarchy
+                group by nt.vocabulary_id, v.supports_term_hierarchy, v.name
         )
         """;
 

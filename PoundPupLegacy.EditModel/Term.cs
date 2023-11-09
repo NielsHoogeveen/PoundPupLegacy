@@ -20,7 +20,15 @@ public abstract record Term
 
     public sealed record WithHierarchy: Term
     {
-        public required List<ParentTermListItem> ParentTerms { get; init; }
+        private List<ParentTermListItem> _parentTerms = new();
+        public required List<ParentTermListItem> ParentTerms { 
+            get => _parentTerms; 
+            init {
+                if(value is not null) {
+                    _parentTerms = value;
+                }
+            } 
+        }
 
         private List<int>? newParentIds = null;
         public List<int> NewParentIds {
