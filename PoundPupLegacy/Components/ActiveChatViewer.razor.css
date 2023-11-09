@@ -8,6 +8,7 @@
     padding: 0.5em;
     margin: 0.5em;
     width: 14em;
+    pointer-events: all;
 }
 .filler{
     height: 19em;

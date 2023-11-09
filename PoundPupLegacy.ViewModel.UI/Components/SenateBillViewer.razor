@@ -1,0 +1,25 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+@inherits SimpleNameableViewerBase<SenateBill>
+<SimpleNameableViewer Model="Model" Description="Description">
+    <h4>Actions</h4>
+    <table style="margin-bottom:1em;width:100%;">
+        <tr>
+            <th class="header">Date</th>
+            <th class="header">Senator</th>
+            <th class="header">Action</th>
+        </tr>
+        @foreach (var elem in Model.BillActions) {
+            <tr>
+                <td>@elem.Date.ToString("yyyy-MM-dd/ hh:mm:ss tt")</td>
+                <td><LinkViewer Link="@elem.Senator" /></td>
+                <td><LinkViewer Link="@elem.BillActionType" /></td>
+            </tr>
+        }
+    </table>
+</SimpleNameableViewer>
+@code{
+    [Parameter]
+    [EditorRequired]
+    public override SenateBill Model { get; set; } = default!;
+
+}

@@ -11,6 +11,7 @@ public static class DependencyInjection
     {
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, AbuseCase>, AbuseCaseDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<AbuseCasesDocumentReaderRequest, AbuseCases>, AbuseCasesDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, Act>, ActDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, BasicNameable>, BasicNameableDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, BasicCountry>, BasicCountryDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, BillActionType>, BillActionTypeDocumentReaderFactory>();
@@ -43,6 +44,7 @@ public static class DependencyInjection
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, FormalSubdivision>, FormalSubdivisionDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, GlobalRegion>, GlobalRegionDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, HagueStatus>, HagueStatusDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, HouseBill>, HouseBillDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, InformalSubdivision>, InformalSubdivisionDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, InterOrganizationalRelationType>, InterOrganizationalRelationTypeDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, InterPersonalRelationType>, InterPersonalRelationTypeDocumentReaderFactory>();
@@ -62,6 +64,7 @@ public static class DependencyInjection
         services.AddTransient<ISingleItemDatabaseReaderFactory<RecentPostsDocumentReaderRequest, RecentPosts>, RecentPostsDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<RecentUserPostsDocumentReaderRequest, RecentPosts>, RecentUserPostsDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<SearchDocumentReaderRequest, SearchResult>, SearchDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, SenateBill>, SenateBillDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, SingleQuestionPoll>, SingleQuestionPollDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<SubgroupsDocumentReaderRequest, SubgroupPagedList>, SubgroupsDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, SubdivisionType>, SubdivisionTypeDocumentReaderFactory>();

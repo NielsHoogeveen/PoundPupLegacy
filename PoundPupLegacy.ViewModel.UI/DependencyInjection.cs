@@ -14,6 +14,7 @@ public static class DependencyInjection
     {
         services.AddViewModelReaders();
         services.AddFetchService<AbuseCase>();
+        services.AddFetchService<Act>();
         services.AddFetchService<BasicCountry>();
         services.AddFetchService<BasicNameable>();
         services.AddFetchService<BindingCountry>();
@@ -35,6 +36,7 @@ public static class DependencyInjection
         services.AddFetchService<FormalSubdivision>();
         services.AddFetchService<GlobalRegion>();
         services.AddFetchService<HagueStatus>();
+        services.AddFetchService<HouseBill>();
         services.AddFetchService<InformalSubdivision>();
         services.AddFetchService<InterOrganizationalRelationType>();
         services.AddFetchService<InterPersonalRelationType>();
@@ -46,6 +48,7 @@ public static class DependencyInjection
         services.AddFetchService<Person>();
         services.AddFetchService<PersonOrganizationRelationType>();
         services.AddFetchService<Profession>();
+        services.AddFetchService<SenateBill>();
         services.AddFetchService<SingleQuestionPoll>();
         services.AddFetchService<SubdivisionType>();
         services.AddFetchService<TypeOfAbuse>();

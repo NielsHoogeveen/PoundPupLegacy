@@ -32,8 +32,6 @@ public abstract record PersonDetails
     public required string? LastName { get; init; }
     public required string? FullName { get; init; }
     public required string? Suffix { get; init; }
-    public required int? GovtrackId { get; init; }
-    public required string? Bioguide { get; init; }
     public abstract IEnumerable<InterPersonalRelation> InterPersonalRelations { get; }
     public abstract IEnumerable<PartyPoliticalEntityRelation> PartyPoliticalEntityRelations { get; }
     public abstract IEnumerable<PersonOrganizationRelation> PersonOrganizationRelations { get; }
