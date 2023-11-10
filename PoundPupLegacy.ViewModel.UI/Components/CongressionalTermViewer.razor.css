@@ -1,0 +1,31 @@
+.congressional-terms {
+    margin-top: 1em;
+    display: grid;
+    grid-template-columns: 1fr 10fr;
+    border-left: solid thin grey;
+}
+.congressional-terms .elem, .congressional-terms .header {
+    border-right: solid thin grey;
+    padding: 0.25em;
+    border-bottom: solid thin grey;
+}
+
+.roles {
+    display: grid;
+    grid-template-columns: 10em 10fr;
+}
+
+.terms {
+    display: grid;
+    grid-template-columns: 2fr 2fr 5fr;
+}
+.parties {
+    display: grid;
+    grid-template-columns: 10em 2fr 2fr;
+}
+.header {
+    background-color: var(--table-header-bg-color);
+    border-top: solid thin grey;
+    
+    font-weight: bold;
+}

@@ -16,6 +16,10 @@
         <OrganizationPersonRelationsViewer Model="@Model.OrganizationPersonRelations" />
         <InterPersonalRelationsViewer Model="@Model.InterPersonalRelations" />
         <PartyPoliticalEntityRelationsViewer Model="@Model.PartyPoliticalEntityRelations" />
+        @if(Model.CongressTerms != null && Model.CongressTerms.Any())
+        {
+            <CongressionalTermViewer Model="@Model.CongressTerms" />
+        }
         <BillActionsViewer Model="@Model.BillActions" />
     </Top>
     <Bottom>

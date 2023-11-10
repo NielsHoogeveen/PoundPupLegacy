@@ -17,6 +17,7 @@ internal sealed class PersonDocumentReaderFactory : SingleItemDatabaseReaderFact
             {PROFESSIONS_DOCUMENT},
             {PERSON_CASES_DOCUMENT},
             {INTER_PERSONAL_RELATION_DOCUMENT},
+            {MEMBER_OF_CONGRESS},
             {BREADCRUM_DOCUMENT},
             {DOCUMENT}
             SELECT document from person_document
@@ -66,6 +67,7 @@ internal sealed class PersonDocumentReaderFactory : SingleItemDatabaseReaderFact
                 'OrganizationPersonRelations', (SELECT document from organization_person_relations_document),
                 'PartyPoliticalEntityRelations', (SELECT document from party_political_entity_relations_document),
                 'Files', (SELECT document FROM files_document),
+                'CongressTerms', (SELECT document FROM member_of_congress),
                 'BillActions', (SELECT document from bill_actions_document)
             ) document
             FROM (
@@ -492,7 +494,142 @@ internal sealed class PersonDocumentReaderFactory : SingleItemDatabaseReaderFact
         )
         """;
 
-
+    const string MEMBER_OF_CONGRESS = """
+        member_of_congress as(
+            select
+            x.node_id,
+            jsonb_agg(
+        	    jsonb_build_object(
+        		    'State',
+        		    jsonb_build_object(
+        			    'Path',
+        			    '/' || subdivision_viewer_path || '/' || subdivision_id,
+        			    'Title',
+        			    subdivision_name
+        		    ),
+        		    'Roles',
+        		    roles
+        	    )
+            ) document
+            from(
+        	    select
+        	    x.node_id,
+        	    x.subdivision_name,
+        	    x.subdivision_id,
+        	    x.subdivision_viewer_path,
+        	    jsonb_agg(
+        		    jsonb_build_object(
+        			    'Name',
+        			    x.role_name,
+        			    'Terms',
+        			    terms
+        		    )
+        	    ) roles
+        	    from(
+        		    select
+        		    x.node_id,
+        		    x.subdivision_name,
+        		    x.subdivision_id,
+        		    x.subdivision_viewer_path,
+        		    x.role_name,
+        		    jsonb_agg(
+        			    jsonb_build_object(
+        				    'From',
+        				    lower(x.date_range_term),
+        				    'To',
+        				    upper(x.date_range_term),
+        				    'PartyAffiliations',
+        				    party_affiliations		
+        			    )
+        		    ) terms
+        		    from(
+        			    select
+        			    x.node_id,
+        			    x.subdivision_name,
+        			    x.subdivision_id,
+        			    x.subdivision_viewer_path,
+        			    x.role_name,
+        			    x.date_range_term,
+        			    jsonb_agg(
+        				    jsonb_build_object(
+        					    'PartyName',
+        					    x.party_name,
+        					    'From',
+        					    lower(date_range_party_affiliation),
+        					    'To',
+        					    upper(date_range_party_affiliation)
+        				    )
+        			    ) party_affiliations
+        			    from (
+        			    select
+        			    p.id node_id,
+        			    n2.title role_name,
+        			    st.date_range date_range_term,
+        			    sd.name subdivision_name,
+        			    sd.id subdivision_id,
+        			    nt3.viewer_path subdivision_viewer_path,
+        			    n4.title party_name,
+        			    tpa.date_range date_range_party_affiliation
+        			    from person p 
+        			    join professional_role pr on pr.person_id = p.id
+        			    join node n2 on n2.id = pr.profession_id
+        			    join member_of_congress moc on moc.id = pr.id
+        			    join senator s on s.id = moc.id
+        			    join senate_term st on st.senator_id = s.id
+        			    join subdivision sd on sd.id = st.subdivision_id
+        			    join node n3 on n3.id = sd.id
+        			    join node_type nt3 on nt3.id = n3.node_type_id
+        			    join congressional_term_political_party_affiliation tpa on tpa.congressional_term_id = st.id
+        			    join united_states_political_party_affiliation pa on pa.id = tpa.united_states_political_party_affiliation_id
+        			    join node n4 on n4.id = pa.id
+        			    union
+        			    select
+        			    p.id node_id,
+        			    n2.title role_name,
+        			    ht.date_range date_range_term,
+        			    sd.name subdivision_name,
+        			    sd.id subdivision_id,
+        			    nt3.viewer_path subdivision_viewer_path,
+        			    n4.title party_name,
+        			    tpa.date_range date_range_party_affiliation
+        			    from person p 
+        			    join professional_role pr on pr.person_id = p.id
+        			    join node n2 on n2.id = pr.profession_id
+        			    join member_of_congress moc on moc.id = pr.id
+        			    join representative r on r.id = moc.id
+        			    join house_term ht on ht.representative_id = r.id
+        			    join subdivision sd on sd.id = ht.subdivision_id
+        			    join node n3 on n3.id = sd.id
+        			    join node_type nt3 on nt3.id = n3.node_type_id
+        			    join congressional_term_political_party_affiliation tpa on tpa.congressional_term_id = ht.id
+        			    join united_states_political_party_affiliation pa on pa.id = tpa.united_states_political_party_affiliation_id
+        			    join node n4 on n4.id = pa.id
+        			    ) x
+        			    group by 
+        			    x.node_id,
+        			    x.subdivision_name,
+        			    x.subdivision_id,
+        			    x.subdivision_viewer_path,
+        			    x.role_name,
+        			    x.date_range_term
+        		    ) x
+        		    GROUP BY
+        		    x.node_id,
+        		    x.subdivision_name,
+        		    x.subdivision_id,
+        		    x.subdivision_viewer_path,
+        		    x.role_name
+        	    ) x
+        	    GROUP BY
+        	    x.node_id,
+        	    x.subdivision_name,
+        	    x.subdivision_id,
+        	    x.subdivision_viewer_path
+            ) x
+            where x.node_id = @node_id
+            group by x.node_id
+        )
+        """;
 
     protected override IEnumerable<ParameterValue> GetParameterValues(Request request)
     {

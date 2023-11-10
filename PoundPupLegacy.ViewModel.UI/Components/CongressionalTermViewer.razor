@@ -1,0 +1,44 @@
+﻿<h3>Congressional Terms</h3>
+<div class="congressional-terms">
+    <div class="header">State</div>
+    <div class="roles">
+        <div class="header">Roles</div>
+        <div class="terms">
+            <div class="header">From</div>
+            <div class="header">To</div>
+            <div class="parties">
+                <div class="header">Party</div>
+                <div class="header">From</div>
+                <div class="header">To</div>
+            </div>
+        </div>
+    </div>
+    @foreach (var state in Model.OrderBy(x => x.State.Title)) {
+        <div class="elem"><LinkViewer Link="state.State" /></div>
+        <div class="roles">
+            @foreach (var role in state.Roles.OrderBy(x => x.Name)) {
+                <div class="elem">@role.Name</div>
+                <div class="terms">
+                    @foreach (var term in role.Terms.OrderBy(x => x.From)) {
+                        <div class="elem">@term.From.ToString("yyyy MMM dd")</div>
+                        <div class="elem">@term.To.ToString("yyyy MMM dd")</div>
+                        <div class="parties">
+                            @foreach (var party in term.PartyAffiliations.OrderBy(x => x.From)) {
+                                <div class="elem">@party.PartyName.CapitalizeFirstCharacter()</div>
+                                <div class="elem">@party.From.ToString("yyyy MMM dd")</div>
+                                <div class="elem">@party.To.ToString("yyyy MMM dd")</div>
+                            }
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    }
+</div>
+
+
+@code {
+    [Parameter]
+    [EditorRequired]
+    public PersonMemberOfCongress[] Model { get; set; } = default!;
+}

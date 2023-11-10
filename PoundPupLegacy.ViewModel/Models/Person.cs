@@ -69,4 +69,35 @@ public sealed record Person : NameableBase
             }
         }
     }
+    public required PersonMemberOfCongress[] CongressTerms { get; init; }
+
+}
+public record PersonMemberOfCongress
+{
+    public required BasicLink State { get; init; }
+
+
+    public required PersonRole[] Roles { get; init; }
+    
+}
+
+public record PersonRole
+{
+    public required string Name { get; init; }
+
+    public required PersonTerm[] Terms { get; init; }
+
+}
+public record PersonTerm
+{
+    public required DateTime From { get; init; }
+    public required DateTime To { get; init; }
+    public required PersonPartyAffiliation[] PartyAffiliations { get; init; }
+}
+
+public record PersonPartyAffiliation
+{
+    public required DateTime From { get; init; }
+    public required DateTime To { get; init; }
+    public required string PartyName { get; init; }
 }
