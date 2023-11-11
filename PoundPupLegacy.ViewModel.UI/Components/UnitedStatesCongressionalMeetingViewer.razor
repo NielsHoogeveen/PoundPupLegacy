@@ -1,0 +1,19 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+@inherits SimpleNameableViewerBase<UnitedStatesCongressionalMeeting>
+<SimpleNameableViewer Model="Model" Description="Description">
+    <LabeledIntViewer Value="@Model.Number" Label="Number" />
+    <LabeledNonNullableStringViewer Value="@Model.DateFrom.ToString("yyyy-MMM-dd")" Label="From" />
+    <LabeledNonNullableStringViewer Value="@Model.DateTo.ToString("yyyy-MMM-dd")" Label="To" />
+    <div>
+        <a href="/united_states_senate/@Model.Number">Senate</a>
+    </div>
+    <div>
+        <a href="/united_states_house_of_representatives/@Model.Number">House of Representatives</a>
+    </div>
+</SimpleNameableViewer>
+@code{
+    [Parameter]
+    [EditorRequired]
+    public override UnitedStatesCongressionalMeeting Model { get; set; } = default!;
+
+}

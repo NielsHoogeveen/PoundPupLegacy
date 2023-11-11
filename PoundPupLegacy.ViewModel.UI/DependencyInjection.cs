@@ -54,6 +54,9 @@ public static class DependencyInjection
         services.AddFetchService<TypeOfAbuse>();
         services.AddFetchService<TypeOfAbuser>();
         services.AddFetchService<UnitedStatesCongress>();
+        services.AddFetchService<UnitedStatesCongressionalMeeting>();
+        services.AddFetchService<UnitedStatesPoliticalParty>();
+        services.AddFetchService<UnitedStatesPoliticalPartyAffiliation>();
         services.AddFetchService<WrongfulMedicationCase>();
         services.AddFetchService<WrongfulRemovalCase>();
         services.AddTransient<ICongressionalDataService, CongressionalDataService>();

@@ -3,7 +3,7 @@
 [JsonSerializable(typeof(Organization))]
 public partial class OrganizationJsonContext : JsonSerializerContext { }
 
-public sealed record Organization : LocatableBase
+public record Organization : LocatableBase
 {
 
     public string? WebsiteUrl { get; init; }

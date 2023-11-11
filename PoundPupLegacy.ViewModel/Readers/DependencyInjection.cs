@@ -75,7 +75,11 @@ public static class DependencyInjection
         services.AddTransient<ISingleItemDatabaseReaderFactory<UnitedStatesMeetingChamberDocumentReaderRequest, CongressionalMeetingChamber>, UnitedStatesMeetingChamberDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<WrongfulMedicationCasesDocumentReaderRequest, WrongfulMedicationCases>, WrongfulMedicationCasesDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, WrongfulMedicationCase>, WrongfulMedicationCaseDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, UnitedStatesCongressionalMeeting>, UnitedStatesCongressionalMeetingDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, UnitedStatesPoliticalParty>, UnitedStatesPoliticalPartyDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<UnitedStatesHouseMeetingDocumentReaderRequest, CongressionalMeetingChamber>, UnitedStatesHouseMeetingDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, UnitedStatesPoliticalParty>, UnitedStatesPoliticalPartyDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, UnitedStatesPoliticalPartyAffiliation>, UnitedStatesPoliticalPartyAffiliationDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<UnitedStatesSenateMeetingDocumentReaderRequest, CongressionalMeetingChamber>, UnitedStatesSenateMeetingDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<WrongfulRemovalCasesDocumentReaderRequest, WrongfulRemovalCases>, WrongfulRemovalCasesDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, WrongfulRemovalCase>, WrongfulRemovalCaseDocumentReaderFactory>();
