@@ -8,7 +8,10 @@ public enum ChamberType
 
 public interface ICongressionalDataService
 {
+    Task<CongressionalMeetingChamber?> GetSenateMeeting(int number, int tenantId);
+
+    Task<CongressionalMeetingChamber?> GetHouseMeeting(int number, int tenantId);
     Task<CongressionalMeetingChamber?> GetCongressionalMeetingChamber(ChamberType chamberType, int number, int tenantId);
     Task<CongressionalMeetingChamber?> GetCongressionalMeetingChamber(string path, int tenantId);
-    Task<UnitedStatesCongress?> GetUnitedStatesCongress();
+    Task<UnitedStatesCongress?> GetUnitedStatesCongress(int tenantId, int userId);
 }

@@ -1,9 +1,26 @@
-﻿@page "/united_states_congress"
+﻿@page "/united_states_congress/{Id:int}"
+@page "/united_states_congress"
 @using PoundPupLegacy.ViewModel.Models
+@using PoundPupLegacy.ViewModel.UI.Services
 @using PoundPupLegacy.Components
-@inherits Page
-<PageViewer>
-<UnitedStatesCongressViewer />
-</PageViewer>
+@inject ICongressionalDataService CongressionalDataService
+@inherits NodeViewerPage<ViewModel.Models.UnitedStatesCongress>
+<NodePageViewer Model="Model">
+    <NodeHandler Model="@Model">
+        <Viewer>
+            <UnitedStatesCongressViewer Model="Model" />
+        </Viewer>
+        <Editor>
+        </Editor>
+    </NodeHandler>
+</NodePageViewer>
 @code {
+    [Parameter]
+    public override int Id { get; set; } = 10037;
+
+
+    protected override async Task OnAfterInitializedAsync()
+    {
+        Model = await CongressionalDataService.GetUnitedStatesCongress(Tenant.Id, User.Id);
+    }
 }

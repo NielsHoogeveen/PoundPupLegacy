@@ -3,10 +3,11 @@
 [JsonSerializable(typeof(MemberOfCongress))]
 public partial class MemberOfCongressJsonContext : JsonSerializerContext { }
 
-public sealed record MemberOfCongress : LinkBase
+public sealed record MemberOfCongress : LinkBase 
 {
     public required string FilePathPortrait { get; init; }
-
+    public required DateTime From { get; init; }
+    public required DateTime To { get; init; }
 
     private BasicLink[] letters = Array.Empty<BasicLink>();
     public required BasicLink[] Letters {
@@ -17,8 +18,8 @@ public sealed record MemberOfCongress : LinkBase
             }
         }
     }
-    private BasicLink[] bills = Array.Empty<BasicLink>();
-    public required BasicLink[] Bills {
+    private BillAndAction[] bills = Array.Empty<BillAndAction>();
+    public required BillAndAction[] Bills {
         get => bills;
         init {
             if (value is not null) {
@@ -35,13 +36,12 @@ public sealed record MemberOfCongress : LinkBase
             }
         }
     }
-    private CongressionalTerm[] terms = Array.Empty<CongressionalTerm>();
-    public required CongressionalTerm[] Terms {
-        get => terms;
-        init {
-            if (value is not null) {
-                terms = value;
-            }
-        }
-    }
+}
+
+public record BillAndAction
+{
+    public required BasicLink Bill { get; init; }
+
+    public required BasicLink BillAction { get; init; }
+
 }

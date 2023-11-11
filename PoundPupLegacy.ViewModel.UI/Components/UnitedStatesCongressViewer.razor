@@ -1,23 +1,16 @@
-﻿@inherits Viewer
-@inject ICongressionalDataService CongressionalDataService
+﻿@using PoundPupLegacy.ViewModel.Models
+@inherits SimpleNameableViewerBase<UnitedStatesCongress>
 
-@if (Model is not null){
-    <HeadContentSetter Title=@Title SiteName=@SiteName Description=@Description />
-    <BreadCrumElementViewer Model="BreadCrumElements" />
-    <UnitedStatesCongressChamberViewer Model="Model.Senate" Label="Senate"/>
+<SimpleNameableViewer Model="Model" Description="Description">
+    <UnitedStatesCongressChamberViewer Model="Model.Senate" Label="Senate" />
     <UnitedStatesCongressChamberViewer Model="Model.House" Label="House of Representatives" />
-}
+</SimpleNameableViewer>
+
+
 @code{
  
-    public UnitedStatesCongress? Model { get; set; }
+    [Parameter]
+    [EditorRequired]
+    public override UnitedStatesCongress Model { get; set; } = default!;
 
-    protected override string Title => $"US Congress";
-
-    protected override string Description => "A page with information about the United States Congress";
-
-
-    protected override async Task OnInitializedAsync()
-    {
-        Model = await CongressionalDataService.GetUnitedStatesCongress();
-    }
 }

@@ -2,7 +2,7 @@
 
 [JsonSerializable(typeof(CongressionalMeetingChamber))]
 public partial class CongressionalMeetingChamberJsonContext : JsonSerializerContext { }
-
+ 
 public sealed record CongressionalMeetingChamber
 {
     public required string MeetingName { get; init; }

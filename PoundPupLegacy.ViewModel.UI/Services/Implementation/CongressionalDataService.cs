@@ -9,11 +9,32 @@ namespace PoundPupLegacy.ViewModel.UI.Services.Implementation;
 internal sealed partial class CongressionalDataService(
     NpgsqlDataSource dataSource,
     ILogger<CongressionalDataService> logger,
+    ISingleItemDatabaseReaderFactory<UnitedStatesHouseMeetingDocumentReaderRequest, CongressionalMeetingChamber> unitedStatesHouseMeetingDocumentReaderFactory,
+    ISingleItemDatabaseReaderFactory<UnitedStatesSenateMeetingDocumentReaderRequest, CongressionalMeetingChamber> unitedStatesSenateMeetingDocumentReaderFactory,
     ISingleItemDatabaseReaderFactory<UnitedStatesMeetingChamberDocumentReaderRequest, CongressionalMeetingChamber> unitedStatesMeetingChamberDocumentReaderFactory,
-    ISingleItemDatabaseReaderFactory<UnitedStatesCongresssDocumentReaderRequest, UnitedStatesCongress> unitedStatesCongresssDocumentReaderFactory
+    ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, UnitedStatesCongress> unitedStatesCongresssDocumentReaderFactory
 ) : DatabaseService(dataSource, logger), ICongressionalDataService
 {
-
+    public async Task<CongressionalMeetingChamber?> GetSenateMeeting(int number, int tenantId)
+    {
+        return await WithConnection(async (connection) => {
+            await using var reader = await unitedStatesSenateMeetingDocumentReaderFactory.CreateAsync(connection);
+            return await reader.ReadAsync(new UnitedStatesSenateMeetingDocumentReaderRequest {
+                Number = number,
+                TenantId = tenantId
+            });
+        });
+    }
+    public async Task<CongressionalMeetingChamber?> GetHouseMeeting(int number, int tenantId)
+    {
+        return await WithConnection(async (connection) => {
+            await using var reader = await unitedStatesHouseMeetingDocumentReaderFactory.CreateAsync(connection);
+            return await reader.ReadAsync(new UnitedStatesHouseMeetingDocumentReaderRequest {
+                Number = number,
+                TenantId = tenantId
+            });
+        });
+    }
 
     private record ChamberTypeAndMeetingNumber
     {
@@ -66,12 +87,16 @@ internal sealed partial class CongressionalDataService(
         return await GetCongressionalMeetingChamber(congressionalMeetingChamber.ChamberType, congressionalMeetingChamber.Number, tenantId);
     }
 
-    public async Task<UnitedStatesCongress?> GetUnitedStatesCongress()
+    public async Task<UnitedStatesCongress?> GetUnitedStatesCongress(int tenantId, int userId)
     {
 
         return await WithConnection(async (connection) => {
             await using var reader = await unitedStatesCongresssDocumentReaderFactory.CreateAsync(connection);
-            return await reader.ReadAsync(new UnitedStatesCongresssDocumentReaderRequest());
+            return await reader.ReadAsync(new NodeDocumentReaderRequest { 
+                NodeId  = 100237,
+                TenantId = tenantId,
+                UserId = userId
+            });
         });
     }
 

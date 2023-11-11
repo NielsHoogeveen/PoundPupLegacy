@@ -71,10 +71,12 @@ public static class DependencyInjection
         services.AddTransient<ISingleItemDatabaseReaderFactory<TopicsDocumentReaderRequest, Topics>, TopicsDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, TypeOfAbuse>, TypeOfAbuseDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, TypeOfAbuser>, TypeOfAbuserDocumentReaderFactory>();
-        services.AddTransient<ISingleItemDatabaseReaderFactory<UnitedStatesCongresssDocumentReaderRequest, UnitedStatesCongress>, UnitedStatesCongresssDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, UnitedStatesCongress>, UnitedStatesCongresssDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<UnitedStatesMeetingChamberDocumentReaderRequest, CongressionalMeetingChamber>, UnitedStatesMeetingChamberDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<WrongfulMedicationCasesDocumentReaderRequest, WrongfulMedicationCases>, WrongfulMedicationCasesDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, WrongfulMedicationCase>, WrongfulMedicationCaseDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<UnitedStatesHouseMeetingDocumentReaderRequest, CongressionalMeetingChamber>, UnitedStatesHouseMeetingDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<UnitedStatesSenateMeetingDocumentReaderRequest, CongressionalMeetingChamber>, UnitedStatesSenateMeetingDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<WrongfulRemovalCasesDocumentReaderRequest, WrongfulRemovalCases>, WrongfulRemovalCasesDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, WrongfulRemovalCase>, WrongfulRemovalCaseDocumentReaderFactory>();
     }

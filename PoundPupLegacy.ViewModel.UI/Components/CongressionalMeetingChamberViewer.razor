@@ -13,16 +13,20 @@
         {
             <div class="member-of-congress">
                 <img src="@member.FilePathPortrait" style="height:220px;width:auto"/>
-                <div>
+                <div style="margin-left: 1em;">
                     <label>Name</label>
                     <div class="list-entries"><a href="@member.Path">@member.Title</a></div>
-                    @if (member.Bills.Any())
-                    {
+                    <label>Term</label>
+                    <div>
+                        <span>@member.From.ToString("yyyy MMM dd")</span> - <span>@member.To.ToString("yyyy MMM dd")</span>
+                    </div>
+                    @if (member.Bills.Any()) {
                         <label>Bills sponsored</label>
                         <div class="list-entries">
                         @foreach (var bill in member.Bills)
                         {
-                            <div><a href="@bill.Path">@bill.Title</a></div>
+                            <div><a href="@bill.Bill.Path">@bill.Bill.Title</a></div>
+                            <div><a href="@bill.BillAction.Path">@bill.BillAction.Title</a></div>
                         }
                         </div>
                     }
@@ -32,21 +36,6 @@
                             @foreach (var letter in member.Letters) {
                                 <div><a href="@letter.Path">@letter.Title</a></div>
                             }
-                        </div>
-                    }
-                    @if (member.Terms.Any()) {
-                        <label>Terms</label>
-                        <div class="list-entries">
-                        <table>
-                        @foreach(var term in member.Terms.OrderBy(x => x.DateFrom)) {
-                            <tr>
-                                <td>@term.MemberType</td>
-                                <td><a href="@term.State.Path">@term.State.Title</a></td>
-                                    <td>@term.DateFrom?.ToString("yyyy MMM dd")</td>
-                                    <td>@term.DateTo?.ToString("yyyy MMM dd")</td>
-                            </tr>
-                        }
-                        </table>
                         </div>
                     }
                     @if (member.Parties.Any()) {

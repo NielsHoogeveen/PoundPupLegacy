@@ -12,7 +12,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Model = await CongressionalDataService.GetCongressionalMeetingChamber(ChamberType.House, Number, Tenant.Id);
+        Model = await CongressionalDataService.GetHouseMeeting(Number, Tenant.Id);
     }
 
 }
