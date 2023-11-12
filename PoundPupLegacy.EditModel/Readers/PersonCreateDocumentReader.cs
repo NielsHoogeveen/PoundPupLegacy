@@ -28,7 +28,23 @@ internal sealed class PersonCreateDocumentReaderFactory : NodeCreateDocumentRead
                         'PersonPoliticalEntityRelationTypes',
                         (select document from person_political_entity_relation_types_document),
                         'Name',
-                        ''
+                        '',
+                        'DateOfBirth',
+                        null,
+                        'DateOfDeath',
+                        null,
+                        'FileIdPortrait',
+                        null,
+                        'FirstName',
+                        null,
+                        'FullName',
+                        null,
+                        'LastName',
+                        null,
+                        'MiddleName',
+                        null,
+                        'Suffix',
+                        null
                    )
                 ) document
                 from node_type nt

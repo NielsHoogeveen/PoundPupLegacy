@@ -30,6 +30,22 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                     jsonb_build_object(
                         'Name',
                         n.title,
+                        'DateOfBirth',
+                        p.date_of_birth,
+                        'DateOfDeath',
+                        p.date_of_death,
+                        'FileIdPortrait',
+                        p.file_id_portrait,
+                        'FirstName',
+                        p.first_name,
+                        'FullName',
+                        p.full_name,
+                        'LastName',
+                        p.last_name,
+                        'MiddleName',
+                        p.middle_name,
+                        'Suffix',
+                        p.suffix,
                         'Countries',
                         (select document from countries_document),
                         'InterPersonalRelationTypes',
@@ -55,6 +71,7 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
             join tenant_node tn on tn.node_id = n.id
             where tn.tenant_id = @tenant_id and tn.node_id = @node_id and n.node_type_id = @node_type_id
         """;
+
     const string INTER_PERSONAL_RELATIONS_FROM_DOCUMENT = """
         inter_personal_relations_from_document as(
             select

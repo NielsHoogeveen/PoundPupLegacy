@@ -1,4 +1,35 @@
 ﻿@inherits EditorDetailBase
+<div class="person-fields">
+    <h4>Personal details</h4>
+    <div class="form-group">
+        <label>Start date</label>
+        <InputDate @bind-Value="PersonDetails.DateOfBirth" />
+    </div>
+    <div class="form-group">
+        <label>End date</label>
+        <InputDate @bind-Value="PersonDetails.DateOfDeath" />
+    </div>
+    <div class="form-group">
+        <label>Full name</label>
+        <InputText type="text" @bind-Value="PersonDetails.FullName" />
+    </div>
+    <div class="form-group">
+        <label>First name</label>
+        <InputText type="text" @bind-Value="PersonDetails.FirstName" />
+    </div>
+    <div class="form-group">
+        <label>Middle name</label>
+        <InputText type="text" @bind-Value="PersonDetails.MiddleName" />
+    </div>
+    <div class="form-group">
+        <label>Last name</label>
+        <InputText type="text" @bind-Value="PersonDetails.LastName" />
+    </div>
+    <div class="form-group">
+        <label>Suffix</label>
+        <InputText type="text" @bind-Value="PersonDetails.Suffix" />
+    </div>
+</div>
 <InterPersonalRelationsEditor 
     @bind-RelationsFrom="PersonDetails.InterPersonalRelationsFrom" 
     @bind-RelationsTo="PersonDetails.InterPersonalRelationsTo" 

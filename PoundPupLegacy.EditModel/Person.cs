@@ -113,12 +113,10 @@ public abstract record Person : Locatable, ResolvedNode, Node<Person.ToUpdate, P
 {
     private Person() { }
     public Node<ToUpdate, ToCreate> Resolve(Unit data) => this;
-
     public abstract T Match<T>(Func<ToUpdate, T> existingItem, Func<ToCreate, T> newItem);
     public abstract void Match(Action<ToUpdate> existingItem, Action<ToCreate> newItem);
     public required NameableDetails NameableDetails { get; init; }
     public abstract LocatableDetails LocatableDetails { get; }
-
     public abstract PersonDetails PersonDetails { get; }
     public abstract NodeDetails NodeDetails { get; }
     public sealed record ToUpdate : Person, ExistingNode, ExistingLocatable
@@ -161,6 +159,14 @@ public abstract record Person : Locatable, ResolvedNode, Node<Person.ToUpdate, P
 public abstract record PersonDetails
 {
     public required string Name { get; init; }
+    public required DateTime? DateOfBirth { get; set; }
+    public required DateTime? DateOfDeath { get; set; }
+    public required int? FileIdPortrait { get; set; }
+    public required string? FirstName { get; set; }
+    public required string? FullName { get; set; }
+    public required string? LastName { get; set; }
+    public required string? MiddleName { get; set; }
+    public required string? Suffix { get; set; }
     public abstract List<PersonPoliticalEntityRelation.Complete> PersonPoliticalEntityRelations { get; set; }
     public required List<PersonPoliticalEntityRelationTypeListItem> PersonPoliticalEntityRelationTypes { get; init; }
     public abstract List<InterPersonalRelation.From.Complete> InterPersonalRelationsFrom { get; set; }
