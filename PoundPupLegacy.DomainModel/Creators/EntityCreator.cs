@@ -77,9 +77,7 @@ public class TermCreator(
                 TermIdChild = element.Identification.Id!.Value
             });
         }
-        if (element.ParentTermIds.Any()) {
-            await termViewRefresher.Execute();
-        }
+        await termViewRefresher.Execute();
     }
     public override async ValueTask DisposeAsync()
     {

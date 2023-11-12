@@ -179,14 +179,7 @@ where T : NameableToUpdate
         foreach (var term in request.NameableDetails.TermsToUpdate) {
             await termUpdater.UpdateAsync(term);
         }
-        if(
-            request.NameableDetails.TermsToRemove.Any() || 
-            request.NameableDetails.TermsToUpdate.Any() ||
-            request.NameableDetails.TermsToAdd.Any()
-            ) {
-            await termViewRefresher.Execute();
-        }
-
+        await termViewRefresher.Execute();
     }
     public override async ValueTask DisposeAsync()
     {

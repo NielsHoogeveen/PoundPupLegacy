@@ -61,38 +61,9 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                 jsonb_agg(
         	        jsonb_build_object(
                         'NodeIdentification',
-                        jsonb_build_object(
-                            'NodeId', 
-                            node_id
-                        ),
+                        (select document from identification_for_update_document where id = node_id),
                         'NodeDetailsForUpdate',
-                        jsonb_build_object(
-                            'Id',
-                            node_id,
-                            'NodeTypeName',
-                            node_type_name,
-                            'NodeTypeId',
-                            node_type_id,
-                            'PublisherId', 
-                            publisher_id,
-                            'PublisherName', 
-                            publisher_name,
-                            'OwnerId', 
-                            owner_id,
-                            'Title', 
-                            title,
-            		        'TagsForUpdate', 
-                            null,
-                            'TenantNodeDetailsForUpdate',
-                            json_build_object(
-                                'TenantNodesToUpdate',
-                                null
-                            ),
-                            'Tenants',
-                            null,
-                            'Files',
-                            null
-                        ),
+                        (select document from node_details_for_update_document where id = node_id),                        
                         'PersonFrom',
                         jsonb_build_object(
                             'Id',
@@ -270,38 +241,9 @@ internal sealed class PersonUpdateDocumentReaderFactory : NodeUpdateDocumentRead
                 jsonb_agg(
         	        jsonb_build_object(
                         'NodeIdentification',
-                        jsonb_build_object(
-                            'NodeId', 
-                            node_id
-                        ),
+                        (select document from identification_for_update_document where id = node_id),
                         'NodeDetailsForUpdate',
-                        jsonb_build_object(
-                            'Id',
-                            node_id,
-                           'NodeTypeName',
-                            node_type_name,
-                            'NodeTypeId',
-                            node_type_id,
-                            'PublisherId', 
-                            publisher_id,
-                            'PublisherName',
-                            publisher_name,
-                            'OwnerId', 
-                            owner_id,
-                            'Title', 
-                            title,
-            		        'TagsForUpdate', 
-                            null,
-                            'TenantNodeDetailsForUpdate',
-                            json_build_object(
-                                'TenantNodesToUpdate',
-                                null
-                            ),
-                            'Tenants',
-                            null,
-                            'Files',
-                            null
-                        ),
+                        (select document from node_details_for_update_document where id = node_id),                        
                         'PersonFrom',
                         jsonb_build_object(
                             'Id',

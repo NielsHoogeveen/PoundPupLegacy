@@ -4,6 +4,7 @@
 <DocumentableViewer Model="Model" Description="@Description">
     <Top>
         @Top
+        <LargeTextViewer Value="@Model.Description" />
         <RelatedCasesViewer Model="@Model.Cases" />
         <LabeledLinkListViewer Links="Model.SubTopics" Label="Child topics" />
         <LabeledLinkListViewer Links="Model.SuperTopics" Label="Parent topics" />
