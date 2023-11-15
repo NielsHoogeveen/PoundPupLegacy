@@ -4,17 +4,13 @@ using System.Diagnostics;
 
 namespace PoundPupLegacy.Controllers;
 
-public sealed class HomeController : Controller
+public sealed class HomeController(ILogger<Pages.Shared.ErrorModel> logger) : Controller
 {
-    public HomeController()
-    {
-    }
-
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        return View(new Pages.Shared.ErrorModel(logger));
     }
     [HttpPost("logout")]
     public IActionResult Logout()
