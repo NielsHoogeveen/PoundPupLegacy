@@ -6,15 +6,18 @@
 @code {
 
     protected TModel? Model { get; set; }
+    private int? previousId = null;
 
-    protected override async Task OnAfterInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
+        if (Id != previousId) {
+            Model = await NodeDataService.FetchNode(
+                nodeId: Id,
+                userId: User.Id,
+                tenantId: Tenant.Id);
+            StateHasChanged();
+            previousId = Id;
+        }
 
-        Model = await NodeDataService.FetchNode(
-            nodeId: Id,
-            userId: User.Id,
-            tenantId: Tenant.Id);
-        StateHasChanged();
     }
-    
 }
