@@ -1,0 +1,18 @@
+﻿@page "/united_states_county/{Id:int}"
+@using PoundPupLegacy.Components
+@inherits NodeViewerPage<ViewModel.Models.UnitedStatesCounty>
+<NodePageViewer Model="Model">
+    <NodeHandler Model="@Model">
+        <Viewer>
+            <UnitedStatesCountyViewer Model="@Model" />
+        </Viewer>
+        <Editor>
+            <BasicNameableUpdater NodeId="@Id" />
+        </Editor>
+    </NodeHandler>
+</NodePageViewer>
+@code {
+    [Parameter]
+    public override int Id { get; set; }
+
+}

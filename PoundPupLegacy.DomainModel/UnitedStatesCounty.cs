@@ -1,0 +1,20 @@
+﻿namespace PoundPupLegacy.DomainModel;
+
+public abstract record UnitedStatesCounty : Nameable
+{
+    private UnitedStatesCounty() { }
+    public required int UnitedStatesStateId { get; init; }
+    public required int Fips { get; init; }
+    public sealed record ToCreate : UnitedStatesCounty, NameableToCreate
+    {
+        public required Identification.Possible Identification { get; init; }
+        public required NodeDetails.ForCreate NodeDetails { get; init; }
+        public required NameableDetails.ForCreate NameableDetails { get; init; }
+    }
+    public sealed record ToUpdate : UnitedStatesCounty, NameableToUpdate
+    {
+        public required Identification.Certain Identification { get; init; }
+        public required NodeDetails.ForUpdate NodeDetails { get; init; }
+        public required NameableDetails.ForUpdate NameableDetails { get; init; }
+    }
+}

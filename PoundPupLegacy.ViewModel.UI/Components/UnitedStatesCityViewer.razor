@@ -1,0 +1,12 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+@inherits SimpleNameableViewerBase<UnitedStatesCity>
+<SimpleNameableViewer Model="Model" Description="Description">
+    <LabeledNonNullableLinkViewer Label="County" Value="@Model.County" />
+    <LabeledIntViewer Label="Population" Value="@Model.Population" />
+</SimpleNameableViewer>
+@code{
+    [Parameter]
+    [EditorRequired]
+    public override UnitedStatesCity Model { get; set; } = default!;
+
+}

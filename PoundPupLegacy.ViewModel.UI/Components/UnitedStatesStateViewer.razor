@@ -1,0 +1,15 @@
+﻿@using PoundPupLegacy.ViewModel.Models
+@inherits SubdivisionViewerBase<UnitedStatesState>
+<SubdivisionViewer Model="Model" Description="@Description">
+    <div>
+        <label>ISO3166_2 code</label>
+        @Model.ISO3166_2_Code
+    </div>
+</SubdivisionViewer>
+@code{
+    [Parameter]
+    [EditorRequired]
+    public override UnitedStatesState Model { get; set; } = default!;
+
+}
+

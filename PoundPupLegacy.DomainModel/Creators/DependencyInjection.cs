@@ -106,7 +106,9 @@ internal static class DependencyInjection
         services.AddTransient<IEntityCreatorFactory<TermHierarchy>, TermHierarchyCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<TypeOfAbuse.ToCreate>, TypeOfAbuseCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<TypeOfAbuser.ToCreate>, TypeOfAbuserCreatorFactory>();
+        services.AddTransient<IEntityCreatorFactory<UnitedStatesCity.ToCreate>, UnitedStatesCityCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<UnitedStatesCongressionalMeeting.ToCreate>, UnitedStatesCongressionalMeetingCreatorFactory>();
+        services.AddTransient<IEntityCreatorFactory<UnitedStatesCounty.ToCreate>, UnitedStatesCountyCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<UnitedStatesPoliticalPartyAffiliation.ToCreate>, UnitedStatesPoliticalPartyAffliationCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<User.ToCreate>, UserCreatorFactory>();
         services.AddTransient<IEntityCreatorFactory<UserRoleUser>, UserGroupUserRoleUserCreatorFactory>();

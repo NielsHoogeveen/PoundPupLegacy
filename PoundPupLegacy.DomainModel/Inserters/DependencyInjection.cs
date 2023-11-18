@@ -146,6 +146,8 @@ internal static class DependencyInjection
         services.AddTransient<IDatabaseInserterFactory<TypeOfAbuse.ToCreate>, TypeOfAbuseInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<TypeOfAbuser.ToCreate>, TypeOfAbuserInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<UnitedStatesCongressionalMeeting.ToCreate>, UnitedStatesCongressionalMeetingInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<UnitedStatesCity.ToCreate>, UnitedStatesCityInserterFactory>();
+        services.AddTransient<IDatabaseInserterFactory<UnitedStatesCounty.ToCreate>, UnitedStatesCountyInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<UnitedStatesPoliticalPartyAffiliation.ToCreate>, UnitedStatesPoliticalPartyAffliationInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<UnitedStatesPoliticalParty.ToCreate>, UnitedStatesPoliticalPartyInserterFactory>();
         services.AddTransient<IDatabaseInserterFactory<UserGroup>, UserGroupInserterFactory>();

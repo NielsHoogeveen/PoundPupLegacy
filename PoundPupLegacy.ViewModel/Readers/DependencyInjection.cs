@@ -77,10 +77,13 @@ public static class DependencyInjection
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, WrongfulMedicationCase>, WrongfulMedicationCaseDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, UnitedStatesCongressionalMeeting>, UnitedStatesCongressionalMeetingDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, UnitedStatesPoliticalParty>, UnitedStatesPoliticalPartyDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, UnitedStatesCity>, UnitedStatesCityDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<UnitedStatesHouseMeetingDocumentReaderRequest, CongressionalMeetingChamber>, UnitedStatesHouseMeetingDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, UnitedStatesCounty>, UnitedStatesCountyDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, UnitedStatesPoliticalParty>, UnitedStatesPoliticalPartyDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, UnitedStatesPoliticalPartyAffiliation>, UnitedStatesPoliticalPartyAffiliationDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<UnitedStatesSenateMeetingDocumentReaderRequest, CongressionalMeetingChamber>, UnitedStatesSenateMeetingDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, UnitedStatesState>, UnitedStatesStateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<WrongfulRemovalCasesDocumentReaderRequest, WrongfulRemovalCases>, WrongfulRemovalCasesDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, WrongfulRemovalCase>, WrongfulRemovalCaseDocumentReaderFactory>();
     }
