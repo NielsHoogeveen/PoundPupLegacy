@@ -1,0 +1,136 @@
+﻿@using System.Globalization
+@inherits EntityEditorBase<UnitedStatesCity.ToUpdate, UnitedStatesCity.ToCreate, Unit>
+@inject ISearchService<UnitedStatesCountyListItem> countySearchService
+@if (Model is not null) {
+    <NodeEditor 
+        TCreateModel="UnitedStatesCity.ToCreate"
+        TUpdateModel="UnitedStatesCity.ToUpdate"
+        TResolveData="Unit"
+        Model="Model"
+        OnValidationResult="() => Validate()"
+        Title="Edit city">
+        <NodeDetailsEditor 
+            Model="UnitedStatesCity.NodeDetails"
+            OnTitleChanged="OnTitleChanged"
+            @ref=nodeDetailsEditor>
+            <Top>
+                <NameableEditor Model="UnitedStatesCity.NameableDetails" @ref=nameableEditor/>
+                <div class="details">
+                    <h4>City details</h4>
+                    <div class="field-group">
+                        <label>Country</label>
+                        <div class="selector">
+                            <SearchItemEditor T="UnitedStatesCountyListItem"
+                                              ValueChanged="OnSelectCounty"
+                                              IsMandatory="true"
+                                              Value="UnitedStatesCountyListItem"
+                                              EnableEdit="true" />
+
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label>Population</label>
+                        <InputNumber  @bind-Value="UnitedStatesCity.Population" />
+                    </div>
+                    <div class="field-group">
+                        <label>Density</label>
+                        <InputNumber @bind-Value="UnitedStatesCity.Density" />
+                    </div>
+                        <div class="field-group">
+                            <label>Incorporated</label>
+                            <InputCheckbox @bind-Value="UnitedStatesCity.Incorporated" />
+                        </div>
+                    <div class="field-group">
+                        <label>Military</label>
+                        <InputCheckbox @bind-Value="UnitedStatesCity.Military" />
+                    </div>
+                    <div class="field-group">
+                        <label>Latitude</label>
+                        <InputNumber @bind-Value="UnitedStatesCity.Latitude" />
+                    </div>
+                    <div class="field-group">
+                        <label>Latitude</label>
+                        <InputNumber @bind-Value="UnitedStatesCity.Longitude" />
+                    </div>
+                    <div class="field-group">
+                        <label>Timezone</label>
+                        <select @onchange="OnSelectTimeZone">
+                            @foreach(var tz in GetTimeZones()){
+                                if(tz == UnitedStatesCity.Timezone)
+                                {
+                                    <option value="@tz" selected>@tz</option>
+                                }
+                                else
+                                {
+                                    <option value="@tz">@tz</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="field-group">
+                        <label>Simple name</label>
+                        <InputText type="text" @bind-Value="UnitedStatesCity.SimpleName" />
+                    </div>
+                </div>
+                <TermsEditor Model="UnitedStatesCity.NameableDetails" />
+            </Top>
+            <Middle></Middle>
+            <Bottom></Bottom>
+        </NodeDetailsEditor>
+    </NodeEditor>
+}
+@code {
+    [Parameter]
+    [EditorRequired]
+    public UnitedStatesCity UnitedStatesCity { get; set; } = default!;
+
+    private UnitedStatesCountyListItem? UnitedStatesCountyListItem { get; set; }
+
+    protected override Resolver<UnitedStatesCity.ToUpdate, UnitedStatesCity.ToCreate, Unit> Model => UnitedStatesCity;
+
+    private NodeDetailsEditor? nodeDetailsEditor;
+    private NameableEditor? nameableEditor;
+
+    protected override List<EditorDetailBase?> DetailsEditors => new() {
+        nodeDetailsEditor,
+        nameableEditor,
+    };
+
+    protected override Unit ResolveData => Unit.Instance;
+
+    private string[] GetTimeZones()
+    {
+        var source = NodaTime.TimeZones.TzdbDateTimeZoneSource.Default.ZoneLocations;
+        if (source is not null) {
+            return source
+                .Where(x => x.CountryCode == "US")
+                .Select(x => x.ZoneId)
+                .OrderBy(x => x)
+                .ToArray();
+        }
+        return Array.Empty<string>();
+    }
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        UnitedStatesCountyListItem = new UnitedStatesCountyListItem
+        {
+            Id = UnitedStatesCity.CountyId,
+            Name = UnitedStatesCity.CountyName,
+        };
+    }
+    private void OnSelectCounty(UnitedStatesCountyListItem county)
+    {
+        UnitedStatesCountyListItem = county;
+        UnitedStatesCity.CountyId = county.Id;
+        UnitedStatesCity.CountyName = county.Name;
+    }
+    private void OnSelectTimeZone(ChangeEventArgs args)
+    {
+        if (args.Value is string tz)
+        {
+            UnitedStatesCity.Timezone = tz;
+        }
+    }
+
+}

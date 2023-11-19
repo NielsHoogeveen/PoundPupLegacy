@@ -172,6 +172,7 @@ public static class Constants
     public const int TYPE_OF_ABUSER = 40;
     public const int BASIC_NAMEABLE = 41;
     public const int DISRUPTED_PLACEMENT_CASE = 44;
+    public const int UNITED_STATES_CITY = 70;
 
     public const int UNITED_STATES_HOUSE_OF_REPRESENTATIVES = 12660;
     public const int UNITED_STATES_SENATE = 12662;

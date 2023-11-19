@@ -55,6 +55,163 @@ internal class Program
         await creator.CreateAsync(ReadUSCities(connection2));
     }
 
+    private record City
+    {
+        public required string CityName { get; init; }
+        public required decimal Latitude { get; init; }
+        public required decimal Longitude { get; init; }
+        public required int Population { get; init; }
+        public required double Density { get; init; }
+        public required bool Military { get; init; }
+        public required bool Incorporated { get; init; }
+        public required string Timezone { get; init; }
+        public required int CountyId { get; init; }
+        public required int TermId { get; init; }
+        public required string SimpleName { get; init; }
+    }
+
+
+    private async IAsyncEnumerable<UnitedStatesCity.ToCreate> Create()
+    {
+        yield return Create(new City {
+            CityName = "Collingswood (NJ)",
+            Latitude = 39.915275m,
+            Longitude = 75.078391m,
+            Population = 14150,
+            Density = 2993.0,
+            Military = false,
+            Incorporated = false,
+            Timezone = "America/New_York",
+            CountyId = 204999,
+            TermId = 18219,
+            SimpleName = "Collingswood"
+
+        });
+        yield return Create(new City {
+            CityName = "Union Township (NJ)",
+            Latitude = 40.632215m,
+            Longitude = 74.964965m,
+            Population = 6507,
+            Density = 133.9,
+            Military = false,
+            Incorporated = false,
+            Timezone = "America/New_York",
+            CountyId = 205005,
+            TermId = 18225,
+            SimpleName = "Union Township"
+
+        });
+        yield return Create(new City {
+            CityName = "Alfred (NY)",
+            Latitude = 40.658991m,
+            Longitude = 74.347371m,
+            Population = 4896,
+            Density = 62.36,
+            Military = false,
+            Incorporated = false,
+            Timezone = "America/New_York",
+            CountyId = 205051,
+            TermId = 18271,
+            SimpleName = "Alfred"
+
+        });
+        yield return Create(new City {
+            CityName = "Amherst (NY)",
+            Latitude = 42.978333m,
+            Longitude = 78.800000m,
+            Population = 129595,
+            Density = 912.96,
+            Military = false,
+            Incorporated = false,
+            Timezone = "America/New_York",
+            CountyId = 205064,
+            TermId = 18284,
+            SimpleName = "Amherst"
+        });
+        yield return Create(new City {
+            CityName = "Hyde Park (NY)",
+            Latitude = 41.7856m,
+            Longitude = 73.9269m,
+            Population = 21021,
+            Density = 221.4,
+            Military = false,
+            Incorporated = false,
+            Timezone = "America/New_York",
+            CountyId = 205063,
+            TermId = 18283,
+            SimpleName = "Hyde Park"
+        });
+        yield return Create(new City {
+            CityName = "Hyde Park (NY)",
+            Latitude = 41.7856m,
+            Longitude = 73.9269m,
+            Population = 21021,
+            Density = 221.4,
+            Military = false,
+            Incorporated = false,
+            Timezone = "America/New_York",
+            CountyId = 205063,
+            TermId = 18283,
+            SimpleName = "Amherst"
+        });
+
+
+    }
+
+    private UnitedStatesCity.ToCreate Create(City city)
+    {
+        
+        return new UnitedStatesCity.ToCreate {
+            Identification = new Common.Identification.Possible { Id = null },
+            NameableDetails = new NameableDetails.ForCreate {
+                Description = city.CityName,
+                FileIdTileImage = null,
+                Terms = new List<Term.ToCreateForNewNameable> {
+                        new Term.ToCreateForNewNameable {
+                            Identification = new Common.Identification.Possible {
+                                Id = null
+                            },
+                            Name = city.CityName,
+                            ParentTermIds = new List<int>{ city.TermId },
+                            VocabularyId = 100000
+                        }
+                    },
+            },
+            NodeDetails = new NodeDetails.ForCreate {
+                AuthoringStatusId = 1,
+                FilesToAdd = new(),
+                ChangedDateTime = DateTime.Now.AddDays(-100),
+                CreatedDateTime = DateTime.Now.AddDays(-100),
+                NodeTypeId = 70,
+                PublisherId = 1,
+                Title = city.CityName,
+                OwnerId = 1,
+                TenantNodes = new List<TenantNode.ToCreate.ForNewNode> {
+                        new TenantNode.ToCreate.ForNewNode {
+                            Identification = new Common.Identification.Possible {
+                                Id= null
+                            },
+                            PublicationStatusId = 1,
+                            SubgroupId = null,
+                            TenantId = 1,
+                            UrlId = null,
+                        }
+                    },
+                TermIds = new(),
+            },
+            Latitude = city.Latitude,
+            Longitude = city.Longitude,
+            Population = city.Population,
+            Density = city.Density,
+            Military = city.Military,
+            Incorporated = city.Incorporated,
+            Timezone = city.Timezone,
+            UnitedStatesCountyId = city.CountyId,
+            SimpleName = city.SimpleName,
+        };
+    }
+
+
     static async IAsyncEnumerable<UnitedStatesCity.ToCreate> ReadUSCities(NpgsqlConnection connection)
     {
         var command = connection.CreateCommand();

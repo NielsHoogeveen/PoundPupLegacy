@@ -45,6 +45,7 @@ public static class DependencyInjection
         services.AddViewModelRetrieveService<Organization, Organization.ToUpdate, Organization.ToCreate>();
         services.AddViewModelRetrieveService<OrganizationType, OrganizationType.ToUpdate, OrganizationType.ToCreate>();
         services.AddViewModelRetrieveService<Person, Person.ToUpdate, Person.ToCreate>();
+        services.AddViewModelRetrieveService<UnitedStatesCity, UnitedStatesCity.ToUpdate, UnitedStatesCity.ToCreate>();
 
         services.AddEntitySaveService<
             AbuseCase, 
@@ -239,6 +240,14 @@ public static class DependencyInjection
             DomainModel.TypeOfAbuser.ToCreate>();
 
         services.AddEntitySaveService<
+            UnitedStatesCity,
+            UnitedStatesCity.ToUpdate,
+            UnitedStatesCity.ToCreate,
+            DomainModel.UnitedStatesCity,
+            DomainModel.UnitedStatesCity.ToUpdate,
+            DomainModel.UnitedStatesCity.ToCreate>();
+
+        services.AddEntitySaveService<
             WrongfulMedicationCase,
             WrongfulMedicationCase.ToUpdate,
             WrongfulMedicationCase.ToCreate,
@@ -259,6 +268,7 @@ public static class DependencyInjection
         services.AddTransient<ITextService, TextService>();
         services.AddTransient<ISearchService<DocumentListItem>, DocumentSearchService>();
         services.AddTransient<ISearchService<CountryListItem>, CountrySearchService>();
+        services.AddTransient<ISearchService<UnitedStatesCountyListItem>, UnitedStatesCountySearchService>();
         services.AddTransient<ISearchService<GeographicalEntityListItem>, GeographicalEntitySearchService>();
         services.AddTransient<ISearchService<OrganizationListItem>, OrganizationSearchService>();
         services.AddTransient<ISearchService<PersonListItem>, PersonSearchService>();

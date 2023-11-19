@@ -30,6 +30,7 @@ public static class DependencyInjection
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, Profession.ToCreate>, ProfessionCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, TypeOfAbuse.ToCreate>, TypeOfAbuseCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, TypeOfAbuser.ToCreate>, TypeOfAbuserCreateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, UnitedStatesCity.ToCreate>, UnitedStatesCityCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, WrongfulMedicationCase.ToCreate>, WrongfulMedicationCaseCreateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeCreateDocumentRequest, WrongfulRemovalCase.ToCreate>, WrongfulRemovalCaseCreateDocumentReaderFactory>();
 
@@ -57,6 +58,7 @@ public static class DependencyInjection
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, Profession.ToUpdate>, ProfessionUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, TypeOfAbuse.ToUpdate>, TypeOfAbuseUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, TypeOfAbuser.ToUpdate>, TypeOfAbuserUpdateDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, UnitedStatesCity.ToUpdate>, UnitedStatesCityUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, WrongfulMedicationCase.ToUpdate>, WrongfulMedicationCaseUpdateDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeUpdateDocumentRequest, WrongfulRemovalCase.ToUpdate>, WrongfulRemovalCaseUpdateDocumentReaderFactory>();
 
@@ -70,6 +72,7 @@ public static class DependencyInjection
         services.AddTransient<IEnumerableDatabaseReaderFactory<SubdivisionListItemsReaderRequest, SubdivisionListItem>, SubdivisionListItemsReaderFactory>();
         services.AddTransient<IEnumerableDatabaseReaderFactory<TagDocumentsReaderRequest, NodeTerm.ForCreate>, TagDocumentsReaderFactory>();
         services.AddTransient<IDoesRecordExistDatabaseReaderFactory<TopicExistsRequest>, TopicExistsFactory>();
+        services.AddTransient<IEnumerableDatabaseReaderFactory<UnitedStatesCountiesReaderRequest, UnitedStatesCountyListItem>, UnitedStatesCountiesReaderFactory>();
 
     }
 }

@@ -422,6 +422,8 @@ public static class Extensions
             EditModel.TypeOfAbuserListItemJsonContext.Default,
             EditModel.OrganizationListItemJsonContext.Default,
             EditModel.PersonListItemJsonContext.Default,
+            EditModel.UnitedStatesCountyListItemJsonContext.Default,
+            EditModel.UnitedStatesCityJsonContext.Default,
 
             Admin.View.TenantJsonContext.Default
         ];

@@ -140,6 +140,9 @@ public static class DependencyInjection
         services.AddTransient<IMapper<TypeOfAbuser.ToUpdate, DomainModel.TypeOfAbuser.ToUpdate>, TypeOfAbuserToUpdateMapper>();
         services.AddTransient<IMapper<TypeOfAbuser.ToCreate, DomainModel.TypeOfAbuser.ToCreate>, TypeOfAbuserToCreateMapper>();
 
+        services.AddTransient<IMapper<UnitedStatesCity.ToUpdate, DomainModel.UnitedStatesCity.ToUpdate>, UnitedStatesCityToUpdateMapper>();
+        services.AddTransient<IMapper<UnitedStatesCity.ToCreate, DomainModel.UnitedStatesCity.ToCreate>, UnitedStatesCityToCreateMapper>();
+
         services.AddTransient<IMapper<WrongfulMedicationCase.ToUpdate, DomainModel.WrongfulMedicationCase.ToUpdate>, WrongfulMedicationCaseToUpdateMapper>();
         services.AddTransient<IMapper<WrongfulMedicationCase.ToCreate, DomainModel.WrongfulMedicationCase.ToCreate>, WrongfulMedicationCaseToCreateMapper>();
 

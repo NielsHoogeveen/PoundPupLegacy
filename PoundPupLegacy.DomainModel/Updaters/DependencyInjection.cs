@@ -32,6 +32,7 @@ public static class DependencyInjection
         services.AddTransient<IEntityChangerFactory<TypeOfAbuse.ToUpdate>, TypeOfAbuseChangerFactory>();
         services.AddTransient<IEntityChangerFactory<TypeOfAbuser.ToUpdate>, TypeOfAbuserChangerFactory>();
         services.AddTransient<IEntityChangerFactory<Profession.ToUpdate>, ProfessionChangerFactory>();
+        services.AddTransient<IEntityChangerFactory<UnitedStatesCity.ToUpdate>, UnitedStatesCityChangerFactory>();
         services.AddTransient<IEntityChangerFactory<WrongfulMedicationCase.ToUpdate>, WrongfulMedicationCaseChangerFactory>();
         services.AddTransient<IEntityChangerFactory<WrongfulRemovalCase.ToUpdate>, WrongfulRemovalCaseChangerFactory>();
 
@@ -69,6 +70,7 @@ public static class DependencyInjection
         services.AddTransient<IDatabaseUpdaterFactory<Term.ToUpdate>, TermUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<TypeOfAbuse.ToUpdate>, TypeOfAbuseUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<TypeOfAbuser.ToUpdate>, TypeOfAbuserUpdaterFactory>();
+        services.AddTransient<IDatabaseUpdaterFactory<UnitedStatesCity.ToUpdate>, UnitedStatesCityUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<WrongfulMedicationCase.ToUpdate>, WrongfulMedicationCaseUpdaterFactory>();
         services.AddTransient<IDatabaseUpdaterFactory<WrongfulRemovalCase.ToUpdate>, WrongfulRemovalCaseUpdaterFactory>();
     }
