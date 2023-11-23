@@ -64,6 +64,7 @@ public static class DependencyInjection
         services.AddFetchService<WrongfulRemovalCase>();
         services.AddTransient<ICongressionalDataService, CongressionalDataService>();
         services.AddTransient<IFetchAbuseCasesService, FetchAbuseCasesService>();
+        services.AddTransient<IFetchAbuseCasesMapService, FetchAbuseCasesMapService>();
         services.AddTransient<IFetchAttachmentService, FetchAttachmentService>();
         services.AddTransient<IFetchDocumentsService, FetchDocumentsService>();
         services.AddTransient<IFetchBlogService, FetchBlogService>();

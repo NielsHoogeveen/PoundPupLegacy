@@ -1,6 +1,6 @@
 ﻿:root {
     --header-bg-color: linear-gradient(180deg, #2c2c2c 0%, #2c2c2c 100%);
-    --content-bg-color: #f8f4f0;
+    --content-bg-color: #f0f3f8;
     --content-title-color: #080b42;
     --nav-bg-color: #444;
     --nav-bg-hover-color: #222;
@@ -39,11 +39,12 @@
 
 
 .frontpage {
-    flex: 1;
+    
     background-color: var(--footer-bg-color);
     background-image: url("/frontpage.jpg");
     background-repeat: no-repeat;
     display: flex;
+    height: 100dvh;
 }
 
 .front-page-text {

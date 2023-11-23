@@ -11,6 +11,7 @@ public static class DependencyInjection
     {
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, AbuseCase>, AbuseCaseDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<AbuseCasesDocumentReaderRequest, AbuseCases>, AbuseCasesDocumentReaderFactory>();
+        services.AddTransient<ISingleItemDatabaseReaderFactory<AbuseCasesMapDocumentReaderRequest, AbuseCaseMapEntry[]>, AbuseCasesMapDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, Act>, ActDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, BasicNameable>, BasicNameableDocumentReaderFactory>();
         services.AddTransient<ISingleItemDatabaseReaderFactory<NodeDocumentReaderRequest, BasicCountry>, BasicCountryDocumentReaderFactory>();

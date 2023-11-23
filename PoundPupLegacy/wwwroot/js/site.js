@@ -75,3 +75,29 @@ function scrollToFirstError(id) {
         elem.parentElement.scrollIntoView();
     }
 }
+
+async function initMap(locations) {
+    // Request needed libraries.
+    const { Map } = await google.maps.importLibrary("maps");
+    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+    const map = new Map(document.getElementById("map"), {
+        center: { lat: 38.0, lng: -95.5 },
+        zoom: 4.70,
+        mapId: "4504f8b37365c3d0",
+    });
+    for (i = 0; i < locations.length; i++) {
+
+        const absuseCase = document.createElement("div");
+
+        absuseCase.className = "abuse-case-marker";
+        absuseCase.innerHTML = locations[i][3];
+        console.log(locations[i][0]);
+        console.log(locations[i][1]);
+
+        const marker = new AdvancedMarkerElement({
+            map,
+            position: new google.maps.LatLng(locations[i][0], locations[i][1]),
+            content: absuseCase,
+        });
+    } 
+}

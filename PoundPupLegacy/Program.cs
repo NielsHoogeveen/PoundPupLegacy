@@ -87,10 +87,11 @@ public sealed class Program
             var connectString = configuration["ConnectString"]!;
             var dataSource = new NpgsqlDataSourceBuilder(connectString)
                 //.UseLoggerFactory(sp.GetRequiredService<ILoggerFactory>())
-                .EnableDynamicJsonMappings(new System.Text.Json.JsonSerializerOptions {
-                   TypeInfoResolver = JsonTypeInfoResolver.Combine(resolvers),
+                .ConfigureJsonOptions(new System.Text.Json.JsonSerializerOptions {
+                    TypeInfoResolver = JsonTypeInfoResolver.Combine(resolvers),
                     Converters = { FuzzyDateJsonConverter.Default }
                 })
+                .EnableDynamicJson()
                 .Build();
             return dataSource;
         });
@@ -227,6 +228,7 @@ public static class Extensions
             Models.UserRolesToAssignJsonContext.Default,
             Models.UserProfileJsonContext.Default,
 
+            ViewModel.Models.AbuseCasesMapEntriesJsonContext.Default,
             ViewModel.Models.AbuseCaseJsonContext.Default,
             ViewModel.Models.AbuseCaseListJsonContext.Default,
             ViewModel.Models.AbuseCasesJsonContext.Default,

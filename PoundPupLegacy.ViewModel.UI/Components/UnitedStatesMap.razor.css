@@ -1,0 +1,23 @@
+path {
+    fill: #317c90;
+    cursor: pointer;
+    stroke: antiquewhite;
+    stroke-width: 1px;
+}
+path:hover, g:has(> text:hover) path {
+    fill: #5aa0b3;
+    
+}
+#uslakes path{
+    fill:white;
+}
+text {
+    user-select: none;
+    fill: antiquewhite;
+    cursor: pointer;
+}
+
+#usmapbase{
+    max-width:50em;
+    height:auto;
+}

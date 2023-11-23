@@ -37,7 +37,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.DomainModel"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.DomainModel.Test", "PoundPupLegacy.DomainModel.Test\PoundPupLegacy.DomainModel.Test.csproj", "{6E98CEA3-5373-485E-A31E-F75BE5F90EF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PoundPupLegacy.Loader", "PoundPupLegacy.Loader\PoundPupLegacy.Loader.csproj", "{1BB439F6-4532-4B1F-B6ED-503397ECF291}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PoundPupLegacy.Loader", "PoundPupLegacy.Loader\PoundPupLegacy.Loader.csproj", "{1BB439F6-4532-4B1F-B6ED-503397ECF291}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -330,3 +330,12 @@ footer h2 {
 .tooltip:hover .tooltip-text {
     visibility: visible;
 }
+
+.abuse-case-marker {
+    background-color: cornflowerblue;
+    font-size: 80%;
+    padding: 0.25em;
+    color: white;
+    width: 50px;
+}
+   
